@@ -1,37 +1,24 @@
 import React from "react";
 import Navigation from "./App/component/Navigation";
 import { enableScreens } from "react-native-screens";
-
+import * as eva from "@eva-design/eva";
+import { ApplicationProvider } from "@ui-kitten/components";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import interactionManager from "./App/component/interactionManager";
+import firebaseConfig from "./App/constant/firebase";
 enableScreens();
 export default class App extends React.Component {
   //props 값들 초기화
   constructor(props) {
     super(props);
-    this.state = {};
     //this.setState({color : nextProps.color});
-  }
-
-  componentDidMount() {
-    //#region firebase init
-    const firebase = require("firebase");
     try {
-      const firebaseConfig = {
-        apiKey: "AIzaSyAUiJslfRwp0zPIOpu1I-4Xnls7xW-aKnM",
-        authDomain: "campustaxi-b0e6c.firebaseapp.com",
-        databaseURL: "https://campustaxi-b0e6c.firebaseio.com",
-        projectId: "campustaxi-b0e6c",
-        storageBucket: "campustaxi-b0e6c.appspot.com",
-        messagingSenderId: "1054249413075",
-        appId: "1:1054249413075:web:21f8f04c9933fe4cde2726",
-        measurementId: "G-LH1WFX6SNM",
-      };
-      firebase.initializeApp(firebaseConfig);
+      const firebaseConfig = { firebaseConfig };
+      firebase.initializeApp(config);
     } catch (error) {
       console.log(error);
     }
-    //#endregion
   }
-
   render() {
     //#region ERROR Solution: Setting a timer for a long period of time, i.e. multiple minutes,
     const _setTimeout = global.setTimeout;
@@ -78,6 +65,12 @@ export default class App extends React.Component {
       };
     }
     //#endregion
-    return <Navigation />;
+    return (
+      <ApplicationProvider {...eva} theme={eva.light}>
+        <SafeAreaProvider>
+          <Navigation />
+        </SafeAreaProvider>
+      </ApplicationProvider>
+    );
   }
 }

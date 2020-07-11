@@ -8,25 +8,40 @@ import {
 } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-import MychatScreen from "./MychatScreen";
 import AlramScreen from "./AlramScreen";
 import SettingScreen from "./SettingScreen";
 import TempScreen from "./TempScreen";
+
+import MainScreen from "./MainScreen/MainScreen.js";
 import chatScreen from "./MainScreen/chatScreen.js";
 import chatroomScreen from "./MainScreen/chatroomScreen.js";
-import MainScreen from "./MainScreen/MainScreen.js";
+
+import MychatScreen from "./MychatScreen/MychatScreen.js";
 
 const Tab = createBottomTabNavigator();
 export default class Navigation extends Component {
   constructor(props) {
     super(props);
-    //See what props our StarWarsCard renders with
     // alert(JSON.stringify(props));
   }
   render() {
     const defaultNavOption = {
       headerShown: false,
       ...TransitionPresets.ModalSlideFromBottomIOS,
+    };
+    const showNavOption = {
+      headerShown: true,
+      ...TransitionPresets.ModalSlideFromBottomIOS,
+    };
+    const navOptions = {
+      headerStyle: {
+        backgroundColor: "#0D3664",
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        fontWeight: "bold",
+      },
+      headerTitleAlign: "center",
     };
     const HomeStack = createStackNavigator();
     const MychatStack = createStackNavigator();
@@ -44,7 +59,7 @@ export default class Navigation extends Component {
           />
           <HomeStack.Screen
             name="모든 채팅방 목록"
-            options={defaultNavOption}
+            options={showNavOption}
             component={chatScreen}
           />
           <HomeStack.Screen
@@ -56,6 +71,23 @@ export default class Navigation extends Component {
       );
     }
 
+    function MychatStackScreen() {
+      return (
+        <MychatStack.Navigator initialRouteName="내 채팅">
+          <MychatStack.Screen name="temp" component={TempScreen} />
+          <MychatStack.Screen
+            options={showNavOption}
+            name="내 채팅"
+            component={MychatScreen}
+          />
+          <MychatStack.Screen
+            name="채팅방"
+            options={defaultNavOption}
+            component={chatroomScreen}
+          />
+        </MychatStack.Navigator>
+      );
+    }
     return (
       <NavigationContainer>
         <Tab.Navigator
@@ -82,7 +114,7 @@ export default class Navigation extends Component {
           }}
         >
           <Tab.Screen name="홈" component={HomeStackScreen} />
-          <Tab.Screen name="내 채팅" component={MychatScreen} />
+          <Tab.Screen name="내 채팅" component={MychatStackScreen} />
           <Tab.Screen name="알림" component={AlramScreen} />
           <Tab.Screen name="설정" component={SettingScreen} />
         </Tab.Navigator>

@@ -596,7 +596,6 @@ export default function chatScreen({
         </Modal>
       </>
       {/* 채팅목록 출력부분 */}
-      <View style={{ height: hp(10) }}></View>
       <FlatList
         keyExtractor={(item, index) => index}
         data={roomList}
