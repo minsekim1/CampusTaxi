@@ -1,0 +1,157 @@
+  componentDidMount() {
+    const firebase = require("firebase");
+    if (!firebase.apps.length) {
+      firebase.initializeApp({
+        apiKey: "AIzaSyAUiJslfRwp0zPIOpu1I-4Xnls7xW-aKnM",
+        authDomain: "campustaxi-b0e6c.firebaseapp.com",
+        databaseURL: "https://campustaxi-b0e6c.firebaseio.com",
+        projectId: "campustaxi-b0e6c",
+        storageBucket: "campustaxi-b0e6c.appspot.com",
+        messagingSenderId: "1054249413075",
+        appId: "1:1054249413075:web:21f8f04c9933fe4cde2726",
+        measurementId: "G-LH1WFX6SNM",
+      });
+    }
+
+데이터베이스 참조 가져오기
+var database = firebase.database();
+
+1 기본 쓰기 작업
+function writeUserData(userId, name, email, imageUrl) {
+  firebase.database().ref('users/' + userId).set({
+    username: name,
+    email: email,
+    profile_picture : imageUrl
+  });
+}
+
+2-1 읽기: 경로의 데이터를 읽고 변경사항을 수신 대기
+다음 예시에서는 데이터베이스에서 게시물의 별표 수를 검색하는 소셜 블로깅 애플리케이션을 보여 줍니다.
+
+var starCountRef = firebase.database().ref('posts/' + postId + '/starCount');
+starCountRef.on('value', function(snapshot) {
+  updateStarCount(postElement, snapshot.val());
+});
+
+2-2 읽기: 데이터 한 번 읽기
+var userId = firebase.auth().currentUser.uid;
+return firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
+  var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+});
+
+3 업데이트
+function writeNewPost(uid, username, picture, title, body) {
+  // A post entry.
+  var postData = {
+    author: username,
+    uid: uid,
+    body: body,
+    title: title,
+    starCount: 0,
+    authorPic: picture
+  };
+
+  // Get a key for a new Post.
+  var newPostKey = firebase.database().ref().child('posts').push().key;
+
+  // Write the new post's data simultaneously in the posts list and the user's post list.
+  var updates = {};
+  updates['/posts/' + newPostKey] = postData;
+  updates['/user-posts/' + uid + '/' + newPostKey] = postData;
+
+  return firebase.database().ref().update(updates);
+}
+
+3-1 완료 콜백
+데이터가 커밋되는 시점을 파악하려면 완료 콜백을 추가합니다. 
+set() 및 update()는 모두 쓰기가 데이터베이스에 커밋되었을 때 호출되는 선택적 완료 콜백을 사용합니다. 
+호출이 실패하면 콜백에 실패 이유를 나타내는 오류 객체가 전달됩니다.
+  firebase.database().ref('users/' + userId).set({
+    username: name,
+    email: email,
+    profile_picture : imageUrl
+  }, function(error) {
+    if (error) {
+      // The write failed...
+    } else {
+      // Data saved successfully!
+    }
+  });
+
+
+4 삭제
+4-1 firebase.database().ref("").remove()
+4-2 set() 또는 update() 등의 다른 쓰기 작업 값으로 null을 지정하여 삭제할 수도 있습니다.
+
+5 데이터 목록 다루기
+하위 이벤트 수신 대기
+child_added	항목 목록을 검색하거나 항목 목록에 대한 추가를 수신 대기합니다. 이 이벤트는 기존 하위 항목마다 한 번씩 발생한 후 지정된 경로에 하위 항목이 새로 추가될 때마다 다시 발생합니다. 리스너에는 새 하위 항목의 데이터를 포함하는 스냅샷이 전달됩니다.
+child_changed	목록의 항목에 대한 변경을 수신 대기합니다. 이 이벤트는 하위 노드가 수정될 때마다 발생합니다. 여기에는 하위 노드의 하위에 대한 수정이 포함됩니다. 이벤트 리스너에 전달되는 스냅샷에는 하위 항목의 업데이트된 데이터가 포함됩니다.
+child_removed	목록의 항목 삭제를 수신 대기합니다. 이 이벤트는 바로 아래 하위 항목이 삭제될 때 트리거됩니다. 콜백 블록에 전달되는 스냅샷에는 삭제된 하위 항목의 데이터가 포함됩니다.
+child_moved	순서가 지정된 목록의 항목 순서 변경사항을 수신 대기합니다. child_moved 이벤트는 항상 현재의 정렬 기준에 따라 항목 순서를 변경하도록 한 child_changed 이벤트 뒤에 나옵니다.
+
+var commentsRef = firebase.database().ref('post-comments/' + postId);
+commentsRef.on('child_added', function(data) {
+  addCommentElement(postElement, data.key, data.val().text, data.val().author);
+});
+
+commentsRef.on('child_changed', function(data) {
+  setCommentValues(postElement, data.key, data.val().text, data.val().author);
+});
+
+commentsRef.on('child_removed', function(data) {
+  deleteComment(postElement, data.key);
+});
+
+값 이벤트 수신 대기
+ref.once('value', function(snapshot) {
+  snapshot.forEach(function(childSnapshot) {
+    var childKey = childSnapshot.key;
+    var childData = childSnapshot.val();
+    // ...
+  });
+});
+
+6 데이터 정렬
+orderByChild()	지정된 하위 키 또는 중첩된 하위 경로의 값에 따라 결과를 정렬합니다.
+orderByKey()	하위 키에 따라 결과를 정렬합니다.
+orderByValue()	하위 값에 따라 결과를 정렬합니다.
+
+var myUserId = firebase.auth().currentUser.uid;
+var topUserPostsRef = firebase.database().ref('user-posts/' + myUserId).orderByChild('starCount');
+
+예시)
+"posts": {
+  "ts-functions": {
+    "metrics": {
+      "views" : 1200000,
+      "likes" : 251000,
+      "shares": 1200,
+    },
+    "title" : "Why you should use TypeScript for writing Cloud Functions",
+    "author": "Doug",
+  },
+  "android-arch-3": {
+    "metrics": {
+      "views" : 900000,
+      "likes" : 117000,
+      "shares": 144,
+    },
+    "title" : "Using Android Architecture Components with Firebase Realtime Database (Part 3)",
+    "author": "Doug",
+  }
+},
+var mostViewedPosts = firebase.database().ref('posts').orderByChild('metrics/views');
+
+7 데이터 필터링
+limitToFirst()	정렬된 결과 목록에서 맨 처음부터 반환할 최대 항목 개수를 설정합니다.
+limitToLast()	정렬된 결과 목록에서 맨 끝부터 반환할 최대 항목 개수를 설정합니다.
+startAt()	선택한 정렬 기준 메소드에 따라 지정된 키 또는 값보다 크거나 같은 항목을 반환합니다.
+endAt()	선택한 정렬 기준 메소드에 따라 지정된 키 또는 값보다 작거나 같은 항목을 반환합니다.
+equalTo()	선택한 정렬 기준 메소드에 따라 지정된 키 또는 값과 동일한 항목을 반환합니다.
+
+결과 수 제한
+limitToFirst() 및 limitToLast() 메서드를 사용하여 특정 이벤트에서 동기화할 하위 항목의 최대 개수를 설정할 수 있습니다. 예를 들어 limitToFirst()를 사용하여 제한을 100개로 설정하면 처음에 최대 100개의 child_added 이벤트만 수신합니다. Firebase 데이터베이스에 저장된 항목이 100개 미만이면 모든 항목에 child_added 이벤트가 발생합니다.
+항목이 변경됨에 따라 쿼리에 새로 포함되는 항목에 대해 child_added 이벤트, 쿼리에서 제외되는 항목에 대해 child_removed 이벤트가 수신되며 총 개수는 100개로 유지됩니다.
+다음 예시는 예시 블로깅 앱이 모든 사용자의 게시물에서 최근 100개의 목록을 검색하는 쿼리를 정의하는 방법을 보여줍니다.
+var recentPostsRef = firebase.database().ref('posts').limitToLast(100);

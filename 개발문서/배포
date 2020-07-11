@@ -1,0 +1,252 @@
+https://dev-yakuza.github.io/ko/react-native/android-enroll-google-play-developer/
+
+cd ./android/app
+
+# keytool -genkey -v -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+
+keytool -genkey -v -keystore [key-name].keystore -alias [key alias] -keyalg RSA -keysize 2048 -validity 10000
+
+* [key-name], [key alias]: campustaxi
+
+Enter keystore password: * tkarnr78^@
+Re-enter new password: * tkarnr78^@
+What is your first and last name?
+  [Unknown]:
+What is the name of your organizational unit?
+  [Unknown]:
+What is the name of your organization?
+  [Unknown]:
+What is the name of your City or Locality?
+  [Unknown]:
+What is the name of your State or Province?
+  [Unknown]:
+What is the two-letter country code for this unit?
+  [Unknown]:
+Is CN=*****, OU=Unknown, O=Unknown, L=*****, ST=*****, C=***** correct?
+  [no]:
+
+Enter key password for <my-key-alias>
+    (RETURN if same as keystore password):
+
+android/app 폴더에 campustaxi.keystore 파일이 생성된 것을 확인할 수 있습니다.
+
+서명 키 설정///////////////////////////////////////////////////////////////////////////
+서명 키(Signing Key)가 생성되면 gradle에 키를 설정해야합니다. android/gradle.properties 파일을 열고 아래에 코드를 추가합니다.
+MYAPP_RELEASE_STORE_FILE=campustaxi.keystore
+MYAPP_RELEASE_KEY_ALIAS=campustaxi
+MYAPP_RELEASE_STORE_PASSWORD=tkarnr78^@
+MYAPP_RELEASE_KEY_PASSWORD=tkarnr78^@
+* [key-name], [key alias]: campustaxi
+
+아래에 코드를 android/app/build.gradle 파일에 추가합니다.
+...
+android {
+    ...
+    defaultConfig { ... }
+    signingConfigs {
+        release {
+            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
+                storeFile file(MYAPP_RELEASE_STORE_FILE)
+                storePassword MYAPP_RELEASE_STORE_PASSWORD
+                keyAlias MYAPP_RELEASE_KEY_ALIAS
+                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+            }
+        }
+    }
+    buildTypes {
+        release {
+            ...
+            signingConfig signingConfigs.release
+        }
+    }
+}
+...
+
+1.react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
+2.cd android
+3.gradlew clean
+4.gradlew assembleRelease -x bundleReleaseJsAndAssets
+
+ 빌드된 파일은 아래에 경로에 생성됩니다.
+android/app/build/outputs/apk/release/app-release.apk
+
+* 에러시
+Execution failed for task ':app:lintVitalRelease'.
+> Lint found fatal errors while assembling a release target.
+ android/app/build.gradle 파일에 아래에 내용을 추가하여 이 부분을 해결했습니다.
+ ...
+android {
+  ...
+  lintOptions {
+      checkReleaseBuilds false
+      // Or, if you prefer, you can continue to check for errors in release builds,
+      // but continue the build even when errors are found:
+      abortOnError false
+  }
+  ...
+}
+...
+///////////////////////////////////////////////////////////////////////////
+#pass 가능
+
+빌드된 파일 테스트
+안드로이드 디바이스(Android Device)에 기존에 설치된 앱을 삭제하고 아래에 명령어를 실행하여 빌드 파일을 위한 테스트를 진행하세요.
+
+react-native run-android --variant=release
+에러 대응
+공식 사이트에 내용을 통해 위와 같이 진행했지만 우리는 실제로 아래와 명령어를 통해 빌드 파일을 생성할 때와
+
+gradlew assembleRelease
+아래에 명령어로 직접 디바이스에서 테스할 때,
+
+react-native run-android --variant=release
+아래와 같은 에러가 발생하였습니다.
+
+java.lang.RuntimeException: Unable to load script from assets 'index.android.bundle'. Make sure your bundle is packaged correctly or you're running a packager server.
+해결 방법으로 아래의 명령어를 먼저 입력하여 index.android.bundle을 생성한 후
+
+react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle
+빌드를 하거나
+
+gradlew assembleRelease
+직접 디바이스에 올려 테스트했습니다.
+
+react-native run-android --variant=release
+############################################################################
+빌드 파일 사이즈 최적화
+이전 블로그인 안드로이드 빌드 및 테스트에서 안드로이드용으로 빌드된 파일은 파일 사이즈의 최적화가 되어있지 않습니다. 
+RN(React Native)로 개발한 안드로이드 앱(Android App)을 안드로이드 앱 스토어(Google Play)에 업로드하기 위해서 빌드 파일 사이즈를 최적화할 필요가 있습니다.
+
+RN(React Native) 프로젝트 폴더에서 android/app/build.gradle을 열고 아래와 같이 수정합니다.
+...
+defaultConfig {
+    ...
+    // ndk {
+    //     abiFilters "armeabi-v7a", "x86"
+    // }
+}
+...
+def enableSeparateBuildPerCPUArchitecture = true
+
+def enableProguardInReleaseBuilds = true
+...
+buildTypes {
+    release {
+        shrinkResources true
+        ...
+    }
+}
+..
+enableSeparateBuildPerCPUArchitecture: apk 파일 빌드시 각 CPU 별로 파일을 분리해서 apk 파일을 생성합니다. 다른 CPU에 필요한 파일 내용들이 빠지므로 파일 용량이 작아집니다. 대신 apk 파일이 여러개 생기며, 앱을 배포할시 생성된 apk 파일 모두를 업로드하셔야합니다.
+enableProguardInReleaseBuilds: 코드 난독화에 필요한 Proguard를 활성화합니다. Proguard는 코드 난독화를 해주는 동시에 코드 사이즈를 줄여주므로 파일 용량이 작아집니다.
+shrinkResources: 불필요한 리소스를 제거하여 파일 사이즈를 작게 만듭니다. (앱에서 로컬 이미지가 표시되지 않는다면 이 부분을 false로 변경하여 사용하시기 바랍니다.)
+그리고 아래의 명령어를 통해 RN(React Native)를 안드로이드용으로 빌드합니다.
+
+react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle
+cd android
+gradlew assembleRelease -x bundleReleaseJsAndAssets
+(changed from: gradlew assembleRelease)
+gradlew app:assembleRelease --stacktrace
+
+
+여기서 --stacktrace 옵션을 붙이는 이유는 enableProguardInReleaseBuilds = true로 설정할 경우 아래와 같은 빌드 에러가 발생할 경우가 있기 때문입니다.
+
+# 에러 에러없을 시 PASS ############################################################################
+...
+Note: the configuration keeps the entry point 'okhttp3.internal.ws.WebSocketWriter { void writePong(okio.ByteString); }', but not the descriptor class 'okio.ByteString'
+Note: the configuration keeps the entry point 'okhttp3.internal.ws.WebSocketWriter { void writeClose(int,okio.ByteString); }', but not the descriptor class 'okio.ByteString'
+Note: the configuration keeps the entry point 'okhttp3.internal.ws.WebSocketWriter { void writeControlFrame(int,okio.ByteString); }', but not the descriptor class 'okio.ByteString'
+Note: the configuration keeps the entry point 'okhttp3.internal.ws.WebSocketWriter$FrameSink { void write(okio.Buffer,long); }', but not the descriptor class 'okio.Buffer'
+Note: the configuration keeps the entry point 'okio.AsyncTimeout { void scheduleTimeout(okio.AsyncTimeout,long,boolean); }', but not the descriptor class 'okio.AsyncTimeout'
+Note: the configuration keeps the entry point 'okio.AsyncTimeout { boolean cancelScheduledTimeout(okio.AsyncTimeout); }', but not the descriptor class 'okio.AsyncTimeout'
+Note: the configuration keeps the entry point 'okio.AsyncTimeout { okio.Sink sink(okio.Sink); }', but not the descriptor class 'okio.Sink'
+Note: the configuration keeps the entry point 'okio.AsyncTimeout { okio.Source source(okio.Source); }', but not the descriptor class 'okio.Source'
+Note: the configuration keeps the entry point 'okio.ForwardingSink { ForwardingSink(okio.Sink); }', but not the descriptor class 'okio.Sink'
+Note: the configuration keeps the entry point 'okio.ForwardingSink { void write(okio.Buffer,long); }', but not the descriptor class 'okio.Buffer'
+Note: the configuration keeps the entry point 'okio.ForwardingSource { ForwardingSource(okio.Source); }', but not the descriptor class 'okio.Source'
+Note: the configuration keeps the entry point 'okio.ForwardingSource { long read(okio.Buffer,long); }', but not the descriptor class 'okio.Buffer'
+...
+* What went wrong:
+Execution failed for task ':app:transformClassesAndResourcesWithProguardForRelease'.
+> Job failed, see logs for details
+...
+
+위와 같이 빌드 에러가 발생하는 경우 android/app/proguard-rules.pro 파일을 열고 하단에 아래와 같이 추가합니다.
+
+# Note: the configuration keeps the entry point 'okio.AsyncTimeout { void scheduleTimeout(okio.AsyncTimeout,long,boolean); }', but not the descriptor class 'okio.AsyncTimeou
+-dontwarn okio.**
+# Note: the configuration keeps the entry point 'okhttp3.internal.ws.WebSocketWriter$FrameSink { void write(okio.Buffer,long); }', but not the descriptor class 'okio.Buffer'
+-dontwarn okhttp3.**
+
+외에도 사용하시는 라이브러리에 따라 더 많은 에러가 발생할 수 있습니다. 그에 따라 android/app/proguard-rules.pro을 수정하시기 바랍니다.
+
+빌드된 파일은 아래의 경로에서 확인할 수 있습니다.
+
+android/app/build/outputs/apk/release/app-arm64-v8a-release.apk.apk
+android/app/build/outputs/apk/release/app-armeabi-v7a-release.apk.apk
+android/app/build/outputs/apk/release/app-x86_64-release.apk.apk
+android/app/build/outputs/apk/release/app-x86-release.apk.apk
+이 모든 파일을 업르도 해야합니다.
+
+############################################################################
+앱 등록
+https://dev-yakuza.github.io/ko/react-native/android-google-play/
+
+아래의 링크를 선택하여 구글 플레이 콘솔(Google Play Console)로 이동합니다.
+구글 플레이 콘솔(Google Play Console): https://play.google.com/apps/publish/
+구글 플레이 콘솔(Google Play Console)에 이동하면 아래와 같은 화면을 볼 수 있습니다.
+
+구글 플레이 콘솔 홈
+화면 상단에 보이는 PUBLISH AN ANDROID APP ON GOOGLE PLAY 버튼을 선택합니다.
+
+구글 플레이 콘솔 앱 타이틀
+안드로이드 앱 스토어(Google Play)에 표시될 이름과 기본 언어를 선택합니다.
+
+구글 플레이 콘솔 앱 정보
+안드로이드 앱 스토어(Google Play)에 표시될 정보들을 입력합니다.
+
+제목(title): 50자
+요약 설명(short description): 80자
+전체 설명(full description): 4000자
+앱 이미지(Screenshots)
+앱 아이콘(App icon): 512x512(32-bit PNG, alpha), 1024x500(JPG or 24-bit PNG), 180x120(JPG or 24-bit PNG), 1280x720(JPG or 24-bit PNG), 4096x4096(JPG or 24-bit PNG)
+프로모션 비디오(Promo Video)
+앱 카테고리(Category)
+개발자 연락처(Contact details)
+개인 정보 정책(Privacy Policy)
+모든 정보 입력이 끝났다면 이제 apk 파일을 등록하는 방법에 대해서 알아보겠습니다.
+
+* app-arm64-v8a-release.apk로 업로드했음.
+
+
+왼쪽 위에 App release 메뉴를 선택하면 아래와 같은 화면을 볼 수 있습니다.
+구글 플레이 앱 등록
+화면에서 보이는 Production track의 Production 항목의 MANAGE를 선택합니다.
+구글 플레이 앱 production 생성
+위와 같은 화면이 보이면 하단의 CREATE RELEASE를 선택합니다.
+구글 플레이 앱 서명키 등록
+구글 플레이(Google Play)를 이용하여 앱 서명(App Signing)을 하기 위해 FINISH 버튼을 선택합니다.
+구글 플레이 약관 동의
+위와 같이 약관이 표시되면 하단의 ACCEPT 버튼을 눌러 동의합니다.
+구글 플레이 apk 업로드
+위에서 빌드한 RN(React Native)의 apk 파일을 업로드합니다.
+구글 플레이 apk 릴리스 노트
+앱의 배포 이름(Release Name)과 배포 노트(Relase Note)를 작성하고 오른쪽 하단의 SAVE 버튼을 누릅니다. 그러면 오른쪽의 REVIEW 버튼이 활성화됩니다. 활성화된 REVIEW 버튼을 누릅니다.
+구글 플레이 등록 불가
+앱 등록에 필요한 절차가 끝나지 않았기 때문에 오른쪽 하단의 START ROLLOUT TO PRODUCTION 버튼이 활성화되지 않았습니다. 왼쪽 메뉴의 Content rating을 선택합니다.
+구글 플레이 콘텐츠 등급
+콘텐츠 등급(Content Rating)을 설정하는 화면입니다. CONTINUE를 선택합니다
+구글 플레이 콘텐츠 등급 정보 입력
+이메일 정보와 앱의 카테고리를 선택합니다.
+구글 플레이 콘텐츠 등급 정보 동의
+앱에 콘텐츠 등급을 정하기 위한 정보를 선택합니다. 전부 선택하였다면 하단의 SAVE QUESTIONNAIRE 버튼을 선택하고 활성화된 CALCULATE RATING을 선택합니다.
+구글 플레이 콘텐츠 등급 정보 선택 완료
+입력한 정보에 의해 콘텐츠 등급이 계산되어 나옵니다. 내용을 확인하고 하단의 APPLYING RATING을 선택합니다.
+구글 플레이 콘텐츠 등급 완료
+콘텐츠 등급 입력이 완료되었습니다. 콘텐츠 등급에 영향이 있는 업데이트가 있다면 콘텐츠 등급을 다시 계산하여 등록하셔야합니다.
+구글 플레이 콘텐츠 등급
+이제 마지막 절차인 가격 설정으로 이동합니다. 왼쪽 메뉴의 Pricing & distribution을 선택합니다.
+구글 플레이 앱 가격 정보
+앱의 가격을 설정하는 화면입니다. 우리는 무료로 앱을 제공할 예정이므로 FREE를 설정하고 진행합니다. 
+또한 어린이 대상인지, 앱에 광고가 포함되었는지 등 정보를 입력합니다. 
+필수 항목을 전부 진행하였다면 하단의 SAVE DRAFT를 선택합니다.

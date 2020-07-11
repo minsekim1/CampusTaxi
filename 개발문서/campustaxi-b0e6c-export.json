@@ -1,0 +1,133 @@
+{
+    "bbs": {
+        "dataFormat": {
+            "bbsid": {
+                "leadername": "string",
+                "createdate": "timestamp",
+                "available": "int",
+                "meetingdate": "timestamp",
+                "gender": "int",
+                "personmax": "int",
+                "personpresent": "int",
+                "personmember": "Array",
+                "startplace": "int",
+                "endplace": "int",
+                "bbstype": "int",
+                "chat": {
+                    "chatid": {
+                        "userid": "int",
+                        "say": "string",
+                        "time": "timestamp"
+                    }
+                },
+                "cost": {
+                    "costid": {
+                        "payment": "string",
+                        "costvalue": "int"
+                    }
+                }
+            }
+        },
+        "data": {
+            "1": {
+                "leadername": "민성",
+                "createdate": "2020-06-22 21:17:54",
+                "available": 0,
+                "meetingdate": "2020-06-22 21:17:54",
+                "gender": 1,
+                "personmax": 4,
+                "personpresent": 1,
+                "personmember": ["민성"],
+                "startplace": 1,
+                "endplace": 2,
+                "bbstype": 1,
+                "chat": {
+                    "1": {
+                        "userid": 1,
+                        "say": "안녕하세요",
+                        "time": "2020-06-22 21:18:54"
+                    },
+                    "2": {
+                        "userid": 1,
+                        "say": "네 안녕하세요",
+                        "time": "2020-06-22 21:19:54"
+                    },
+                    "3": {
+                        "userid": 1,
+                        "say": "안녕하세요",
+                        "time": "2020-06-22 21:20:54"
+                    }
+                },
+                "cost": {
+                    "costid": {
+                        "payment": "",
+                        "costvalue": 0
+                    }
+                }
+            }
+        }
+    },
+    "user": {
+        "dataFormat": {
+            "userid": {
+                "loginid": "string",
+                "loginpassword": "string",
+                "gender": "int",
+                "email": "string",
+                "nickname": "string",
+                "phone": "string",
+                "userstatus": "int",
+                "joindate": "timestamp",
+                "name": "string",
+                "address": "string",
+                "studentcard": "string",
+                "univ": "string",
+                "enterroom": {
+                    "bbsid": "int",
+                    "status": "int"
+                }
+            }
+        },
+
+        "data": {
+            "1": [
+                "mins97",
+                "mins97",
+                1,
+                "tkarnrwl78627862@gmail.com",
+                "Mins97",
+                "01024419894",
+                1,
+                "2020-06-22 21:17:54",
+                "민성",
+                "서울특별시 강북구",
+                "./image/mystudentcard.png",
+                "삼육대학교",
+                [1, 0]
+            ]
+        }
+    },
+    "count": {
+        "dataFormat": {
+            "countid": {
+                "startplace": "int",
+                "endplace": "int",
+                "cost": "int",
+                "distance": "int",
+                "time": "int",
+                "fee": "int"
+            }
+        },
+
+        "data": {
+            "1": {
+                "startplace": "int",
+                "endplace": "int",
+                "cost": "int",
+                "distance": "int",
+                "time": "int",
+                "fee": "int"
+            }
+        }
+    }
+}

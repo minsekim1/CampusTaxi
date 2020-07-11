@@ -1,0 +1,59 @@
+{
+  "CampusStyle View in React Native ": {
+    "scope": "javascript",
+    "prefix": "view",
+    "body": ["<View style={campusStyle.View.${1:default}}>\n\t${2:}\n</View>"]
+  },
+  "CampusStyle Button in React Native": {
+    "scope": "javascript",
+    "prefix": "button",
+    "body": [
+      "<Button style={campusStyle.Button.${1:default}} title=\"${2:}\"/>"
+    ]
+  },
+  "CampusStyle Text in React Native": {
+    "scope": "javascript",
+    "prefix": "text",
+    "body": ["<Text style={campusStyle.Text.${1:default}}}>${2:}</Text>"]
+  },
+  "CampusStyle ViewRow in React Native": {
+    "scope": "javascript",
+    "prefix": "viewrow",
+    "body": ["<View style={campusStyle.View.${1:row}}}>\n\t${2:}\n</View>"]
+  },
+  "CampusStyle Image in React Native": {
+    "scope": "javascript",
+    "prefix": "image",
+    "body": [
+      "<Image style={campusStyle.Image.${1:default}} source=\"require(${2:./a.png})\">"
+    ]
+  },
+  ////////////////////////////////////////////////////////////////
+  "Basic Avatar in React Native": {
+    "scope": "javascript",
+    "prefix": "avatar",
+    "body": [
+      "<Avatar ${1:rounded} source={{uri:'${2:https: //s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg}'/>"
+    ]
+  },
+  "CampusStyle ButtonGroup in React Native": {
+    "scope": "javascript",
+    "prefix": "buttongroup",
+    "body": "<View style={campusStyle.View.rowflexBtnGroup}>\n\t<Button name=\"${1:myButtonName}\" buttonStyle={campusStyle.Button.${2:flex}} title=\"${3:버튼이름}\" onPress={${4:()=>{console.log(\"myButtonGroupLog\")}}}/>\n</View>"
+  },
+  "Firebase Read in AJAX RN": {
+    "scope": "javascript",
+    "prefix": "ajax_firebase_read_class",
+    "body": "class HomeScreen extends Component {\n constructor(props) {\n    super(props);\n    this.state = {\n      data: [],\n        };\n      }\n  componentDidMount() {\n    fetch(\"https://campustaxi-b0e6c.firebaseio.com/\" + \"bbs/data\" + \".json\")\n      .then((res) => res.json())\n      .then((result) => {\n        this.setState({\n          data: result,\n          });\n        });\n      }\n  render() {\n    const { data\n        } = this.state;\n    return (\n      <>\n        {data.map((item, index) => {\n          if (item != null)\n            return (\n              <Text key={index\n            }>\n                {item.bbstype\n            }\n                {item.chat[\n                1\n              ].say\n            }\n              </Text>\n            );\n          })\n        }\n      </>\n    );\n      }\n    }\n"
+  },
+  "AJAX Fetch Get to JSON": {
+    "scope": "javascript",
+    "prefix": "fetch",
+    "body": "// const firebase = require(\"firebase\");\n// const ref = firebase.database().ref();\nconst [fbData, setFbData] = useState(null);\n  function _fbfetch(dburl) {\n    fetch(\"https://campustaxi-b0e6c.firebaseio.com/\" + dburl + \".json\")\n.then((res) => res.json())\n.then((result) => {\n if (\ntypeof Object.keys(result) !== \"undefined\" &&\nObject.keys(result).length > 0\n) {\nlet tempValue = [[]];let index = 0; \nfor (const value of Object.values(result)) {\ntempValue[index++] = value;\n}\nsetFbData(tempValue);\n}\n});\n}\nconsole.log(\"모든데이터:\" + fbData);\nconsole.log(fbData == null ? \"빈값1\": \"일부데이터1:\" + fbData[1]);\nconsole.log(fbData == null ? \"빈값2\": \"일부데이터2:\"+ fbData[1][1]);"
+  },
+  "UseState in React Native": {
+    "scope": "javascript",
+    "prefix": "state",
+    "body": "//import React ,{useState}from \"react\"; \n const [${1:stateData}, ${2:setStateData}] = useState(${3:0});"
+  }
+}
