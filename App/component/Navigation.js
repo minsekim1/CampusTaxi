@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Component, useState } from "react";
-import { Button, View, Text } from "react-native";
+import { Button, View, Text, TouchableOpacity } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import {
   createStackNavigator,
@@ -8,16 +8,17 @@ import {
 } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import AlramScreen from "./AlramScreen";
 import SettingScreen from "./SettingScreen";
 import TempScreen from "./TempScreen";
-
 import MainScreen from "./MainScreen/MainScreen.js";
 import chatScreen from "./MainScreen/chatScreen.js";
 import chatroomScreen from "./MainScreen/chatroomScreen.js";
 
 import MychatScreen from "./MychatScreen/MychatScreen.js";
-
+import campusStyle from "../themes/campusStyle";
 const Tab = createBottomTabNavigator();
 export default class Navigation extends Component {
   constructor(props) {
@@ -26,14 +27,6 @@ export default class Navigation extends Component {
   }
   render() {
     const defaultNavOption = {
-      headerShown: false,
-      ...TransitionPresets.ModalSlideFromBottomIOS,
-    };
-    const showNavOption = {
-      headerShown: true,
-      ...TransitionPresets.ModalSlideFromBottomIOS,
-    };
-    const navOptions = {
       headerStyle: {
         backgroundColor: "#0D3664",
       },
@@ -42,6 +35,20 @@ export default class Navigation extends Component {
         fontWeight: "bold",
       },
       headerTitleAlign: "center",
+      headerShown: false,
+      // ...TransitionPresets.ModalSlideFromBottomIOS,
+    };
+    const showNavOption = {
+      headerStyle: {
+        backgroundColor: "#0D3664",
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        fontWeight: "bold",
+      },
+      headerTitleAlign: "center",
+      headerShown: true,
+      // ...TransitionPresets.ModalSlideFromBottomIOS,
     };
     const HomeStack = createStackNavigator();
     const MychatStack = createStackNavigator();
@@ -59,7 +66,39 @@ export default class Navigation extends Component {
           />
           <HomeStack.Screen
             name="모든 채팅방 목록"
-            options={showNavOption}
+            options={{
+              headerStyle: {
+                backgroundColor: "#0D3664",
+              },
+              headerTintColor: "#fff",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+              headerTitleAlign: "center",
+              headerShown: true,
+              headerRight: () => (
+                <View style={campusStyle.View.row}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      // setFilterVisible(true);
+                      alert("asd");
+                    }}
+                    style={{ marginRight: 20 }}
+                  >
+                    <MaterialIcons name="filter-list" size={24} color="white" />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      // setFilterVisible(true);
+                      alert("asd");
+                    }}
+                    style={{ marginRight: 15 }}
+                  >
+                    <AntDesign name="search1" size={24} color="white" />
+                  </TouchableOpacity>
+                </View>
+              ),
+            }}
             component={chatScreen}
           />
           <HomeStack.Screen

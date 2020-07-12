@@ -1,23 +1,22 @@
 import React from "react";
 import Navigation from "./App/component/Navigation";
 import { enableScreens } from "react-native-screens";
-import * as eva from "@eva-design/eva";
-import { ApplicationProvider } from "@ui-kitten/components";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import interactionManager from "./App/component/interactionManager";
-import firebaseConfig from "./App/constant/firebase";
+import { Provider as PaperProvider } from "react-native-paper";
+import { firebaseConfig } from "./App/constant/firebase";
+const firebase = require("firebase");
+try {
+  firebase.initializeApp(firebaseConfig);
+} catch (error) {
+  // console.log(error);
+}
+
 enableScreens();
 export default class App extends React.Component {
   //props 값들 초기화
   constructor(props) {
     super(props);
     //this.setState({color : nextProps.color});
-    try {
-      const firebaseConfig = { firebaseConfig };
-      firebase.initializeApp(config);
-    } catch (error) {
-      console.log(error);
-    }
   }
   render() {
     //#region ERROR Solution: Setting a timer for a long period of time, i.e. multiple minutes,
@@ -66,11 +65,11 @@ export default class App extends React.Component {
     }
     //#endregion
     return (
-      <ApplicationProvider {...eva} theme={eva.light}>
+      <PaperProvider>
         <SafeAreaProvider>
           <Navigation />
         </SafeAreaProvider>
-      </ApplicationProvider>
+      </PaperProvider>
     );
   }
 }

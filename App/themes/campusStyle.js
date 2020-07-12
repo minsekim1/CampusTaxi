@@ -289,6 +289,14 @@ const badge = StyleSheet.create({
   },
 });
 //#endregion
+//#region badge
+const icon = StyleSheet.create({
+  default: {
+    width: 32,
+    height: 32,
+  },
+});
+//#endregion
 const campusStyle = {
   View: view,
   Text: text,
@@ -297,5 +305,6 @@ const campusStyle = {
   Button: button,
   Badge: badge,
   Card: card,
+  Icon: icon,
 };
 export default campusStyle;

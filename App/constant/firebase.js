@@ -1,5 +1,7 @@
+// const firebase = require("firebase");
+// firebase.database().ref();
 //#region 파이어베이스 초기화
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyAUiJslfRwp0zPIOpu1I-4Xnls7xW-aKnM",
   authDomain: "campustaxi-b0e6c.firebaseapp.com",
   databaseURL: "https://campustaxi-b0e6c.firebaseio.com",
@@ -12,21 +14,17 @@ const firebaseConfig = {
 //#endregion
 
 //#region 파이어베이스 함수들
-const firebase = require("firebase");
-function ref(url) {
-  return firebase.database().ref(url);
+/*
+export function _firebaseinit(firebase) {
+  try {
+    firebase.initializeApp(firebaseConfig);
+  } catch (error) {
+    // console.log(error);
+  }
 }
-function _set(userId, score) {
-  firebase
-    .database()
-    .ref("users/" + userId)
-    .set({
-      highscore: score,
-    });
-}
+*/
 //#endregion
 
-export default { firebaseConfig, getFunc, firebase };
 /*
  *** .set
 ref("data/bbs").set('Lovelace');
@@ -73,3 +71,4 @@ await newKey.set({
 
 데이터 정렬 및 필터링
 https://blog.naver.com/tkarnrwl7862/222028142924
+*/
