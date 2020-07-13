@@ -8,8 +8,8 @@ const firebase = require("firebase");
 
 //Redux 설정
 import { Provider } from "react-redux";
-import Root from "./App/containers/Root";
-import initStore from "./App/store";
+import Calculator from "./App/components/Calculator";
+import { initStore } from "./App/redux/index";
 const store = initStore();
 try {
   firebase.initializeApp(firebaseConfig);
@@ -71,14 +71,14 @@ export default class App extends Component {
     }
     //#endregion
     return (
-      <Provider store={store}>
-        <Root />
-      </Provider>
-      // <PaperProvider>
-      // <SafeAreaProvider>
-      // <Navigation />
-      // </SafeAreaProvider>
-      // </PaperProvider>
+      <PaperProvider>
+        <SafeAreaProvider>
+          <Provider store={store}>
+            {/* <Root /> */}
+            <Navigation />
+          </Provider>
+        </SafeAreaProvider>
+      </PaperProvider>
     );
   }
 }
