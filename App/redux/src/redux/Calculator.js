@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import { connect } from "react-redux";
-import ActionCreator from "../redux";
+import ActionCreator from "./redux";
 
 class Calculator extends Component {
   constructor(props, context) {
@@ -59,9 +59,9 @@ class Calculator extends Component {
 
 function mapStateToProps(state) {
   return {
-    result: state.calculator.result,
-    first: state.calculator.sumInfo.first,
-    second: state.calculator.sumInfo.second,
+    result: state.reduxComponent.result,
+    first: state.reduxComponent.sumInfo.first,
+    second: state.reduxComponent.sumInfo.second,
   };
 }
 
