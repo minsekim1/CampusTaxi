@@ -1,10 +1,11 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "adb connect 192.168.200.136:5555 && expo start --android",
+    "starthome": "adb connect 192.168.200.136:5555 && expo start --android",
     "startcom": "adb connect 192.168.0.32:5555 && expo start --android",
     "startschool": "adb connect 192.168.194.106:5555 && expo start --android",
     "gitUpload": "git add . && git commit -m \"notebook new commit ui performance updating \" && git push ",
+    "gitPull": "git pull",
     "reactStartAndroid": "react-native run-android"
   },
   "dependencies": {
