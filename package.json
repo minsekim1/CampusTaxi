@@ -3,7 +3,9 @@
   "scripts": {
     "start": "adb connect 192.168.200.136:5555 && expo start --android",
     "startcom": "adb connect 192.168.0.32:5555 && expo start --android",
-    "gitUpload": "git add . && git commit -m \"notebook new commit ui performance updating \" && git push "
+    "startschool": "adb connect 192.168.194.106:5555 && expo start --android",
+    "gitUpload": "git add . && git commit -m \"notebook new commit ui performance updating \" && git push ",
+    "reactStartAndroid": "react-native run-android"
   },
   "dependencies": {
     "@eva-design/eva": "^2.0.0",
@@ -33,7 +35,9 @@
     "react-native-vector-icons": "^7.0.0",
     "react-native-web": "~0.11.7",
     "react-native-websocket": "^1.0.2",
-    "react-navigation": "^4.3.9"
+    "react-navigation": "^4.3.9",
+    "react-redux": "^7.2.0",
+    "redux": "^4.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",

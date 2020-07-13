@@ -1,10 +1,16 @@
-import React from "react";
+import React, { Component } from "react";
 import Navigation from "./App/component/Navigation";
 import { enableScreens } from "react-native-screens";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as PaperProvider } from "react-native-paper";
 import { firebaseConfig } from "./App/constant/firebase";
 const firebase = require("firebase");
+
+//Redux 설정
+import { Provider } from "react-redux";
+import Root from "./App/containers/Root";
+import initStore from "./App/store";
+const store = initStore();
 try {
   firebase.initializeApp(firebaseConfig);
 } catch (error) {
@@ -12,7 +18,7 @@ try {
 }
 
 enableScreens();
-export default class App extends React.Component {
+export default class App extends Component {
   //props 값들 초기화
   constructor(props) {
     super(props);
@@ -65,11 +71,14 @@ export default class App extends React.Component {
     }
     //#endregion
     return (
-      <PaperProvider>
-        <SafeAreaProvider>
-          <Navigation />
-        </SafeAreaProvider>
-      </PaperProvider>
+      <Provider store={store}>
+        <Root />
+      </Provider>
+      // <PaperProvider>
+      // <SafeAreaProvider>
+      // <Navigation />
+      // </SafeAreaProvider>
+      // </PaperProvider>
     );
   }
 }
