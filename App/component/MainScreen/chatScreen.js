@@ -13,7 +13,6 @@ import {
 import campusStyle from "../../themes/campusStyle";
 import DateTimePicker from "@react-native-community/datetimepicker"; //방생성시간picker
 import crown from "../../image/crown.png";
-import { Text, Button, Paragraph, Dialog, Portal } from "react-native-paper";
 //#endregion
 
 //채팅목록 화면
@@ -272,15 +271,15 @@ export default function chatScreen({
                   setFilterCategory(itemValue);
                 }}
               >
-                <Picker.Item label="등교" value="등교" />
-                <Picker.Item label="하교" value="하교" />
-                <Picker.Item label="야작" value="야작" />
-                <Picker.Item label="독서실" value="독서실" />
-                <Picker.Item label="PC방" value="PC방" />
-                <Picker.Item label="놀이동산" value="놀이동산" />
-                <Picker.Item label="클럽" value="클럽" />
-                <Picker.Item label="스키장" value="스키장" />
-                <Picker.Item label="오션월드" value="오션월드" />
+                <Picker.Item label="등교" value="등교" key={1} />
+                <Picker.Item label="하교" value="하교" key={2} />
+                <Picker.Item label="야작" value="야작" key={3} />
+                <Picker.Item label="독서실" value="독서실" key={4} />
+                <Picker.Item label="PC방" value="PC방" key={5} />
+                <Picker.Item label="놀이동산" value="놀이동산" key={6} />
+                <Picker.Item label="클럽" value="클럽" key={7} />
+                <Picker.Item label="스키장" value="스키장" key={8} />
+                <Picker.Item label="오션월드" value="오션월드" key={9} />
               </Picker>
               <Text>출발장소</Text>
               <Picker
@@ -291,8 +290,8 @@ export default function chatScreen({
                 }}
               >
                 <Picker.Item label="무관" value="무관" />
-                {startplace.map((item) => (
-                  <Picker.Item label={item} value={item} />
+                {startplace.map((item, i) => (
+                  <Picker.Item label={item} value={item} key={i} />
                 ))}
               </Picker>
               <Text>도착장소</Text>
@@ -304,8 +303,8 @@ export default function chatScreen({
                 }}
               >
                 <Picker.Item label="무관" value="무관" />
-                {endplace.map((item) => (
-                  <Picker.Item label={item} value={item} />
+                {endplace.map((item, i) => (
+                  <Picker.Item label={item} value={item} key={i} />
                 ))}
               </Picker>
               <Text>탑승시간</Text>
@@ -318,8 +317,8 @@ export default function chatScreen({
                     }}
                   >
                     <Picker.Item label="전부" value="전부" />
-                    {timeLineStart.map((item) => (
-                      <Picker.Item label={item} value={item} />
+                    {timeLineStart.map((item, i) => (
+                      <Picker.Item label={item} value={item} key={i} />
                     ))}
                   </Picker>
                 </View>
@@ -331,8 +330,8 @@ export default function chatScreen({
                     }}
                   >
                     <Picker.Item label="전부" value="전부" />
-                    {timeLineEnd.map((item) => (
-                      <Picker.Item label={item} value={item} />
+                    {timeLineEnd.map((item, i) => (
+                      <Picker.Item label={item} value={item} key={i} />
                     ))}
                   </Picker>
                 </View>
@@ -346,10 +345,10 @@ export default function chatScreen({
                       setFilterPersonMin(itemValue);
                     }}
                   >
-                    <Picker.Item label="1" value="1" />
-                    <Picker.Item label="2" value="2" />
-                    <Picker.Item label="3" value="3" />
-                    <Picker.Item label="4" value="4" />
+                    <Picker.Item label="1" value="1" key={1} />
+                    <Picker.Item label="2" value="2" key={2} />
+                    <Picker.Item label="3" value="3" key={3} />
+                    <Picker.Item label="4" value="4" key={4} />
                   </Picker>
                 </View>
                 <View style={campusStyle.View.flex}>
@@ -359,10 +358,10 @@ export default function chatScreen({
                       setFilterPersonMax(itemValue);
                     }}
                   >
-                    <Picker.Item label="1" value="1" />
-                    <Picker.Item label="2" value="2" />
-                    <Picker.Item label="3" value="3" />
-                    <Picker.Item label="4" value="4" />
+                    <Picker.Item label="1" value="1" key={1} />
+                    <Picker.Item label="2" value="2" key={2} />
+                    <Picker.Item label="3" value="3" key={3} />
+                    <Picker.Item label="4" value="4" key={4} />
                   </Picker>
                 </View>
               </View>
@@ -378,7 +377,7 @@ export default function chatScreen({
       </>
       {/* 채팅목록 출력부분 */}
       <FlatList
-        keyExtractor={(item, index) => index}
+        keyExtractor={(item) => item.b}
         data={roomList}
         renderItem={({ item, index }) => {
           if (item != null && filterCategory == item.c) {
