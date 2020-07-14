@@ -8,11 +8,12 @@ import {
   Badge,
   Icon,
   Card,
+  Button,
   ButtonGroup,
 } from "react-native-elements";
-import campusStyle from "../../themes/campusStyle";
+import campusStyle from "style";
 import DateTimePicker from "@react-native-community/datetimepicker"; //방생성시간picker
-import crown from "../../image/crown.png";
+import crown from "image/crown.png";
 //#endregion
 
 //채팅목록 화면

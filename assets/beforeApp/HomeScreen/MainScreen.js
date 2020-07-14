@@ -34,20 +34,20 @@ import {
   ButtonGroup,
 } from "react-native-elements";
 import { createStackNavigator } from "@react-navigation/stack";
-import campusStyle from "../../App/themes/campusStyle";
+import campusStyle from "style";
 import DateTimePicker from "@react-native-community/datetimepicker"; //방생성시간picker
 import { TextInput } from "react-native-gesture-handler";
-import ad from "../image/ad.png";
-import school from "../image/school.png";
-import bus from "../image/bus.png";
-import pen from "../image/pen.png";
-import study from "../image/study.png";
-import game from "../image/game.png";
-import party from "../image/party.png";
-import club from "../image/club.png";
-import ski from "../image/ski.png";
-import ocean from "../image/ocean.png";
-import crown from "../image/crown.png";
+import ad from "image/ad.png";
+import school from "image/school.png";
+import bus from "image/bus.png";
+import pen from "image/pen.png";
+import study from "image/study.png";
+import game from "image/game.png";
+import party from "image/party.png";
+import club from "image/club.png";
+import ski from "image/ski.png";
+import ocean from "image/ocean.png";
+import crown from "image/crown.png";
 //#endregion
 
 const Stack = createStackNavigator();

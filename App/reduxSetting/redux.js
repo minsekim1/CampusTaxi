@@ -2,7 +2,7 @@ import { createStore, combineReducers } from "redux";
 export function initStore() {
   const store = createStore(
     combineReducers({
-      reduxComponent: CalculatorReducer, //reduxComponent의 이름을 바꾸려면 해당컴포넌트의 result: state.reduxComponent.result, 이 부분을 바꾼다.
+      reduxComponent: reduxReducer, //reduxComponent의 이름을 바꾸려면 해당컴포넌트의 result: state.reduxComponent.result, 이 부분을 바꾼다.
     })
   );
   return store;
@@ -15,7 +15,7 @@ const defaultState = {
     second: 0,
   },
 };
-const CalculatorReducer = (state = defaultState, action) => {
+const reduxReducer = (state = defaultState, action) => {
   switch (action.type) {
     case "num1":
       alert("get");

@@ -9,8 +9,8 @@ import {
   TouchableHighlight,
   Alert,
 } from "react-native";
-import campusStyle from "../../themes/campusStyle";
-import crown from "../../image/crown.png";
+import campusStyle from "style";
+import crown from "image/crown.png";
 import { Text, Button, Paragraph, Dialog, Portal } from "react-native-paper";
 
 // import { firebaseConfig } from "../../constant/firebase";

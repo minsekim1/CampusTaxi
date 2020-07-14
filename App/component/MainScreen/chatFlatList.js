@@ -7,8 +7,8 @@ import {
 } from "react-native-responsive-screen";
 import { TextInput } from "react-native-gesture-handler";
 import { Button } from "react-native-elements";
-import campusStyle from "../../themes/campusStyle";
-import crown from "../../image/crown.png";
+import campusStyle from "style";
+import crown from "image/crown.png";
 //#endregion
 
 //채팅 대화들 FlatList

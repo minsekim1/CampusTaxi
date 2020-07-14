@@ -1,21 +1,26 @@
+//#region imports
 import React, { Component } from "react";
-import Navigation from "./App/component/Navigation";
+//시작 루트 컴포넌트
+import Navigation from "Navigation";
+//최적화 설정
 import { enableScreens } from "react-native-screens";
+enableScreens();
+//UI 설정
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as PaperProvider } from "react-native-paper";
-import { firebaseConfig } from "./App/constant/firebase";
-const firebase = require("firebase");
-
 //Redux 설정
+// import reduxExam from "reduxComponent";
 import { Provider } from "react-redux";
-import Calculator from "./App/redux/src/redux/Calculator";
-import { initStore } from "./App/redux/src/redux/redux";
+import { initStore } from "reduxJS";
 const store = initStore();
+//firebase 설정
+import { firebaseConfig } from "firebaseConfig";
+const firebase = require("firebase");
 try {
   firebase.initializeApp(firebaseConfig);
 } catch (error) {}
+//#endregion
 
-enableScreens();
 export default class App extends Component {
   //props 값들 초기화
   constructor(props) {
@@ -71,8 +76,7 @@ export default class App extends Component {
       <PaperProvider>
         <SafeAreaProvider>
           <Provider store={store}>
-            {/* <Navigation /> */}
-            <Calculator />
+            <Navigation />
           </Provider>
         </SafeAreaProvider>
       </PaperProvider>

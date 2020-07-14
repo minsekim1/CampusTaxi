@@ -6,9 +6,9 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { Header, Icon, Button } from "react-native-elements";
-import campusStyle from "../../themes/campusStyle";
+import campusStyle from "style";
 import { TextInput } from "react-native-gesture-handler";
-import crown from "../../image/crown.png";
+import crown from "image/crown.png";
 import chatFlatList from "./chatFlatList";
 
 //채팅방 화면

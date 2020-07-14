@@ -2,17 +2,17 @@
 import React from "react";
 import { View, Text, Image, TouchableHighlight, Button } from "react-native";
 
-import campusStyle from "../../themes/campusStyle";
-import ad from "../../image/ad.png";
-import school from "../../image/school.png";
-import bus from "../../image/bus.png";
-import pen from "../../image/pen.png";
-import study from "../../image/study.png";
-import game from "../../image/game.png";
-import party from "../../image/party.png";
-import club from "../../image/club.png";
-import ski from "../../image/ski.png";
-import ocean from "../../image/ocean.png";
+import campusStyle from "style";
+import ad from "image/ad.png";
+import school from "image/school.png";
+import bus from "image/bus.png";
+import pen from "image/pen.png";
+import study from "image/study.png";
+import game from "image/game.png";
+import party from "image/party.png";
+import club from "image/club.png";
+import ski from "image/ski.png";
+import ocean from "image/ocean.png";
 //#endregion
 // 첫 시작 메인화면
 export default function MainScreen({ navigation }) {

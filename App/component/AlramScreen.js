@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Ionicons } from "@expo/vector-icons";
 // import MaterialIcon from "react-native-vector-icons/dist/MaterialIcons";
 import "react-native-gesture-handler";
-import crown from "../image/crown.png";
+import crown from "image/crown.png";
 import {
   SafeAreaView,
   StyleSheet,
