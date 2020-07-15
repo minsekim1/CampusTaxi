@@ -20,7 +20,18 @@ try {
   firebase.initializeApp(firebaseConfig);
 } catch (error) {}
 //#endregion
+//#region 경고창 무시: Setting a timer for a long period of time, i.e. multiple minute
+import { YellowBox } from "react-native";
+import _ from "lodash";
 
+YellowBox.ignoreWarnings(["Setting a timer"]);
+const _console = _.clone(console);
+console.warn = (message) => {
+  if (message.indexOf("Setting a timer") <= -1) {
+    _console.warn(message);
+  }
+};
+//#endregion
 export default class App extends Component {
   //props 값들 초기화
   constructor(props) {

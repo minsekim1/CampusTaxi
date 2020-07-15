@@ -9,11 +9,55 @@ export function initStore() {
 }
 //Reducer : action이 어떻게 (How) 변경시켜야 하는 지는 reducer(들)가 정의합니다.
 const defaultState = {
-  result: 0,
-  sumInfo: {
-    frist: 0,
-    second: 0,
+  user: {
+    address: "",
+    email: "",
+    enterroom: "",
+    gender: "",
+    joindate: "",
+    loginid: "",
+    loginpassword: "",
+    name: "",
+    nickname: "",
+    phone: "",
+    studentcard: "",
+    univ: "",
+    userkey: "",
+    userstatus: "",
   },
+  bbs: {
+    available: 0,
+    bbskey: "",
+    bbstype: "",
+    chat: "",
+    cost: "",
+    createdate: "",
+    endplace: "",
+    gender: "",
+    leadername: "",
+    meetingdate: "",
+    personmax: "",
+    personpresent: "",
+    startplace: "",
+  },
+
+  isFilterVisible: false,
+  filterCategory: "school",
+  filterStartplace: "무관",
+  filterEndplace: "무관",
+  filterMeetingTimeStart: "전부",
+  filterMeetingTimeEnd: "전부",
+  filterPersonMin: 1,
+  filterPersonMax: 4,
+
+  isSearchVisible: false,
+
+  isCreateRoomVisible: false,
+  createRoomCategory: "school",
+  createRoompersonmax: 4,
+  createRoomstartplace: "",
+  createRoomendplace: "",
+  createRoomGender: 1,
 };
 const reduxReducer = (state = defaultState, action) => {
   switch (action.type) {

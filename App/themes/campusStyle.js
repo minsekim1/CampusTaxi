@@ -235,6 +235,7 @@ const image = StyleSheet.create({
   mainImage: {
     transform: [{ translateY: 30 }],
     width: wp(80),
+    height: 100,
     resizeMode: "contain",
   },
   middleSize: {
@@ -273,13 +274,7 @@ const modal = StyleSheet.create({
 });
 //#endregion
 //#region card
-const card = StyleSheet.create({
-  container: {
-    padding: 0,
-    margin: 0,
-    borderWidth: 0,
-  },
-});
+const card = StyleSheet.create({});
 //#endregion
 //#region badge
 const badge = StyleSheet.create({

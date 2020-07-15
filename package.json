@@ -3,13 +3,13 @@
   "scripts": {
     "starthome": "adb connect 192.168.200.136:5555 && expo start --android",
     "startcom": "adb connect 192.168.0.32:5555 && expo start --android",
+    "startschool": "adb connect 192.168.194.106:5555 && expo start --android",
     "startschoolWeb": "expo web",
     "gitUpload": "git add . && git commit -m \"notebook new commit ui performance updating \" && git push ",
     "gitPull": "git pull",
     "reactStartAndroid": "react-native run-android"
   },
   "dependencies": {
-    "@eva-design/eva": "^2.0.0",
     "@expo/vector-icons": "^10.0.0",
     "@react-native-community/datetimepicker": "^2.4.0",
     "@react-native-community/masked-view": "^0.1.10",
