@@ -1,6 +1,5 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
-// import MaterialIcon from "react-native-vector-icons/dist/MaterialIcons";
 import "react-native-gesture-handler";
 import crown from "image/crown.png";
 import {
@@ -17,6 +16,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 
+import TestFunc from "component/TestFunc";
 // 데이터 및 다른 클래스
 
 const alarmData = [
@@ -110,33 +110,59 @@ function AlarmItem({ id, title, imgurl, content, hour, min, icon }) {
   );
 }
 // 메인 클래스 //
-const AlramScreen: () => React$Node = () => {
-  return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.contentContainer}
-    >
-      <View style={styles.ContentContainer}>
-        <FlatList
-          data={alarmData}
-          renderItem={({ item }) => (
-            <AlarmItem
-              id={item.id}
-              title={item.title}
-              content={item.content}
-              hour={item.hour}
-              min={item.min}
-              imgurl={item.imageURL}
-              icon={item.icon}
-              date={item.date}
-            />
-          )}
-        />
-      </View>
-    </ScrollView>
-  );
-};
+// const AlramScreen: () => React$Node = () => {
+//   return (
+//     <ScrollView
+//       style={styles.container}
+//       contentContainerStyle={styles.contentContainer}
+//     >
+//       <View style={styles.ContentContainer}>
+//         <FlatList
+//           data={alarmData}
+//           renderItem={({ item }) => (
+//             <AlarmItem
+//               id={item.id}
+//               title={item.title}
+//               content={item.content}
+//               hour={item.hour}
+//               min={item.min}
+//               imgurl={item.imageURL}
+//               icon={item.icon}
+//               date={item.date}
+//             />
+//           )}
+//         />
+//       </View>
+//     </ScrollView>
+//   );
+// };
 
+class AlramScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { t: 1 };
+  }
+
+  greeting = () => {
+    this.setState({
+      t: 2,
+    });
+  };
+  render() {
+    return (
+      <View>
+        <Test greeting={this.greeting}></Test>
+        <Text>{this.state.t}</Text>
+      </View>
+    );
+  }
+}
+function Test(props) {
+  useEffect(() => {
+    props.greeting();
+  }, []);
+  return 0;
+}
 // 스타일 //
 
 const styles = StyleSheet.create({

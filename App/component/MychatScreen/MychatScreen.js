@@ -10,9 +10,8 @@ import {
   TouchableOpacity,
   Alert,
   Text,
-  Badge,
 } from "react-native";
-import { Input } from "react-native-elements";
+import { Input, Badge } from "react-native-elements";
 import campusStyle from "style";
 import crown from "image/crown.png";
 export default function MychatScreen() {

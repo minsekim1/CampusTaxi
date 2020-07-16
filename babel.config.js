@@ -12,6 +12,7 @@ module.exports = function (api) {
 
             component: "./App/component",
             MainScreen: "./App/component/MainScreen/MainScreen",
+            MainCreateButton: "./App/component/MainScreen/MainCreateButton",
             chatScreen: "./App/component/MainScreen/chatScreen",
             chatroomScreen: "./App/component/MainScreen/chatroomScreen",
 
