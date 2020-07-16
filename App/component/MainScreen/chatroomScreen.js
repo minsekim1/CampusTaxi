@@ -45,14 +45,15 @@ export default class chatroomScreen extends Component {
       .database()
       .ref("bbs/data/" + this.state.bbskey + "/d")
       .on("value", (snap) => {
-        let resultarr = {};
+        let resultarr = [];
         snap.forEach((snap) => {
           let item = snap.val();
           item.key = snap.key;
           resultarr.push(item);
         });
-        alert("bbs/data/" + this.state.bbskey + "/d");
-        this.setState({ chattingData: resultarr });
+        if (resultarr.length != 0)
+          this.setState({ chattingData: { resultarr } });
+        alert(this.state.chattingData);
         // this.flatListRef.scrollToEnd({ animated: true });
       });
   }
