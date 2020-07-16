@@ -13,18 +13,14 @@ import { AntDesign } from "@expo/vector-icons";
 import AlramScreen from "./AlramScreen";
 import SettingScreen from "./SettingScreen";
 import TempScreen from "./TempScreen";
-import MainScreen from "./MainScreen/MainScreen.js";
-import chatScreen from "./MainScreen/chatScreen.js";
-import chatroomScreen from "./MainScreen/chatroomScreen.js";
+import MainScreen from "MainScreen";
+import chatScreen from "chatScreen";
+import chatroomScreen from "chatroomScreen";
 
-import MychatScreen from "./MychatScreen/MychatScreen.js";
+import MychatScreen from ".MychatScreen";
 import campusStyle from "style";
 const Tab = createBottomTabNavigator();
 export default class Navigation extends Component {
-  constructor(props) {
-    super(props);
-    // alert(JSON.stringify(props));
-  }
   render() {
     const defaultNavOption = {
       headerStyle: {
@@ -55,59 +51,73 @@ export default class Navigation extends Component {
     const AlramStack = createStackNavigator();
     const SettingStack = createStackNavigator();
 
-    function HomeStackScreen() {
-      return (
-        <HomeStack.Navigator initialRouteName="홈">
-          <HomeStack.Screen name="temp" component={TempScreen} />
-          <HomeStack.Screen
-            options={defaultNavOption}
-            name="홈"
-            component={MainScreen}
-          />
-          <HomeStack.Screen
-            name="모든 채팅방 목록"
-            options={{
-              headerStyle: {
-                backgroundColor: "#0D3664",
-              },
-              headerTintColor: "#fff",
-              headerTitleStyle: {
-                fontWeight: "bold",
-              },
-              headerTitleAlign: "center",
-              headerShown: true,
-              headerRight: () => (
-                <View style={campusStyle.View.row}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      // setFilterVisible(true);
-                      alert("asd");
-                    }}
-                    style={{ marginRight: 20 }}
-                  >
-                    <MaterialIcons name="filter-list" size={24} color="white" />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      // setFilterVisible(true);
-                      alert("asd");
-                    }}
-                    style={{ marginRight: 15 }}
-                  >
-                    <AntDesign name="search1" size={24} color="white" />
-                  </TouchableOpacity>
-                </View>
-              ),
-            }}
-            component={chatScreen}
-          />
-          <HomeStack.Screen
-            name="채팅방"
-            options={defaultNavOption}
-            component={chatroomScreen}
-          />
-        </HomeStack.Navigator>
-      );
+    class HomeStackScreen extends Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          bbs: "asd",
+        };
+        // alert(JSON.stringify(this.state));
+      }
+      render() {
+        return (
+          <HomeStack.Navigator initialRouteName="홈">
+            <HomeStack.Screen name="temp" component={TempScreen} />
+            <HomeStack.Screen
+              options={defaultNavOption}
+              name="홈"
+              component={MainScreen}
+            />
+            <HomeStack.Screen
+              name="모든 채팅방 목록"
+              options={{
+                headerStyle: {
+                  backgroundColor: "#0D3664",
+                },
+                headerTintColor: "#fff",
+                headerTitleStyle: {
+                  fontWeight: "bold",
+                },
+                headerTitleAlign: "center",
+                headerShown: true,
+                headerRight: () => (
+                  <View style={campusStyle.View.row}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        // setFilterVisible(true);
+                        alert("asd");
+                      }}
+                      style={{ marginRight: 20 }}
+                    >
+                      <MaterialIcons
+                        name="filter-list"
+                        size={24}
+                        color="white"
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => {
+                        // setFilterVisible(true);
+                        this.setState({ bbs: "asddd" });
+                        alert(JSON.stringify(this.state));
+                      }}
+                      style={{ marginRight: 15 }}
+                    >
+                      <AntDesign name="search1" size={24} color="white" />
+                    </TouchableOpacity>
+                  </View>
+                ),
+              }}
+              component={chatScreen}
+            />
+            <HomeStack.Screen
+              name="채팅방"
+              options={defaultNavOption}
+              component={chatroomScreen}
+            />
+          </HomeStack.Navigator>
+        );
+      }
     }
 
     function MychatStackScreen() {
