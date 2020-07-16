@@ -685,9 +685,9 @@ function chatScreen({ route, navigation, navigation: { goBack } }) {
   //#endregion Hooks & functions
   return (
     <>
-      {/* 모달창 */}
+      {/* 모달창
       <>
-        {/* 방만들기모달창 */}
+        방만들기모달창
         <Modal
           backdropColor="rgba(0,0,0,0)"
           isVisible={isCreateRoomVisible}
@@ -760,7 +760,7 @@ function chatScreen({ route, navigation, navigation: { goBack } }) {
                   />
                 </View>
               </View>
-              {/* 날짜선택 Picker창 */}
+              날짜선택 Picker창
               {show && (
                 <DateTimePicker
                   testID="dateTimePicker"
@@ -869,7 +869,7 @@ function chatScreen({ route, navigation, navigation: { goBack } }) {
             </View>
           </View>
         </Modal>
-        {/* 검색모달창 */}
+        검색모달창
         <Modal
           backdropColor="rgba(0,0,0,0)"
           isVisible={isSearchVisible}
@@ -892,7 +892,7 @@ function chatScreen({ route, navigation, navigation: { goBack } }) {
           </View>
         </Modal>
 
-        {/* 필터모달창 */}
+        필터모달창
         <Modal
           backdropColor="rgba(0,0,0,0)"
           isVisible={isFilterVisible}
@@ -1018,7 +1018,7 @@ function chatScreen({ route, navigation, navigation: { goBack } }) {
             />
           </View>
         </Modal>
-      </>
+      </> */}
       {/* 채팅목록 출력부분 */}
       <View style={{ height: hp(10) }}></View>
       <FlatList

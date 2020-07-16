@@ -17,7 +17,7 @@ import MainScreen from "MainScreen";
 import chatScreen from "chatScreen";
 import chatroomScreen from "chatroomScreen";
 
-import MychatScreen from ".MychatScreen";
+import MychatScreen from "MychatScreen";
 import campusStyle from "style";
 const Tab = createBottomTabNavigator();
 export default class Navigation extends Component {
