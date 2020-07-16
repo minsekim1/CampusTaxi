@@ -6,7 +6,7 @@
     "startschool": "adb connect 192.168.194.106:5555 && expo start --android",
     "startlab": "adb connect 192.168.185.219:5555 && expo start --android",
     "startschoolWeb": "expo web",
-    "gitUpload": "git add . && git commit -m \"notebook new commit ui performance updating \" && git push ",
+    "gitUpload": "git add . && git commit -m \"notebook new commit ui performance updating 0716 \" && git push ",
     "gitPull": "git pull",
     "reactStartAndroid": "react-native run-android"
   },
