@@ -47,7 +47,7 @@ const view = StyleSheet.create({
     backgroundColor: "#0d3664",
   },
   mainHeaderBackground: {
-    marginTop: hp(4),
+    marginTop: "4%",
     alignItems: "center",
   },
   row: {
@@ -95,8 +95,8 @@ const view = StyleSheet.create({
   },
   createRoomView: {
     position: "absolute",
-    bottom: hp(5),
-    right: wp(8),
+    bottom: "5%",
+    right: "8%",
   },
   circleView: {
     width: 62,
@@ -196,7 +196,7 @@ const text = StyleSheet.create({
 //#region button
 const button = StyleSheet.create({
   default: {
-    width: wp(60),
+    width: "60%",
     color: "white",
     backgroundColor: "#172864",
   },
@@ -234,7 +234,7 @@ const button = StyleSheet.create({
 const image = StyleSheet.create({
   mainImage: {
     transform: [{ translateY: 30 }],
-    width: wp(80),
+    width: "80%",
     height: 100,
     resizeMode: "contain",
   },

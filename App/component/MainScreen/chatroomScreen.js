@@ -8,10 +8,6 @@ import {
   Image,
   StatusBar,
 } from "react-native";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
 import { Header, Icon, Button } from "react-native-elements";
 import campusStyle from "style";
 import { TextInput } from "react-native-gesture-handler";
@@ -34,7 +30,7 @@ export default class chatroomScreen extends Component {
       personmember: this.props.route.params.personmember,
       personmax: this.props.route.params.personmax,
       meetingdate: this.props.route.params.meetingdate,
-      chattingData: {},
+      chattingData: [],
       flatList: false,
       time: new Date(),
     };
@@ -51,9 +47,7 @@ export default class chatroomScreen extends Component {
           item.key = snap.key;
           resultarr.push(item);
         });
-        if (resultarr.length != 0)
-          this.setState({ chattingData: { resultarr } });
-        alert(this.state.chattingData);
+        if (resultarr.length != 0) this.setState({ chattingData: [resultarr] });
         // this.flatListRef.scrollToEnd({ animated: true });
       });
   }
@@ -80,13 +74,14 @@ export default class chatroomScreen extends Component {
       .push();
     //파이어베이스 임시 키값을 현재 키값으로 변경
     //바뀐 키값으로 다시 올리기
+    alert(this.state.time);
     firebase
       .database()
       .ref("bbs/data/" + this.state.bbskey + "/d/" + newChatKey.key)
       .set({
         da: newChatKey.key,
         db: this.state.myname,
-        dc: this.state.time,
+        dc: String(this.state.time),
         dd: this.state.textInput,
       });
     //파이어베이스에 올린 버전으로 가져옵니다.
@@ -108,51 +103,17 @@ export default class chatroomScreen extends Component {
 
   //#endregion
   render() {
-    const DATA = [
-      {
-        id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-        title: "First Item",
-      },
-      {
-        id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-        title: "Second Item",
-      },
-      {
-        id: "58694a0f-3da1-471f-bd96-145571e29d72",
-        title: "Third Item",
-      },
-    ];
-    const Item = ({ da }) => (
-      <View style={styles.item}>
-        <Text style={styles.title}>{da}</Text>
-      </View>
-    );
-    const styles = StyleSheet.create({
-      container: {
-        flex: 1,
-        marginTop: StatusBar.currentHeight || 0,
-      },
-      item: {
-        backgroundColor: "#f9c2ff",
-        padding: 20,
-        marginVertical: 8,
-        marginHorizontal: 16,
-      },
-      title: {
-        fontSize: 32,
-      },
-    });
-    alert(JSON.stringify(this.state));
+    const { navigation } = this.props;
     return (
       <>
         {/* 헤더부분 */}
-        <View style={{ height: hp(20), marginBottom: 15 }}>
+        <View style={{ height: "20%", marginBottom: 15 }}>
           <View
             style={{
               position: "absolute",
               top: 0,
               left: 0,
-              width: wp(100),
+              width: "100%",
             }}
           >
             <Header
@@ -172,7 +133,7 @@ export default class chatroomScreen extends Component {
                   type="clear"
                   title=""
                   icon={<Icon name="arrow-back" size={24} color="white" />}
-                  onPress={() => goBack()}
+                  onPress={() => navigation.goBack()}
                 ></Button>
               }
               centerComponent={{
@@ -223,23 +184,13 @@ export default class chatroomScreen extends Component {
         </View>
 
         {/* 채팅 내용부분 */}
-        {/* <FlatList
+        <FlatList
           data={this.state.chattingData}
-          renderItem={({ item }) => <Text>asd</Text>}
           keyExtractor={(item) => item.da}
           ref={(ref) => {
             this.flatListRef = ref;
           }}
-        /> */}
-
-        {/* <FlatList
-          // ref={(ref) => {
-          //   this.flatListRef = ref;
-          // }}
-          data={this.state.chattingData}
-          keyExtractor={(item) => item.da}
           renderItem={({ item }) => (
-            <Text>asd</Text>
             <ChattingItem
               isLeader={this.state.leaderkey == item.db ? true : false}
               say={item.dd}
@@ -248,28 +199,21 @@ export default class chatroomScreen extends Component {
               isMychat={this.state.myname == item.db ? true : false}
             />
           )}
-        /> */}
-        <View
-          style={{
-            position: "absolute",
-            bottom: 0,
-          }}
-        >
-          <View style={campusStyle.View.wideWhite}>
-            <View style={{ flex: 4 }}>
-              <TextInput
-                value={this.state.textInput}
-                onChangeText={(textEntry) => {
-                  this.setState({ textInput: textEntry });
-                }}
-                onSubmitEditing={() => this.sendMessage()}
-              />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Button title="전송" onPress={() => this.sendMessage()}>
-                <Image style={campusStyle.Image.middleSize} />
-              </Button>
-            </View>
+        />
+        <View style={campusStyle.View.wideWhite}>
+          <View style={{ flex: 4 }}>
+            <TextInput
+              value={this.state.textInput}
+              onChangeText={(textEntry) => {
+                this.setState({ textInput: textEntry });
+              }}
+              onSubmitEditing={() => this.sendMessage()}
+            />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Button title="전송" onPress={() => this.sendMessage()}>
+              <Image style={campusStyle.Image.middleSize} />
+            </Button>
           </View>
         </View>
       </>
@@ -376,7 +320,7 @@ const ItemStyle = StyleSheet.create({
     borderRadius: 9,
     padding: 10,
     fontWeight: "400",
-    maxWidth: wp(77),
+    maxWidth: "77%",
     marginLeft: 20,
   },
   item_contentReverse: {
@@ -385,7 +329,7 @@ const ItemStyle = StyleSheet.create({
     borderRadius: 9,
     padding: 10,
     fontWeight: "400",
-    maxWidth: wp(77),
+    maxWidth: "77%",
     marginRight: 20,
   },
   item_time: {

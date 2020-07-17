@@ -70,44 +70,7 @@ export default class Navigation extends Component {
             />
             <HomeStack.Screen
               name="모든 채팅방 목록"
-              options={{
-                headerStyle: {
-                  backgroundColor: "#0D3664",
-                },
-                headerTintColor: "#fff",
-                headerTitleStyle: {
-                  fontWeight: "bold",
-                },
-                headerTitleAlign: "center",
-                headerShown: true,
-                headerRight: () => (
-                  <View style={campusStyle.View.row}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        // setFilterVisible(true);
-                        alert("asd");
-                      }}
-                      style={{ marginRight: 20 }}
-                    >
-                      <MaterialIcons
-                        name="filter-list"
-                        size={24}
-                        color="white"
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => {
-                        // setFilterVisible(true);
-                        this.setState({ bbs: "asddd" });
-                        alert(JSON.stringify(this.state));
-                      }}
-                      style={{ marginRight: 15 }}
-                    >
-                      <AntDesign name="search1" size={24} color="white" />
-                    </TouchableOpacity>
-                  </View>
-                ),
-              }}
+              options={defaultNavOption}
               component={chatScreen}
             />
             <HomeStack.Screen

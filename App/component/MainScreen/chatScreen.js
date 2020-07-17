@@ -41,6 +41,7 @@ export default function chatScreen({ route, navigation }) {
   const filter = route.params.filter;
   const myname = route.params.myname;
   const mygender = route.params.mygender;
+  const userkey = "-MBRNLe85baaaaaaaaa";
   const [isFilterVisible, setFilterVisible] = useState(false);
   const [filterCategory, setFilterCategory] = useState(filter);
   const [filterStartplace, setFilterStartplace] = useState("무관");
@@ -214,6 +215,44 @@ export default function chatScreen({ route, navigation }) {
   //#endregion Hooks & functions
   return (
     <>
+      <Header
+        containerStyle={{
+          height: 64,
+        }}
+        backgroundColor="#0D3664"
+        leftComponent={
+          <Button
+            type="clear"
+            title=""
+            icon={<Icon name="arrow-back" size={24} color="white" />}
+            onPress={() => navigation.goBack()}
+          ></Button>
+        }
+        centerComponent={{
+          text: "모든 채팅방 목록",
+          style: campusStyle.Text.middleBold,
+        }}
+        rightComponent={
+          <View style={campusStyle.View.row}>
+            <Button
+              type="clear"
+              title=""
+              icon={<Icon name="filter-list" size={24} color="white" />}
+              onPress={() => {
+                setFilterVisible(true);
+              }}
+            />
+            <Button
+              type="clear"
+              title=""
+              icon={<Icon name="search" size={24} color="white" />}
+              onPress={() => {
+                setSearchVisible(true);
+              }}
+            />
+          </View>
+        }
+      />
       {/* 모달창 */}
       <>
         {/* 방만들기모달창 */}
@@ -379,15 +418,8 @@ export default function chatScreen({ route, navigation }) {
                         // 유저 데이터에 새로운 방 추가
                         firebase
                           .database()
-                          .ref("user/data")
-                          .orderByChild("c")
-                          .on("child_added", function (snapshot) {
-                            const userkey = snapshot.key;
-                            firebase
-                              .database()
-                              .ref("user/data/" + userkey + "/c")
-                              .push(newRoom);
-                          });
+                          .ref("user/data/" + userkey + "/c")
+                          .push(newBbsKey.key);
                         setCreateRoomVisible(!isCreateRoomVisible);
                       });
                   }}
