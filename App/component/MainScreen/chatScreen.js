@@ -60,15 +60,15 @@ export default function chatScreen({ route, navigation }) {
       .ref("user/data/" + userkey + "/d")
       .once("value", (snapshot) => setMygender(snapshot.val()));
   }
+  //유저가 들어간 채팅방의 개수를 알려줍니다.
+  const [myRoomCount, setMyRoomCount] = useState(0);
   function checkUserEnterChatRoom() {
     firebase
       .database()
       .ref("user/data/" + userkey + "/c")
-      .once("value", (snapshot) => {
-        let count = 0;
-        snapshot.forEach(() => count++);
-        alert(count);
-      });
+      .once("value", (snapshot) =>
+        setMyRoomCount(Object.keys(snapshot).length)
+      );
   }
   //#endregion
   const [isFilterVisible, setFilterVisible] = useState(false);
@@ -289,20 +289,26 @@ export default function chatScreen({ route, navigation }) {
           if (item != null && filterCategory == item.c) {
             return (
               <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("채팅방", {
-                    bbskey: item.b,
-                    gender: item.h,
-                    leadername: item.i,
-                    startplace: item.n,
-                    endplace: item.g,
-                    mygender: mygender,
-                    myname: myname,
-                    meetingdate: item.j,
-                    personmember: item.i,
-                    personmax: item.k,
-                  })
-                }
+                onPress={() => {
+                  if (checkUserEnterChatRoom() < 2) {
+                    navigation.navigate("채팅방", {
+                      bbskey: item.b,
+                      gender: item.h,
+                      leadername: item.i,
+                      startplace: item.n,
+                      endplace: item.g,
+                      mygender: mygender,
+                      myname: myname,
+                      meetingdate: item.j,
+                      personmember: item.i,
+                      personmax: item.k,
+                    });
+                  } else {
+                    alert(
+                      "채팅방은 최대 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭 에서 채팅방 나가기를 해주세요."
+                    );
+                  }
+                }}
                 style={{ backgroundColor: "white", padding: 10 }}
               >
                 <View style={campusStyle.View.row}>
