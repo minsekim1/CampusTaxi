@@ -21,7 +21,6 @@ export default class MychatScreen extends Component {
     super(props);
     this.state = {
       roomList: [],
-      varRoom: [],
       userkey: "-MBRNLe85baaaaaaaab",
     };
   }
@@ -30,23 +29,24 @@ export default class MychatScreen extends Component {
       .database()
       .ref("user/data/" + this.state.userkey + "/c")
       .once("value", (snap) => {
-        let resultarr = [];
         snap.forEach((snap) => {
+          let resultarr = [];
           firebase //bbs에서 데이터를 가져와서 firebase json 형식에서 flatlist하기 좋은 형식으로 키값을 JSON 안으로 넣는다.
             .database()
             .ref("bbs/data/" + snap.val())
             .once("value", (snapshot) => {
-              // ####
-
-              alert(this.state.varRoom);
+              let varRoom = [];
               snapshot.forEach((snapTemp) => {
-                //하나의 방의 데이터를 순서대로 집어넣습니다.
-                this.setState({ varRoom: "dsa" }); //임시로 하나의 방의 데이터 초기화합니다.
-                // this.setState({
-                // varRoom: this.state.varRoom.push(snapTemp.val()),
-                // });
+                // varRoom.push(snapTemp.val()); //하나의 방에 데이터를 순서대로 집어넣습니다.
+                // if (varRoom.length == 14) {
+                //   resultarr.push(varRoom);
+                // }
+
+                let item = snapTemp.val();
+                item.key = snapTemp.key;
+                varRoom.push(item);
               });
-              // ####
+              alert(varRoom);
             });
         });
       });
