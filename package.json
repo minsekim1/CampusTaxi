@@ -1,11 +1,11 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "starthome": "adb connect 192.168.200.136:5555 && expo start --android",
-    "startcom": "adb connect 192.168.0.32:5555 && expo start --android",
-    "startschool": "adb connect 192.168.194.106:5555 && expo start --android",
-    "startlab": "adb connect 192.168.185.219:5555 && expo start --android",
-    "startschoolWeb": "expo web",
+    "start집": "adb connect 192.168.200.136:5555 && expo start --android",
+    "start중계스터디뱅크": "adb connect 192.168.0.32:5555 && expo start --android",
+    "start학교": "adb connect 192.168.194.106:5555 && expo start --android",
+    "start연구실": "adb connect 192.168.185.219:5555 && expo start --android",
+    "start웹": "expo web",
     "gitUpload": "git add . && git commit -m \"notebook new commit ui performance updating 0716 \" && git push ",
     "gitPull": "git pull",
     "reactStartAndroid": "react-native run-android"

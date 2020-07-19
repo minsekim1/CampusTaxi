@@ -12,6 +12,7 @@ import { Header, Icon, Button } from "react-native-elements";
 import campusStyle from "style";
 import { TextInput } from "react-native-gesture-handler";
 import crown from "image/crown.png";
+const firebase = require("firebase");
 
 //채팅방 화면
 export default class chatroomScreen extends Component {
@@ -36,24 +37,27 @@ export default class chatroomScreen extends Component {
     };
   }
   componentDidMount() {
-    let firebase = require("firebase");
-    firebase
+    this.updateChattingDate();
+  }
+  // scrollToItem() {
+  //   this.flatListRef.scrollToEnd({ animated: true });
+  // }
+  async updateChattingDate() {
+    await firebase
       .database()
       .ref("bbs/data/" + this.state.bbskey + "/d")
       .on("value", (snap) => {
         let resultarr = [];
         snap.forEach((snap) => {
           let item = snap.val();
-          item.key = snap.key;
           resultarr.push(item);
         });
-        if (resultarr.length != 0) this.setState({ chattingData: [resultarr] });
-        // this.flatListRef.scrollToEnd({ animated: true });
+        if (resultarr.length != 0) {
+          this.setState({ chattingData: resultarr });
+        }
       });
+    await this.flatListRef.scrollToEnd({ animated: false }); // 채팅을 가장 아래로 내립니다.
   }
-  // scrollToItem() {
-  //   this.flatListRef.scrollToEnd({ animated: true });
-  // }
   getServerTime() {
     fetch("http://worldtimeapi.org/api/timezone/Asia/Seoul")
       .then((res) => res.json())
@@ -62,43 +66,19 @@ export default class chatroomScreen extends Component {
         this.setState({ time: time });
       });
   }
-  sendMessage() {
-    const firebase = require("firebase");
-    //현재 시간을 가져옵니다.
-    this.getServerTime();
-    //채팅 내용입니다.
-    //채팅 내용 데이터를 파이어베이스에 넣습니다.
-    let newChatKey = firebase
+  async sendMessage() {
+    await this.getServerTime(); //현재 시간을 가져옵니다.
+    await firebase //파이어베이스 push
       .database()
       .ref("bbs/data/" + this.state.bbskey + "/d")
-      .push();
-    //파이어베이스 임시 키값을 현재 키값으로 변경
-    //바뀐 키값으로 다시 올리기
-    alert(this.state.time);
-    firebase
-      .database()
-      .ref("bbs/data/" + this.state.bbskey + "/d/" + newChatKey.key)
-      .set({
-        da: newChatKey.key,
+      .push({
         db: this.state.myname,
         dc: String(this.state.time),
         dd: this.state.textInput,
       });
-    //파이어베이스에 올린 버전으로 가져옵니다.
-    firebase
-      .database()
-      .ref("bbs/data/" + this.state.bbskey + "/d")
-      .once("value", (snapshot) => {
-        let resultarr = [];
-        snapshot.forEach((snap) => {
-          let item = snap.val();
-          item.key = snap.key;
-          resultarr.push(item);
-        });
-        this.setState({ chattingData: resultarr });
-      });
-    //친 채팅 내용을 지웁니다.
-    this.setState({ textInput: "" });
+    await this.updateChattingDate();
+    this.setState({ textInput: "" }); //Input의 채팅 내용을 지웁니다.
+    this.flatListRef.scrollToEnd({ animated: false }); // 채팅을 가장 아래로 내립니다.
   }
 
   //#endregion
@@ -145,9 +125,12 @@ export default class chatroomScreen extends Component {
                         marginTop: 8,
                       }}
                     >
-                      <Image source={crown} />
+                      <Image
+                        source={crown}
+                        style={{ width: 23, height: 15, marginTop: 3 }}
+                      />
                       <Text style={campusStyle.Text.middleBold}>
-                        {"  " + this.state.leadername}
+                        {this.state.leadername}
                       </Text>
                     </View>
                     <Text style={campusStyle.Text.whiteInput}>
@@ -200,6 +183,8 @@ export default class chatroomScreen extends Component {
             />
           )}
         />
+
+        {/* 채팅 Input 부분 */}
         <View style={campusStyle.View.wideWhite}>
           <View style={{ flex: 4 }}>
             <TextInput
@@ -233,12 +218,13 @@ class ChattingItem extends React.PureComponent {
     let date = new Date(time).getDate();
 
     // 오후 오전 나누기
-    const now = new Date();
+    const now = new Date(time);
     let hour = now.getHours().toString();
-    const min = now.getMinutes().toString();
+    let min = now.getMinutes().toString();
+    if (min.length == 1) min = "0" + min;
     let day = "오전";
     if (hour >= 12) {
-      hour -= 12;
+      if (hour != 12) hour -= 12;
       day = "오후";
     }
 

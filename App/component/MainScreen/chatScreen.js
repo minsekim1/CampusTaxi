@@ -14,17 +14,16 @@ import {
 import campusStyle from "style";
 import DateTimePicker from "@react-native-community/datetimepicker"; //방생성시간picker
 import crown from "image/crown.png";
-
+const firebase = require("firebase");
 //#endregion
 
 //채팅목록 화면
 export default function chatScreen({ route, navigation }) {
   //#region Hooks & functions
   const [roomList, setRoomList] = useState();
-  var firebase = require("firebase");
-  //bbs에서 데이터를 가져와서 firebase json 형식에서 flatlist하기 좋은 형식으로 키값을 JSON 안으로 넣는다.
+  const userkey = "-MBRNLe85baaaaaaaab";
   useEffect(() => {
-    firebase
+    firebase //bbs에서 데이터를 가져와서 firebase json 형식에서 flatlist하기 좋은 형식으로 키값을 JSON 안으로 넣는다.
       .database()
       .ref("bbs/data")
       .once("value", function (snapshot) {
@@ -35,13 +34,43 @@ export default function chatScreen({ route, navigation }) {
           resultRoom.push(item);
         });
         setRoomList(resultRoom);
+        checkUserEnterChatRoom();
       });
     // alert(JSON.stringify(route.params));
-  }, []);
+    updateUserdata(userkey);
+  }, [userkey]);
   const filter = route.params.filter;
-  const myname = route.params.myname;
-  const mygender = route.params.mygender;
-  const userkey = "-MBRNLe85baaaaaaaaa";
+
+  //#region 유저정보 업데이트
+  const [myname, setMyname] = useState(route.params.myname);
+  const [mygender, setMygender] = useState(route.params.mygender);
+  function updateUserdata(userkey) {
+    getMyname(userkey);
+    getMygender(userkey);
+  }
+  function getMyname(userkey) {
+    firebase
+      .database()
+      .ref("user/data/" + userkey + "/h")
+      .once("value", (snapshot) => setMyname(snapshot.val()));
+  }
+  function getMygender(userkey) {
+    firebase
+      .database()
+      .ref("user/data/" + userkey + "/d")
+      .once("value", (snapshot) => setMygender(snapshot.val()));
+  }
+  function checkUserEnterChatRoom() {
+    firebase
+      .database()
+      .ref("user/data/" + userkey + "/c")
+      .once("value", (snapshot) => {
+        let count = 0;
+        snapshot.forEach(() => count++);
+        alert(count);
+      });
+  }
+  //#endregion
   const [isFilterVisible, setFilterVisible] = useState(false);
   const [filterCategory, setFilterCategory] = useState(filter);
   const [filterStartplace, setFilterStartplace] = useState("무관");
@@ -80,7 +109,6 @@ export default function chatScreen({ route, navigation }) {
     setShow(Platform.OS === "ios");
     setDate(currentDate);
   };
-
   const showMode = (currentMode) => {
     setShow(true);
     setMode(currentMode);
@@ -253,342 +281,6 @@ export default function chatScreen({ route, navigation }) {
           </View>
         }
       />
-      {/* 모달창 */}
-      <>
-        {/* 방만들기모달창 */}
-        {isCreateRoomVisible ? (
-          <Modal
-            backdropColor="rgba(0,0,0,0)"
-            isVisible={isCreateRoomVisible}
-            style={campusStyle.Modal.modalStyle}
-          >
-            <View style={campusStyle.Modal.view}>
-              <Header
-                containerStyle={campusStyle.Modal.container}
-                centerComponent={{
-                  text: "방만들기",
-                  style: campusStyle.Modal.component,
-                }}
-              />
-              <View style={{ padding: 10 }}>
-                <Text>카테고리</Text>
-                <Picker
-                  selectedValue={createRoomCategory}
-                  onValueChange={(itemValue) => {
-                    setCreateRoomCategory(itemValue);
-                  }}
-                >
-                  <Picker.Item color="gray" label={filter} />
-                  {menuList.map((item) =>
-                    item != filter ? (
-                      <Picker.Item label={item} value={item} />
-                    ) : null
-                  )}
-                </Picker>
-                <Text>출발장소</Text>
-                <Picker
-                  selectedValue={createRoomstartplace}
-                  onValueChange={(itemValue) => {
-                    setCreateRoomstartplace(itemValue);
-                  }}
-                >
-                  <Picker.Item value="" label="출발장소를 선택해주세요." />
-                  {startplace.map((item) => (
-                    <Picker.Item label={item} value={item} />
-                  ))}
-                </Picker>
-                <Text>도착장소</Text>
-                <Picker
-                  selectedValue={createRoomendplace}
-                  onValueChange={(itemValue) => {
-                    setCreateRoomendplace(itemValue);
-                  }}
-                >
-                  <Picker.Item value="" label="도착장소를 선택해주세요." />
-                  {endplace.map((item) => (
-                    <Picker.Item label={item} value={item} />
-                  ))}
-                </Picker>
-                <Text>탑승 시간</Text>
-                <Text style={campusStyle.Text.center}>
-                  {_getLocaleStrting(date)}
-                </Text>
-                <View style={campusStyle.View.row}>
-                  <View style={campusStyle.View.flex}>
-                    <Button
-                      buttonStyle={campusStyle.Button.marginTopAndBottom5}
-                      onPress={showDatepicker}
-                      title="날짜 선택"
-                    />
-                  </View>
-                  <View style={campusStyle.View.flex}>
-                    <Button
-                      buttonStyle={campusStyle.Button.marginTopAndBottom5}
-                      onPress={showTimepicker}
-                      title="시간 선택"
-                    />
-                  </View>
-                </View>
-                {/* 날짜선택 Picker창 */}
-                {show && (
-                  <DateTimePicker
-                    testID="dateTimePicker"
-                    value={date}
-                    mode={mode}
-                    is24Hour={true}
-                    display="default"
-                    onChange={onChange}
-                  />
-                )}
-                <Text>탑승 인원</Text>
-                <ButtonGroup
-                  selectedButtonStyle={{ backgroundColor: "#F8BD3C" }}
-                  textStyle={{ fontSize: 20 }}
-                  selectedIndex={createRoompersonmax - 2}
-                  onPress={(index) => setCreateRoompersonmax(index + 2)}
-                  buttons={["2", "3", "4"]}
-                ></ButtonGroup>
-                <Text>입장 제한 성별</Text>
-                <ButtonGroup
-                  selectedButtonStyle={{ backgroundColor: "#F8BD3C" }}
-                  textStyle={{ fontSize: 16 }}
-                  selectedIndex={createRoomGender}
-                  onPress={(index) => setCreateRoomGender(index)}
-                  buttons={["동성만", "남녀모두"]}
-                ></ButtonGroup>
-              </View>
-              <View style={campusStyle.View.rowflexBtnGroup}>
-                <Button
-                  name="myButtonName"
-                  buttonStyle={campusStyle.Button.groupActive}
-                  title="방 생성"
-                  onPress={() => {
-                    //worldTimeAPI사용하여 서버 시간을 가져옵니다.
-                    //JS의 기본적인 비동기방식을 동기방식으로 구현(async await 뺴고 then이용)
-                    fetch("http://worldtimeapi.org/api/timezone/Asia/Seoul")
-                      .then((res) => res.json())
-                      .then((result) => {
-                        const datatime =
-                          result.datetime.slice(0, 21) +
-                          result.datetime.slice(26, 32);
-                        //파이어베이스에 데이터를 올립니다. push
-                        let newBbsKey = firebase
-                          .database()
-                          .ref("bbs/data")
-                          .push();
-                        //파이어베이스 임시 키값을 현재 키값으로 변경
-                        let newRoom = {
-                          a: "출발 대기", //available0
-                          b: newBbsKey.key, //bbskey1
-                          c: createRoomCategory, //bbstype2
-                          d: {
-                            da: "SYSTEM: makeRoom",
-                            db: datatime,
-                            dc: myname,
-                          }, //chat3
-                          e: { ea: 0, eb: "" }, //cost4
-                          f: datatime, //createdate5
-                          g: createRoomendplace, //endplace6
-                          h: createRoomGender == 0 ? mygender : "all", //gender7
-                          i: myname, //leadername8
-                          j: _getLocaleStrting(date), //meetingdate9
-                          k: createRoompersonmax, //personmax10
-                          l: { ma: myname }, //personmember11
-                          m: 1, //personpresent12
-                          n: createRoomstartplace, //startplace13
-                        };
-                        //바뀐 키값으로 다시 올리기
-                        firebase
-                          .database()
-                          .ref("bbs/data/" + newBbsKey.key)
-                          .set(newRoom);
-                        //roomList를 파이어베이스에 올린 버전으로 가져옵니다.
-                        firebase
-                          .database()
-                          .ref("bbs/data")
-                          .once("value", function (snapshot) {
-                            let resultRoom = [];
-                            snapshot.forEach(function (snap) {
-                              let item = snap.val();
-                              item.key = snap.key;
-                              resultRoom.push(item);
-                            });
-                            setRoomList(resultRoom);
-                          });
-                        // 유저 데이터에 새로운 방 추가
-                        firebase
-                          .database()
-                          .ref("user/data/" + userkey + "/c")
-                          .push(newBbsKey.key);
-                        setCreateRoomVisible(!isCreateRoomVisible);
-                      });
-                  }}
-                />
-                <Button
-                  name="myButtonName"
-                  buttonStyle={campusStyle.Button.groupCancel}
-                  title="취소"
-                  onPress={() => setCreateRoomVisible(!isCreateRoomVisible)}
-                />
-              </View>
-            </View>
-          </Modal>
-        ) : null}
-
-        {/* 검색모달창 */}
-        {isSearchVisible ? (
-          <Modal
-            backdropColor="rgba(0,0,0,0)"
-            isVisible={isSearchVisible}
-            style={campusStyle.Modal.modalStyle}
-          >
-            <View style={campusStyle.Modal.view}>
-              <Header
-                containerStyle={campusStyle.Modal.container}
-                centerComponent={{
-                  text: "검색",
-                  style: campusStyle.Modal.component,
-                }}
-              />
-              <Button
-                title="Hide modal"
-                onPress={() => {
-                  setSearchVisible(!setSearchVisible);
-                }}
-              />
-            </View>
-          </Modal>
-        ) : null}
-        {/* 필터모달창 */}
-        {isFilterVisible ? (
-          <Modal
-            backdropColor="rgba(0,0,0,0)"
-            isVisible={isFilterVisible}
-            style={campusStyle.Modal.modalStyle}
-          >
-            <View style={campusStyle.Modal.view}>
-              <Header
-                containerStyle={campusStyle.Modal.container}
-                centerComponent={{
-                  text: "필터",
-                  style: campusStyle.Modal.component,
-                }}
-              />
-              <View style={{ padding: 10 }}>
-                <Text>카테고리</Text>
-                <Picker
-                  selectedValue={filterCategory}
-                  style={{ height: 50 }}
-                  onValueChange={(itemValue) => {
-                    setFilterCategory(itemValue);
-                  }}
-                >
-                  <Picker.Item label="등교" value="등교" />
-                  <Picker.Item label="하교" value="하교" />
-                  <Picker.Item label="야작" value="야작" />
-                  <Picker.Item label="독서실" value="독서실" />
-                  <Picker.Item label="PC방" value="PC방" />
-                  <Picker.Item label="놀이동산" value="놀이동산" />
-                  <Picker.Item label="클럽" value="클럽" />
-                  <Picker.Item label="스키장" value="스키장" />
-                  <Picker.Item label="오션월드" value="오션월드" />
-                </Picker>
-                <Text>출발장소</Text>
-                <Picker
-                  selectedValue={filterStartplace}
-                  style={{ height: 50 }}
-                  onValueChange={(itemValue) => {
-                    setFilterStartplace(itemValue);
-                  }}
-                >
-                  <Picker.Item label="무관" value="무관" />
-                  {startplace.map((item) => (
-                    <Picker.Item label={item} value={item} />
-                  ))}
-                </Picker>
-                <Text>도착장소</Text>
-                <Picker
-                  selectedValue={filterEndplace}
-                  style={{ height: 50 }}
-                  onValueChange={(itemValue) => {
-                    setFilterEndplace(itemValue);
-                  }}
-                >
-                  <Picker.Item label="무관" value="무관" />
-                  {endplace.map((item) => (
-                    <Picker.Item label={item} value={item} />
-                  ))}
-                </Picker>
-                <Text>탑승시간</Text>
-                <View style={campusStyle.View.row}>
-                  <View style={campusStyle.View.flex}>
-                    <Picker
-                      selectedValue={filterMeetingTimeStart}
-                      onValueChange={(itemValue) => {
-                        setFilterMeetingTimeStart(itemValue);
-                      }}
-                    >
-                      <Picker.Item label="전부" value="전부" />
-                      {timeLineStart.map((item) => (
-                        <Picker.Item label={item} value={item} />
-                      ))}
-                    </Picker>
-                  </View>
-                  <View style={campusStyle.View.flex}>
-                    <Picker
-                      selectedValue={filterMeetingTimeEnd}
-                      onValueChange={(itemValue) => {
-                        setFilterMeetingTimeEnd(itemValue);
-                      }}
-                    >
-                      <Picker.Item label="전부" value="전부" />
-                      {timeLineEnd.map((item) => (
-                        <Picker.Item label={item} value={item} />
-                      ))}
-                    </Picker>
-                  </View>
-                </View>
-                <Text>탑승인원</Text>
-                <View style={campusStyle.View.row}>
-                  <View style={campusStyle.View.flex}>
-                    <Picker
-                      selectedValue={filterPersonMin}
-                      onValueChange={(itemValue) => {
-                        setFilterPersonMin(itemValue);
-                      }}
-                    >
-                      <Picker.Item label="1" value="1" />
-                      <Picker.Item label="2" value="2" />
-                      <Picker.Item label="3" value="3" />
-                      <Picker.Item label="4" value="4" />
-                    </Picker>
-                  </View>
-                  <View style={campusStyle.View.flex}>
-                    <Picker
-                      selectedValue={filterPersonMax}
-                      onValueChange={(itemValue) => {
-                        setFilterPersonMax(itemValue);
-                      }}
-                    >
-                      <Picker.Item label="1" value="1" />
-                      <Picker.Item label="2" value="2" />
-                      <Picker.Item label="3" value="3" />
-                      <Picker.Item label="4" value="4" />
-                    </Picker>
-                  </View>
-                </View>
-              </View>
-              <Button
-                title="Hide modal"
-                onPress={() => {
-                  setFilterVisible(!isFilterVisible);
-                }}
-              />
-            </View>
-          </Modal>
-        ) : null}
-      </>
-
       {/* 채팅목록 출력부분 */}
       <FlatList
         keyExtractor={(item) => item.b}
@@ -696,6 +388,344 @@ export default function chatScreen({ route, navigation }) {
           <Text style={campusStyle.Text.smallSize}>방만들기</Text>
         </TouchableOpacity>
       </View>
+      {/* 모달창 */}
+      {/* 방만들기모달창 */}
+      {isCreateRoomVisible ? (
+        <Modal
+          backdropColor="rgba(0,0,0,0)"
+          isVisible={isCreateRoomVisible}
+          style={campusStyle.Modal.modalStyle}
+        >
+          <View style={campusStyle.Modal.view}>
+            <Header
+              containerStyle={campusStyle.Modal.container}
+              centerComponent={{
+                text: "방만들기",
+                style: campusStyle.Modal.component,
+              }}
+            />
+            <View style={{ padding: 10 }}>
+              <Text>카테고리</Text>
+              <Picker
+                selectedValue={createRoomCategory}
+                onValueChange={(itemValue) => {
+                  setCreateRoomCategory(itemValue);
+                }}
+              >
+                <Picker.Item color="gray" label={filter} />
+                {menuList.map((item) =>
+                  item != filter ? (
+                    <Picker.Item label={item} value={item} />
+                  ) : null
+                )}
+              </Picker>
+              <Text>출발장소</Text>
+              <Picker
+                selectedValue={createRoomstartplace}
+                onValueChange={(itemValue) => {
+                  setCreateRoomstartplace(itemValue);
+                }}
+              >
+                <Picker.Item value="" label="출발장소를 선택해주세요." />
+                {startplace.map((item) => (
+                  <Picker.Item label={item} value={item} />
+                ))}
+              </Picker>
+              <Text>도착장소</Text>
+              <Picker
+                selectedValue={createRoomendplace}
+                onValueChange={(itemValue) => {
+                  setCreateRoomendplace(itemValue);
+                }}
+              >
+                <Picker.Item value="" label="도착장소를 선택해주세요." />
+                {endplace.map((item) => (
+                  <Picker.Item label={item} value={item} />
+                ))}
+              </Picker>
+              <Text>탑승 시간</Text>
+              <Text style={campusStyle.Text.center}>
+                {_getLocaleStrting(date)}
+              </Text>
+              <View style={campusStyle.View.row}>
+                <View style={campusStyle.View.flex}>
+                  <Button
+                    buttonStyle={campusStyle.Button.marginTopAndBottom5}
+                    onPress={showDatepicker}
+                    title="날짜 선택"
+                  />
+                </View>
+                <View style={campusStyle.View.flex}>
+                  <Button
+                    buttonStyle={campusStyle.Button.marginTopAndBottom5}
+                    onPress={showTimepicker}
+                    title="시간 선택"
+                  />
+                </View>
+              </View>
+              {/* 날짜선택 Picker창 */}
+              {show && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  mode={mode}
+                  is24Hour={true}
+                  display="default"
+                  onChange={onChange}
+                />
+              )}
+              <Text>탑승 인원</Text>
+              <ButtonGroup
+                selectedButtonStyle={{ backgroundColor: "#F8BD3C" }}
+                textStyle={{ fontSize: 20 }}
+                selectedIndex={createRoompersonmax - 2}
+                onPress={(index) => setCreateRoompersonmax(index + 2)}
+                buttons={["2", "3", "4"]}
+              ></ButtonGroup>
+              <Text>입장 제한 성별</Text>
+              <ButtonGroup
+                selectedButtonStyle={{ backgroundColor: "#F8BD3C" }}
+                textStyle={{ fontSize: 16 }}
+                selectedIndex={createRoomGender}
+                onPress={(index) => setCreateRoomGender(index)}
+                buttons={["동성만", "남녀모두"]}
+              ></ButtonGroup>
+            </View>
+            <View style={campusStyle.View.rowflexBtnGroup}>
+              <Button
+                name="myButtonName"
+                buttonStyle={campusStyle.Button.groupActive}
+                title="방 생성"
+                onPress={() => {
+                  //worldTimeAPI사용하여 서버 시간을 가져옵니다.
+                  //JS의 기본적인 비동기방식을 동기방식으로 구현(async await 뺴고 then이용)
+                  fetch("http://worldtimeapi.org/api/timezone/Asia/Seoul")
+                    .then((res) => res.json())
+                    .then((result) => {
+                      const datatime =
+                        result.datetime.slice(0, 21) +
+                        result.datetime.slice(26, 32);
+                      const localtime = _getLocaleStrting(date);
+                      //파이어베이스에 데이터를 올립니다. push
+                      let newBbsKey = firebase
+                        .database()
+                        .ref("bbs/data")
+                        .push();
+                      //파이어베이스 임시 키값을 현재 키값으로 변경
+                      let newRoom = {
+                        a: "출발 대기", //available0
+                        b: newBbsKey.key, //bbskey1
+                        c: createRoomCategory, //bbstype2
+                        d: {
+                          "-MA_aaaaa": {
+                            da: "-MA_aaaaa",
+                            db: "SYSTEM",
+                            dc: datatime,
+                            dd:
+                              localtime.slice(0, 10) + " 방이 생성되었습니다.",
+                          },
+                        }, //chat3
+                        e: { ea: 0, eb: "" }, //cost4
+                        f: datatime, //createdate5
+                        g: createRoomendplace, //endplace6
+                        h: createRoomGender == 0 ? mygender : "all", //gender7
+                        i: myname, //leadername8
+                        j: localtime, //meetingdate9
+                        k: createRoompersonmax, //personmax10
+                        l: { ma: myname }, //personmember11
+                        m: 1, //personpresent12
+                        n: createRoomstartplace, //startplace13
+                      };
+                      //바뀐 키값으로 다시 올리기
+                      firebase
+                        .database()
+                        .ref("bbs/data/" + newBbsKey.key)
+                        .set(newRoom);
+                      //roomList를 파이어베이스에 올린 버전으로 가져옵니다.
+                      firebase
+                        .database()
+                        .ref("bbs/data")
+                        .once("value", function (snapshot) {
+                          let resultRoom = [];
+                          snapshot.forEach(function (snap) {
+                            let item = snap.val();
+                            item.key = snap.key;
+                            resultRoom.push(item);
+                          });
+                          setRoomList(resultRoom);
+                        });
+                      // 유저 데이터에 새로운 방 추가
+                      firebase
+                        .database()
+                        .ref("user/data/" + userkey + "/c")
+                        .push(newBbsKey.key);
+                      setCreateRoomVisible(!isCreateRoomVisible);
+                    });
+                }}
+              />
+              <Button
+                name="myButtonName"
+                buttonStyle={campusStyle.Button.groupCancel}
+                title="취소"
+                onPress={() => setCreateRoomVisible(!isCreateRoomVisible)}
+              />
+            </View>
+          </View>
+        </Modal>
+      ) : null}
+
+      {/* 검색모달창 */}
+      {isSearchVisible ? (
+        <Modal
+          backdropColor="rgba(0,0,0,0)"
+          isVisible={isSearchVisible}
+          style={campusStyle.Modal.modalStyle}
+        >
+          <View style={campusStyle.Modal.view}>
+            <Header
+              containerStyle={campusStyle.Modal.container}
+              centerComponent={{
+                text: "검색",
+                style: campusStyle.Modal.component,
+              }}
+            />
+            <Button
+              title="Hide modal"
+              onPress={() => {
+                setSearchVisible(!setSearchVisible);
+              }}
+            />
+          </View>
+        </Modal>
+      ) : null}
+      {/* 필터모달창 */}
+      {isFilterVisible ? (
+        <Modal
+          backdropColor="rgba(0,0,0,0)"
+          isVisible={isFilterVisible}
+          style={campusStyle.Modal.modalStyle}
+        >
+          <View style={campusStyle.Modal.view}>
+            <Header
+              containerStyle={campusStyle.Modal.container}
+              centerComponent={{
+                text: "필터",
+                style: campusStyle.Modal.component,
+              }}
+            />
+            <View style={{ padding: 10 }}>
+              <Text>카테고리</Text>
+              <Picker
+                selectedValue={filterCategory}
+                style={{ height: 50 }}
+                onValueChange={(itemValue) => {
+                  setFilterCategory(itemValue);
+                }}
+              >
+                <Picker.Item label="등교" value="등교" />
+                <Picker.Item label="하교" value="하교" />
+                <Picker.Item label="야작" value="야작" />
+                <Picker.Item label="독서실" value="독서실" />
+                <Picker.Item label="PC방" value="PC방" />
+                <Picker.Item label="놀이동산" value="놀이동산" />
+                <Picker.Item label="클럽" value="클럽" />
+                <Picker.Item label="스키장" value="스키장" />
+                <Picker.Item label="오션월드" value="오션월드" />
+              </Picker>
+              <Text>출발장소</Text>
+              <Picker
+                selectedValue={filterStartplace}
+                style={{ height: 50 }}
+                onValueChange={(itemValue) => {
+                  setFilterStartplace(itemValue);
+                }}
+              >
+                <Picker.Item label="무관" value="무관" />
+                {startplace.map((item) => (
+                  <Picker.Item label={item} value={item} />
+                ))}
+              </Picker>
+              <Text>도착장소</Text>
+              <Picker
+                selectedValue={filterEndplace}
+                style={{ height: 50 }}
+                onValueChange={(itemValue) => {
+                  setFilterEndplace(itemValue);
+                }}
+              >
+                <Picker.Item label="무관" value="무관" />
+                {endplace.map((item) => (
+                  <Picker.Item label={item} value={item} />
+                ))}
+              </Picker>
+              <Text>탑승시간</Text>
+              <View style={campusStyle.View.row}>
+                <View style={campusStyle.View.flex}>
+                  <Picker
+                    selectedValue={filterMeetingTimeStart}
+                    onValueChange={(itemValue) => {
+                      setFilterMeetingTimeStart(itemValue);
+                    }}
+                  >
+                    <Picker.Item label="전부" value="전부" />
+                    {timeLineStart.map((item) => (
+                      <Picker.Item label={item} value={item} />
+                    ))}
+                  </Picker>
+                </View>
+                <View style={campusStyle.View.flex}>
+                  <Picker
+                    selectedValue={filterMeetingTimeEnd}
+                    onValueChange={(itemValue) => {
+                      setFilterMeetingTimeEnd(itemValue);
+                    }}
+                  >
+                    <Picker.Item label="전부" value="전부" />
+                    {timeLineEnd.map((item) => (
+                      <Picker.Item label={item} value={item} />
+                    ))}
+                  </Picker>
+                </View>
+              </View>
+              <Text>탑승인원</Text>
+              <View style={campusStyle.View.row}>
+                <View style={campusStyle.View.flex}>
+                  <Picker
+                    selectedValue={filterPersonMin}
+                    onValueChange={(itemValue) => {
+                      setFilterPersonMin(itemValue);
+                    }}
+                  >
+                    <Picker.Item label="1" value="1" />
+                    <Picker.Item label="2" value="2" />
+                    <Picker.Item label="3" value="3" />
+                    <Picker.Item label="4" value="4" />
+                  </Picker>
+                </View>
+                <View style={campusStyle.View.flex}>
+                  <Picker
+                    selectedValue={filterPersonMax}
+                    onValueChange={(itemValue) => {
+                      setFilterPersonMax(itemValue);
+                    }}
+                  >
+                    <Picker.Item label="1" value="1" />
+                    <Picker.Item label="2" value="2" />
+                    <Picker.Item label="3" value="3" />
+                    <Picker.Item label="4" value="4" />
+                  </Picker>
+                </View>
+              </View>
+            </View>
+            <Button
+              title="Hide modal"
+              onPress={() => {
+                setFilterVisible(!isFilterVisible);
+              }}
+            />
+          </View>
+        </Modal>
+      ) : null}
     </>
   );
 }
