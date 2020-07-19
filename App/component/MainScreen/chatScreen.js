@@ -34,7 +34,6 @@ export default function chatScreen({ route, navigation }) {
           resultRoom.push(item);
         });
         setRoomList(resultRoom);
-        checkUserEnterChatRoom();
       });
     // alert(JSON.stringify(route.params));
     updateUserdata(userkey);
@@ -69,6 +68,7 @@ export default function chatScreen({ route, navigation }) {
       .once("value", (snapshot) =>
         setMyRoomCount(Object.keys(snapshot).length)
       );
+    return myRoomCount;
   }
   //#endregion
   const [isFilterVisible, setFilterVisible] = useState(false);
