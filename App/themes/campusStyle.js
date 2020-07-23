@@ -37,6 +37,7 @@ const view = StyleSheet.create({
     margin: 0,
     padding: 0,
   },
+  top5: { margin: 0, marginTop: 5, padding: 0 },
   containerWhite: {
     flex: 1,
     backgroundColor: "white",
@@ -165,6 +166,13 @@ const text = StyleSheet.create({
   smallSize: {
     color: "white",
     fontSize: 12,
+  },
+  smallCenter: {
+    color: "white",
+    fontSize: 12,
+    textAlign: "center",
+    alignItems: "center",
+    justifyContent: "center",
   },
   mainUnivText: {
     color: "white",

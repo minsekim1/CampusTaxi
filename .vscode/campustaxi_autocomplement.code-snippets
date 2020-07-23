@@ -19,7 +19,9 @@
   "CampusStyle ViewRow in React Native": {
     "scope": "javascript",
     "prefix": "viewrow",
-    "body": ["<View style={campusStyle.View.${1:row}}}>\n\t${2:}\n</View>"]
+    "body": [
+      "<View style={{lex: 1,flexDirection:'column',justifyContent: 'space-around'}}><View style={{width: 50, height: 50, backgroundColor: 'powderblue'}} /><View style={{width: 50, height: 50, backgroundColor: 'skyblue'}} /><View style={{width: 50, height: 50, backgroundColor: 'steelblue'}} /></View>"
+    ]
   },
   "CampusStyle Image in React Native": {
     "scope": "javascript",

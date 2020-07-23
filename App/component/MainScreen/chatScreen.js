@@ -28,7 +28,7 @@ export default function chatScreen({ route, navigation }) {
       .ref("bbs/data")
       .once("value", function (snapshot) {
         let resultRoom = [];
-        snapshot.forEach(function (snap) {
+        snapshot.forEach((snap) => {
           let item = snap.val();
           item.key = snap.key;
           resultRoom.push(item);
@@ -37,6 +37,7 @@ export default function chatScreen({ route, navigation }) {
       });
     // alert(JSON.stringify(route.params));
     updateUserdata(userkey);
+    placeUpdate();
   }, [userkey]);
   const filter = route.params.filter;
 
@@ -87,6 +88,33 @@ export default function chatScreen({ route, navigation }) {
   const [createRoomstartplace, setCreateRoomstartplace] = useState();
   const [createRoomendplace, setCreateRoomendplace] = useState();
   const [createRoomGender, setCreateRoomGender] = useState(1);
+
+  const [startplace, setStartplace] = useState([]);
+  const [endplace, setEndplace] = useState([]);
+  //endplace와 startplace를 서버데이터로 업데이트합니다.
+  function placeUpdate() {
+    firebase
+      .database()
+      .ref("place/data/startplace")
+      .once("value", (snapshot) => {
+        let arr = [];
+        snapshot.forEach((snap) => {
+          arr.push(snap.key);
+        });
+        setStartplace(arr);
+      });
+    firebase
+      .database()
+      .ref("place/data/endplace")
+      .once("value", (snapshot) => {
+        let arr = [];
+        snapshot.forEach((snap) => {
+          arr.push(snap.key);
+        });
+        setEndplace(arr);
+      });
+  }
+
   const menuList = [
     "등교",
     "하교",
@@ -98,8 +126,6 @@ export default function chatScreen({ route, navigation }) {
     "스키장",
     "오션월드",
   ];
-  const startplace = ["삼육대", "태릉입구"];
-  const endplace = ["삼육대", "태릉입구", "별내역", "구리역"];
   //채팅방만들기시간선택
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");

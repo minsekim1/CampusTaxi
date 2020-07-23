@@ -21,6 +21,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "android": { "package": "com.campustaxi.campustaxi", "config": { "googleMaps": { "apiKey": "AIzaSyBVIfNVsdQk6J56bD4CwZSPDyYlxF_XBe0" } } }
+
   }
 }

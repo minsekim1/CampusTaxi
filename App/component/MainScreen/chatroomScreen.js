@@ -121,29 +121,51 @@ export default class chatroomScreen extends Component {
                   <>
                     <View
                       style={{
-                        flexDirection: "row",
-                        marginTop: 8,
+                        flex: 1,
+                        flexDirection: "column",
+                        justifyContent: "space-around",
+                        alignItems: "center",
                       }}
                     >
-                      <Image
-                        source={crown}
-                        style={{ width: 23, height: 15, marginTop: 3 }}
-                      />
-                      <Text style={campusStyle.Text.middleBold}>
-                        {this.state.leadername}
+                      <View style={campusStyle.View.top5}>
+                        <View style={campusStyle.View.row}>
+                          <Image
+                            source={crown}
+                            style={{ width: 23, height: 15, marginTop: 3 }}
+                          />
+                          <Text style={campusStyle.Text.middleBold}>
+                            {this.state.leadername}
+                          </Text>
+                        </View>
+                      </View>
+
+                      <Text style={campusStyle.Text.whiteInput}>
+                        출발지: {this.state.startplace}
+                      </Text>
+                      <Text style={campusStyle.Text.whiteInput}>
+                        도착지: {this.state.endplace}
+                      </Text>
+
+                      <Text style={campusStyle.Text.smallCenter}>
+                        {this.props.route.params.meetingdate} 출발예정
                       </Text>
                     </View>
-                    <Text style={campusStyle.Text.whiteInput}>
-                      {"출발지:  " + this.state.startplace}
-                    </Text>
-                    <Text style={campusStyle.Text.whiteInput}>
-                      {"도착지:  " + this.state.endplace}
-                    </Text>
                   </>
                 ),
               }}
               rightComponent={
                 <View style={campusStyle.View.row}>
+                  <Button
+                    type="clear"
+                    title=""
+                    icon={<Icon name="map" size={24} color="white" />}
+                    onPress={() => {
+                      navigation.navigate("지도", {
+                        url:
+                          "https://m.map.naver.com/directions/#/publicTransit/detail/%25ED%2583%259C%25EB%25A6%2589%25EC%259E%2585%25EA%25B5%25AC%25EC%2597%25AD%25206%25ED%2598%25B8%25EC%2584%25A0,127.0747201,37.6173467,127.0744909,37.6174622,false,13479509/%25EC%2582%25BC%25EC%259C%25A1%25EB%258C%2580%25ED%2595%2599%25EA%25B5%2590,127.1042695,37.6429793,127.1074000,37.6386000,false,11591563/0/0/map/0",
+                      });
+                    }}
+                  />
                   <Button
                     type="clear"
                     title=""
