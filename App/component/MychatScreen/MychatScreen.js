@@ -20,8 +20,9 @@ export default class MychatScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      roomList: "",
+      roomList: [],
       userkey: "-MBRNLe85baaaaaaaab",
+      tempList: [],
     };
   }
 
@@ -37,60 +38,47 @@ export default class MychatScreen extends Component {
         let resultarr = [];
         snap.forEach((snap) => {
           resultarr.push(snap.val());
+          firebase
+            .database()
+            .ref("bbs/data/" + snap.val())
+            .once("value", (snap2) => {
+              let resultarr2 = [];
+              snap2.forEach((snap2) => {
+                resultarr2.push(snap2.val());
+              });
+              this.setState({ tempList: resultarr2 });
+            });
         });
-        this.setState({ roomList: resultarr });
-        alert(this.state.roomList);
+        alert(this.state.tempList);
+        // this.setState({
+        //   roomList: this.state.roomList.push(this.state.tempList),
+        // });
       });
   }
-    //#region Hooks & functions
-  const [roomList, setRoomList] = useState();
-
-  useEffect(() => {
-    firebase //bbs에서 데이터를 가져와서 firebase json 형식에서 flatlist하기 좋은 형식으로 키값을 JSON 안으로 넣는다.
-      .database()
-      .ref("bbs/data")
-      .once("value", function (snapshot) {
-        let resultRoom = [];
-        snapshot.forEach(function (snap) {
-          let item = snap.val();
-          item.key = snap.key;
-          resultRoom.push(item);
-        });
-        setRoomList(resultRoom);
-        checkUserEnterChatRoom();
-      });
-    // alert(JSON.stringify(route.params));
-    updateUserdata(userkey);
-  }, [userkey]);
+  //#region Hooks & functions
 
   render() {
     return (
       <FlatList
         keyExtractor={(item) => item.b}
-        data={roomList}
+        data={this.state.roomList}
         renderItem={({ item, index }) => {
-          if (item != null && filterCategory == item.c) {
+          if (item != null) {
             return (
               <TouchableOpacity
                 onPress={() => {
-                  if (checkUserEnterChatRoom() < 2) {
-                    navigation.navigate("채팅방", {
-                      bbskey: item.b,
-                      gender: item.h,
-                      leadername: item.i,
-                      startplace: item.n,
-                      endplace: item.g,
-                      mygender: mygender,
-                      myname: myname,
-                      meetingdate: item.j,
-                      personmember: item.i,
-                      personmax: item.k,
-                    });
-                  } else {
-                    alert(
-                      "채팅방은 최대 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭 에서 채팅방 나가기를 해주세요."
-                    );
-                  }
+                  navigation.navigate("채팅방", {
+                    bbskey: item.b,
+                    gender: item.h,
+                    leadername: item.i,
+                    startplace: item.n,
+                    endplace: item.g,
+                    mygender: mygender,
+                    myname: myname,
+                    meetingdate: item.j,
+                    personmember: item.i,
+                    personmax: item.k,
+                  });
                 }}
                 style={{ backgroundColor: "white", padding: 10 }}
               >
