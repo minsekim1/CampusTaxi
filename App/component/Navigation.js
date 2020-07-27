@@ -7,15 +7,14 @@ import {
   TransitionPresets,
 } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
+import { Icon } from "react-native-elements";
 import AlramScreen from "./AlramScreen";
 import SettingScreen from "./SettingScreen";
 import TempScreen from "./TempScreen";
 import MainScreen from "MainScreen";
 import chatScreen from "chatScreen";
 import chatroomScreen from "chatroomScreen";
+import MapScreen from "component/MapScreen/MapScreen";
 
 import MychatScreen from "MychatScreen";
 import campusStyle from "style";
@@ -108,15 +107,17 @@ export default class Navigation extends Component {
               //아이콘 설정
               let iconName;
               if (route.name === "홈") {
-                iconName = focused ? "ios-airplane" : "ios-airplane";
+                iconName = focused ? "home" : "home";
               } else if (route.name === "내 채팅") {
-                iconName = focused ? "ios-airplane" : "ios-airplane";
+                iconName = focused ? "chat" : "chat";
+              } else if (route.name === "지도") {
+                iconName = focused ? "map" : "map";
               } else if (route.name === "알림") {
-                iconName = focused ? "ios-airplane" : "ios-airplane";
+                iconName = focused ? "alarm" : "alarm";
               } else if (route.name === "설정") {
-                iconName = focused ? "ios-airplane" : "ios-airplane";
+                iconName = focused ? "settings" : "settings";
               }
-              return <Ionicons name={iconName} size={size} color={color} />;
+              return <Icon name={iconName} size={size} color={color} />;
             },
           })}
           tabBarOptions={{
@@ -127,6 +128,7 @@ export default class Navigation extends Component {
         >
           <Tab.Screen name="홈" component={HomeStackScreen} />
           <Tab.Screen name="내 채팅" component={MychatStackScreen} />
+          <Tab.Screen name="지도" component={MapScreen} />
           <Tab.Screen name="알림" component={AlramScreen} />
           <Tab.Screen name="설정" component={SettingScreen} />
         </Tab.Navigator>
