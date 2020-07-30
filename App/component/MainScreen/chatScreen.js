@@ -21,7 +21,7 @@ const firebase = require("firebase");
 export default function chatScreen({ route, navigation }) {
   //#region Hooks & functions
   const [roomList, setRoomList] = useState();
-  const userkey = "-MBRNLe85baaaaaaaab";
+  const userkey = "-MBRNLe85baaaaaaaac";
   useEffect(() => {
     firebase //bbs에서 데이터를 가져와서 firebase json 형식에서 flatlist하기 좋은 형식으로 키값을 JSON 안으로 넣는다.
       .database()
@@ -62,8 +62,8 @@ export default function chatScreen({ route, navigation }) {
   }
   //유저가 들어간 채팅방의 개수를 알려줍니다.
   const [myRoomCount, setMyRoomCount] = useState(0);
-  function checkUserEnterChatRoom() {
-    firebase
+  async function checkUserEnterChatRoom() {
+    await firebase
       .database()
       .ref("user/data/" + userkey + "/c")
       .once("value", (snapshot) =>
@@ -317,6 +317,10 @@ export default function chatScreen({ route, navigation }) {
               <TouchableOpacity
                 onPress={() => {
                   if (checkUserEnterChatRoom() < 2) {
+                    firebase
+                      .database()
+                      .ref("user/data/" + userkey + "/c")
+                      .push(item.b);
                     navigation.navigate("채팅방", {
                       bbskey: item.b,
                       gender: item.h,
@@ -564,7 +568,7 @@ export default function chatScreen({ route, navigation }) {
                         i: myname, //leadername8
                         j: localtime, //meetingdate9
                         k: createRoompersonmax, //personmax10
-                        l: { ma: myname }, //personmember11
+                        l: [userkey], //personmember11
                         m: 1, //personpresent12
                         n: createRoomstartplace, //startplace13
                       };

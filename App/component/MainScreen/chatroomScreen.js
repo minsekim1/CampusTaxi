@@ -14,7 +14,7 @@ import { TextInput } from "react-native-gesture-handler";
 import crown from "image/crown.png";
 const firebase = require("firebase");
 
-//채팅방 화면
+//실제 유저들이 채팅하는 화면
 export default class chatroomScreen extends Component {
   //#region 변수들
   constructor(props) {
@@ -179,7 +179,9 @@ export default class chatroomScreen extends Component {
                     title=""
                     icon={<Icon name="person" size={24} color="white" />}
                     onPress={() => {
-                      // setSearchVisible(true);
+                      navigation.navigate("채팅방정보", {
+                        bbskey: this.state.bbskey,
+                      });
                     }}
                   />
                 </View>

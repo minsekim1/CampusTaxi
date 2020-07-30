@@ -14,6 +14,7 @@ import TempScreen from "./TempScreen";
 import MainScreen from "MainScreen";
 import chatScreen from "chatScreen";
 import chatroomScreen from "chatroomScreen";
+import chatinfo from "component/MainScreen/chatinfo";
 import MapScreen from "component/MapScreen/MapScreen";
 
 import MychatScreen from "MychatScreen";
@@ -77,6 +78,11 @@ export default class Navigation extends Component {
               options={defaultNavOption}
               component={chatroomScreen}
             />
+            <HomeStack.Screen
+              name="채팅방정보"
+              options={showNavOption}
+              component={chatinfo}
+            />
           </HomeStack.Navigator>
         );
       }
@@ -95,6 +101,23 @@ export default class Navigation extends Component {
             name="채팅방"
             options={defaultNavOption}
             component={chatroomScreen}
+          />
+          <MychatStack.Screen
+            name="채팅방정보"
+            options={{
+              headerStyle: {
+                backgroundColor: "#0D3664",
+              },
+              headerTintColor: "#fff",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+              headerTitleAlign: "center",
+              headerShown: true,
+              title: "대화상대(0/0)",
+            }}
+            initialParams={{ bbskey: null }}
+            component={chatinfo}
           />
         </MychatStack.Navigator>
       );
@@ -128,7 +151,11 @@ export default class Navigation extends Component {
         >
           <Tab.Screen name="홈" component={HomeStackScreen} />
           <Tab.Screen name="내 채팅" component={MychatStackScreen} />
-          <Tab.Screen name="지도" component={MapScreen} />
+          <Tab.Screen
+            name="지도"
+            component={MapScreen}
+            initialParams={{ url: "https://m.map.naver.com/" }}
+          />
           <Tab.Screen name="알림" component={AlramScreen} />
           <Tab.Screen name="설정" component={SettingScreen} />
         </Tab.Navigator>
