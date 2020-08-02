@@ -10,9 +10,6 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as PaperProvider } from "react-native-paper";
 //Redux 설정
 // import reduxExam from "reduxComponent";
-import { Provider } from "react-redux";
-import { initStore } from "reduxJS";
-const store = initStore();
 //firebase 설정
 import { firebaseConfig } from "firebaseConfig";
 const firebase = require("firebase");
@@ -41,9 +38,7 @@ export default class App extends Component {
     return (
       <PaperProvider>
         <SafeAreaProvider>
-          <Provider store={store}>
-            <Navigation />
-          </Provider>
+          <Navigation />
         </SafeAreaProvider>
       </PaperProvider>
     );

@@ -254,6 +254,7 @@ export default function Navigation() {
           inactiveTintColor: "gray",
         }}
       >
+        <Tab.Screen name="temp" component={TempScreen} />
         {clientName == null ? (
           <Tab.Screen
             name="로그인"
