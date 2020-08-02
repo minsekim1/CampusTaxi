@@ -16,52 +16,48 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-import TestFunc from "component/TestFunc";
-// 데이터 및 다른 클래스
-
 const alarmData = [
   //알림의 실제 데이터
   {
-    id: 1,
-    title: "이미지 없는 알림 1",
-    content: "이미지 없는 알림의 내용 1",
+    title: "준비 중",
+    content: "준비 중",
     hour: 17,
     min: 20,
     date: 20200606,
-    icon: "gift",
+    icon: "ios-add",
   },
-  {
-    id: 2,
-    title: "이미지 있는 알림",
-    content: "이미지 있는 알림의 내용",
-    hour: 14,
-    min: 20,
-    date: "20200606",
-    imageURL: crown,
-    icon: "gift",
-  },
-  {
-    id: 3,
-    title: "이미지 없는 알림 2",
-    content: "이미지 없는 알림의 내용 2",
-    hour: 7,
-    min: 20,
-    date: "20200606",
-    icon: "message1",
-  },
-  {
-    id: 4,
-    title: "이미지 없는 알림 3",
-    content: "이미지 없는 알림의 내용 3",
-    hour: 2,
-    min: 20,
-    date: "20200606",
-    icon: "message1",
-  },
+  // {
+  //   id: 2,
+  //   title: "이미지 있는 알림",
+  //   content: "이미지 있는 알림의 내용",
+  //   hour: 14,
+  //   min: 20,
+  //   date: "20200606",
+  //   imageURL: crown,
+  //   icon: "gift",
+  // },
+  // {
+  //   id: 3,
+  //   title: "이미지 없는 알림 2",
+  //   content: "이미지 없는 알림의 내용 2",
+  //   hour: 7,
+  //   min: 20,
+  //   date: "20200606",
+  //   icon: "message1",
+  // },
+  // {
+  //   id: 4,
+  //   title: "이미지 없는 알림 3",
+  //   content: "이미지 없는 알림의 내용 3",
+  //   hour: 2,
+  //   min: 20,
+  //   date: "20200606",
+  //   icon: "message1",
+  // },
 ];
 
 //알림 아이템 View
-function AlarmItem({ id, title, imgurl, content, hour, min, icon }) {
+function AlarmItem({ title, imgurl, content, hour, min, icon }) {
   let day = "오전";
   if (hour >= 12) {
     hour -= 12;
@@ -110,30 +106,26 @@ function AlarmItem({ id, title, imgurl, content, hour, min, icon }) {
   );
 }
 // 메인 클래스 //
-const AlramScreen: () => React$Node = () => {
+const AlramScreen = () => {
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.contentContainer}
-    >
-      <View style={styles.ContentContainer}>
-        <FlatList
-          data={alarmData}
-          renderItem={({ item }) => (
-            <AlarmItem
-              id={item.id}
-              title={item.title}
-              content={item.content}
-              hour={item.hour}
-              min={item.min}
-              imgurl={item.imageURL}
-              icon={item.icon}
-              date={item.date}
-            />
-          )}
-        />
-      </View>
-    </ScrollView>
+    <View style={styles.ContentContainer}>
+      <FlatList
+        keyExtractor={(item) => item.id}
+        data={alarmData}
+        renderItem={({ item }) => (
+          <AlarmItem
+            id={item.id}
+            title={item.title}
+            content={item.content}
+            hour={item.hour}
+            min={item.min}
+            imgurl={item.imageURL}
+            icon={item.icon}
+            date={item.date}
+          />
+        )}
+      />
+    </View>
   );
 };
 

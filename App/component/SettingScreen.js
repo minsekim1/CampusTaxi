@@ -75,26 +75,21 @@ function HomeScreen({ navigation }) {
       <ScrollView>
         {list.map((item, i) =>
           (function () {
-            if (item.type === "text")
-              return (
-                <>
-                  <ListItem
-                    key={i}
-                    title={<Text style={styles.text}>{item.title}</Text>}
-                    onPress={() =>
-                      navigation.navigate({ name: item.navigation })
-                    }
-                    chevron
-                  />
-                </>
-              );
-            if (item.type === "title")
-              return (
-                <ListItem
-                  key={i}
-                  title={<Text style={styles.title}>{item.title}</Text>}
-                />
-              );
+            return (
+              <ListItem
+                keyExtractor={(item) => item.id}
+                key={i}
+                title={
+                  <Text
+                    style={item.type === "text" ? styles.text : styles.title}
+                  >
+                    {item.title}
+                  </Text>
+                }
+                onPress={() => navigation.navigate({ name: item.navigation })} //styles.title item.type === "text" item.type === "title"
+                chevron
+              />
+            );
           })()
         )}
       </ScrollView>

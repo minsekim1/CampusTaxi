@@ -1,5 +1,5 @@
 //#region imports
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Image, TouchableHighlight } from "react-native";
 
 import campusStyle from "style";
@@ -17,9 +17,13 @@ import ocean from "image/ocean.png";
 //#endregion
 
 // 첫 시작 메인화면
-function HomeScreen({ navigation }) {
+function HomeScreen({ navigation, route }) {
   const adImageSrc = "../../Assets/Images/ad.png";
+  const [userkey, setUserkey] = useState("");
   // 메인화면 버튼 부분
+  useEffect(() => {
+    route.params ? setUserkey(route.params.userkey) : null;
+  }, []);
   function MenuItem({ navigation, imageURL, filter }) {
     return (
       <TouchableHighlight
@@ -31,6 +35,7 @@ function HomeScreen({ navigation }) {
             filter: filter,
             myname: "민성",
             mygender: "man",
+            userkey: userkey,
           })
         }
       >

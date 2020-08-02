@@ -20,9 +20,11 @@ const firebase = require("firebase");
 export default function MychatScreen({ route, navigation }) {
   const [roomList, setRoomList] = useState();
   const [inital, setInital] = useState(true);
-  const userkey = "-MBRNLe85baaaaaaaaa";
+  const [userkey, setUserkey] = useState("");
 
   useEffect(() => {
+    //userkey 넣기
+    route.params ? setUserkey(route.params.userkey) : null;
     //해당 유저의 keyy를 이용하여 내 채팅 목록을 채워넣음
     firebase
       .database()
@@ -87,14 +89,13 @@ export default function MychatScreen({ route, navigation }) {
         </View>
       )}
       <FlatList
-        keyExtractor={(item) => item.b}
+        keyExtractor={(item) => item.id}
         data={roomList}
         extraData={roomList}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         renderItem={({ item, index }) => {
-          alert(item);
           if (item != null) {
             return (
               <TouchableOpacity

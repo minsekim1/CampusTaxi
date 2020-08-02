@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "CampusTaxi",
-    "slug": "CampusTaxi",
+    "name": "campustaxi",
+    "slug": "campustaxi",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,16 +13,20 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.campustaxi.campustaxi"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "android": { "package": "com.campustaxi.campustaxi", "config": { "googleMaps": { "apiKey": "AIzaSyBVIfNVsdQk6J56bD4CwZSPDyYlxF_XBe0" } } }
-
+    "android": {
+      "package": "com.campustaxi.campustaxi",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBVIfNVsdQk6J56bD4CwZSPDyYlxF_XBe0"
+        }
+      }
+    }
   }
 }

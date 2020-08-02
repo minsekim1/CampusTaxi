@@ -193,7 +193,7 @@ export default class chatroomScreen extends Component {
         {/* 채팅 내용부분 */}
         <FlatList
           data={this.state.chattingData}
-          keyExtractor={(item) => item.da}
+          keyExtractor={(item) => item.id}
           ref={(ref) => {
             this.flatListRef = ref;
           }}
