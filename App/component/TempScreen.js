@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, Button } from "react-native";
-import CounterContainer from "./store/CounterContainer";
+import BbsContainer from "./store/BbsContainer";
 export default function TempScreen() {
   const [number, setNum] = useState(0);
 
@@ -16,7 +16,7 @@ export default function TempScreen() {
       <Text>{number}</Text>
       <Button onPress={increase}>+1</Button>
       <Button onPress={decrease}>-1</Button>
-      <CounterContainer />
+      <BbsContainer />
     </View>
   );
 }
