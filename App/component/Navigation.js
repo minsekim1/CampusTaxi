@@ -18,12 +18,14 @@ import chatinfo from "component/MainScreen/chatinfo";
 import MapScreen from "component/MapScreen/MapScreen";
 
 import MychatScreen from "MychatScreen";
+import userStore from "store/userStore.js";
 import campusStyle from "style";
 const Tab = createBottomTabNavigator();
 
 export default function Navigation() {
   const [clientName, setName] = React.useState(null);
   const [clientPassword, setPassword] = React.useState(null);
+
   const defaultNavOption = {
     headerStyle: {
       backgroundColor: "#0D3664",
@@ -63,7 +65,6 @@ export default function Navigation() {
     render() {
       return (
         <HomeStack.Navigator initialRouteName="홈">
-          <HomeStack.Screen name="temp" component={TempScreen} />
           <HomeStack.Screen
             options={defaultNavOption}
             name="홈"
@@ -92,69 +93,12 @@ export default function Navigation() {
   function LoginScreen({ route, navigation }) {
     let name = "";
     let password = "";
-    const firebase = require("firebase");
-    function loginFunc() {
-      //유저가 없는지 확인
-      if (name.length < 5 || password.length < 5)
-        alert("아이디와 비밀번호는 5자리 이상이어야합니다.");
-      else if (name == "" || password == "") {
-        alert("아이디 또는 비밀번호가 빈 칸입니다.");
-      } else {
-        //유저 정보가 없다면 회원가입
-        firebase
-          .database()
-          .ref("user/data/" + name)
-          .once("value", (snapshot) => {
-            if (snapshot.val() == null) {
-              setName(name);
-              setPassword(password);
-              navigation.navigate("홈", {
-                userkey: name,
-              });
-              const val = {
-                a: "지역",
-                b: "이메일",
-                d: 0,
-                e: new Date(),
-                f: name,
-                g: password,
-                h: name,
-                i: name,
-                j: "01000000000",
-                k: "image:url",
-                l: "소속",
-                n: 1,
-              };
-              firebase
-                .database()
-                .ref("user/data/" + name)
-                .set(val);
-              alert("회원 가입이 완료되었습니다.");
-            } else {
-              //유저 정보가 있다면 비밀번호 확인
-              if (password == snapshot.val().g) {
-                //패스워드랑 아이디가 맞다면 로그인
-                setName(name);
-                setPassword(password);
-                navigation.navigate("홈", {
-                  userkey: name,
-                });
-                alert("정상적으로 로그인되었습니다.");
-              } else {
-                alert("잘못된 비밀번호입니다.");
-              }
-            }
-          });
-      }
 
-      // const [clientPassword, onChangePassword] = React.useState(null);
-      // let newBbsKey = firebase.database().ref("user/data").push();
-    }
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>아이디(닉네임과 동일)</Text>
+        <Text>아이디와 비밀번호를 입력해주세요.</Text>
         <TextInput
-          placeholder="아이디 및 닉네임을 입력해주세요"
+          placeholder="아이디를 입력해주세요"
           style={{
             fontSize: 18,
             margin: 0,
@@ -164,7 +108,7 @@ export default function Navigation() {
           }}
           value={clientName}
           onChangeText={(textEntry) => (name = textEntry)}
-          onSubmitEditing={() => loginFunc()}
+          onSubmitEditing={() => userStore.login(name, password)}
         />
         <TextInput
           placeholder="비밀번호을 입력해주세요"
@@ -177,15 +121,9 @@ export default function Navigation() {
           }}
           value={clientPassword}
           onChangeText={(textEntry) => (password = textEntry)}
-          onSubmitEditing={() => loginFunc()}
+          onSubmitEditing={() => userStore.login(name, password)}
         />
-        <Button title="입장" onPress={() => loginFunc()} />
-        <Text style={{ color: "gray", fontSize: 11 }}>
-          회원가입은 아이디와 비밀번호를 입력하면 자동으로 가입됩니다.
-        </Text>
-        <Text style={{ color: "gray", fontSize: 11 }}>
-          이미 가입이 완료된 분들은 원래 아이디와 비밀번호를 입력해주세요.
-        </Text>
+        <Button title="입장" onPress={() => userStore.login(name, password)} />
       </View>
     );
   }
@@ -193,7 +131,6 @@ export default function Navigation() {
   function MychatStackScreen() {
     return (
       <MychatStack.Navigator initialRouteName="내 채팅">
-        <MychatStack.Screen name="temp" component={TempScreen} />
         <MychatStack.Screen
           options={showNavOption}
           name="내 채팅"
@@ -254,7 +191,6 @@ export default function Navigation() {
           inactiveTintColor: "gray",
         }}
       >
-        <Tab.Screen name="temp" component={TempScreen} />
         {clientName == null ? (
           <Tab.Screen
             name="로그인"

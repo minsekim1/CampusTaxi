@@ -181,13 +181,13 @@ function clientChangePage({ navigation: { goBack } }) {
           <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
             학교
           </Text>
-      <Text style={{ marginBottom: 10,color="gray" }}>삼육대학교</Text>
+          <Text style={{ marginBottom: 10, color: "gray" }}>삼육대학교</Text>
         </View>
         <View style={{ flex: 1 }}>
           <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
             학과
           </Text>
-          <Text style={{ marginBottom: 10,color="gray" }}>완료</Text>
+          <Text style={{ marginBottom: 10, color: "gray" }}>완료</Text>
         </View>
       </View>
       {/* 닉네임 */}
@@ -263,7 +263,7 @@ function clientChangePage({ navigation: { goBack } }) {
       <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
         아이디
       </Text>
-      <Text style={{marginBottom:10}}  >campusTaxi@naver.com</Text>
+      <Text style={{ marginBottom: 10 }}>campusTaxi@naver.com</Text>
       <Text style={{ marginBottom: 15, color: "#F83C3C", fontSize: 11 }}>
         ※ 아이디 변경은 탈퇴후 재가입 바랍니다.
       </Text>
@@ -274,7 +274,7 @@ function clientChangePage({ navigation: { goBack } }) {
       </Text>
       <View style={{ flexDirection: "row" }}>
         <View style={{ flex: 3 }}>
-          <Text style={{ marginBottom: 10,color="#27BE5E" }}>완료</Text>
+          <Text style={{ marginBottom: 10, color: "#27BE5E" }}>완료</Text>
         </View>
         <View style={{ flex: 1 }}>
           <Button
@@ -361,7 +361,7 @@ function clientpage({ navigation }) {
       <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
         학생증인증
       </Text>
-      <Text style={{ marginBottom: 10, color="#27BE5E" }}>완료</Text>
+      <Text style={{ marginBottom: 10, color: "#27BE5E" }}>완료</Text>
       <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
       <View style={{ alignItems: "center", marginBottom: 30 }}>
         <Button
