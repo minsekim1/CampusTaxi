@@ -7,7 +7,6 @@ import { Button, ThemeProvider } from "react-native-elements";
 import { ListItem, Divider } from "react-native-elements";
 //약관 TXT import
 import { text1, text2, text3, text4 } from "../constant/policy.js";
-import MyText from "./MyText";
 import { TextInput, Picker } from "react-native";
 
 function HomeScreen({ navigation }) {
@@ -150,8 +149,10 @@ function clientChangePage({ navigation: { goBack } }) {
       }}
     >
       {/* 이름 */}
-      <MyText marginBottom={20} style={{ padding: 10 }} type="h1" text="계정" />
-      <MyText marginBottom={3} type="subtitle" text="이름" />
+      <Text style={{ marginBottom: 20, padding: 10, fontSize: 24 }}>계정</Text>
+      <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+        이름
+      </Text>
       <TextInput
         placeholder="이름없음"
         style={{
@@ -177,19 +178,25 @@ function clientChangePage({ navigation: { goBack } }) {
       {/* 학교/학과 */}
       <View style={{ flexDirection: "row" }}>
         <View style={{ flex: 1 }}>
-          <MyText marginBottom={3} type="subtitle" text="학교" />
-          <MyText marginBottom={10} text="삼육대학교" color="gray" />
+          <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+            학교
+          </Text>
+      <Text style={{ marginBottom: 10,color="gray" }}>삼육대학교</Text>
         </View>
         <View style={{ flex: 1 }}>
-          <MyText marginBottom={3} type="subtitle" text="학과" />
-          <MyText marginBottom={10} text="컴퓨터메카트로..." color="gray" />
+          <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+            학과
+          </Text>
+          <Text style={{ marginBottom: 10,color="gray" }}>완료</Text>
         </View>
       </View>
       {/* 닉네임 */}
       <Text style={{ marginBottom: 15, color: "#F83C3C", fontSize: 11 }}>
         ※ 학교 및 학과 변경은 학생증 재인증을 통해서만 가능합니다.
       </Text>
-      <MyText marginBottom={3} type="subtitle" text="닉네임" />
+      <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+        닉네임
+      </Text>
       <TextInput
         placeholder="사용할 닉네임을 입력해주세요."
         style={{
@@ -215,7 +222,9 @@ function clientChangePage({ navigation: { goBack } }) {
       {/* 성별&최초가입일 */}
       <View style={{ flexDirection: "row" }}>
         <View style={{ flex: 1 }}>
-          <MyText marginBottom={3} type="subtitle" text="성별" />
+          <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+            성별
+          </Text>
           <Picker
             selectedValue={clientGender}
             onValueChange={(itemValue, itemIndex) => setChangeGender(itemValue)}
@@ -242,24 +251,30 @@ function clientChangePage({ navigation: { goBack } }) {
           </Text>
         </View>
         <View style={{ flex: 1 }}>
-          <MyText type="subtitle" text="최초가입일" />
+          <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+            최초가입일
+          </Text>
           <Text style={{ fontSize: 18, marginTop: 16, color: "gray" }}>
             2020년 06월 08일
           </Text>
         </View>
       </View>
       {/* 아이디 */}
-      <MyText marginBottom={3} type="subtitle" text="이메일(아이디)" />
-      <MyText marginBottom={10} text="campusTaxi@naver.com" />
+      <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+        아이디
+      </Text>
+      <Text style={{marginBottom:10}}  >campusTaxi@naver.com</Text>
       <Text style={{ marginBottom: 15, color: "#F83C3C", fontSize: 11 }}>
         ※ 아이디 변경은 탈퇴후 재가입 바랍니다.
       </Text>
       <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
       {/* 학생증 인증 */}
-      <MyText marginBottom={3} type="subtitle" text="학생증 인증" />
+      <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+        학생증인증
+      </Text>
       <View style={{ flexDirection: "row" }}>
         <View style={{ flex: 3 }}>
-          <MyText marginBottom={10} text="완료" color="#27BE5E" />
+          <Text style={{ marginBottom: 10,color="#27BE5E" }}>완료</Text>
         </View>
         <View style={{ flex: 1 }}>
           <Button
@@ -297,42 +312,57 @@ function clientpage({ navigation }) {
         backgroundColor: "white",
       }}
     >
-      <MyText marginBottom={20} style={{ padding: 10 }} type="h1" text="계정" />
-      <MyText marginBottom={3} type="subtitle" text="이름" />
-      <MyText marginBottom={10} text="윤수정" />
+      <Text style={{ marginBottom: 20, padding: 10 }}>계정</Text>
+      <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+        이름
+      </Text>
+      <Text style={{ marginBottom: 10 }}>윤수정</Text>
       <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
       <View style={{ flexDirection: "row" }}>
         <View style={{ flex: 1 }}>
-          <MyText marginBottom={3} type="subtitle" text="학교" />
-          <MyText marginBottom={10} text="삼육대학교" />
+          <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+            학교
+          </Text>
+          <Text style={{ marginBottom: 10 }}>삼육대학교</Text>
         </View>
         <View style={{ flex: 1 }}>
-          <MyText marginBottom={3} type="subtitle" text="학과" />
-          <MyText marginBottom={10} text="컴퓨터메카트로..." />
+          <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+            학과
+          </Text>
+          <Text style={{ marginBottom: 10 }}>컴퓨터메카트로...</Text>
         </View>
       </View>
       <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
-      <MyText marginBottom={3} type="subtitle" text="닉네임" />
-      <MyText marginBottom={10} text="두유인생" />
+      <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+        닉네임
+      </Text>
+      <Text style={{ marginBottom: 10 }}>두유인생</Text>
       <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
       <View style={{ flexDirection: "row" }}>
         <View style={{ flex: 1 }}>
-          <MyText marginBottom={3} type="subtitle" text="성별" />
-          <MyText marginBottom={10} text="여자" />
+          <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+            성별
+          </Text>
+          <Text style={{ marginBottom: 10 }}>두유인생</Text>
         </View>
         <View style={{ flex: 1 }}>
-          <MyText marginBottom={3} type="subtitle" text="최초가입일" />
-          <MyText marginBottom={10} text="2020년 06월 08일" />
+          <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+            최초가입일
+          </Text>
+          <Text style={{ marginBottom: 10 }}>2020년 06월 08일</Text>
         </View>
       </View>
       <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
-      <MyText marginBottom={3} type="subtitle" text="이메일(아이디)" />
-      <MyText marginBottom={10} text="campusTaxi@naver.com" />
+      <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+        아이디
+      </Text>
+      <Text style={{ marginBottom: 10 }}>campusTaxi@naver.com</Text>
       <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
-      <MyText marginBottom={3} type="subtitle" text="학생증 인증" />
-      <MyText marginBottom={10} text="완료" color="#27BE5E" />
+      <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+        학생증인증
+      </Text>
+      <Text style={{ marginBottom: 10, color="#27BE5E" }}>완료</Text>
       <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
-
       <View style={{ alignItems: "center", marginBottom: 30 }}>
         <Button
           style={{ borderRadius: 100 }}

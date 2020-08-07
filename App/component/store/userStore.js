@@ -1,6 +1,7 @@
 import { observable } from "mobx";
 const firebase = require("firebase");
 
+// import UserStore from "store/userStore";
 class UserStore {
   // addressA: "string"
   // emailB: "string"
@@ -17,7 +18,7 @@ class UserStore {
   // userkeyM: "-MBRNLe85baaaaaaaaa"
   // userstatusN: "int"
 
-  @observable user = [];
+  @observable user = null;
 
   //#region  Add User 회원가입
   //EXAMPLE: onPress={() => BbsStore.addUser(2, 3, 4, 5, 6, 7, 8)}
@@ -98,9 +99,9 @@ class UserStore {
       });
   }
 
-  // Update Bbs : firebase에서 bbs를 가져와 store에 저장한다
+  // Update User : firebase에서 user를 가져와 store에 저장한다
   async updateUser(userkey) {
-    let tempBbs = [];
+    let tempdata = [];
     //bbs에서 데이터를 가져와서 firebase json 형식에서 flatlist하기 좋은 형식으로 키값을 JSON 안으로 넣는다.
     await firebase
       .database()
@@ -109,28 +110,31 @@ class UserStore {
         snap.forEach((item) => {
           // json을 string으로 바꾸었다가 다시 json 형식으로 표준화
           // 그냥하면 안됌
-          tempBbs.push(JSON.parse(JSON.stringify(item)));
+          tempdata.push(JSON.parse(JSON.stringify(item)));
         });
       });
-    this.user = tempBbs;
+    this.user = tempdata;
   }
   async login(userid, userpassword) {
-    let tempBbs = {};
+    //onPress={() => UserStore.login("-s", "tkarnr78^@")}
+    let tempdata = {};
     //bbs에서 데이터를 가져와서 firebase json 형식에서 flatlist하기 좋은 형식으로 키값을 JSON 안으로 넣는다.
     await firebase
       .database()
       .ref("user/data/" + userid)
-      .orderByValue("f")
-      .equalTo(userpassword)
       .once("value", (snap) => {
         // json을 string으로 바꾸었다가 다시 json 형식으로 표준화
         // 그냥하면 안됌
         // alert(JSON.stringify(snap.val()));/
-        tempBbs = JSON.parse(JSON.stringify(snap.val()));
+        tempdata = JSON.parse(JSON.stringify(snap));
+        if (snap.val() != null && tempdata.g == userpassword)
+          this.user = tempdata;
+        else alert("없는 아이디이거나 비밀번호가 다릅니다.");
       });
-    this.user = tempBbs;
-    // alert(JSON.stringify(this.user));
-    alert(JSON.stringify(tempBbs));
+  }
+
+  printUserStore() {
+    alert(this.user);
   }
   //
   //

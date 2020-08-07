@@ -16,6 +16,8 @@ const firebase = require("firebase");
 try {
   firebase.initializeApp(firebaseConfig);
 } catch (error) {}
+//MobX
+
 //#endregion
 //#region 경고창 무시: Setting a timer for a long period of time, i.e. multiple minute
 import { YellowBox } from "react-native";

@@ -20,6 +20,7 @@ module.exports = function (api) {
             AlramScreen: "./App/component/AlramScreen",
             style: "./App/themes/campusStyle",
             image: "./App/image",
+            store: "./App/component/store",
 
             assets: "./assets",
             reduxComponent: "./App/reduxSetting/reduxComponent",

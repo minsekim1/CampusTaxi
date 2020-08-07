@@ -43,12 +43,12 @@ class BbsContainer extends React.Component {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.counterAddRemoveButton}
-            onPress={() => UserStore.login("tempid2", "temppassword2")}
+            onPress={() => UserStore.login("-s", "tkarnr78^@")}
           >
             <Text
               style={{ textAlign: "center", color: "white", fontWeight: "700" }}
             >
-              login Bbs
+              login User asdfg asdfg
             </Text>
           </TouchableOpacity>
         </View>

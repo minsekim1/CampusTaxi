@@ -1,5 +1,6 @@
 import { observable } from "mobx";
 const firebase = require("firebase");
+// import BbsStore from "store/bbsStore";
 
 class BbsStore {
   // "availableA" : "int",
@@ -118,24 +119,9 @@ class BbsStore {
       });
   }
 
-  // Update Bbs : firebase에서 bbs를 가져와 store에 저장한다
-  updateBbs = async () => {
-    //onPress={BbsStore.updateBbs}
-    let tempBbs = [];
-    //bbs에서 데이터를 가져와서 firebase json 형식에서 flatlist하기 좋은 형식으로 키값을 JSON 안으로 넣는다.
-    await firebase
-      .database()
-      .ref("bbs/data")
-      .once("value", (snap) => {
-        snap.forEach((item) => {
-          // json을 string으로 바꾸었다가 다시 json 형식으로 표준화
-          // 그냥하면 안됌
-          tempBbs.push(JSON.parse(JSON.stringify(item)));
-        });
-      });
-    this.bbs = tempBbs;
-  };
-
+  printBbsStore() {
+    alert(this.bbs);
+  }
   //
   //
   //

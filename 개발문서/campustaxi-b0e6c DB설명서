@@ -1,18 +1,3 @@
-<<<<<<< HEAD
-enter 게시판 / 챗방 입장 회원 명단
-local 지역 정보
-bbs 게시물 정보
-user 회원 정보
-cost 유저지불내역usedCostList
-count 거리계산 및 예상비용
-chat 대화로그
-
-URL : http://aquerytool.com:80/aquerymain/index/?rurl=2a84d974-280d-47dc-85b2-0918ac71ba10&
-Password : 3ab70n
-
--- MariaDB 기준
--- 테이블 순서는 관계를 고려하여 한 번에 실행해도 에러가 발생하지 않게 정렬되었습니다.
-=======
 // bbs 게시물 정보 (JSON:cost 유저지불내역, chat 대화로그)
 // user 회원 정보 (JSON:enterRoom 채팅방 입장 회원 명단)
 // count 거리계산 및 예상비용
@@ -56,7 +41,6 @@ var cost = {
      payment: '',                                                          // 거래유형(kakaopay,cash)
      costvalue: 1,                                                         // 가격
 }}
->>>>>>> c70083b13b311c2c05523c6c38c45ce71a0a8552
 
 // 회원 정보 
 var user = {
@@ -68,26 +52,11 @@ var user = {
      nickname: '',                                                         // 유저닉네임
      phone: '',                                                            // 개인폰번호
      userstatus: 1,                                                        // 회원탈퇴여부0:미인증1:인증완료2:인증해제3:휴면4:탈퇴
-<<<<<<< HEAD
-     joindate: '2020-06-22 19:39:47',                                      // 회원가입일자
-=======
      joindate: '2020-06-22 21:17:54',                                      // 회원가입일자
->>>>>>> c70083b13b311c2c05523c6c38c45ce71a0a8552
      name: '',                                                             // 유저실명
      address: '',                                                          // 유저집주소
      studentcard: '',                                                      // 학생증
      univ: '',                                                             // 대학이름
-<<<<<<< HEAD
-     enterroom: 'enterRoom 0',                                             // 입장한방목록
-}
-
-// 유저지불내역usedCostList 
-var cost = {
-     costid: 1,                                                            // 데이터번호
-     payment: '',                                                          // 거래유형(kakaopay,cash)
-     costvalue: 1,                                                         // 가격
-}
-=======
      enterroom: {enterRoom},                                               // JSON 입장한방목록
 }
 
@@ -97,7 +66,6 @@ var enterRoom = {
      bbsid: 1,                                                             // 게시물고유번호
      status: 1,                                                            // 현재입장여부0:in 1:out
 }}
->>>>>>> c70083b13b311c2c05523c6c38c45ce71a0a8552
 
 // 거리계산 및 예상비용 
 var count = {
@@ -109,16 +77,6 @@ var count = {
      fee: 1,                                                               // 수수료
 }
 
-<<<<<<< HEAD
-// 게시판/챗방 입장 회원 명단 
-var enterroom = {
-     enterid: 1,                                                           // 데이터번호
-     bbsid: 1,                                                             // 게시물고유번호
-     status: 1,                                                            // 현재입장여부0:in 1:out
-}
-
-=======
->>>>>>> c70083b13b311c2c05523c6c38c45ce71a0a8552
 // 지역 정보 
 var local = {
      name: '',                                                             // 지역이름
@@ -126,31 +84,3 @@ var local = {
      status: 1,                                                            // 출발지(0)도착지(1)
 }
 
-<<<<<<< HEAD
-// 게시물 정보 
-var bbs = {
-     id: 1,                                                                // 게시물고유번호
-     leadername: '',                                                       // 방장
-     createdate: '2020-06-22 19:40:51',                                    // 작성날짜
-     available: 1,                                                         // 글삭제여부1:삭제
-     meetingdate: '2020-06-22 19:40:51',                                   // 모이는날짜
-     gender: 1,                                                            // 제한성별1:woman 0:man
-     personmax: 1,                                                         // 최대인원
-     personpresent: 1,                                                     // 현재인원
-     personmember: '',                                                     // 모인회원명단["민성"]
-     startplace: 1,                                                        // 출발지
-     endplace: 1,                                                          // 도착지
-     bbstype: 1,                                                           // 등교/하교/.. /.. 타입
-     chat: 'chat 0',                                                       // 채팅내용
-     cost: 'cost 0',                                                       // 거래내역
-}
-
-// 대화로그 
-var chat = {
-     chatid: 1,                                                            // 데이터번호
-     userid: 1,                                                            // 말한놈아이디
-     say: '',                                                              // 채팅내용
-     time: '',                                                             // 말한시각
-}
-=======
->>>>>>> c70083b13b311c2c05523c6c38c45ce71a0a8552
