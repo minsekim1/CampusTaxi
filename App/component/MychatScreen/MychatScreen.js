@@ -88,6 +88,7 @@ export default function MychatScreen({ route, navigation }) {
           if (item != null) {
             return (
               <TouchableOpacity
+                key={index}
                 onPress={() => {
                   navigation.navigate("채팅방", {
                     bbskey: item.b,
