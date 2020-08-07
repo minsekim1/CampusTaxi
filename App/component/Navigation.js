@@ -93,7 +93,18 @@ export default function Navigation() {
   function LoginScreen({ route, navigation }) {
     let name = "";
     let password = "";
-
+    function login(id, pw) {
+      userStore.login(id, password).then((result) => {
+        if (result) {
+          setName(result.f);
+          setPassword(result.g);
+          alert("정상적으로 로그인되었습니다.");
+          navigation.navigate("홈", {
+            userkey: result.f,
+          });
+        }
+      });
+    }
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text>아이디와 비밀번호를 입력해주세요.</Text>
@@ -108,7 +119,7 @@ export default function Navigation() {
           }}
           value={clientName}
           onChangeText={(textEntry) => (name = textEntry)}
-          onSubmitEditing={() => userStore.login(name, password)}
+          onSubmitEditing={() => login(name, password)}
         />
         <TextInput
           placeholder="비밀번호을 입력해주세요"
@@ -121,9 +132,9 @@ export default function Navigation() {
           }}
           value={clientPassword}
           onChangeText={(textEntry) => (password = textEntry)}
-          onSubmitEditing={() => userStore.login(name, password)}
+          onSubmitEditing={() => login(name, password)}
         />
-        <Button title="입장" onPress={() => userStore.login(name, password)} />
+        <Button title="입장" onPress={() => login(name, password)} />
       </View>
     );
   }

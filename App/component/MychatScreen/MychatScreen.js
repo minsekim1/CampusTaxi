@@ -17,6 +17,8 @@ import campusStyle from "style";
 import crown from "image/crown.png";
 const firebase = require("firebase");
 
+import userStore from "store/userStore";
+
 export default function MychatScreen({ route, navigation }) {
   const [roomList, setRoomList] = useState();
   const [inital, setInital] = useState(true);
@@ -26,24 +28,11 @@ export default function MychatScreen({ route, navigation }) {
     //userkey 넣기
     route.params ? setUserkey(route.params.userkey) : null;
     //해당 유저의 keyy를 이용하여 내 채팅 목록을 채워넣음
-    firebase
-      .database()
-      .ref("user/data/" + userkey + "/c")
-      .once("value", (snapshot) => {
-        let resultarr = [];
-        snapshot.forEach((snap) => {
-          firebase //bbs에서 데이터를 가져와서 firebase json 형식에서 flatlist하기 좋은 형식으로 키값을 JSON 안으로 넣는다.
-            .database()
-            .ref("bbs/data/" + snap.val())
-            .once("value", (snaptemp) => {
-              let item = snaptemp.val();
-              item.key = snaptemp.key;
-              resultarr.push(item);
-            });
-          setRoomList(resultarr);
-          setInital(false);
-        });
-      });
+
+    let resultarr = [];
+    Object.values(userStore.user.c).forEach((i) => resultarr.push(i));
+    setRoomList(resultarr);
+    setInital(false);
     updateUserdata(userkey);
   }, [userkey]);
 

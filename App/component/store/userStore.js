@@ -132,14 +132,12 @@ class UserStore {
           tempdata = JSON.parse(JSON.stringify(snap));
           if (snap.val() != null && tempdata.g == userpassword) {
             this.user = tempdata;
-            return true;
           } else {
             alert("없는 아이디이거나 비밀번호가 다릅니다.");
-            return false;
           }
         });
     }
-    return false;
+    return this.user;
   }
   /*
       function loginFunc() {
