@@ -91,8 +91,8 @@ export default function Navigation() {
   }
 
   function LoginScreen({ route, navigation }) {
-    let name = "";
-    let password = "";
+    let name = "asdfg";
+    let password = "asdfg";
     function login(id, pw) {
       userStore.login(id, password).then((result) => {
         if (result) {

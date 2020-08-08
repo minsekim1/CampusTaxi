@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-community/async-storage";
 import { observable } from "mobx";
 const firebase = require("firebase");
 
@@ -21,7 +22,7 @@ class UserStore {
   @observable user = null;
 
   //#region  Add User 회원가입
-  //EXAMPLE: onPress={() => BbsStore.addUser(2, 3, 4, 5, 6, 7, 8)}
+  //EXAMPLE: onPress={() => UserStore.addUser(2, 3, 4, 5, 6, 7, 8)}
   addUser(
     address,
     email,
@@ -115,6 +116,22 @@ class UserStore {
       });
     this.user = tempdata;
   }
+
+  async updateUser() {
+    let tempdata = [];
+    //bbs에서 데이터를 가져와서 firebase json 형식에서 flatlist하기 좋은 형식으로 키값을 JSON 안으로 넣는다.
+    await firebase
+      .database()
+      .ref("user/data/" + this.user.m)
+      .once("value", (snap) => {
+        snap.forEach((item) => {
+          // json을 string으로 바꾸었다가 다시 json 형식으로 표준화
+          // 그냥하면 안됌
+          tempdata.push(JSON.parse(JSON.stringify(item)));
+        });
+      });
+    this.user = tempdata;
+  }
   async login(userid, userpassword) {
     //onPress={() => UserStore.login("-s", "tkarnr78^@")}
     let tempdata = {};
@@ -137,6 +154,7 @@ class UserStore {
           }
         });
     }
+    alert(this.user.a);
     return this.user;
   }
   /*

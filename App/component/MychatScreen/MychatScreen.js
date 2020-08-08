@@ -29,8 +29,11 @@ export default function MychatScreen({ route, navigation }) {
     route.params ? setUserkey(route.params.userkey) : null;
     //해당 유저의 keyy를 이용하여 내 채팅 목록을 채워넣음
 
+    // userStore.updateUser(); //유저 정보 업데이트
     let resultarr = [];
-    Object.values(userStore.user.c).forEach((i) => resultarr.push(i));
+    alert(userStore.user);
+    if (userStore.user.c != null)
+      Object.values(userStore.user.c).forEach((i) => resultarr.push(i));
     setRoomList(resultarr);
     setInital(false);
   }, []);
@@ -44,7 +47,7 @@ export default function MychatScreen({ route, navigation }) {
   const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    wait(2000).then(() => setRefreshing(false));
+    wait(500).then(() => setRefreshing(false));
   }, []);
 
   //#region 유저정보 업데이트

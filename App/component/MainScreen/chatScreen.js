@@ -14,6 +14,8 @@ import {
 import campusStyle from "style";
 import DateTimePicker from "@react-native-community/datetimepicker"; //방생성시간picker
 import crown from "image/crown.png";
+import BbsStore from "store/bbsStore";
+import UserStore from "store/userStore";
 const firebase = require("firebase");
 //#endregion
 
@@ -535,70 +537,17 @@ export default function chatScreen({ route, navigation }) {
                 buttonStyle={campusStyle.Button.groupActive}
                 title="방 생성"
                 onPress={() => {
-                  //worldTimeAPI사용하여 서버 시간을 가져옵니다.
-                  //JS의 기본적인 비동기방식을 동기방식으로 구현(async await 뺴고 then이용)
-                  fetch("http://worldtimeapi.org/api/timezone/Asia/Seoul")
-                    .then((res) => res.json())
-                    .then((result) => {
-                      const datatime =
-                        result.datetime.slice(0, 21) +
-                        result.datetime.slice(26, 32);
-                      const localtime = _getLocaleStrting(date);
-                      //파이어베이스에 데이터를 올립니다. push
-                      let newBbsKey = firebase
-                        .database()
-                        .ref("bbs/data")
-                        .push();
-                      //파이어베이스 임시 키값을 현재 키값으로 변경
-                      let newRoom = {
-                        a: "출발 대기", //available0
-                        b: newBbsKey.key, //bbskey1
-                        c: createRoomCategory, //bbstype2
-                        d: {
-                          "-MA_aaaaa": {
-                            da: "-MA_aaaaa",
-                            db: "SYSTEM",
-                            dc: datatime,
-                            dd:
-                              localtime.slice(0, 10) + " 방이 생성되었습니다.",
-                          },
-                        }, //chat3
-                        e: { ea: 0, eb: "" }, //cost4
-                        f: datatime, //createdate5
-                        g: createRoomendplace, //endplace6
-                        h: createRoomGender == 0 ? mygender : "all", //gender7
-                        i: myname, //leadername8
-                        j: localtime, //meetingdate9
-                        k: createRoompersonmax, //personmax10
-                        l: [userkey], //personmember11
-                        m: 1, //personpresent12
-                        n: createRoomstartplace, //startplace13
-                      };
-                      //바뀐 키값으로 다시 올리기
-                      firebase
-                        .database()
-                        .ref("bbs/data/" + newBbsKey.key)
-                        .set(newRoom);
-                      //roomList를 파이어베이스에 올린 버전으로 가져옵니다.
-                      firebase
-                        .database()
-                        .ref("bbs/data")
-                        .once("value", function (snapshot) {
-                          let resultRoom = [];
-                          snapshot.forEach(function (snap) {
-                            let item = snap.val();
-                            item.key = snap.key;
-                            resultRoom.push(item);
-                          });
-                          setRoomList(resultRoom);
-                        });
-                      // 유저 데이터에 새로운 방 추가
-                      firebase
-                        .database()
-                        .ref("user/data/" + userkey + "/c")
-                        .push(newBbsKey.key);
-                      setCreateRoomVisible(!isCreateRoomVisible);
-                    });
+                  BbsStore.addBbs(
+                    createRoomCategory,
+                    createRoomendplace,
+                    createRoomGender,
+                    myname,
+                    date,
+                    createRoompersonmax,
+                    createRoomstartplace,
+                    UserStore.user.m
+                  );
+                  setCreateRoomVisible(!isCreateRoomVisible);
                 }}
               />
               <Button

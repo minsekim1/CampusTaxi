@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-community/async-storage";
 import { observable } from "mobx";
 const firebase = require("firebase");
 // import BbsStore from "store/bbsStore";
@@ -20,7 +21,10 @@ class BbsStore {
   @observable bbs = [];
 
   //#region  Add bbs
-  //EXAMPLE: onPress={() => BbsStore.handleAddBbs(2, 3, 4, 5, 6, 7, 8)}
+  /*
+  EXAMPLE:
+  onPress={() => BbsStore.addBbs(bbstype,endplace,gender,leadername,meetingdate,personmax,startplace,makerKey)}
+  */
   addBbs( //c, g, h, i, j, k, n
     bbstype,
     endplace,
@@ -28,15 +32,16 @@ class BbsStore {
     leadername,
     meetingdate,
     personmax,
-    startplace
+    startplace,
+    userkey
   ) {
     //시간 가져오기
     fetch("http://worldtimeapi.org/api/timezone/Asia/Seoul")
       .then((res) => res.json())
       .then((result) => {
+        //밀리초제거
         const datatime =
-          result.datetime.slice(0, 21) + result.datetime.slice(26, 32); //밀리초제거
-
+          result.datetime.slice(0, 21) + result.datetime.slice(26, 32);
         let localDate = new Date(result);
         const week = ["일", "월", "화", "수", "목", "금", "토"];
         const dayOfWeek = week[localDate.getDay()];
@@ -53,34 +58,104 @@ class BbsStore {
           "시" +
           localDate.getMinutes() +
           "분";
-        let newkey = firebase.database().ref("bbs/data").push().key;
-        if (newkey != null) {
-          let newBbs = {
-            a: 1,
-            c: bbstype,
-            d: {
-              "-MA_aaaaa": {
-                da: "-MA_aaaaa",
-                db: "SYSTEM",
-                dc: datatime,
-                dd: date.slice(0, 10) + " 방이 생성되었습니다.",
-              },
+        let newBbs = {
+          a: 1,
+          c: bbstype,
+          d: {
+            "-MA_aaaaa": {
+              da: "-MA_aaaaa",
+              db: "SYSTEM",
+              dc: datatime,
+              dd: date.slice(0, 10) + " 방이 생성되었습니다.",
             },
-            f: datatime,
-            g: endplace,
-            h: gender,
-            i: leadername,
-            j: meetingdate,
-            k: personmax,
-            l: [leadername],
-            m: 1,
-            n: startplace,
-          };
-          firebase.database().ref("bbs/data").push(newBbs);
-          this.bbs.push(newBbs);
-        }
+          },
+          f: datatime,
+          g: endplace,
+          h: gender,
+          i: leadername,
+          j: meetingdate,
+          k: personmax,
+          l: [leadername],
+          m: 1,
+          n: startplace,
+        };
+        let newkey = firebase.database().ref("bbs/data").push(newBbs).key;
+        firebase
+          .database()
+          .ref("bbs/data/" + newkey + "/b")
+          .set(newkey);
+        this.bbs.push(newBbs);
+        // 유저 데이터에 새로운 방 추가
+        firebase
+          .database()
+          .ref("user/data/" + userkey + "/c")
+          .push(newkey);
       });
   }
+
+  // fetch("http://worldtimeapi.org/api/timezone/Asia/Seoul")
+  //   .then((res) => res.json())
+  //   .then((result) => {
+  //     const datatime =
+  //       result.datetime.slice(0, 21) +
+  //       result.datetime.slice(26, 32);
+  //     const localtime = _getLocaleStrting(date);
+  //     //파이어베이스에 데이터를 올립니다. push
+  //     let newBbsKey = firebase
+  //       .database()
+  //       .ref("bbs/data")
+  //       .push();
+  //     //파이어베이스 임시 키값을 현재 키값으로 변경
+  //     let newRoom = {
+  //       a: "출발 대기", //available0
+  //       b: newBbsKey.key, //bbskey1
+  //       c: createRoomCategory, //bbstype2
+  //       d: {
+  //         "-MA_aaaaa": {
+  //           da: "-MA_aaaaa",
+  //           db: "SYSTEM",
+  //           dc: datatime,
+  //           dd:
+  //             localtime.slice(0, 10) + " 방이 생성되었습니다.",
+  //         },
+  //       }, //chat3
+  //       e: { ea: 0, eb: "" }, //cost4
+  //       f: datatime, //createdate5
+  //       g: createRoomendplace, //endplace6
+  //       h: createRoomGender == 0 ? mygender : "all", //gender7
+  //       i: myname, //leadername8
+  //       j: localtime, //meetingdate9
+  //       k: createRoompersonmax, //personmax10
+  //       l: [userkey], //personmember11
+  //       m: 1, //personpresent12
+  //       n: createRoomstartplace, //startplace13
+  //     };
+  //     //바뀐 키값으로 다시 올리기
+  //     firebase
+  //       .database()
+  //       .ref("bbs/data/" + newBbsKey.key)
+  //       .set(newRoom);
+  //     //roomList를 파이어베이스에 올린 버전으로 가져옵니다.
+  //     firebase
+  //       .database()
+  //       .ref("bbs/data")
+  //       .once("value", function (snapshot) {
+  //         let resultRoom = [];
+  //         snapshot.forEach(function (snap) {
+  //           let item = snap.val();
+  //           item.key = snap.key;
+  //           resultRoom.push(item);
+  //         });
+  //         setRoomList(resultRoom);
+  //       });
+  //     // 유저 데이터에 새로운 방 추가
+  //     firebase
+  //       .database()
+  //       .ref("user/data/" + userkey + "/c")
+  //       .push(newBbsKey.key);
+  //     setCreateRoomVisible(!isCreateRoomVisible);
+  //   });
+
   //#endregion
   // Hide bbs : 클라이언트에게 숨기기만함
   hideBbs(bbskey) {
