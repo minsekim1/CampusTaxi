@@ -1,10 +1,8 @@
 import Storage from "store/Storage";
-
-import { observable } from "mobx";
+import { observable, action } from "mobx";
 const firebase = require("firebase");
 
 // import UserStore from "store/userStore";
-
 class UserStore {
   @observable user = null;
 
@@ -12,11 +10,13 @@ class UserStore {
     Storage.storeData("user", value);
   }
   getData() {
-    return Storage.getData("user");
+    alert("asd");
+    alert(Storage.getData("user"));
+    // return Storage.getData("user");
   }
-
   //#region  Add User 회원가입
   //EXAMPLE: onPress={() => UserStore.addUser(2, 3, 4, 5, 6, 7, 8)}
+  //<Button onPress={() => UserStore.storeData()} title="asd"/>/
   addUser(
     address,
     email,
@@ -109,6 +109,7 @@ class UserStore {
         });
       });
     this.user = tempdata;
+    this.storeData(this.user);
   }
 
   async updateUser() {
@@ -125,6 +126,7 @@ class UserStore {
         });
       });
     this.user = tempdata;
+    this.storeData(this.user);
   }
   async login(userid, userpassword) {
     //onPress={() => UserStore.login("-s", "tkarnr78^@")}
@@ -149,10 +151,6 @@ class UserStore {
         });
     }
     this.storeData(this.user);
-    const aa = await this.getData();
-    alert(aa); //{"a":"지역", ... "n":1}
-    alert(JSON.parse(aa).a); //지역
-    return this.user;
   }
   /*
       function loginFunc() {

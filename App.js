@@ -8,6 +8,7 @@ enableScreens();
 //UI 설정
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as PaperProvider } from "react-native-paper";
+import { Provider } from "mobx";
 //Redux 설정
 // import reduxExam from "reduxComponent";
 //firebase 설정

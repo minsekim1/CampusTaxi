@@ -1,6 +1,7 @@
 //#region imports
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, TouchableHighlight } from "react-native";
+import { View, Text, Image, TouchableHighlight, Button } from "react-native";
+import userStore from "store/userStore";
 
 import campusStyle from "style";
 import ad from "image/ad.png";
@@ -20,6 +21,7 @@ import ocean from "image/ocean.png";
 function HomeScreen({ navigation, route }) {
   const adImageSrc = "../../Assets/Images/ad.png";
   const [userkey, setUserkey] = useState("");
+
   // 메인화면 버튼 부분
   useEffect(() => {
     route.params ? setUserkey(route.params.userkey) : null;
@@ -48,6 +50,9 @@ function HomeScreen({ navigation, route }) {
   }
   return (
     <View style={campusStyle.View.container}>
+      <Button onPress={() => userStore.storeData("asd")} title="storeData 1" />
+      <Button onPress={() => userStore.storeData("22")} title="storeData 2" />
+      <Button onPress={() => userStore.getData()} title="getData" />
       <View style={campusStyle.View.backgroundColorBlue}>
         <View>
           <View style={campusStyle.View.mainHeaderBackground}>

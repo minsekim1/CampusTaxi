@@ -95,19 +95,23 @@ export default function Navigation() {
     let password = "asdfg";
 
     function login(id, pw) {
-      userStore.login(id, password).then((result) => {
-        if (result) {
-          setName(result.f);
-          setPassword(result.g);
-          alert("정상적으로 로그인되었습니다.");
-          navigation.navigate("홈", {
-            userkey: result.f,
-          });
-        }
+      userStore.login(id, password).then(() => {
+        setName("login");
+        alert("정상적으로 로그인되었습니다.");
+        navigation.navigate("홈");
       });
     }
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Button
+          onPress={() => userStore.storeData("awdawd")}
+          title="storeData 1"
+        />
+        <Button
+          onPress={() => userStore.storeData("222")}
+          title="storeData 2"
+        />
+        <Button onPress={() => userStore.getData()} title="getData" />
         <Text>아이디와 비밀번호를 입력해주세요.</Text>
         <TextInput
           placeholder="아이디를 입력해주세요"
