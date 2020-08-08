@@ -33,8 +33,7 @@ export default function MychatScreen({ route, navigation }) {
     Object.values(userStore.user.c).forEach((i) => resultarr.push(i));
     setRoomList(resultarr);
     setInital(false);
-    updateUserdata(userkey);
-  }, [userkey]);
+  }, []);
 
   //새로고침
   const wait = (timeout) => {
@@ -51,25 +50,6 @@ export default function MychatScreen({ route, navigation }) {
   //#region 유저정보 업데이트
   const [myname, setMyname] = useState();
   const [mygender, setMygender] = useState();
-
-  function updateUserdata(userkey) {
-    getMyname(userkey);
-    getMygender(userkey);
-  }
-  function getMyname(userkey) {
-    firebase
-      .database()
-      .ref("user/data/" + userkey + "/h")
-      .once("value", (snapshot) => setMyname(snapshot.val()));
-  }
-  function getMygender(userkey) {
-    firebase
-      .database()
-      .ref("user/data/" + userkey + "/d")
-      .once("value", (snapshot) => setMygender(snapshot.val()));
-  }
-  //#region Hooks & functions
-
   return (
     <>
       {inital && (
