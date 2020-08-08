@@ -17,8 +17,6 @@ import campusStyle from "style";
 import crown from "image/crown.png";
 const firebase = require("firebase");
 
-import userStore from "store/userStore";
-
 export default function MychatScreen({ route, navigation }) {
   const [roomList, setRoomList] = useState();
   const [inital, setInital] = useState(true);
@@ -26,6 +24,7 @@ export default function MychatScreen({ route, navigation }) {
 
   useEffect(() => {
     //userkey 넣기
+
     route.params ? setUserkey(route.params.userkey) : null;
     //해당 유저의 keyy를 이용하여 내 채팅 목록을 채워넣음
 

@@ -15,7 +15,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import UserStore from "store/userStore";
+import userStore from "store/userStore";
 const alarmData = [
   //알림의 실제 데이터
   {
@@ -58,7 +58,6 @@ const alarmData = [
 
 //알림 아이템 View
 function AlarmItem({ title, imgurl, content, hour, min, icon }) {
-  alert(UserStore.user);
   let day = "오전";
   if (hour >= 12) {
     hour -= 12;

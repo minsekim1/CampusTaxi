@@ -18,7 +18,7 @@ import chatinfo from "component/MainScreen/chatinfo";
 import MapScreen from "component/MapScreen/MapScreen";
 
 import MychatScreen from "MychatScreen";
-import userStore from "store/userStore.js";
+import userStore from "store/userStore";
 import campusStyle from "style";
 const Tab = createBottomTabNavigator();
 
@@ -93,6 +93,7 @@ export default function Navigation() {
   function LoginScreen({ route, navigation }) {
     let name = "asdfg";
     let password = "asdfg";
+
     function login(id, pw) {
       userStore.login(id, password).then((result) => {
         if (result) {

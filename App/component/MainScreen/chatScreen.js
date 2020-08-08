@@ -22,8 +22,13 @@ const firebase = require("firebase");
 //채팅목록 화면
 export default function chatScreen({ route, navigation }) {
   //#region Hooks & functions
-  const [roomList, setRoomList] = useState();
+  const [roomList, setRoomList] = useState(null);
   const userkey = route.params.userkey;
+
+const [title, changeTitle] = useState("title1");
+
+<Button onPress={()=>changeTitle("title2")} />
+
   useEffect(() => {
     firebase //bbs에서 데이터를 가져와서 firebase json 형식에서 flatlist하기 좋은 형식으로 키값을 JSON 안으로 넣는다.
       .database()

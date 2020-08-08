@@ -1,25 +1,19 @@
-import AsyncStorage from "@react-native-community/async-storage";
+import Storage from "store/Storage";
+
 import { observable } from "mobx";
 const firebase = require("firebase");
 
 // import UserStore from "store/userStore";
-class UserStore {
-  // addressA: "string"
-  // emailB: "string"
-  // enterroomC
-  // genderD: "int"
-  // joindateE: "timestamp"
-  // loginidF: "string"
-  // loginpasswordG: "string"
-  // nameH: "string"
-  // nicknameI: "string"
-  // phoneJ: "string"
-  // studentcardK: "string"
-  // univL: "string"
-  // userkeyM: "-MBRNLe85baaaaaaaaa"
-  // userstatusN: "int"
 
+class UserStore {
   @observable user = null;
+
+  storeData(value) {
+    Storage.storeData("user", value);
+  }
+  getData() {
+    return Storage.getData("user");
+  }
 
   //#region  Add User 회원가입
   //EXAMPLE: onPress={() => UserStore.addUser(2, 3, 4, 5, 6, 7, 8)}
@@ -60,6 +54,7 @@ class UserStore {
           };
           firebase.database().ref("user/data").push(newUser);
           this.user.push(newUser);
+          this.storeData(newUser);
         }
       });
   }
@@ -79,7 +74,6 @@ class UserStore {
       .database()
       .ref("user/data/" + userkey)
       .set({});
-    // this.bbs.pop();
   }
   changeUserValue(userkey, props, value) {
     //props는 a => available이런식
@@ -154,7 +148,10 @@ class UserStore {
           }
         });
     }
-    alert(this.user.a);
+    this.storeData(this.user);
+    const aa = await this.getData();
+    alert(aa); //{"a":"지역", ... "n":1}
+    alert(JSON.parse(aa).a); //지역
     return this.user;
   }
   /*
