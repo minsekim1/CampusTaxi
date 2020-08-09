@@ -9,7 +9,6 @@ class Storage {
     }
   }
 
-
   async getData(key) {
     try {
       const value = await AsyncStorage.getItem(key);
@@ -22,5 +21,9 @@ class Storage {
       //   alert(value);
     }
   }
+}
+
+function getKeys() {
+  alert(AsyncStorage.getAllKeys());
 }
 export default new Storage();

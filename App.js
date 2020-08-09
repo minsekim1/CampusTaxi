@@ -21,7 +21,7 @@ try {
 //MobX
 import BbsStore from "store/bbsStore";
 import UserStore from "store/userStore";
-
+import { View, Text, Image, TouchableHighlight, Button } from "react-native";
 const bbsStore = new BbsStore();
 const userStore = new UserStore();
 //#endregion
@@ -41,14 +41,23 @@ export default class App extends Component {
   //props 값들 초기화
   constructor(props) {
     super(props);
+    this.state = { bba: 1 };
   }
+
+  addBba = () => {
+    this.setState({
+      bba: this.state.bba + 1,
+    });
+  };
+
   render() {
     return (
       <Provider bbs={bbsStore} user={userStore}>
         <PaperProvider>
           <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1 }}>
-              <Navigation />
+              <Button onPress={() => alert(this.state.bba)} title="bba" />
+              <Navigation addBba={this.addBba} />
             </SafeAreaView>
           </SafeAreaProvider>
         </PaperProvider>

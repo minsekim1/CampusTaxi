@@ -11,15 +11,15 @@ import AsyncStorage from "@react-native-community/async-storage";
 export default class UserStore {
   @observable user = null;
 
-  storeData(value) {
-    Storage.storeData("user", value);
-  }
-  async getData() {
-    alert("getData");
-    const value = await AsyncStorage.getItem(key);
-    alert(value);
-    // return
-  }
+  // storeData(value) {
+  //   Storage.storeData("user", value);
+  // }
+  // async getData() {
+  //   alert("getData");
+  //   const value = await AsyncStorage.getItem(key);
+  //   alert(value);
+  //   // return
+  // }
   //#region  Add User 회원가입
   //EXAMPLE: onPress={() => UserStore.addUser(2, 3, 4, 5, 6, 7, 8)}
   //<Button onPress={() => UserStore.storeData()} title="asd"/>/
@@ -60,7 +60,7 @@ export default class UserStore {
           };
           firebase.database().ref("user/data").push(newUser);
           this.user.push(newUser);
-          this.storeData(newUser);
+          // this.storeData(newUser);
         }
       });
   }
@@ -134,7 +134,7 @@ export default class UserStore {
     this.user = tempdata;
     this.storeData(this.user);
   }
-  
+
   async login(userid, userpassword) {
     //onPress={() => UserStore.login("-s", "tkarnr78^@")}
     let tempdata = {};
@@ -157,7 +157,8 @@ export default class UserStore {
           }
         });
     }
-    this.storeData(this.user);
+    // this.storeData(this.user);
+    alert(JSON.stringify(this.user));
   }
 
   printUserStore() {
