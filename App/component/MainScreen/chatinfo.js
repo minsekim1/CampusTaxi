@@ -38,24 +38,23 @@ export default function chatinfo({ route, navigation }) {
       });
   }
   //#endregion
-  return (
-    <>
-      {/* 채팅 내용부분 */}
-      <FlatList
-        data={chatinfo}
-        extraData={chatinfo}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <Text>
-            {/* {item.l.forEach((i) => {
-              i;
-            })} */}
-            {item.l.map((i) => i)}
-          </Text>
-        )}
-      />
-    </>
-  );
+  return <>{/* 채팅 내용부분 */}</>;
 }
 
 function RenderChatMember() {}
+/*
+<FlatList
+  data={chatinfo}
+  extraData={chatinfo}
+  keyExtractor={(item) => item.id}
+  renderItem={({ item }) => (
+    <Text>
+       {item.l.forEach((i) => {
+              i;
+            })} 
+      {item.l.map((i) => i)}
+    </Text>
+  )}
+/>;
+
+*/

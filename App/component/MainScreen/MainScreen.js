@@ -47,7 +47,7 @@ class HomeScreen extends Component {
               filter: filter,
               myname: "민성",
               mygender: "man",
-              userkey: userkey,
+              userkey: "asdfg", //userkey,
             })
           }
         >
