@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { observer } from "mobx-react";
-import BbsStore from "./bbsStore";
+import BbsStore from "./BbsStore";
 
 @observer
 class Bbs extends React.Component {

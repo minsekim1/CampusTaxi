@@ -3,7 +3,7 @@ import { observable } from "mobx";
 const firebase = require("firebase");
 // import BbsStore from "store/bbsStore";
 
-class BbsStore {
+export default class BbsStore {
   // "availableA" : "int",
   // "bbskeyB" : "String",
   // "bbstypeC" : "int",
@@ -227,5 +227,3 @@ class BbsStore {
     ];
   };
 }
-
-export default new BbsStore();

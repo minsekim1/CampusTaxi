@@ -3,14 +3,19 @@ import { observable, action } from "mobx";
 const firebase = require("firebase");
 
 // import UserStore from "store/userStore";
-class UserStore {
+// const userStore = new UserStore();
+// import { observer, inject } from "mobx-react";
+// @inject("bbs")
+// @inject("user")
+// @observer
+export default class UserStore {
   @observable user = null;
 
   storeData(value) {
     Storage.storeData("user", value);
   }
   getData() {
-    alert("asd");
+    alert("getData");
     alert(Storage.getData("user"));
     // return Storage.getData("user");
   }
@@ -152,67 +157,9 @@ class UserStore {
     }
     this.storeData(this.user);
   }
-  /*
-      function loginFunc() {
-      //유저가 없는지 확인
-      if (name.length < 5 || password.length < 5)
-        alert("아이디와 비밀번호는 5자리 이상이어야합니다.");
-      else if (name == "" || password == "") {
-        alert("아이디 또는 비밀번호가 빈 칸입니다.");
-      } else {
-        //유저 정보가 없다면 회원가입
-        firebase
-          .database()
-          .ref("user/data/" + name)
-          .once("value", (snapshot) => {
-            if (snapshot.val() == null) {
-              setName(name);
-              setPassword(password);
-              navigation.navigate("홈", {
-                userkey: name,
-              });
-              const val = {
-                a: "지역",
-                b: "이메일",
-                d: 0,
-                e: new Date(),
-                f: name,
-                g: password,
-                h: name,
-                i: name,
-                j: "01000000000",
-                k: "image:url",
-                l: "소속",
-                n: 1,
-              };
-              firebase
-                .database()
-                .ref("user/data/" + name)
-                .set(val);
-              alert("회원 가입이 완료되었습니다.");
-            } else {
-              //유저 정보가 있다면 비밀번호 확인
-              if (password == snapshot.val().g) {
-                //패스워드랑 아이디가 맞다면 로그인
-                setName(name);
-                setPassword(password);
-                navigation.navigate("홈", {
-                  userkey: name,
-                });
-                alert("정상적으로 로그인되었습니다.");
-              } else {
-                alert("잘못된 비밀번호입니다.");
-              }
-            }
-          });
-      }
-
-      // const [clientPassword, onChangePassword] = React.useState(null);
-      // let newBbsKey = firebase.database().ref("user/data").push();
-}*/
 
   printUserStore() {
-    alert(this.user);
+    alert(JSON.stringify(this.user));
   }
   //
   //
@@ -245,5 +192,3 @@ class UserStore {
     ];
   };
 }
-
-export default new UserStore();

@@ -12,7 +12,7 @@ class Storage {
     try {
       const value = await AsyncStorage.getItem(key);
       if (value !== null) {
-        return value;
+        alert(value);
       }
     } catch (e) {
       // error reading value
