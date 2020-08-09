@@ -32,7 +32,6 @@ class HomeScreen extends Component {
   render() {
     const { navigation } = this.props;
     const adImageSrc = "../../Assets/Images/ad.png";
-
     // 메인화면 버튼 부분
     // useEffect(() => {
     //   route.params ? setUserkey(route.params.userkey) : null;

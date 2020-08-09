@@ -8,6 +8,8 @@ class Storage {
       // saving error
     }
   }
+
+
   async getData(key) {
     try {
       const value = await AsyncStorage.getItem(key);

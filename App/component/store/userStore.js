@@ -1,7 +1,7 @@
 import Storage from "store/Storage";
 import { observable, action } from "mobx";
 const firebase = require("firebase");
-
+import AsyncStorage from "@react-native-community/async-storage";
 // import UserStore from "store/userStore";
 // const userStore = new UserStore();
 // import { observer, inject } from "mobx-react";
@@ -14,10 +14,11 @@ export default class UserStore {
   storeData(value) {
     Storage.storeData("user", value);
   }
-  getData() {
+  async getData() {
     alert("getData");
-    alert(Storage.getData("user"));
-    // return Storage.getData("user");
+    const value = await AsyncStorage.getItem(key);
+    alert(value);
+    // return
   }
   //#region  Add User 회원가입
   //EXAMPLE: onPress={() => UserStore.addUser(2, 3, 4, 5, 6, 7, 8)}
@@ -133,6 +134,7 @@ export default class UserStore {
     this.user = tempdata;
     this.storeData(this.user);
   }
+  
   async login(userid, userpassword) {
     //onPress={() => UserStore.login("-s", "tkarnr78^@")}
     let tempdata = {};
