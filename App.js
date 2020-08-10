@@ -9,6 +9,7 @@ enableScreens();
 //UI 설정
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as PaperProvider } from "react-native-paper";
+import { Provider } from "mobx-react";
 //firebase 설정
 import { firebaseConfig } from "firebaseConfig";
 const firebase = require("firebase");
@@ -35,13 +36,15 @@ console.warn = (message) => {
 export default class App extends Component {
   render() {
     return (
-      <PaperProvider>
-        <SafeAreaProvider>
-          <SafeAreaView style={{ flex: 1 }}>
-            <Navigation />
-          </SafeAreaView>
-        </SafeAreaProvider>
-      </PaperProvider>
+      <Provider>
+        <PaperProvider>
+          <SafeAreaProvider>
+            <SafeAreaView style={{ flex: 1 }}>
+              <Navigation />
+            </SafeAreaView>
+          </SafeAreaProvider>
+        </PaperProvider>
+      </Provider>
     );
   }
 }
