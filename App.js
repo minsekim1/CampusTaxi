@@ -22,8 +22,8 @@ try {
 import BbsStore from "store/bbsStore";
 import UserStore from "store/userStore";
 import { View, Text, Image, TouchableHighlight, Button } from "react-native";
-const bbsStore = new BbsStore();
-const userStore = new UserStore();
+export const bbsStore = new BbsStore();
+export const userStore = new UserStore();
 //#endregion
 //#region 경고창 무시: Setting a timer for a long period of time, i.e. multiple minute
 import { YellowBox } from "react-native";
@@ -57,7 +57,7 @@ export default class App extends Component {
           <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1 }}>
               <Button onPress={() => alert(this.state.bba)} title="bba" />
-              <Navigation addBba={this.addBba} />
+              <Navigation />
             </SafeAreaView>
           </SafeAreaProvider>
         </PaperProvider>

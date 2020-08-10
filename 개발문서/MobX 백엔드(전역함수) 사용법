@@ -1,34 +1,36 @@
-Store에 함수 다양한 함수가 있습니다.
-이를 이용하여 전역변수를 불러오거나 읽거나 씁니다.
+Store에 데이터베이스와 앱의 로컬스토리지, 그리고 state를 관리하는 다양한 함수와 변수가 있습니다.
+이를 이용하여 전역변수처럼 불러오거나 읽거나 씁니다.
 
 1. 해당 js파일에 필요한 파일을 import 합니다.
-import BbsStore from "store/bbsStore";
-import UserStore from "store/userStore";
+import { bbsStore, userStore } from "App";
+
+*"App"은 babel.config.js에 미리 선언되어 있습니다. 따라서 상대경로와 상관없이 사용가능합니다.
+"App" => "Campustaxi/App.js"
 
 2. 함수를 이용해봅니다.
- //예시: onPress={() => BbsStore.addBbs(2, 3, 4, 5, 6, 7, 8)}
+ 예시: onPress={() => bbsStore.addBbs(2, 3, 4, 5, 6, 7, 8)}
 
- BbsStore.addBbs(2, 3, 4, 5, 6, 7, 8)
+ bbsStore.addBbs(2, 3, 4, 5, 6, 7, 8)
  하고 
- BbsStore.printBbsStore();
+ bbsStore.printBbsStore();
  를 이용하여 전역변수로 저장된 BbsStore를 활용하세요.
 
  ///////////////////////////////////////////////////
  UserStore 함수
- UserStore.addUser(address,email,gender,loginid,loginpassword,name,nickname,phone,studentcard,univ)
- UserStore.lockUser(userkey, untilDate)
- UserStore.removeUser(userkey)
- UserStore.changeUserValue(userkey, props, value) 
- UserStore.getUser(userkey)
- UserStore.updateUser(userkey)
- UserStore.login(userid, userpassword)
- UserStore.printUserStore()
+ userStore.addUser(address,email,gender,loginid,loginpassword,name,nickname,phone,studentcard,univ)
+ userStore.lockUser(userkey, untilDate)
+ userStore.removeUser(userkey)
+ userStore.changeUserValue(userkey, props, value) 
+ userStore.getUser(userkey)
+ userStore.updateUser(userkey)
+ userStore.login(userid, userpassword)
+ userStore.printUserStore()
 
  BbsStore 함수
- BbsStore.addBbs(bbstype,endplace,gender,leadername,meetingdate,personmax,startplace)
- BbsStore.hideBbs(bbskey)
- BbsStore.removeBbs(bbskey)
- BbsStore.changeBbsValue(bbskey, props, value)
- BbsStore.changeBbsValue(bbskey, props, value)
- BbsStore.getBbs(bbskey)
- BbsStore.printBbsStore()
+ bbsStore.addBbs(bbstype,endplace,gender,leadername,meetingdate,personmax,startplace)
+ bbsStore.hideBbs(bbskey)
+ bbsStore.removeBbs(bbskey)
+ bbsStore.changeBbsValue(bbskey, props, value)
+ bbsStore.changeBbsValue(bbskey, props, value)
+ bbsStore.getBbs(bbskey)
+ bbsStore.printBbsStore()

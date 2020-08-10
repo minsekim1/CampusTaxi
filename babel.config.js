@@ -26,6 +26,7 @@ module.exports = function (api) {
             reduxComponent: "./App/reduxSetting/reduxComponent",
             reduxJS: "./App/reduxSetting/redux",
             firebaseConfig: "./App/constant/firebase",
+            App: "./App.js",
           },
         },
       ],
