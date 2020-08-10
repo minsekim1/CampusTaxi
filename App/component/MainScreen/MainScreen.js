@@ -28,7 +28,6 @@ class HomeScreen extends Component {
     this.state = { userkey: "", clientPassword: "" };
   }
   render() {
-    alert(JSON.stringify(this.props));
     const { navigation } = this.props;
     const adImageSrc = "../../Assets/Images/ad.png";
     // 메인화면 버튼 부분

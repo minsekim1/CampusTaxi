@@ -1,4 +1,4 @@
-import Storage from "store/Storage";
+// import Storage from "./Storage";
 import { observable, action } from "mobx";
 const firebase = require("firebase");
 import AsyncStorage from "@react-native-community/async-storage";

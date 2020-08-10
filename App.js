@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 //시작 루트 컴포넌트
 import { SafeAreaView } from "react-native";
-import Navigation from "Navigation";
+import LoginNav from "component/login/LoginNav";
 //최적화 설정
 import { enableScreens } from "react-native-screens";
 enableScreens();
@@ -16,9 +16,6 @@ const firebase = require("firebase");
 try {
   firebase.initializeApp(firebaseConfig);
 } catch (error) {}
-//MobX
-import BbsStore from "store/BbsStore.js";
-import UserStore from "store/UserStore.js";
 
 //#endregion
 //#region 경고창 무시: Setting a timer for a long period of time, i.e. multiple minute
@@ -32,6 +29,7 @@ console.warn = (message) => {
     _console.warn(message);
   }
 };
+// <Navigation />
 //#endregion
 export default class App extends Component {
   render() {
@@ -40,7 +38,7 @@ export default class App extends Component {
         <PaperProvider>
           <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1 }}>
-              <Navigation />
+              <LoginNav />
             </SafeAreaView>
           </SafeAreaProvider>
         </PaperProvider>
@@ -48,9 +46,3 @@ export default class App extends Component {
     );
   }
 }
-
-//전역 Store
-//import { bbsStore, userStore } from "App";
-//<Button onPress={() => userStore.printUserStore()} title="유저 출력"/>
-export const bbsStore = new BbsStore();
-export const userStore = new UserStore();

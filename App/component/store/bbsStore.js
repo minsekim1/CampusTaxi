@@ -25,6 +25,12 @@ export default class BbsStore {
   EXAMPLE:
   onPress={() => BbsStore.addBbs(bbstype,endplace,gender,leadername,meetingdate,personmax,startplace,makerKey)}
   */
+  addNum() {
+    this.bbs = [22];
+  }
+  addNum2() {
+    this.bbs = [33];
+  }
   addBbs( //c, g, h, i, j, k, n
     bbstype,
     endplace,
