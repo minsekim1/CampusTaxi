@@ -52,11 +52,11 @@ export default class LoginScreen extends Component {
         <Button title="로그인하기" onPress={() => login(name, password)} />
         <Button
           title="아이디찾기"
-          onPress={() => navigation.navigate("findId")}
+          onPress={() => navigation.navigate("아이디 찾기")}
         />
         <Button
           title="비밀번호 찾기"
-          onPress={() => navigation.navigate("findPw")}
+          onPress={() => navigation.navigate("비밀번호 찾기")}
         />
         <Button
           title="회원가입"

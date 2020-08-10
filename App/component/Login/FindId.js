@@ -3,7 +3,7 @@ import { Component, useState } from "react";
 import { Button, View, Text, TouchableOpacity, TextInput } from "react-native";
 import { bbsStore, userStore } from "store";
 
-export default class FindId extends Component {
+export default class FindId1 extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -12,36 +12,54 @@ export default class FindId extends Component {
     const { navigation } = this.props;
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>아이디와 비밀번호를 입력해주세요.</Text>
-        <TextInput
-          placeholder="아이디를 입력해주세요"
-          style={{
-            fontSize: 18,
-            margin: 0,
-            borderColor: "#27BE5E",
-            borderBottomWidth: 2,
-            width: "60%",
-          }}
-          value={this.state.clientName}
-          onChangeText={(textEntry) => this.setState({ clientName: textEntry })}
-          onSubmitEditing={() => login(name, password)}
+        <Text>아이디 찾는 방법을 선택해 주세요.</Text>
+        {/* 선택하면 FindId2로 이동시키면 될듯 */}
+        <Button
+          title="휴대전화로 인증"
+          onPress={() => navigation.navigate("아이디 찾기 인증")}
         />
-        <TextInput
-          placeholder="비밀번호을 입력해주세요"
-          style={{
-            fontSize: 18,
-            margin: 0,
-            borderColor: "#27BE5E",
-            borderBottomWidth: 2,
-            width: "60%",
-          }}
-          value={this.state.clientPassword}
-          onChangeText={(textEntry) =>
-            this.setState({ clientPassword: textEntry })
-          }
-          onSubmitEditing={() => login(name, password)}
+      </View>
+    );
+  }
+}
+
+export class FindId2 extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+  render() {
+    const { navigation } = this.props;
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>아이디 찾는 방법을 선택해 주세요.</Text>
+        {/*  준상님 짜주세용 :  */}
+        <Button
+          title="확인"
+          onPress={() => navigation.navigate("아이디 찾기 결과")}
         />
-        <Button title="로그인하기" onPress={() => login(name, password)} />
+      </View>
+    );
+  }
+}
+
+export class FindId3 extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+  render() {
+    const { navigation } = this.props;
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>회원님의 아이디는 </Text>
+        <Text>asd </Text>
+        <Text>입니다.</Text>
+        {/*  준상님 짜주세용 : 결과 화면입니다~ */}
+        <Button
+          title="돌아가기"
+          onPress={() => navigation.navigate("로그인")}
+        />
       </View>
     );
   }
