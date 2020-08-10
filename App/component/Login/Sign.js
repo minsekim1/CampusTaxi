@@ -21,11 +21,14 @@ export default class Sign1 extends Component {
         <CheckBox
           disabled={false}
           value={this.state.check[0]}
-          onValueChange={() =>
+          onValueChange={() => {
+            const checkReturn = this.state.check;
+            checkReturn.map((i) => (ch
+              eckReturn[i] = !checkReturn[i]));
             this.setState({
-              check: [true, true, true, true, true, true, true, true],
-            })
-          }
+              check: !checkReturn,
+            });
+          }}
         />
         <Text>캠퍼스 택시의 모든 운영원칙에 동의</Text>
         <Text>서비스 이용약관 (필수)</Text>
