@@ -462,7 +462,21 @@ function clientpagePolicy4() {
     </View>
   );
 }
+
+import SendEmail from './Email/EmailComposer';
+import {useState} from 'react';
+
 function clientpageQuestion() {
+  const [email_title, setemail_title] = useState("");
+  const [email_body, setemail_body] = useState("안녕하세요. 사용하시는 기종이 무엇인가요? \n무슨 일이세요? \n결론이 궁금해요: ");
+  
+  function GO_SendFunction() {
+    //let email_body = document.getElementsByName("body").value;
+    //let email_title = document.getElementsByName("title").value;
+
+    SendEmail(email_title, email_body);
+  }
+
   return (
     <View
       style={{
@@ -471,7 +485,11 @@ function clientpageQuestion() {
         justifyContent: "center",
       }}
     >
-      <Text>Details Screen</Text>
+      <Text>
+        <h2>제목</h2><br /><input type="text" name="email_title" value={email_title} onChange={({ target: { value }}) => setemail_title(value)} autoFocus /><br />
+        <h2>내용</h2><br /><textarea type="text" name="email_body" value={email_body} onChange={({ target: { value }}) => setemail_body(value)} /><br />
+        <Button title="문의 하기" onPress={GO_SendFunction} />
+      </Text>
     </View>
   );
 }
