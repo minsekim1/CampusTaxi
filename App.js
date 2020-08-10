@@ -9,9 +9,6 @@ enableScreens();
 //UI 설정
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as PaperProvider } from "react-native-paper";
-import { Provider } from "mobx-react";
-//Redux 설정
-// import reduxExam from "reduxComponent";
 //firebase 설정
 import { firebaseConfig } from "firebaseConfig";
 const firebase = require("firebase");
@@ -19,9 +16,8 @@ try {
   firebase.initializeApp(firebaseConfig);
 } catch (error) {}
 //MobX
-import BbsStore from "store/bbsStore";
-import UserStore from "store/userStore";
-import { View, Text, Image, TouchableHighlight, Button } from "react-native";
+import BbsStore from "store/BbsStore";
+import UserStore from "store/UserStore";
 
 //#endregion
 //#region 경고창 무시: Setting a timer for a long period of time, i.e. multiple minute

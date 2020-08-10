@@ -15,7 +15,6 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import userStore from "store/userStore";
 const alarmData = [
   //알림의 실제 데이터
   {

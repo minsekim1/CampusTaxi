@@ -14,8 +14,6 @@ import {
 import campusStyle from "style";
 import DateTimePicker from "@react-native-community/datetimepicker"; //방생성시간picker
 import crown from "image/crown.png";
-import BbsStore from "store/bbsStore";
-import UserStore from "store/userStore";
 const firebase = require("firebase");
 //#endregion
 
@@ -25,9 +23,9 @@ export default function chatScreen({ route, navigation }) {
   const [roomList, setRoomList] = useState(null);
   const userkey = route.params.userkey;
 
-const [title, changeTitle] = useState("title1");
+  const [title, changeTitle] = useState("title1");
 
-<Button onPress={()=>changeTitle("title2")} />
+  <Button onPress={() => changeTitle("title2")} />;
 
   useEffect(() => {
     firebase //bbs에서 데이터를 가져와서 firebase json 형식에서 flatlist하기 좋은 형식으로 키값을 JSON 안으로 넣는다.

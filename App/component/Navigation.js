@@ -1,3 +1,4 @@
+import { bbsStore, userStore } from "App";
 import * as React from "react";
 import { Component, useState } from "react";
 import { Button, View, Text, TouchableOpacity, TextInput } from "react-native";
@@ -16,8 +17,6 @@ import chatScreen from "chatScreen";
 import chatroomScreen from "chatroomScreen";
 import chatinfo from "component/MainScreen/chatinfo";
 import MapScreen from "component/MapScreen/MapScreen";
-
-import { bbsStore, userStore } from "App";
 import MychatScreen from "MychatScreen";
 import campusStyle from "style";
 const Tab = createBottomTabNavigator();

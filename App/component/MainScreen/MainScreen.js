@@ -15,15 +15,13 @@ import club from "image/club.png";
 import ski from "image/ski.png";
 import ocean from "image/ocean.png";
 
-import UserStore from "store/userStore";
-const userStore = new UserStore();
 import { observer, inject } from "mobx-react";
 //#endregion
 
 // 첫 시작 메인화면
-@inject("bbs")
-@inject("user")
-@observer
+// @inject("bbs")
+// @inject("user")
+// @observer
 class HomeScreen extends Component {
   constructor(props) {
     super(props);
@@ -61,15 +59,6 @@ class HomeScreen extends Component {
     }
     return (
       <View style={campusStyle.View.container}>
-        <Button onPress={() => userStore.getData()} title="getData 1" />
-        <Button
-          onPress={() => userStore.login("asdfg", "asdfg")}
-          title="login 2"
-        />
-        <Button
-          onPress={() => userStore.printUserStore()}
-          title="printUserStore"
-        />
         <View style={campusStyle.View.backgroundColorBlue}>
           <View>
             <View style={campusStyle.View.mainHeaderBackground}>
