@@ -17,8 +17,8 @@ try {
   firebase.initializeApp(firebaseConfig);
 } catch (error) {}
 //MobX
-import BbsStore from "store/BbsStore";
-import UserStore from "store/UserStore";
+import BbsStore from "store/BbsStore.js";
+import UserStore from "store/UserStore.js";
 
 //#endregion
 //#region 경고창 무시: Setting a timer for a long period of time, i.e. multiple minute
