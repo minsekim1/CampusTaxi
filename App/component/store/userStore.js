@@ -2,8 +2,6 @@ import Storage from "store/Storage";
 import { observable, action } from "mobx";
 const firebase = require("firebase");
 import AsyncStorage from "@react-native-community/async-storage";
-// import UserStore from "store/userStore";
-// const userStore = new UserStore();
 // import { observer, inject } from "mobx-react";
 // @inject("bbs")
 // @inject("user")
