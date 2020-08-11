@@ -5,7 +5,14 @@ import LoginScreen from "./LoginScreen";
 import Sign1, { Sign2, Sign3 } from "./Sign";
 import FindId1, { FindId2, FindId3 } from "./FindId";
 import FindPw1, { FindPw2, FindPw3, FindPw4, FindPw5 } from "./FindPw";
+import {
+  clientpagePolicy1,
+  clientpagePolicy2,
+  clientpagePolicy3,
+  clientpagePolicy4,
+} from "../SettingScreen";
 import Navigation from "Navigation";
+
 const Stack = createStackNavigator();
 
 export default function LoginNav() {
@@ -33,6 +40,11 @@ export default function LoginNav() {
         <Stack.Screen name="비밀번호 찾기 인증" component={FindPw3} />
         <Stack.Screen name="비밀번호 재설정" component={FindPw4} />
         <Stack.Screen name="비밀번호 재설정 완료" component={FindPw5} />
+
+        <Stack.Screen name="서비스 이용약관" component={clientpagePolicy3} />
+        <Stack.Screen name="개인정보처리방침" component={clientpagePolicy1} />
+        <Stack.Screen name="위치정보 이용약관" component={clientpagePolicy2} />
+        <Stack.Screen name="마케팅 정보 수신" component={clientpagePolicy4} />
       </Stack.Navigator>
     </NavigationContainer>
   );

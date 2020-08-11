@@ -402,7 +402,7 @@ function clientpageAppvesion() {
     </View>
   );
 }
-function clientpagePolicy1() {
+export function clientpagePolicy1() {
   return (
     <View
       style={{
@@ -417,7 +417,7 @@ function clientpagePolicy1() {
     </View>
   );
 }
-function clientpagePolicy2() {
+export function clientpagePolicy2() {
   return (
     <View
       style={{
@@ -432,7 +432,7 @@ function clientpagePolicy2() {
     </View>
   );
 }
-function clientpagePolicy3() {
+export function clientpagePolicy3() {
   return (
     <View
       style={{
@@ -447,7 +447,7 @@ function clientpagePolicy3() {
     </View>
   );
 }
-function clientpagePolicy4() {
+export function clientpagePolicy4() {
   return (
     <View
       style={{
