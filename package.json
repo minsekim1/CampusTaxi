@@ -6,7 +6,7 @@
     "start학교": "adb connect 192.168.194.106:5555 && expo start --android",
     "start연구실": "adb connect 192.168.185.219:5555 && expo start --android",
     "start웹": "expo web",
-    "gitUpload": "git add . && git commit -m \"로그인 진행 중 0811 \" && git push ",
+    "gitUpload": "git add . && git commit -m \"회원가입 진행 중 0812 \" && git push ",
     "gitPull": "git pull",
     "reactStartAndroid": "react-native run-android"
   },
