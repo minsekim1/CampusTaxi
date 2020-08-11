@@ -2,8 +2,8 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { observer } from "mobx-react";
 import Bbs from "./Bbs";
-import BbsStore from "./BbsStore";
-import UserStore from "./UserStore";
+import BbsStore from "./bbsStore";
+import UserStore from "./userStore";
 
 @observer
 class BbsContainer extends React.Component {
