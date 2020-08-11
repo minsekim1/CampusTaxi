@@ -98,7 +98,8 @@ export class Sign2 extends Component {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text>회원 가입</Text>
-        {/* 준상님 짜주세용 */}
+        {/* 승우님 짜주세용 : 학생증 사진 선택하면 사진 보이구, 가입하기 누르면 스토어에 올라가게 해주세요!*/}
+        <Button title="학생증 사진 선택" onPress={() => {}} />
         <Button
           title="가입 하기"
           onPress={() => navigation.navigate("회원 가입 완료")}
