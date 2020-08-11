@@ -23,8 +23,7 @@ export default class Sign1 extends Component {
           value={this.state.check[0]}
           onValueChange={() => {
             const checkReturn = this.state.check;
-            checkReturn.map((i) => (ch
-              eckReturn[i] = !checkReturn[i]));
+            checkReturn.map((i) => (chckReturn[i] = !checkReturn[i]));
             this.setState({
               check: !checkReturn,
             });

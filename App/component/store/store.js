@@ -1,6 +1,6 @@
 //MobX
-import BbsStore from "./BbsStore.js";
-import UserStore from "./UserStore.js";
+import BbsStore from "./bbsStore";
+import UserStore from "./userStore.js";
 //전역 Store
 //import { bbsStore, userStore } from "store";
 //<Button onPress={() => userStore.printUserStore()} title="유저 출력"/>

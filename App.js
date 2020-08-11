@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 //시작 루트 컴포넌트
 import { SafeAreaView } from "react-native";
-import LoginNav from "component/login/LoginNav";
+import LoginNav from "./App/component/Login/LoginNav";
 //최적화 설정
 import { enableScreens } from "react-native-screens";
 enableScreens();
