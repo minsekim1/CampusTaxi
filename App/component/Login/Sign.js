@@ -188,16 +188,47 @@ export class Sign2 extends Component {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <CheckBox
-          title="asd"
-          disabled={false}
+          disabled={true}
+          tintColors="green"
           value={this.state.authCheck}
-          onValueChange={() => {
-            this.setState({
-              authCheck: this.state.authCheck,
-            });
-          }}
         />
         <Text>{this.state.authCheck ? "휴대폰 인증 완료" : "휴대폰 인증"}</Text>
+        <TextInput
+          value={this.state.phoneNumber}
+          onChangeText={(val) => this.setState({ phoneNumber: val })}
+          keyboardType="phone-pad"
+          maxLength={11}
+          placeholder="01012341234"
+        />
+        <TextInput
+          value={this.state.authNum}
+          onChangeText={(val) => this.setState({ authNum: val })}
+          keyboardType="phone-pad"
+          maxLength={4}
+          placeholder="0123"
+        />
+        <CheckBox disabled={true} value={this.state.signCheck} />
+        <Text>
+          {this.state.signCheck ? "회원 정보 입력 완료" : "회원 정보 입력"}
+        </Text>
+        <TextInput
+          value={this.state.nickname}
+          onChangeText={(val) => this.setState({ nickname: val })}
+          maxLength={20}
+          placeholder="윤수정"
+        />
+        <TextInput
+          value={this.state.id}
+          onChangeText={(val) => this.setState({ id: val })}
+          maxLength={20}
+          placeholder="파리의택시드라이버"
+        />
+        <TextInput
+          value={this.state.pw}
+          onChangeText={(val) => this.setState({ pw: val })}
+          maxLength={20}
+          placeholder="********"
+        />
         <Button
           title="학생증 사진 선택"
           onPress={() => {
