@@ -88,6 +88,39 @@ export default class Sign1 extends Component {
   }
 }
 
+// 승우 작업.
+import * as ImagePicker from 'expo-image-picker'
+const firebase =require('firebase');
+
+class FirebaseToImage extends React.Component {
+  // ChooseImage()
+  onChooseImagePress = async () => {
+      let result = await ImagePicker.launchImageLibraryAsync();
+
+      if (!result.cancelled) {
+          this.uploadImage(result.uri, "test-image") // 매개변수 2번째 파일 "이름 저장"
+          .then(() => {
+              Alert.alert("성공!");
+          }).catch ((error) => {
+              console.log(error);
+          });
+      }
+  }
+
+  uploadImage = async (uri, imageName) => {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+
+      var ref = firebase.storage().ref().child("test/" + imageName); // "test/"는 디렉터리 지정.
+      var imageName = this.imageName;
+      return ref.put(blob);
+  }
+  render() {
+      return (
+          <Button title="학생증 사진 선택" onPress={this.onChooseImagePress} />
+      );
+  }
+}
 export class Sign2 extends Component {
   constructor(props) {
     super(props);
@@ -99,7 +132,8 @@ export class Sign2 extends Component {
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text>회원 가입</Text>
         {/* 승우님 짜주세용 : 학생증 사진 선택하면 사진 보이구, 가입하기 누르면 스토어에 올라가게 해주세요!*/}
-        <Button title="학생증 사진 선택" onPress={() => {}} />
+        {/*<Button title="학생증 사진 선택" onPress={() => {}} />*/}
+        <FirebaseToImage />
         <Button
           title="가입 하기"
           onPress={() => navigation.navigate("회원 가입 완료")}
@@ -108,6 +142,8 @@ export class Sign2 extends Component {
     );
   }
 }
+
+// ------------------
 
 export class Sign3 extends Component {
   constructor(props) {
