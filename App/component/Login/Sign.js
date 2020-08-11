@@ -24,9 +24,6 @@ export default class Sign1 extends Component {
           onValueChange={() => {
             const checkReturn = this.state.check;
             checkReturn.map((i) => (chckReturn[i] = !checkReturn[i]));
-            this.setState({
-              check: !checkReturn,
-            });
           }}
         />
         <Text>캠퍼스 택시의 모든 운영원칙에 동의</Text>
