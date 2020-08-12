@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Component, useState } from "react";
-import { Button, View, Text, TouchableOpacity, TextInput, Image, StyleSheet } from "react-native";
+import { Button, View, Text, TouchableOpacity, TextInput, Image, StyleSheet, Alert } from "react-native";
 import { bbsStore, userStore } from "store";
 import { CheckBox } from "react-native";
 
@@ -93,16 +93,20 @@ import * as ImagePicker from 'expo-image-picker'
 import { storage } from "firebase";
 const firebase = require('firebase');
 
-class ExpoImage extends React.Component {
+export class ExpoImage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      image: ''
+      image: '',
+      result: false
     };
     //this.onimageurlChange = this.onimageurlChange.bind(this)
   }
   onimageurlChange = (url) => {
-    this.setState({image : url})
+    this.setState({
+      image : url,
+      result: true
+    })
   }
   // onimageurlChange(url){this.setState({image:url})}
   // ChooseImage()
@@ -139,11 +143,22 @@ class ExpoImage extends React.Component {
     })
   } */
   render() {
-
+      const { navigation } = this.props;
       return (
         <View>
           <Button title="학생증 사진 선택" onPress={this.onChooseImagePress} />
           <Image style={styles.logo}source={this.state.image ? { uri : this.state.image} : null } />
+          <Button
+          title="가입 하기"
+          onPress={() => {
+              if (this.state.result) {
+                navigation.navigate("회원 가입 완료")
+              } else {
+                Alert.alert("이미지 선택하지 않았습니다.")
+              }
+          }
+        }
+        />
         </View>
       );
   }
@@ -156,6 +171,7 @@ const styles = StyleSheet.create({
   }
 });
 
+// Sign2 Class 삭제 예정
 export class Sign2 extends Component {
   constructor(props) {
     super(props);
@@ -169,11 +185,15 @@ export class Sign2 extends Component {
         {/* 승우님 짜주세용 : 학생증 사진 선택하면 사진 보이구, 가입하기 누르면 스토어에 올라가게 해주세요!*/}
         {/*<Button title="학생증 사진 선택" onPress={() => {}} />*/}
         <ExpoImage />
+        <Text>{this.state.result}</Text>
         <Button
           title="가입 하기"
           onPress={() => {
-            
-            navigation.navigate("회원 가입 완료")
+              if (this.state.result == false) {
+                navigation.navigate("회원 가입 완료")
+              } else {
+                Alert.alert("이미지 선택하지 않았습니다.")
+              }
           }
         }
         />
@@ -182,7 +202,7 @@ export class Sign2 extends Component {
   }
 }
 
-// ------------------
+// 승우 작업 끝
 
 export class Sign3 extends Component {
   constructor(props) {
