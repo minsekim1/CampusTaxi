@@ -2,7 +2,7 @@ import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import LoginScreen from "./LoginScreen";
-import Sign1, { Sign2, Sign3 } from "./Sign";
+import Sign1, { ExpoImage, Sign2, Sign3 } from "./Sign";
 import FindId1, { FindId2, FindId3 } from "./FindId";
 import FindPw1, { FindPw2, FindPw3, FindPw4, FindPw5 } from "./FindPw";
 import {
@@ -30,7 +30,7 @@ export default function LoginNav() {
           options={{ headerShown: false }}
         />
         <Stack.Screen name="이용동의" component={Sign1} />
-        <Stack.Screen name="회원 가입" component={Sign2} />
+        <Stack.Screen name="회원 가입" component={ExpoImage} />
         <Stack.Screen name="회원 가입 완료" component={Sign3} />
         <Stack.Screen name="아이디 찾기" component={FindId1} />
         <Stack.Screen name="아이디 찾기 인증" component={FindId2} />
