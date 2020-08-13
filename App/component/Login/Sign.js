@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Component, useState } from "react";
+import { Component, useState, createRef } from "react";
 import {
   Button,
   View,
@@ -174,8 +174,10 @@ export default class Sign1 extends Component {
 import * as ImagePicker from "expo-image-picker";
 import { storage } from "firebase";
 const firebase = require("firebase");
+import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
 
 export class Sign2 extends React.Component {
+  recaptchaVerifier = createRef();
   constructor(props) {
     super(props);
     this.state = {
@@ -183,6 +185,7 @@ export class Sign2 extends React.Component {
       result: false,
       nickname: "",
       phoneNumber: "",
+      verificationId: "",
       authBtn: "인증번호 전송하기",
       authCheck: false,
       authNum: "",
@@ -199,6 +202,36 @@ export class Sign2 extends React.Component {
     };
     //this.onimageurlChange = this.onimageurlChange.bind(this)
   }
+  //#region Firebase Phone Auth Functions
+  sendVerification = () => {
+    const phoneProvider = new firebase.auth.PhoneAuthProvider();
+    phoneProvider
+      .verifyPhoneNumber(this.state.phoneNumber, this.recaptchaVerifier.current)
+      .then((result) =>
+        this.setState({
+          verificationId: result,
+        })
+      );
+  };
+  confirmCode = () => {
+    const credential = firebase.auth.PhoneAuthProvider.credential(
+      this.state.verificationId,
+      this.state.authNum
+    );
+    firebase
+      .auth()
+      .signInWithCredential(credential)
+      .then((result) => {
+        // 인증완료 작업
+        //alert(JSON.stringify(result));
+        this.setState({
+          authCheck: true,
+        });
+      });
+  };
+
+  //#endregion
+  //#region StudentCard Functions
   onimageurlChange = (url) => {
     this.setState({
       image: url,
@@ -206,7 +239,6 @@ export class Sign2 extends React.Component {
     });
   };
   // onimageurlChange(url){this.setState({image:url})}
-  // ChooseImage()
   onChooseImagePress = async () => {
     var result = await ImagePicker.launchImageLibraryAsync();
 
@@ -241,10 +273,11 @@ export class Sign2 extends React.Component {
     //var imageName = this.imageName;
     return ref.put(blob);
   };
+  //#endregion
   //#region Input Function
   onChangedPhoneNumber(text) {
     let newText = "";
-    let numbers = "0123456789";
+    let numbers = "+0123456789";
 
     for (var i = 0; i < text.length; i++) {
       if (numbers.indexOf(text[i]) > -1) {
@@ -347,7 +380,6 @@ export class Sign2 extends React.Component {
     const { navigation } = this.props;
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>회원 가입</Text>
         <Text>{this.state.result}</Text>
         <CheckBox
           disabled={true}
@@ -359,15 +391,26 @@ export class Sign2 extends React.Component {
           value={this.state.phoneNumber}
           onChangeText={(val) => this.onChangedPhoneNumber(val)}
           keyboardType="phone-pad"
-          maxLength={11}
-          placeholder="01012341234"
+          maxLength={14}
+          placeholder="+8201012341234"
+          autoCompleteType="tel"
         />
+        <TouchableOpacity onPress={this.sendVerification}>
+          <Text>Send Verification</Text>
+        </TouchableOpacity>
         <TextInput
           value={this.state.authNum}
           onChangeText={(val) => this.onChangedauthNum(val)}
-          keyboardType="phone-pad"
-          maxLength={4}
-          placeholder="0123"
+          keyboardType="number-pad"
+          maxLength={8}
+          placeholder="012345678"
+        />
+        <TouchableOpacity onPress={this.confirmCode}>
+          <Text>confirmCode</Text>
+        </TouchableOpacity>
+        <FirebaseRecaptchaVerifierModal
+          ref={this.recaptchaVerifier}
+          firebaseConfig={firebase.app().options}
         />
         <CheckBox disabled={true} value={this.state.signCheck} />
         <Text>
@@ -406,7 +449,6 @@ export class Sign2 extends React.Component {
           style={styles.logo}
           source={this.state.image ? { uri: this.state.image } : null}
         />
-
         <Button
           title="가입 하기"
           onPress={() => {
