@@ -195,6 +195,7 @@ export class Sign2 extends React.Component {
       studentcardBtn: "학생증 사진 선택",
       name: "",
       univ: "",
+      error: "아무런 값이 입력되지 않았습니다.",
     };
     //this.onimageurlChange = this.onimageurlChange.bind(this)
   }
@@ -213,7 +214,7 @@ export class Sign2 extends React.Component {
       this.uploadImage(result.uri, "test-image") // 매개변수 2번째 파일 "이름 저장"
         .then(() => {
           this.setState({
-            authCheck: !this.state.authCheck,
+            studentcardCheck: true,
           });
         })
         .catch((error) => {
@@ -240,6 +241,107 @@ export class Sign2 extends React.Component {
     //var imageName = this.imageName;
     return ref.put(blob);
   };
+  //#region Input Function
+  onChangedPhoneNumber(text) {
+    let newText = "";
+    let numbers = "0123456789";
+
+    for (var i = 0; i < text.length; i++) {
+      if (numbers.indexOf(text[i]) > -1) {
+        newText = newText + text[i];
+      } else {
+        alert("숫자만 입력해주세요.");
+      }
+    }
+    this.setState({ phoneNumber: newText });
+  }
+  onChangedauthNum(text) {
+    let newText = "";
+    let numbers = "0123456789";
+
+    for (var i = 0; i < text.length; i++) {
+      if (numbers.indexOf(text[i]) > -1) {
+        newText = newText + text[i];
+      } else {
+        alert("숫자만 입력해주세요.");
+      }
+    }
+    this.setState({ authNum: newText });
+  }
+  async onChangednickname(text) {
+    await this.setState({ nickname: text });
+    this.checkSign();
+  }
+  async onChangedid(text) {
+    let newText = "";
+    let numbers =
+      "0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
+
+    for (var i = 0; i < text.length; i++) {
+      if (numbers.indexOf(text[i]) > -1) {
+        newText = newText + text[i];
+      } else {
+        alert("영어와 숫자만 입력해주세요.");
+      }
+    }
+    await this.setState({ id: newText });
+    this.checkSign();
+  }
+  async onChangedpw(text) {
+    let newText = "";
+    let numbers =
+      "0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
+
+    for (var i = 0; i < text.length; i++) {
+      if (numbers.indexOf(text[i]) > -1) {
+        newText = newText + text[i];
+      } else {
+        alert("영어와 숫자만 입력해주세요.");
+      }
+    }
+    await this.setState({ pw: newText });
+    this.checkSign();
+  }
+  async onChangedpwCheck(text) {
+    let newText = "";
+    let numbers =
+      "0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
+
+    for (var i = 0; i < text.length; i++) {
+      if (numbers.indexOf(text[i]) > -1) {
+        newText = newText + text[i];
+      } else {
+        alert("영어와 숫자만 입력해주세요.");
+      }
+    }
+    await this.setState({ pwCheck: newText });
+    this.checkSign();
+  }
+  checkSign() {
+    if (
+      (this.state.nickname.length > 3) & (this.state.id.length > 4) &&
+      this.state.pw.length > 4 &&
+      this.state.pwCheck.length > 4
+    ) {
+      if (this.state.pw == this.state.pwCheck) {
+        this.setState({
+          signCheck: true,
+          error: "휴대폰 및 학생증 인증을 완료해주세요.",
+        });
+      } else {
+        this.setState({
+          signCheck: false,
+          error: "비밀번호과 비밀번호 확인이 다릅니다.",
+        });
+      }
+    } else {
+      this.setState({
+        signCheck: false,
+        error: "아이디/비밀번호는 5자 이상, 닉네임은 4자 이상이어야합니다.",
+      });
+    }
+  }
+  //#endregion
   render() {
     const state = this.props.route.params.state; //마케팅 정보 등 동의 사실 전달[true, true...]
     const { navigation } = this.props;
@@ -255,14 +357,14 @@ export class Sign2 extends React.Component {
         <Text>{this.state.authCheck ? "휴대폰 인증 완료" : "휴대폰 인증"}</Text>
         <TextInput
           value={this.state.phoneNumber}
-          onChangeText={(val) => this.setState({ phoneNumber: val })}
+          onChangeText={(val) => this.onChangedPhoneNumber(val)}
           keyboardType="phone-pad"
           maxLength={11}
           placeholder="01012341234"
         />
         <TextInput
           value={this.state.authNum}
-          onChangeText={(val) => this.setState({ authNum: val })}
+          onChangeText={(val) => this.onChangedauthNum(val)}
           keyboardType="phone-pad"
           maxLength={4}
           placeholder="0123"
@@ -273,25 +375,25 @@ export class Sign2 extends React.Component {
         </Text>
         <TextInput
           value={this.state.nickname}
-          onChangeText={(val) => this.setState({ nickname: val })}
-          maxLength={20}
-          placeholder="윤수정"
-        />
-        <TextInput
-          value={this.state.id}
-          onChangeText={(val) => this.setState({ id: val })}
+          onChangeText={(val) => this.onChangednickname(val)}
           maxLength={20}
           placeholder="파리의택시드라이버"
         />
         <TextInput
+          value={this.state.id}
+          onChangeText={(val) => this.onChangedid(val)}
+          maxLength={20}
+          placeholder="slsl7862"
+        />
+        <TextInput
           value={this.state.pw}
-          onChangeText={(val) => this.setState({ pw: val })}
+          onChangeText={(val) => this.onChangedpw(val)}
           maxLength={20}
           placeholder="비밀번호"
         />
         <TextInput
           value={this.state.pwCheck}
-          onChangeText={(val) => this.setState({ pwCheck: val })}
+          onChangeText={(val) => this.onChangedpwCheck(val)}
           maxLength={20}
           placeholder="비밀번호확인"
         />
@@ -315,7 +417,9 @@ export class Sign2 extends React.Component {
             ) {
               navigation.navigate("회원 가입 완료");
             } else {
-              alert("완료되지 않는 절차가 있습니다.");
+              alert(
+                "완료되지 않는 절차가 있습니다." + "\n사유:" + this.state.error
+              );
             }
           }}
         />
