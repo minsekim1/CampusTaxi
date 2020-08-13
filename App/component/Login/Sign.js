@@ -1,6 +1,15 @@
 import * as React from "react";
 import { Component, useState } from "react";
-import { Button, View, Text, TouchableOpacity, TextInput, Image, StyleSheet, Alert } from "react-native";
+import {
+  Button,
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  Image,
+  StyleSheet,
+  Alert,
+} from "react-native";
 import { bbsStore, userStore } from "store";
 import { CheckBox } from "react-native";
 
@@ -163,93 +172,16 @@ export default class Sign1 extends Component {
 }
 
 // 승우 작업.
-import * as ImagePicker from 'expo-image-picker'
+import * as ImagePicker from "expo-image-picker";
 import { storage } from "firebase";
-const firebase = require('firebase');
+const firebase = require("firebase");
 
-export class ExpoImage extends React.Component {
+export class Sign2 extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      image: '',
-      result: false
-    };
-    //this.onimageurlChange = this.onimageurlChange.bind(this)
-  }
-  onimageurlChange = (url) => {
-    this.setState({
-      image : url,
-      result: true
-    })
-  }
-  // onimageurlChange(url){this.setState({image:url})}
-  // ChooseImage()
-  onChooseImagePress = async () => {
-      var result = await ImagePicker.launchImageLibraryAsync();
-
-      if (!result.cancelled) {
-          this.uploadImage(result.uri, "test-image") // 매개변수 2번째 파일 "이름 저장"
-          .then(() => {}).catch ((error) => {
-              console.log(error);
-          });
-      }
-  }
-  sleep(time){
-    return new Promise((resolve)=>setTimeout(resolve,time)
-  )
-}
-  uploadImage = async (uri, imageName) => {
-      const response = await fetch(uri);
-      const blob = await response.blob();
-
-      var ref = firebase.storage().ref().child("test/" + imageName); // "test/"는 디렉터리 지정.
-      setTimeout(() => {
-        ref.getDownloadURL().then((url) => {
-        this.onimageurlChange(url);
-      })}, 3000);
-      //var imageName = this.imageName;
-      return ref.put(blob);
-  }
-
-/*   imageURLhandle(url) {
-    this.setState(function() {
-      return { image: url };
-    })
-  } */
-  render() {
-      const { navigation } = this.props;
-      return (
-        <View>
-          <Button title="학생증 사진 선택" onPress={this.onChooseImagePress} />
-          <Image style={styles.logo}source={this.state.image ? { uri : this.state.image} : null } />
-          <Button
-          title="가입 하기"
-          onPress={() => {
-              if (this.state.result) {
-                navigation.navigate("회원 가입 완료")
-              } else {
-                Alert.alert("이미지 선택하지 않았습니다.")
-              }
-          }
-        }
-        />
-        </View>
-      );
-  }
-}
-
-const styles = StyleSheet.create({
-  logo: {
-    width: 300,
-    height: 100,
-  }
-});
-
-// Sign2 Class 삭제 예정
-export class Sign2 extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
+      image: "",
+      result: false,
       nickname: "",
       phoneNumber: "",
       authBtn: "인증번호 전송하기",
@@ -265,30 +197,125 @@ export class Sign2 extends Component {
       name: "",
       univ: "",
     };
+    //this.onimageurlChange = this.onimageurlChange.bind(this)
   }
+  onimageurlChange = (url) => {
+    this.setState({
+      image: url,
+      result: true,
+    });
+  };
+  // onimageurlChange(url){this.setState({image:url})}
+  // ChooseImage()
+  onChooseImagePress = async () => {
+    var result = await ImagePicker.launchImageLibraryAsync();
+
+    if (!result.cancelled) {
+      this.uploadImage(result.uri, "test-image") // 매개변수 2번째 파일 "이름 저장"
+        .then(() => {
+          this.setState({
+            authCheck: !this.state.authCheck,
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+  sleep(time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
+  uploadImage = async (uri, imageName) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+
+    var ref = firebase
+      .storage()
+      .ref()
+      .child("test/" + imageName); // "test/"는 디렉터리 지정.
+    setTimeout(() => {
+      ref.getDownloadURL().then((url) => {
+        this.onimageurlChange(url);
+      });
+    }, 3000);
+    //var imageName = this.imageName;
+    return ref.put(blob);
+  };
   render() {
-    const { navigation } = this.props;
     const state = this.props.route.params.state; //마케팅 정보 등 동의 사실 전달[true, true...]
+    const { navigation } = this.props;
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-
+        <Text>회원 가입</Text>
+        <Text>{this.state.result}</Text>
+        <CheckBox
+          disabled={true}
+          tintColors="green"
+          value={this.state.authCheck}
+        />
+        <Text>{this.state.authCheck ? "휴대폰 인증 완료" : "휴대폰 인증"}</Text>
+        <TextInput
+          value={this.state.phoneNumber}
+          onChangeText={(val) => this.setState({ phoneNumber: val })}
+          keyboardType="phone-pad"
+          maxLength={11}
+          placeholder="01012341234"
+        />
+        <TextInput
+          value={this.state.authNum}
+          onChangeText={(val) => this.setState({ authNum: val })}
+          keyboardType="phone-pad"
+          maxLength={4}
+          placeholder="0123"
+        />
+        <CheckBox disabled={true} value={this.state.signCheck} />
+        <Text>
+          {this.state.signCheck ? "회원 정보 입력 완료" : "회원 정보 입력"}
+        </Text>
+        <TextInput
+          value={this.state.nickname}
+          onChangeText={(val) => this.setState({ nickname: val })}
+          maxLength={20}
+          placeholder="윤수정"
+        />
+        <TextInput
+          value={this.state.id}
+          onChangeText={(val) => this.setState({ id: val })}
+          maxLength={20}
+          placeholder="파리의택시드라이버"
+        />
+        <TextInput
+          value={this.state.pw}
+          onChangeText={(val) => this.setState({ pw: val })}
+          maxLength={20}
+          placeholder="********"
+        />
+        <Button title="학생증 사진 선택" onPress={this.onChooseImagePress} />
+        <Image
+          style={styles.logo}
+          source={this.state.image ? { uri: this.state.image } : null}
+        />
         <Button
           title="가입 하기"
           onPress={() => {
-              if (this.state.result == false) {
-                navigation.navigate("회원 가입 완료")
-              } else {
-                Alert.alert("이미지 선택하지 않았습니다.")
-              }
-          }
-        }
+            if (this.state.result) {
+              navigation.navigate("회원 가입 완료");
+            } else {
+              Alert.alert("이미지 선택하지 않았습니다.");
+            }
+          }}
         />
       </View>
     );
   }
 }
 
-// 승우 작업 끝
+const styles = StyleSheet.create({
+  logo: {
+    width: 300,
+    height: 100,
+  },
+});
 
 export class Sign3 extends Component {
   constructor(props) {
