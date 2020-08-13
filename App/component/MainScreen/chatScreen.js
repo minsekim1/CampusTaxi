@@ -713,6 +713,10 @@ export default function chatScreen({ route, navigation }) {
                 setFilterVisible(!isFilterVisible);
               }}
             />
+            <Button
+              title="Check"
+              onPress="() => {}"
+            />
           </View>
         </Modal>
       ) : null}
