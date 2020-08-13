@@ -8,7 +8,6 @@ import {
   TextInput,
   Image,
   StyleSheet,
-  Alert,
 } from "react-native";
 import { bbsStore, userStore } from "store";
 import { CheckBox } from "react-native";
@@ -288,20 +287,35 @@ export class Sign2 extends React.Component {
           value={this.state.pw}
           onChangeText={(val) => this.setState({ pw: val })}
           maxLength={20}
-          placeholder="********"
+          placeholder="비밀번호"
         />
+        <TextInput
+          value={this.state.pwCheck}
+          onChangeText={(val) => this.setState({ pwCheck: val })}
+          maxLength={20}
+          placeholder="비밀번호확인"
+        />
+        <CheckBox disabled={true} value={this.state.studentcardCheck} />
+        <Text>
+          {this.state.studentcardCheck ? "학생증 제출 완료" : "학생증 인증"}
+        </Text>
         <Button title="학생증 사진 선택" onPress={this.onChooseImagePress} />
         <Image
           style={styles.logo}
           source={this.state.image ? { uri: this.state.image } : null}
         />
+
         <Button
           title="가입 하기"
           onPress={() => {
-            if (this.state.result) {
+            if (
+              this.state.authCheck &&
+              this.state.signCheck &&
+              this.state.studentcardCheck
+            ) {
               navigation.navigate("회원 가입 완료");
             } else {
-              Alert.alert("이미지 선택하지 않았습니다.");
+              alert("완료되지 않는 절차가 있습니다.");
             }
           }}
         />
