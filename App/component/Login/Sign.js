@@ -182,7 +182,6 @@ export class Sign2 extends React.Component {
     super(props);
     this.state = {
       image: "",
-      result: false,
       nickname: "",
       phoneNumber: "",
       verificationId: "",
@@ -200,7 +199,6 @@ export class Sign2 extends React.Component {
       univ: "",
       error: "아무런 값이 입력되지 않았습니다.",
     };
-    //this.onimageurlChange = this.onimageurlChange.bind(this)
   }
   //#region Firebase Phone Auth Functions
   sendVerification = () => {
@@ -229,34 +227,24 @@ export class Sign2 extends React.Component {
         });
       });
   };
-
-  //#endregion
-  //#region StudentCard Functions
   onimageurlChange = (url) => {
     this.setState({
-      image: url,
-      result: true,
+      image: url
     });
   };
-  // onimageurlChange(url){this.setState({image:url})}
   onChooseImagePress = async () => {
-    var result = await ImagePicker.launchImageLibraryAsync();
+    var result = await ImagePicker.launchImageLibraryAsync(); // 라이브러리 선택
 
     if (!result.cancelled) {
-      this.uploadImage(result.uri, "test-image") // 매개변수 2번째 파일 "이름 저장"
-        .then(() => {
-          this.setState({
-            studentcardCheck: true,
-          });
+      this.onimageurlChange(result.uri).then(() => { // 이미지 선택했다면 Check true + Error: undefined is not an object 가 발생하지만 무시하고 진행하면 이상하게 잘 됨 -> 사진 선택 시 발생하는 에러로 추측됨
+        this.setState({
+          studentcardCheck: true
         })
-        .catch((error) => {
-          console.log(error);
-        });
+      }).catch((error) => {
+        console.log("onChooseImagePress error:" + error); // error
+      });
     }
   };
-  sleep(time) {
-    return new Promise((resolve) => setTimeout(resolve, time));
-  }
   uploadImage = async (uri, imageName) => {
     const response = await fetch(uri);
     const blob = await response.blob();
@@ -264,13 +252,7 @@ export class Sign2 extends React.Component {
     var ref = firebase
       .storage()
       .ref()
-      .child("test/" + imageName); // "test/"는 디렉터리 지정.
-    setTimeout(() => {
-      ref.getDownloadURL().then((url) => {
-        this.onimageurlChange(url);
-      });
-    }, 3000);
-    //var imageName = this.imageName;
+      .child("test/" + imageName); // child() 경로 지정.
     return ref.put(blob);
   };
   //#endregion
@@ -452,11 +434,13 @@ export class Sign2 extends React.Component {
         <Button
           title="가입 하기"
           onPress={() => {
+            
             if (
               this.state.authCheck &&
               this.state.signCheck &&
               this.state.studentcardCheck
             ) {
+              this.uploadImage(this.state.image, "test-image")
               navigation.navigate("회원 가입 완료");
             } else {
               alert(
@@ -470,7 +454,7 @@ export class Sign2 extends React.Component {
   }
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({ // 학생증 인증 사진 출력하는 css.infile
   logo: {
     width: 300,
     height: 100,

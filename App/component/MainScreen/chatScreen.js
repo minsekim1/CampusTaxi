@@ -10,6 +10,7 @@ import {
   Card,
   Button,
   ButtonGroup,
+  Input,
 } from "react-native-elements";
 import campusStyle from "style";
 import DateTimePicker from "@react-native-community/datetimepicker"; //방생성시간picker
@@ -579,6 +580,11 @@ export default function chatScreen({ route, navigation }) {
                 style: campusStyle.Modal.component,
               }}
             />
+            <Input
+              type="text"
+              name="Search"
+              autoFocus
+            />
             <Button
               title="Hide modal"
               onPress={() => {
@@ -712,6 +718,10 @@ export default function chatScreen({ route, navigation }) {
               onPress={() => {
                 setFilterVisible(!isFilterVisible);
               }}
+            />
+            <Button
+              title="Check"
+              onPress="() => {}"
             />
           </View>
         </Modal>
