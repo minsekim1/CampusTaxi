@@ -199,7 +199,6 @@ export class Sign2 extends React.Component {
       univ: "",
       error: "아무런 값이 입력되지 않았습니다.",
     };
-    //this.onimageurlChange = this.onimageurlChange.bind(this)
   }
   //#region Firebase Phone Auth Functions
   sendVerification = () => {
@@ -233,27 +232,17 @@ export class Sign2 extends React.Component {
       image: url
     });
   };
-  // onimageurlChange(url){this.setState({image:url})}
   onChooseImagePress = async () => {
-    var result = await ImagePicker.launchImageLibraryAsync();
+    var result = await ImagePicker.launchImageLibraryAsync(); // 라이브러리 선택
 
     if (!result.cancelled) {
-      this.onimageurlChange(result.uri).then(() => {
+      this.onimageurlChange(result.uri).then(() => { // 이미지 선택했다면 Check true + Error: undefined is not an object 가 발생하지만 무시하고 진행하면 이상하게 잘 됨 -> 사진 선택 시 발생하는 에러로 추측됨
         this.setState({
           studentcardCheck: true
         })
       }).catch((error) => {
-        console.log("onChooseImagePress error:" + error);
+        console.log("onChooseImagePress error:" + error); // error
       });
-      /* this.uploadImage(result.uri, "test-image") // 매개변수 2번째 파일 "이름 저장"
-        .then(() => {
-          this.setState({
-            studentcardCheck: true,
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-        }); */
     }
   };
   uploadImage = async (uri, imageName) => {
@@ -263,7 +252,7 @@ export class Sign2 extends React.Component {
     var ref = firebase
       .storage()
       .ref()
-      .child("test/" + imageName); // "test/"는 디렉터리 지정.
+      .child("test/" + imageName); // child() 경로 지정.
     return ref.put(blob);
   };
   //#endregion
@@ -442,21 +431,6 @@ export class Sign2 extends React.Component {
           style={styles.logo}
           source={this.state.image ? { uri: this.state.image } : null}
         />
-
-{/* async (uri, imageName) => {
-    const response = await fetch(uri);
-    const blob = await response.blob();
-
-    var ref = firebase
-      .storage()
-      .ref()
-      .child("test/" + imageName); // "test/"는 디렉터리 지정.
-    setTimeout(() => {
-      ref.getDownloadURL().then((url) => {
-        this.onimageurlChange(url);
-      });
-    }, 3000);
-    return ref.put(blob); */}
         <Button
           title="가입 하기"
           onPress={() => {
@@ -480,7 +454,7 @@ export class Sign2 extends React.Component {
   }
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({ // 학생증 인증 사진 출력하는 css.infile
   logo: {
     width: 300,
     height: 100,
