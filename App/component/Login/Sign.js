@@ -238,6 +238,12 @@ export class Sign2 extends React.Component {
       result: true,
     });
   };
+  onimageurlChange() {
+    this.setState({
+      image: url,
+      result: true,
+    });
+  }
   // onimageurlChange(url){this.setState({image:url})}
   onChooseImagePress = async () => {
     var result = await ImagePicker.launchImageLibraryAsync();
