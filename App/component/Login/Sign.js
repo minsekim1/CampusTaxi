@@ -229,30 +229,22 @@ export class Sign2 extends React.Component {
   };
   onimageurlChange = (url) => {
     this.setState({
-      image: url
+      image: url,
     });
   };
-<<<<<<< HEAD
-  onimageurlChange() {
-    this.setState({
-      image: url,
-      result: true,
-    });
-  }
-  // onimageurlChange(url){this.setState({image:url})}
-=======
->>>>>>> 41ba712099583871820e5c8f8ca4c7d9441b2a9b
   onChooseImagePress = async () => {
     var result = await ImagePicker.launchImageLibraryAsync(); // 라이브러리 선택
 
     if (!result.cancelled) {
-      this.onimageurlChange(result.uri).then(() => { // 이미지 선택했다면 Check true + Error: undefined is not an object 가 발생하지만 무시하고 진행하면 이상하게 잘 됨 -> 사진 선택 시 발생하는 에러로 추측됨
+      this.onimageurlChange(result.uri);
+      // 이미지 선택했다면 Check true + Error: undefined is not an object 가 발생하지만 무시하고 진행하면 이상하게 잘 됨 -> 사진 선택 시 발생하는 에러로 추측됨
+      try {
         this.setState({
-          studentcardCheck: true
-        })
-      }).catch((error) => {
+          studentcardCheck: true,
+        });
+      } catch (error) {
         console.log("onChooseImagePress error:" + error); // error
-      });
+      }
     }
   };
   uploadImage = async (uri, imageName) => {
@@ -444,13 +436,12 @@ export class Sign2 extends React.Component {
         <Button
           title="가입 하기"
           onPress={() => {
-            
             if (
               this.state.authCheck &&
               this.state.signCheck &&
               this.state.studentcardCheck
             ) {
-              this.uploadImage(this.state.image, "test-image")
+              this.uploadImage(this.state.image, "test-image");
               navigation.navigate("회원 가입 완료");
             } else {
               alert(
@@ -464,7 +455,8 @@ export class Sign2 extends React.Component {
   }
 }
 
-const styles = StyleSheet.create({ // 학생증 인증 사진 출력하는 css.infile
+const styles = StyleSheet.create({
+  // 학생증 인증 사진 출력하는 css.infile
   logo: {
     width: 300,
     height: 100,
