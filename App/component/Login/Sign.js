@@ -182,7 +182,6 @@ export class Sign2 extends React.Component {
     super(props);
     this.state = {
       image: "",
-      result: false,
       nickname: "",
       phoneNumber: "",
       verificationId: "",
@@ -229,13 +228,9 @@ export class Sign2 extends React.Component {
         });
       });
   };
-
-  //#endregion
-  //#region StudentCard Functions
   onimageurlChange = (url) => {
     this.setState({
-      image: url,
-      result: true,
+      image: url
     });
   };
   // onimageurlChange(url){this.setState({image:url})}
@@ -243,7 +238,14 @@ export class Sign2 extends React.Component {
     var result = await ImagePicker.launchImageLibraryAsync();
 
     if (!result.cancelled) {
-      this.uploadImage(result.uri, "test-image") // 매개변수 2번째 파일 "이름 저장"
+      this.onimageurlChange(result.uri).then(() => {
+        this.setState({
+          studentcardCheck: true
+        })
+      }).catch((error) => {
+        console.log("onChooseImagePress error:" + error);
+      });
+      /* this.uploadImage(result.uri, "test-image") // 매개변수 2번째 파일 "이름 저장"
         .then(() => {
           this.setState({
             studentcardCheck: true,
@@ -251,12 +253,9 @@ export class Sign2 extends React.Component {
         })
         .catch((error) => {
           console.log(error);
-        });
+        }); */
     }
   };
-  sleep(time) {
-    return new Promise((resolve) => setTimeout(resolve, time));
-  }
   uploadImage = async (uri, imageName) => {
     const response = await fetch(uri);
     const blob = await response.blob();
@@ -265,12 +264,6 @@ export class Sign2 extends React.Component {
       .storage()
       .ref()
       .child("test/" + imageName); // "test/"는 디렉터리 지정.
-    setTimeout(() => {
-      ref.getDownloadURL().then((url) => {
-        this.onimageurlChange(url);
-      });
-    }, 3000);
-    //var imageName = this.imageName;
     return ref.put(blob);
   };
   //#endregion
@@ -449,14 +442,31 @@ export class Sign2 extends React.Component {
           style={styles.logo}
           source={this.state.image ? { uri: this.state.image } : null}
         />
+
+{/* async (uri, imageName) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+
+    var ref = firebase
+      .storage()
+      .ref()
+      .child("test/" + imageName); // "test/"는 디렉터리 지정.
+    setTimeout(() => {
+      ref.getDownloadURL().then((url) => {
+        this.onimageurlChange(url);
+      });
+    }, 3000);
+    return ref.put(blob); */}
         <Button
           title="가입 하기"
           onPress={() => {
+            
             if (
               this.state.authCheck &&
               this.state.signCheck &&
               this.state.studentcardCheck
             ) {
+              this.uploadImage(this.state.image, "test-image")
               navigation.navigate("회원 가입 완료");
             } else {
               alert(
