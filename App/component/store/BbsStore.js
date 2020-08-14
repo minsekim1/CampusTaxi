@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-community/async-storage";
 import { observable } from "mobx";
 const firebase = require("firebase");
-// import BbsStore from "store/bbsStore";
+// import BbsStore from "store/BbsStore";
 
 export default class BbsStore {
   // "availableA" : "int",
