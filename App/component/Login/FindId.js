@@ -156,6 +156,7 @@ export class FindId3 extends Component {
       });
       this.setState({ id: result });
     });
+
     //
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>

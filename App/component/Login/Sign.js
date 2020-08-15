@@ -227,7 +227,19 @@ export class Sign2 extends React.Component {
       .signInWithCredential(credential)
       .then((result) => {
         // 인증완료 작업
-        //alert(JSON.stringify(result));
+        userStore
+          .findUserByAttributes(
+            "j",
+            this.state.countryNum + this.state.phoneNumber
+          )
+          .then((result) => {
+            if (result != null) {
+              this.setState({
+                error: "이미 등록된 번호입니다.",
+              });
+              return;
+            }
+          });
         this.setState({
           authCheck: true,
         });
@@ -378,6 +390,24 @@ export class Sign2 extends React.Component {
       this.state.pwCheck.length > 4
     ) {
       if (this.state.pw == this.state.pwCheck) {
+        userStore
+          .findUserByAttributes("i", this.state.nickname)
+          .then((result) => {
+            if (result != null) {
+              this.setState({
+                error: "중복된 닉네임이 있습니다.",
+              });
+              return;
+            }
+          });
+        userStore.findUserByAttributes("f", this.state.id).then((result) => {
+          if (result != null) {
+            this.setState({
+              error: "중복된 아이디가 있습니다.",
+            });
+            return;
+          }
+        });
         this.setState({
           signCheck: true,
           error: "휴대폰 및 학생증 인증을 완료해주세요.",

@@ -146,50 +146,27 @@ export default class UserStore {
   printUserStore() {
     alert(JSON.stringify(this.user));
   }
-
-  //
-  //
-  //
-  // 샘플
-
-  // Increment counterNum
-  handleIncrement = ({ index }) => {
-    this.user = [
-      ...this.user.slice(0, index),
-      {
-        counterNum: this.user[index].counterNum + 1,
-      },
-      ...this.user.slice(index + 1, this.user.length),
-    ];
-  };
-  // Decrement counterNum
-  handleDecrement = ({ index }) => {
-    this.user = [
-      ...this.user.slice(0, index),
-      {
-        counterNum: this.user[index].counterNum - 1,
-      },
-      ...this.user.slice(index + 1, this.user.length),
-    ];
-  };
+  async findUserByAttributes(attributes, value) {
+    //   onPress={() => {
+    //     userStore
+    //       .findUserByAttributes("a", "서울 노원구")
+    //       .then((result) => alert(result));
+    const ref = firebase
+      .database()
+      .ref("user/data")
+      .orderByChild(attributes)
+      .equalTo(value);
+    let userid = null;
+    await ref.once("value", (snap) => {
+      snap.forEach((childSnapshot) => {
+        userid = childSnapshot.key;
+      });
+    });
+    return userid;
+  }
 }
 
 // import Storage from "./Storage";
 import { observable, action } from "mobx";
 const firebase = require("firebase");
 import AsyncStorage from "@react-native-community/async-storage";
-
-// import { observer, inject } from "mobx-react";
-// @inject("bbs")
-// @inject("user")
-// @observer
-
-// storeData(value) {
-//   Storage.storeData("user", value);
-// }
-// async getData() {
-//   alert("getData");
-//   const value = await AsyncStorage.getItem(key);
-//   alert(value);
-//   // return
-// }

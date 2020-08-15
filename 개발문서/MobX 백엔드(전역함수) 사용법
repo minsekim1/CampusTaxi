@@ -25,6 +25,7 @@ import { bbsStore, userStore } from "store";
  userStore.updateUser(userkey)
  userStore.login(userid, userpassword)
  userStore.printUserStore()
+ userStore.findUserByAttributes(attributes, value)
 
  BbsStore 함수
  bbsStore.addBbs(bbstype,endplace,gender,leadername,meetingdate,personmax,startplace)
@@ -34,3 +35,24 @@ import { bbsStore, userStore } from "store";
  bbsStore.changeBbsValue(bbskey, props, value)
  bbsStore.getBbs(bbskey)
  bbsStore.printBbsStore()
+
+
+<Button
+ onPress={() => {
+   userStore
+     .findUserByAttributes("a", "서울 노원구")
+     .then((result) => alert(result));
+ }}
+ title="asd"
+/>
+
+userStore
+  .findUserByAttributes("i", this.state.nickname)
+  .then((result) => {
+    if (result != null) {
+      this.setState({
+        error: "중복된 닉네임이 있습니다.",
+      });
+      return;
+    }
+  });
