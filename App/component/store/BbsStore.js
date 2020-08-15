@@ -1,7 +1,8 @@
 import AsyncStorage from "@react-native-community/async-storage";
 import { observable } from "mobx";
 const firebase = require("firebase");
-// import BbsStore from "store/BbsStore";
+
+// import { bbsStore, userStore } from "store";
 
 export default class BbsStore {
   // "availableA" : "int",
@@ -23,7 +24,7 @@ export default class BbsStore {
   //#region  Add bbs
   /*
   EXAMPLE:
-  onPress={() => BbsStore.addBbs(bbstype,endplace,gender,leadername,meetingdate,personmax,startplace,makerKey)}
+  onPress={() => bbsStore.addBbs(bbstype,endplace,gender,leadername,meetingdate,personmax,startplace,makerKey)}
   */
   addNum() {
     this.bbs = [22];

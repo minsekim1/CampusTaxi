@@ -10,12 +10,9 @@ export default class LoginScreen extends Component {
   }
   render() {
     const { navigation } = this.props;
-    let name = "asdfg";
-    let password = "asdfg";
     function login(id, pw) {
-      userStore.login(id, pw).then(() => {
-        alert("정상적으로 로그인되었습니다.");
-        navigation.navigate("home");
+      userStore.login(id, pw).then((result) => {
+        if (result) navigation.navigate("home");
       });
     }
     return (
@@ -32,7 +29,9 @@ export default class LoginScreen extends Component {
           }}
           value={this.state.clientName}
           onChangeText={(textEntry) => this.setState({ clientName: textEntry })}
-          onSubmitEditing={() => login(name, password)}
+          onSubmitEditing={() =>
+            login(this.state.clientName, this.state.clientPassword)
+          }
         />
         <TextInput
           placeholder="비밀번호을 입력해주세요"
@@ -47,9 +46,16 @@ export default class LoginScreen extends Component {
           onChangeText={(textEntry) =>
             this.setState({ clientPassword: textEntry })
           }
-          onSubmitEditing={() => login(name, password)}
+          onSubmitEditing={() =>
+            login(this.state.clientName, this.state.clientPassword)
+          }
         />
-        <Button title="로그인하기" onPress={() => login(name, password)} />
+        <Button
+          title="로그인하기"
+          onPress={() =>
+            login(this.state.clientName, this.state.clientPassword)
+          }
+        />
         <Button
           title="아이디찾기"
           onPress={() => navigation.navigate("아이디 찾기")}

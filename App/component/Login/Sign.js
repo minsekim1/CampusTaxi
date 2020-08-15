@@ -170,12 +170,10 @@ export default class Sign1 extends Component {
   }
 }
 
-// 승우 작업.
 import * as ImagePicker from "expo-image-picker";
 import { storage } from "firebase";
 const firebase = require("firebase");
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
-
 export class Sign2 extends React.Component {
   recaptchaVerifier = createRef();
   constructor(props) {
@@ -193,6 +191,9 @@ export class Sign2 extends React.Component {
       id: "",
       pw: "",
       pwCheck: "",
+      gender: 1,
+      email: "",
+      address: "",
       studentcardCheck: false,
       studentcardBtn: "학생증 사진 선택",
       name: "",
@@ -240,9 +241,7 @@ export class Sign2 extends React.Component {
       //-> 사진 선택 시 발생하는 에러로 추측됨
       this.onimageurlChange(result.uri);
       try {
-        this.setState({
-          studentcardCheck: true,
-        });
+        this.checkStudentCard();
       } catch (error) {
         console.log("onChooseImagePress error:" + error); // error
       }
@@ -335,6 +334,38 @@ export class Sign2 extends React.Component {
     await this.setState({ pwCheck: newText });
     this.checkSign();
   }
+  onChangedgender(gender) {
+    this.setState({ gender: gender });
+  }
+  onChangedemail(email) {
+    this.setState({ email: email });
+  }
+  onChangedaddress(address) {
+    this.setState({ address: address });
+  }
+  checkStudentCard() {
+    if (
+      this.state.name != "" &&
+      this.state.univ != "" &&
+      this.state.image != ""
+    ) {
+      this.setState({
+        studentcardCheck: true,
+      });
+    } else {
+      this.setState({
+        studentcardCheck: false,
+      });
+    }
+  }
+  async onChangedname(name) {
+    await this.setState({ name: name });
+    this.checkStudentCard();
+  }
+  async onChangeduniv(univ) {
+    await this.setState({ univ: univ });
+    this.checkStudentCard();
+  }
   checkSign() {
     if (
       (this.state.nickname.length > 3) & (this.state.id.length > 4) &&
@@ -366,11 +397,7 @@ export class Sign2 extends React.Component {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text>{this.state.result}</Text>
-        <CheckBox
-          disabled={true}
-          tintColors="green"
-          value={this.state.authCheck}
-        />
+        <CheckBox disabled={true} value={this.state.authCheck} />
         <Text>{this.state.authCheck ? "휴대폰 인증 완료" : "휴대폰 인증"}</Text>
         <TextInput
           value={this.state.phoneNumber}
@@ -381,7 +408,7 @@ export class Sign2 extends React.Component {
           autoCompleteType="tel"
         />
         <TouchableOpacity onPress={this.sendVerification}>
-          <Text>Send Verification</Text>
+          <Text>인증번호 전송</Text>
         </TouchableOpacity>
         <TextInput
           value={this.state.authNum}
@@ -391,7 +418,7 @@ export class Sign2 extends React.Component {
           placeholder="012345678"
         />
         <TouchableOpacity onPress={this.confirmCode}>
-          <Text>confirmCode</Text>
+          <Text>인증번호 확인</Text>
         </TouchableOpacity>
         <FirebaseRecaptchaVerifierModal
           ref={this.recaptchaVerifier}
@@ -425,24 +452,73 @@ export class Sign2 extends React.Component {
           maxLength={20}
           placeholder="비밀번호확인"
         />
+        <Text>성별</Text>
+        <Button
+          title="남자"
+          onPress={() => this.onChangedgender(0)}
+          color={this.state.gender == 0 ? "#E5AF0B" : "#CBCED7"}
+        />
+        <Button
+          title="여자"
+          onPress={() => this.onChangedgender(1)}
+          color={this.state.gender == 1 ? "#E5AF0B" : "#CBCED7"}
+        />
+        <TextInput
+          value={this.state.email}
+          onChangeText={(val) => this.onChangedemail(val)}
+          maxLength={40}
+          placeholder="이메일(선택) campustaxi@naver.com"
+        />
+        <TextInput
+          value={this.state.address}
+          onChangeText={(val) => this.onChangedaddress(val)}
+          maxLength={40}
+          placeholder="주소(선택) 서울 강북구 덕릉로52"
+        />
         <CheckBox disabled={true} value={this.state.studentcardCheck} />
         <Text>
           {this.state.studentcardCheck ? "학생증 제출 완료" : "학생증 인증"}
         </Text>
         <Button title="학생증 사진 선택" onPress={this.onChooseImagePress} />
+
         <Image
           style={styles.logo}
           source={this.state.image ? { uri: this.state.image } : null}
         />
+        <TextInput
+          value={this.state.name}
+          onChangeText={(val) => this.onChangedname(val)}
+          maxLength={40}
+          placeholder="이름(본명) 윤수정"
+        />
+        <TextInput
+          value={this.state.univ}
+          onChangeText={(val) => this.onChangeduniv(val)}
+          maxLength={40}
+          placeholder="학교 택시 대학교"
+        />
         <Button
           title="가입 하기"
-          onPress={() => {
+          onPress={async () => {
             if (
-              this.state.authCheck &&
-              this.state.signCheck &&
-              this.state.studentcardCheck
+              // this.state.authCheck &&
+              // this.state.signCheck &&
+              // this.state.studentcardCheck
+              true
             ) {
               this.uploadImage(this.state.image, "studentcard");
+              await userStore.addUser(
+                this.state.address,
+                this.state.email,
+                this.state.gender,
+                this.state.id,
+                this.state.pw,
+                this.state.name,
+                this.state.nickname,
+                this.state.phoneNumber,
+                this.state.image,
+                this.state.univ
+              );
               navigation.navigate("회원 가입 완료");
             } else {
               alert(

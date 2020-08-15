@@ -2,10 +2,13 @@
 import { observable, action } from "mobx";
 const firebase = require("firebase");
 import AsyncStorage from "@react-native-community/async-storage";
+// import { bbsStore, userStore } from "store";
+
 // import { observer, inject } from "mobx-react";
 // @inject("bbs")
 // @inject("user")
 // @observer
+
 export default class UserStore {
   @observable user = null;
 
@@ -19,12 +22,12 @@ export default class UserStore {
   //   // return
   // }
   //#region  Add User 회원가입
-  //EXAMPLE: onPress={() => UserStore.addUser(2, 3, 4, 5, 6, 7, 8)}
-  //<Button onPress={() => UserStore.storeData()} title="asd"/>/
+  //EXAMPLE: onPress={() => userStore.addUser(1, 2, 3, 4, 5, 6, 7, 8,9,10)}
+  //<Button onPress={() => userStore.storeData()} title="asd"/>/
   addUser(
     address,
     email,
-    gender,
+    gender, //0 = 남자 1 = 여자
     loginid,
     loginpassword,
     name,
@@ -39,7 +42,7 @@ export default class UserStore {
       .then((result) => {
         const datatime =
           result.datetime.slice(0, 21) + result.datetime.slice(26, 32); //밀리초제거
-        let newkey = firebase.database().ref("user/data").push().key;
+        let newkey = loginid;
         if (newkey != null) {
           let newUser = {
             a: address,
@@ -54,10 +57,13 @@ export default class UserStore {
             k: studentcard,
             l: univ,
             m: newkey,
-            n: 1,
+            n: 0, //학생증 인증 대기중
           };
-          firebase.database().ref("user/data").push(newUser);
-          this.user.push(newUser);
+          firebase
+            .database()
+            .ref("user/data/" + loginid)
+            .set(newUser);
+          this.user = newUser;
           // this.storeData(newUser);
         }
       });
@@ -136,6 +142,7 @@ export default class UserStore {
   async login(userid, userpassword) {
     //onPress={() => UserStore.login("-s", "tkarnr78^@")}
     let tempdata = {};
+    let result = false;
     //bbs에서 데이터를 가져와서 firebase json 형식에서 flatlist하기 좋은 형식으로 키값을 JSON 안으로 넣는다.
     if (userid.length < 5 || userpassword.length < 5) {
       alert("아이디와 비밀번호는 5자리 이상이어야합니다.");
@@ -145,18 +152,17 @@ export default class UserStore {
         .ref("user/data/" + userid)
         .once("value", (snap) => {
           // json을 string으로 바꾸었다가 다시 json 형식으로 표준화
-          // 그냥하면 안됌
-          // alert(JSON.stringify(snap.val()));/
           tempdata = JSON.parse(JSON.stringify(snap));
-          if (snap.val() != null && tempdata.g == userpassword) {
+          if (tempdata && snap.val() != null && tempdata.g == userpassword) {
             this.user = tempdata;
+            alert("정상적으로 로그인되었습니다.");
+            result = true;
           } else {
             alert("없는 아이디이거나 비밀번호가 다릅니다.");
           }
         });
     }
-    // this.storeData(this.user);
-    alert(JSON.stringify(this.user));
+    return result;
   }
 
   printUserStore() {
