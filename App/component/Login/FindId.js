@@ -163,8 +163,12 @@ export class FindId3 extends Component {
         <Text>{this.state.id}</Text>
         <Text>입니다.</Text>
         <Button
-          title="돌아가기"
+          title="로그인 하러 가기"
           onPress={() => navigation.navigate("로그인")}
+        />
+        <Button
+          title="비밀번호찾기"
+          onPress={() => navigation.navigate("비밀번호 찾기")}
         />
       </View>
     );

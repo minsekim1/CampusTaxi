@@ -266,7 +266,7 @@ export class Sign2 extends React.Component {
   //#region Input Function
   onChangedPhoneNumber(text) {
     let newText = "";
-    let numbers = "+0123456789";
+    let numbers = "0123456789";
 
     for (var i = 0; i < text.length; i++) {
       if (numbers.indexOf(text[i]) > -1) {
@@ -419,7 +419,7 @@ export class Sign2 extends React.Component {
         <TextInput
           value={this.state.phoneNumber}
           onChangeText={(val) => this.onChangedPhoneNumber(val)}
-          keyboardType="phone-pad"
+          keyboardType="number-pad"
           maxLength={14}
           placeholder="01012341234"
           autoCompleteType="tel"
@@ -432,7 +432,7 @@ export class Sign2 extends React.Component {
           onChangeText={(val) => this.onChangedauthNum(val)}
           keyboardType="number-pad"
           maxLength={8}
-          placeholder="012345678"
+          placeholder="12345678"
         />
         <TouchableOpacity onPress={this.confirmCode}>
           <Text>인증번호 확인</Text>
@@ -533,8 +533,7 @@ export class Sign2 extends React.Component {
                 this.state.nickname,
                 this.state.countryNum + this.state.phoneNumber,
                 this.state.image,
-                this.state.univ,
-                state
+                this.state.univ
               );
               navigation.navigate("회원 가입 완료");
             } else {
