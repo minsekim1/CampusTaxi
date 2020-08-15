@@ -170,6 +170,7 @@ export default class Sign1 extends Component {
   }
 }
 
+import { Picker } from "@react-native-community/picker";
 import * as ImagePicker from "expo-image-picker";
 import { storage } from "firebase";
 const firebase = require("firebase");
@@ -181,6 +182,7 @@ export class Sign2 extends React.Component {
     this.state = {
       image: "",
       nickname: "",
+      countryNum: "+82",
       phoneNumber: "",
       verificationId: "",
       authBtn: "인증번호 전송하기",
@@ -205,7 +207,10 @@ export class Sign2 extends React.Component {
   sendVerification = () => {
     const phoneProvider = new firebase.auth.PhoneAuthProvider();
     phoneProvider
-      .verifyPhoneNumber(this.state.phoneNumber, this.recaptchaVerifier.current)
+      .verifyPhoneNumber(
+        this.state.countryNum + this.state.phoneNumber,
+        this.recaptchaVerifier.current
+      )
       .then((result) =>
         this.setState({
           verificationId: result,
@@ -307,13 +312,13 @@ export class Sign2 extends React.Component {
   async onChangedpw(text) {
     let newText = "";
     let numbers =
-      "0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
+      "0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM!@#$%^&*()";
 
     for (var i = 0; i < text.length; i++) {
       if (numbers.indexOf(text[i]) > -1) {
         newText = newText + text[i];
       } else {
-        alert("영어와 숫자만 입력해주세요.");
+        alert("영어, 숫자, 특수문자 !@#$%^&*()만 입력해주세요.");
       }
     }
     await this.setState({ pw: newText });
@@ -322,13 +327,13 @@ export class Sign2 extends React.Component {
   async onChangedpwCheck(text) {
     let newText = "";
     let numbers =
-      "0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
+      "0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM!@#$%^&*()";
 
     for (var i = 0; i < text.length; i++) {
       if (numbers.indexOf(text[i]) > -1) {
         newText = newText + text[i];
       } else {
-        alert("영어와 숫자만 입력해주세요.");
+        alert("영어, 숫자, 특수문자 !@#$%^&*()만 입력해주세요.");
       }
     }
     await this.setState({ pwCheck: newText });
@@ -399,12 +404,24 @@ export class Sign2 extends React.Component {
         <Text>{this.state.result}</Text>
         <CheckBox disabled={true} value={this.state.authCheck} />
         <Text>{this.state.authCheck ? "휴대폰 인증 완료" : "휴대폰 인증"}</Text>
+        <Picker
+          selectedValue={this.state.countryNum}
+          style={{ height: 30, width: 130 }}
+          onValueChange={(itemValue, itemIndex) =>
+            this.setState({ countryNum: itemValue })
+          }
+          // https://ko.wikipedia.org/wiki/국제전화_나라_번호
+        >
+          <Picker.Item label="대한민국(+82)" value="+82" />
+          <Picker.Item label="북한(+850)" value="+850" />
+          <Picker.Item label="인도네시아(+62)" value="+850" />
+        </Picker>
         <TextInput
           value={this.state.phoneNumber}
           onChangeText={(val) => this.onChangedPhoneNumber(val)}
           keyboardType="phone-pad"
           maxLength={14}
-          placeholder="+8201012341234"
+          placeholder="01012341234"
           autoCompleteType="tel"
         />
         <TouchableOpacity onPress={this.sendVerification}>
@@ -501,10 +518,9 @@ export class Sign2 extends React.Component {
           title="가입 하기"
           onPress={async () => {
             if (
-              // this.state.authCheck &&
-              // this.state.signCheck &&
-              // this.state.studentcardCheck
-              true
+              this.state.authCheck &&
+              this.state.signCheck &&
+              this.state.studentcardCheck
             ) {
               this.uploadImage(this.state.image, "studentcard");
               await userStore.addUser(
@@ -515,9 +531,10 @@ export class Sign2 extends React.Component {
                 this.state.pw,
                 this.state.name,
                 this.state.nickname,
-                this.state.phoneNumber,
+                this.state.countryNum + this.state.phoneNumber,
                 this.state.image,
-                this.state.univ
+                this.state.univ,
+                state
               );
               navigation.navigate("회원 가입 완료");
             } else {
@@ -558,7 +575,10 @@ export class Sign3 extends Component {
         <Text>
           N분의 1 계산은 TOSS앱, 택시 호출은 카카오 택시를 이용해 주세요!
         </Text>
-        {/* 준상님 짜주세용 */}
+        <Button
+          title="처음으로 돌아가기"
+          onPress={() => navigation.navigate("로그인")}
+        />
         <Button title="로 그 인" onPress={() => navigation.navigate("home")} />
       </View>
     );

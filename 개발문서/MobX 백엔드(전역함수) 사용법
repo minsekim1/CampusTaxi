@@ -2,10 +2,10 @@ Store에 데이터베이스와 앱의 로컬스토리지, 그리고 state를 관
 이를 이용하여 전역변수처럼 불러오거나 읽거나 씁니다.
 
 1. 해당 js파일에 필요한 파일을 import 합니다.
-import { bbsStore, userStore } from "App";
+import { bbsStore, userStore } from "store";
 
-*"App"은 babel.config.js에 미리 선언되어 있습니다. 따라서 상대경로와 상관없이 사용가능합니다.
-"App" => "Campustaxi/App.js"
+*"store"은 babel.config.js에 미리 선언되어 있습니다. 따라서 상대경로와 상관없이 사용가능합니다.
+"store" => "Campustaxi/App/components/store/store"
 
 2. 함수를 이용해봅니다.
  예시: onPress={() => bbsStore.addBbs(2, 3, 4, 5, 6, 7, 8)}

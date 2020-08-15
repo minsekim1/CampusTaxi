@@ -117,8 +117,19 @@ orderByChild()	지정된 하위 키 또는 중첩된 하위 경로의 값에 따
 orderByKey()	하위 키에 따라 결과를 정렬합니다.
 orderByValue()	하위 값에 따라 결과를 정렬합니다.
 
-var myUserId = firebase.auth().currentUser.uid;
-var topUserPostsRef = firebase.database().ref('user-posts/' + myUserId).orderByChild('starCount');
+    const ref = firebase
+      .database()
+      .ref("user/data")
+      .orderByChild("j")
+      .equalTo(phoneNumber);
+    ref.once("value", (snap) => {
+      snap.forEach((childsnap) => {
+        var childKey = childsnap.key;
+        var childData = childsnap.val();
+        alert(childKey);
+      });
+    });
+
 
 예시)
 "posts": {

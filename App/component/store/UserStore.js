@@ -1,29 +1,10 @@
-// import Storage from "./Storage";
-import { observable, action } from "mobx";
-const firebase = require("firebase");
-import AsyncStorage from "@react-native-community/async-storage";
-// import { bbsStore, userStore } from "store";
-
-// import { observer, inject } from "mobx-react";
-// @inject("bbs")
-// @inject("user")
-// @observer
+// #사용법
+// 1. import { bbsStore, userStore } from "store";
+// 2. onPress={() => userStore.addUser(1, 2, 3, 4, 5, 6, 7, 8,9,10)}
 
 export default class UserStore {
   @observable user = null;
-
-  // storeData(value) {
-  //   Storage.storeData("user", value);
-  // }
-  // async getData() {
-  //   alert("getData");
-  //   const value = await AsyncStorage.getItem(key);
-  //   alert(value);
-  //   // return
-  // }
-  //#region  Add User 회원가입
-  //EXAMPLE: onPress={() => userStore.addUser(1, 2, 3, 4, 5, 6, 7, 8,9,10)}
-  //<Button onPress={() => userStore.storeData()} title="asd"/>/
+  //addUser: 회원가입 / 사용자 추가
   addUser(
     address,
     email,
@@ -34,7 +15,8 @@ export default class UserStore {
     nickname,
     phone,
     studentcard,
-    univ
+    univ,
+    policy
   ) {
     //시간 가져오기
     fetch("http://worldtimeapi.org/api/timezone/Asia/Seoul")
@@ -58,34 +40,31 @@ export default class UserStore {
             l: univ,
             m: newkey,
             n: 0, //학생증 인증 대기중
+            o: policy,
           };
           firebase
             .database()
             .ref("user/data/" + loginid)
             .set(newUser);
           this.user = newUser;
-          // this.storeData(newUser);
         }
       });
   }
-  //#endregion
   // lockUser : 해당 기간까지 클라이언트 계정 정지
-  //onPress={() => BbsStore.hideBbs("-MDrAW9yVgYg8BSehz4e")}
   lockUser(userkey, untilDate) {
     firebase
       .database()
       .ref("bbs/data/" + userkey + "/n")
       .set(untilDate);
   }
-  // Remove bbs : 데이터를 완전히 지움
+  // removeUser : 사용자 데이터를 완전히 지움
   removeUser(userkey) {
-    //onPress={() => BbsStore.removeUser("-MDrAW9yVgYg8BSehz4e")}
     firebase
       .database()
       .ref("user/data/" + userkey)
       .set({});
   }
-  changeUserValue(userkey, props, value) {
+  changeUser(userkey, props, value) {
     //props는 a => available이런식
     firebase
       .database()
@@ -93,7 +72,6 @@ export default class UserStore {
       .set(value);
   }
   getUser(userkey) {
-    //onPress={() => BbsStore.getBbs("-MDrAW9yVgYg8BSehz4e")}
     let result = {};
     firebase
       .database()
@@ -168,11 +146,7 @@ export default class UserStore {
   printUserStore() {
     alert(JSON.stringify(this.user));
   }
-  //
-  //
-  //
-  //
-  //
+
   //
   //
   //
@@ -199,3 +173,23 @@ export default class UserStore {
     ];
   };
 }
+
+// import Storage from "./Storage";
+import { observable, action } from "mobx";
+const firebase = require("firebase");
+import AsyncStorage from "@react-native-community/async-storage";
+
+// import { observer, inject } from "mobx-react";
+// @inject("bbs")
+// @inject("user")
+// @observer
+
+// storeData(value) {
+//   Storage.storeData("user", value);
+// }
+// async getData() {
+//   alert("getData");
+//   const value = await AsyncStorage.getItem(key);
+//   alert(value);
+//   // return
+// }
