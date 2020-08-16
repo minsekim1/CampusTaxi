@@ -23,7 +23,7 @@ export default class Sign1 extends Component {
     const { navigation } = this.props;
     function next(state) {
       if (state[1] && state[2] && state[3]) {
-        navigation.navigate("회원 가입", { state: state });
+        navigation.navigate("회원 가입", { policy: state });
       } else {
         alert("필수 동의 부분이 빠져있습니다.");
       }
@@ -201,6 +201,7 @@ export class Sign2 extends React.Component {
       name: "",
       univ: "",
       error: "아무런 값이 입력되지 않았습니다.",
+      policy: this.props.route.params.policy, //마케팅 정보 등 동의 사실 전달[true, true...]
     };
   }
   //#region Firebase Phone Auth Functions
@@ -225,24 +226,25 @@ export class Sign2 extends React.Component {
     firebase
       .auth()
       .signInWithCredential(credential)
-      .then((result) => {
+      .then(() => {
         // 인증완료 작업
         userStore
           .findUserByAttributes(
             "j",
             this.state.countryNum + this.state.phoneNumber
           )
-          .then((result) => {
-            if (result != null) {
+          .then((result2) => {
+            if (result2 == null) {
               this.setState({
+                authCheck: true,
+              });
+            } else {
+              this.setState({
+                authCheck: false,
                 error: "이미 등록된 번호입니다.",
               });
-              return;
             }
           });
-        this.setState({
-          authCheck: true,
-        });
       });
   };
   onimageurlChange = (url) => {
@@ -393,25 +395,29 @@ export class Sign2 extends React.Component {
         userStore
           .findUserByAttributes("i", this.state.nickname)
           .then((result) => {
-            if (result != null) {
+            if (result == null) {
+              userStore
+                .findUserByAttributes("f", this.state.id)
+                .then((result2) => {
+                  if (result2 == null) {
+                    this.setState({
+                      signCheck: true,
+                      error: "휴대폰 및 학생증 인증을 완료해주세요.",
+                    });
+                  } else {
+                    this.setState({
+                      signCheck: false,
+                      error: "중복된 아이디가 있습니다.",
+                    });
+                  }
+                });
+            } else {
               this.setState({
+                signCheck: false,
                 error: "중복된 닉네임이 있습니다.",
               });
-              return;
             }
           });
-        userStore.findUserByAttributes("f", this.state.id).then((result) => {
-          if (result != null) {
-            this.setState({
-              error: "중복된 아이디가 있습니다.",
-            });
-            return;
-          }
-        });
-        this.setState({
-          signCheck: true,
-          error: "휴대폰 및 학생증 인증을 완료해주세요.",
-        });
       } else {
         this.setState({
           signCheck: false,
@@ -427,7 +433,6 @@ export class Sign2 extends React.Component {
   }
   //#endregion
   render() {
-    const state = this.props.route.params.state; //마케팅 정보 등 동의 사실 전달[true, true...]
     const { navigation } = this.props;
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -547,6 +552,7 @@ export class Sign2 extends React.Component {
         <Button
           title="가입 하기"
           onPress={async () => {
+            this.confirmCode;
             if (
               this.state.authCheck &&
               this.state.signCheck &&
@@ -563,9 +569,13 @@ export class Sign2 extends React.Component {
                 this.state.nickname,
                 this.state.countryNum + this.state.phoneNumber,
                 this.state.image,
-                this.state.univ
+                this.state.univ,
+                this.state.policy
               );
-              navigation.navigate("회원 가입 완료");
+              navigation.navigate("회원 가입 완료", {
+                id: this.state.id,
+                pw: this.state.pw,
+              });
             } else {
               alert(
                 "완료되지 않는 절차가 있습니다." + "\n사유:" + this.state.error
@@ -589,7 +599,10 @@ const styles = StyleSheet.create({
 export class Sign3 extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      id: this.props.route.params.id,
+      pw: this.props.route.params.pw,
+    };
   }
   render() {
     const { navigation } = this.props;
@@ -608,7 +621,16 @@ export class Sign3 extends Component {
           title="처음으로 돌아가기"
           onPress={() => navigation.navigate("로그인")}
         />
-        <Button title="로 그 인" onPress={() => navigation.navigate("home")} />
+        <Button
+          title="로 그 인"
+          onPress={() => {
+            userStore.login(this.state.id, this.state.pw).then((result) => {
+              if (result) {
+                navigation.navigate("home");
+              }
+            });
+          }}
+        />
       </View>
     );
   }

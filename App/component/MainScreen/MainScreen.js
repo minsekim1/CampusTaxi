@@ -1,7 +1,14 @@
 //#region imports
 import React, { Component, useState, useEffect } from "react";
-import { View, Text, Image, TouchableHighlight, Button } from "react-native";
-
+import {
+  View,
+  Text,
+  Image,
+  TouchableHighlight,
+  Button,
+  BackHandler,
+  ToastAndroid,
+} from "react-native";
 import campusStyle from "style";
 import ad from "image/ad.png";
 import school from "image/school.png";
@@ -9,31 +16,31 @@ import bus from "image/bus.png";
 import pen from "image/pen.png";
 import study from "image/study.png";
 import game from "image/game.png";
-import crown from "image/crown.png";
 import party from "image/party.png";
 import club from "image/club.png";
 import ski from "image/ski.png";
 import ocean from "image/ocean.png";
 
-import { observer, inject } from "mobx-react";
-//#endregion
-
-// 첫 시작 메인화면
-// @inject("bbs")
-// @inject("user")
-// @observer
 class HomeScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = { userkey: "", clientPassword: "" };
+    this.state = {};
   }
+
+  componentDidMount() {
+    BackHandler.addEventListener("hardwareBackPress", this.handleBackButton);
+  }
+  componentWillUnmount() {
+    BackHandler.removeEventListener("hardwareBackPress", this.handleBackButton);
+  }
+  handleBackButton() {
+    //ToastAndroid.show("Back button is pressed", ToastAndroid.SHORT);
+    return true;
+  }
+
   render() {
     const { navigation } = this.props;
-    const adImageSrc = "../../Assets/Images/ad.png";
     // 메인화면 버튼 부분
-    // useEffect(() => {
-    //   route.params ? setUserkey(route.params.userkey) : null;
-    // }, []);
     function MenuItem({ navigation, imageURL, filter }) {
       return (
         <TouchableHighlight
@@ -43,9 +50,6 @@ class HomeScreen extends Component {
           onPress={() =>
             navigation.navigate("모든 채팅방 목록", {
               filter: filter,
-              myname: "민성",
-              mygender: "man",
-              userkey: "asdfg", //userkey,
             })
           }
         >

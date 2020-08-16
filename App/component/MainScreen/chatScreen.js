@@ -16,56 +16,26 @@ import campusStyle from "style";
 import DateTimePicker from "@react-native-community/datetimepicker"; //방생성시간picker
 import crown from "image/crown.png";
 const firebase = require("firebase");
+import { bbsStore, userStore } from "store";
 //#endregion
 
 //채팅목록 화면
 export default function chatScreen({ route, navigation }) {
   //#region Hooks & functions
-  const [roomList, setRoomList] = useState(null);
-  const userkey = route.params.userkey;
-
-  const [title, changeTitle] = useState("title1");
-
-  <Button onPress={() => changeTitle("title2")} />;
-
+  const [roomList, setRoomList] = useState(bbsStore.bbs);
+  const userkey = userStore.user.f;
   useEffect(() => {
-    firebase //bbs에서 데이터를 가져와서 firebase json 형식에서 flatlist하기 좋은 형식으로 키값을 JSON 안으로 넣는다.
-      .database()
-      .ref("bbs/data")
-      .once("value", function (snapshot) {
-        let resultRoom = [];
-        snapshot.forEach((snap) => {
-          let item = snap.val();
-          item.key = snap.key;
-          resultRoom.push(item);
-        });
-        setRoomList(resultRoom);
-      });
-    // alert(JSON.stringify(route.params));
+    bbsStore.getAllBbs();
+    bbsStore.print();
     updateUserdata(userkey);
     placeUpdate();
   }, [userkey]);
   const filter = route.params.filter;
 
   //#region 유저정보 업데이트
-  const [myname, setMyname] = useState(route.params.myname);
-  const [mygender, setMygender] = useState(route.params.mygender);
-  function updateUserdata(userkey) {
-    getMyname(userkey);
-    getMygender(userkey);
-  }
-  function getMyname(userkey) {
-    firebase
-      .database()
-      .ref("user/data/" + userkey + "/h")
-      .once("value", (snapshot) => setMyname(snapshot.val()));
-  }
-  function getMygender(userkey) {
-    firebase
-      .database()
-      .ref("user/data/" + userkey + "/d")
-      .once("value", (snapshot) => setMygender(snapshot.val()));
-  }
+  const [myname, setname] = useState(userStore.user.h);
+  const [mygender, setgender] = useState(userStore.user.d);
+  function updateUserdata(userkey) {}
   //유저가 들어간 채팅방의 개수를 알려줍니다.
   const [myRoomCount, setMyRoomCount] = useState(0);
   async function checkUserEnterChatRoom() {
@@ -94,7 +64,7 @@ export default function chatScreen({ route, navigation }) {
   const [createRoompersonmax, setCreateRoompersonmax] = useState(4);
   const [createRoomstartplace, setCreateRoomstartplace] = useState();
   const [createRoomendplace, setCreateRoomendplace] = useState();
-  const [createRoomGender, setCreateRoomGender] = useState(1);
+  const [createRoomGender, setCreateRoomGender] = useState(userStore.user.d);
 
   const [startplace, setStartplace] = useState([]);
   const [endplace, setEndplace] = useState([]);
@@ -541,7 +511,7 @@ export default function chatScreen({ route, navigation }) {
                 buttonStyle={campusStyle.Button.groupActive}
                 title="방 생성"
                 onPress={() => {
-                  BbsStore.addBbs(
+                  bbsStore.addBbs(
                     createRoomCategory,
                     createRoomendplace,
                     createRoomGender,
@@ -549,7 +519,7 @@ export default function chatScreen({ route, navigation }) {
                     date,
                     createRoompersonmax,
                     createRoomstartplace,
-                    UserStore.user.m
+                    userStore.user.m
                   );
                   setCreateRoomVisible(!isCreateRoomVisible);
                 }}
@@ -580,11 +550,7 @@ export default function chatScreen({ route, navigation }) {
                 style: campusStyle.Modal.component,
               }}
             />
-            <Input
-              type="text"
-              name="Search"
-              autoFocus
-            />
+            <Input type="text" name="Search" autoFocus />
             <Button
               title="Hide modal"
               onPress={() => {
@@ -719,10 +685,7 @@ export default function chatScreen({ route, navigation }) {
                 setFilterVisible(!isFilterVisible);
               }}
             />
-            <Button
-              title="Check"
-              onPress="() => {}"
-            />
+            <Button title="Check" onPress="() => {}" />
           </View>
         </Modal>
       ) : null}

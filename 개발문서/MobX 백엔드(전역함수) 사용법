@@ -24,7 +24,7 @@ import { bbsStore, userStore } from "store";
  userStore.getUser(userkey)
  userStore.updateUser(userkey)
  userStore.login(userid, userpassword)
- userStore.printUserStore()
+ userStore.print()
  userStore.findUserByAttributes(attributes, value)
 
  BbsStore 함수

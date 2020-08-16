@@ -1,9 +1,9 @@
 import AsyncStorage from "@react-native-community/async-storage";
 import { observable } from "mobx";
 const firebase = require("firebase");
+import _ from "lodash";
 
 // import { bbsStore, userStore } from "store";
-
 export default class BbsStore {
   // "availableA" : "int",
   // "bbskeyB" : "String",
@@ -20,18 +20,23 @@ export default class BbsStore {
   // "personpresentM" : "int",
   // "startplaceN" : "string:DB"
   @observable bbs = [];
+  async getAllBbs() {
+    //onPress={() => BbsStore.getBbs("-MDrAW9yVgYg8BSehz4e")}
+    let result = [];
+    await firebase //bbs에서 데이터를 가져와서 firebase json 형식에서 flatlist하기 좋은 형식으로 키값을 JSON 안으로 넣는다.
+      .database()
+      .ref("bbs/data")
+      .once("value", (snap) => {
+        snap.forEach((i) => {
+          result.push(_.cloneDeep(i));
+        });
+      });
+    this.bbs = result;
+  }
+  print() {
+    alert(JSON.stringify(this.bbs));
+  }
 
-  //#region  Add bbs
-  /*
-  EXAMPLE:
-  onPress={() => bbsStore.addBbs(bbstype,endplace,gender,leadername,meetingdate,personmax,startplace,makerKey)}
-  */
-  addNum() {
-    this.bbs = [22];
-  }
-  addNum2() {
-    this.bbs = [33];
-  }
   addBbs( //c, g, h, i, j, k, n
     bbstype,
     endplace,
@@ -200,37 +205,4 @@ export default class BbsStore {
         return JSON.stringify(result);
       });
   }
-
-  printBbsStore() {
-    alert(this.bbs);
-  }
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  // 샘플
-  // Increment counterNum
-  handleIncrement = ({ index }) => {
-    this.bbs = [
-      ...this.bbs.slice(0, index),
-      {
-        counterNum: this.bbs[index].counterNum + 1,
-      },
-      ...this.bbs.slice(index + 1, this.bbs.length),
-    ];
-  };
-  // Decrement counterNum
-  handleDecrement = ({ index }) => {
-    this.bbs = [
-      ...this.bbs.slice(0, index),
-      {
-        counterNum: this.bbs[index].counterNum - 1,
-      },
-      ...this.bbs.slice(index + 1, this.bbs.length),
-    ];
-  };
 }

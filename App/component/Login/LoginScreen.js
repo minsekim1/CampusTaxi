@@ -6,13 +6,15 @@ import { bbsStore, userStore } from "store";
 export default class LoginScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = { clientName: "", clientPassword: "" };
+    this.state = { id: "", pw: "" };
   }
   render() {
     const { navigation } = this.props;
     function login(id, pw) {
       userStore.login(id, pw).then((result) => {
-        if (result) navigation.navigate("home");
+        if (result) {
+          navigation.navigate("home");
+        }
       });
     }
     return (
@@ -27,11 +29,9 @@ export default class LoginScreen extends Component {
             borderBottomWidth: 2,
             width: "60%",
           }}
-          value={this.state.clientName}
-          onChangeText={(textEntry) => this.setState({ clientName: textEntry })}
-          onSubmitEditing={() =>
-            login(this.state.clientName, this.state.clientPassword)
-          }
+          value={this.state.id}
+          onChangeText={(textEntry) => this.setState({ id: textEntry })}
+          onSubmitEditing={() => login(this.state.id, this.state.pw)}
         />
         <TextInput
           placeholder="비밀번호을 입력해주세요"
@@ -42,19 +42,13 @@ export default class LoginScreen extends Component {
             borderBottomWidth: 2,
             width: "60%",
           }}
-          value={this.state.clientPassword}
-          onChangeText={(textEntry) =>
-            this.setState({ clientPassword: textEntry })
-          }
-          onSubmitEditing={() =>
-            login(this.state.clientName, this.state.clientPassword)
-          }
+          value={this.state.pw}
+          onChangeText={(textEntry) => this.setState({ pw: textEntry })}
+          onSubmitEditing={() => login(this.state.id, this.state.pw)}
         />
         <Button
           title="로그인하기"
-          onPress={() =>
-            login(this.state.clientName, this.state.clientPassword)
-          }
+          onPress={() => login(this.state.id, this.state.pw)}
         />
         <Button
           title="아이디찾기"

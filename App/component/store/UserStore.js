@@ -143,7 +143,7 @@ export default class UserStore {
     return result;
   }
 
-  printUserStore() {
+  print() {
     alert(JSON.stringify(this.user));
   }
   async findUserByAttributes(attributes, value) {
