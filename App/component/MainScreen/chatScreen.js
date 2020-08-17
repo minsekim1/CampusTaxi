@@ -1,7 +1,14 @@
 //#region imports
 import React, { useState, useEffect } from "react";
-import { View, FlatList, Image, TouchableOpacity, Picker } from "react-native";
-import Modal from "react-native-modal";
+import {
+  View,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  Picker,
+  Modal,
+} from "react-native";
+// import Modal from "react-native-modal";
 import {
   Header,
   ListItem,

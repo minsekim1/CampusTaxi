@@ -5,6 +5,11 @@ import LoginScreen from "./LoginScreen";
 import Sign1, { Sign2, Sign3 } from "./Sign";
 import FindId1, { FindId2, FindId3 } from "./FindId";
 import FindPw1, { FindPw2, FindPw3, FindPw4, FindPw5 } from "./FindPw";
+
+//외주 부분
+import Login from "./Login";
+import WebLogin from "./WebLogin";
+
 import {
   clientpagePolicy1,
   clientpagePolicy2,
@@ -17,8 +22,11 @@ const Stack = createStackNavigator();
 
 export default function LoginNav() {
   return (
-    <NavigationContainer>
+    <NavigationContainer independent={true}>
       <Stack.Navigator>
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="WebLogin" component={WebLogin} />
+
         <Stack.Screen
           name="로그인"
           component={LoginScreen}
