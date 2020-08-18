@@ -8,9 +8,10 @@ import {
   TextInput,
   Image,
   StyleSheet,
+  ScrollView,
+  CheckBox,
 } from "react-native";
 import { bbsStore, userStore } from "store";
-import { CheckBox } from "react-native";
 
 export default class Sign1 extends Component {
   constructor(props) {
@@ -29,142 +30,184 @@ export default class Sign1 extends Component {
       }
     }
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>이용동의</Text>
-        <CheckBox
-          disabled={false}
-          value={this.state.check[0]}
-          onValueChange={() => {
-            let checkReturn = this.state.check;
-            checkReturn[0] = !checkReturn[0];
-            checkReturn = [
-              checkReturn[0],
-              checkReturn[0],
-              checkReturn[0],
-              checkReturn[0],
-              checkReturn[0],
-              checkReturn[0],
-              checkReturn[0],
-              checkReturn[0],
-            ];
-            this.setState({
-              check: checkReturn,
-            });
-          }}
-        />
-        <Text>캠퍼스 택시의 모든 운영원칙에 동의</Text>
-        <CheckBox
-          disabled={false}
-          value={this.state.check[1]}
-          onValueChange={() => {
-            let checkReturn = this.state.check;
-            checkReturn[1] = !checkReturn[1];
-            this.setState({
-              check: checkReturn,
-            });
-          }}
-        />
-        <Text>서비스 이용약관 (필수)</Text>
-        <Button
-          title="자세히보기"
-          onPress={() => navigation.navigate("서비스 이용약관")}
-        />
-        <CheckBox
-          disabled={false}
-          value={this.state.check[2]}
-          onValueChange={() => {
-            let checkReturn = this.state.check;
-            checkReturn[2] = !checkReturn[2];
-            this.setState({
-              check: checkReturn,
-            });
-          }}
-        />
-        <Text>개인정보 처리방침 (필수)</Text>
-        <Button
-          title="자세히보기"
-          onPress={() => navigation.navigate("개인정보처리방침")}
-        />
+      <View style={Terms.terms_container}>
+        {/* 필수 동의 란 */}
+          <View style={[Terms.nt_item, {marginBottom:40,}]}>
+            <CheckBox
+              style={Terms.term_CheckBox}
+              disabled={false}
+              value={this.state.check[0]}
+              onValueChange={() => {
+                let checkReturn = this.state.check;
+                checkReturn[0] = !checkReturn[0];
+                checkReturn = [
+                  checkReturn[0],
+                  checkReturn[0],
+                  checkReturn[0],
+                  checkReturn[0],
+                  checkReturn[0],
+                  checkReturn[0],
+                  checkReturn[0],
+                  checkReturn[0],
+                ];
+                this.setState({
+                  check: checkReturn,
+                });
+              }}
+            />
+            <Text style={Terms.nt_item_text}>캠퍼스 택시의 모든 운영원칙에 동의</Text>
+          </View>
 
-        <CheckBox
-          disabled={false}
-          value={this.state.check[3]}
-          onValueChange={() => {
-            let checkReturn = this.state.check;
-            checkReturn[3] = !checkReturn[3];
-            this.setState({
-              check: checkReturn,
-            });
-          }}
-        />
-        <Text>위치정보 이용약관(필수)</Text>
-        <Button
-          title="자세히보기"
-          onPress={() => navigation.navigate("위치정보 이용약관")}
-        />
-        <CheckBox
-          disabled={false}
-          value={this.state.check[4]}
-          onValueChange={() => {
-            let checkReturn = this.state.check;
-            checkReturn[4] = !checkReturn[4];
-            checkReturn = [
-              this.state.check[0],
-              this.state.check[1],
-              this.state.check[2],
-              this.state.check[3],
-              checkReturn[4],
-              checkReturn[4],
-              checkReturn[4],
-              checkReturn[4],
-            ];
-            this.setState({
-              check: checkReturn,
-            });
-          }}
-        />
-        <Text>마케팅 정보 수신 (선택)</Text>
-        <Button
-          title="자세히보기"
-          onPress={() => navigation.navigate("마케팅 정보 수신")}
-        />
-        <CheckBox
-          disabled={false}
-          value={this.state.check[5]}
-          onValueChange={() => {
-            let checkReturn = this.state.check;
-            checkReturn[5] = !checkReturn[5];
-            this.setState({
-              check: checkReturn,
-            });
-          }}
-        />
-        <Text>앱 Push</Text>
-        <CheckBox
-          disabled={false}
-          value={this.state.check[6]}
-          onValueChange={() => {
-            let checkReturn = this.state.check;
-            checkReturn[6] = !checkReturn[6];
-            this.setState({
-              check: checkReturn,
-            });
-          }}
-        />
-        <Text>SMS</Text>
-        <CheckBox
-          disabled={false}
-          value={this.state.check[7]}
-          onValueChange={() => {
-            let checkReturn = this.state.check;
-            checkReturn[7] = !checkReturn[7];
-            this.setState({
-              check: checkReturn,
-            });
-          }}
-        />
-        <Text>이메일</Text>
-        <Button title="다음" onPress={() => next(this.state.check)} />
+          <View style={Terms.nt_item}>
+            <CheckBox
+              disabled={false}
+              value={this.state.check[1]}
+              onValueChange={() => {
+                let checkReturn = this.state.check;
+                checkReturn[1] = !checkReturn[1];
+                this.setState({
+                  check: checkReturn,
+                });
+              }}
+            />
+            <Text style={Terms.nt_item_text}>서비스 이용약관 (필수)</Text>
+            <View style={{flex:1, alignItems: "flex-end"}}>
+              <TouchableOpacity onPress={() => navigation.navigate("서비스 이용약관")} >
+              <Text style={Terms.detail}> 자세히보기 </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={Terms.nt_item}>
+            <CheckBox
+              disabled={false}
+              value={this.state.check[2]}
+              onValueChange={() => {
+                let checkReturn = this.state.check;
+                checkReturn[2] = !checkReturn[2];
+                this.setState({
+                  check: checkReturn,
+                });
+              }}
+            />
+            <Text style={Terms.nt_item_text}>개인정보 처리방침 (필수)</Text>
+            <View style={{flex:1, alignItems: "flex-end"}}>
+              <TouchableOpacity onPress={() => navigation.navigate("개인정보처리방침")} >
+              <Text style={Terms.detail}> 자세히보기 </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={Terms.nt_item}>
+            <CheckBox
+              disabled={false}
+              value={this.state.check[3]}
+              onValueChange={() => {
+                let checkReturn = this.state.check;
+                checkReturn[3] = !checkReturn[3];
+                this.setState({
+                  check: checkReturn,
+                });
+              }}
+            />
+            <Text style={Terms.nt_item_text}>위치정보 이용약관(필수)</Text>
+            <View style={{flex:1, alignItems: "flex-end"}}>
+              <TouchableOpacity onPress={() => navigation.navigate("위치정보 이용약관")} >
+              <Text style={Terms.detail}> 자세히보기 </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* 선택 동의 란 */}
+          <View style={[Terms.nt_item, {marginBottom:20, }]}>
+            <CheckBox
+              disabled={false}
+              value={this.state.check[4]}
+              onValueChange={() => {
+                let checkReturn = this.state.check;
+                checkReturn[4] = !checkReturn[4];
+                checkReturn = [
+                  this.state.check[0],
+                  this.state.check[1],
+                  this.state.check[2],
+                  this.state.check[3],
+                  checkReturn[4],
+                  checkReturn[4],
+                  checkReturn[4],
+                  checkReturn[4],
+                ];
+                this.setState({
+                  check: checkReturn,
+                });
+              }}
+            />
+            <Text style={Terms.nt_item_text}>마케팅 정보 수신 (선택)</Text>
+            <View style={{flex:1, alignItems: "flex-end"}}>
+              <TouchableOpacity onPress={() => navigation.navigate("마케팅 정보 수신")} >
+              <Text style={Terms.detail}> 자세히보기 </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+        {/*여기서 부터 선택 View*/}
+        <View style={Terms.not_necessary_temrs}> 
+          <View style={Terms.nnt_item}>
+            <CheckBox
+              disabled={false}
+              value={this.state.check[5]}
+              onValueChange={() => {
+                let checkReturn = this.state.check;
+                checkReturn[5] = !checkReturn[5];
+                this.setState({
+                  check: checkReturn,
+                });
+              }}
+            />
+            <Text>앱 Push</Text>
+          </View>
+          
+          <View style={Terms.nnt_item}>
+            <CheckBox
+              disabled={false}
+              value={this.state.check[6]}
+              onValueChange={() => {
+                let checkReturn = this.state.check;
+                checkReturn[6] = !checkReturn[6];
+                this.setState({
+                  check: checkReturn,
+                });
+              }}
+            />
+            <Text>SMS</Text>
+          </View>
+
+          <View style={Terms.nnt_item}>
+            <CheckBox
+              disabled={false}
+              value={this.state.check[7]}
+              onValueChange={() => {
+                let checkReturn = this.state.check;
+                checkReturn[7] = !checkReturn[7];
+                this.setState({
+                  check: checkReturn,
+                });
+              }}
+            />
+            <Text>이메일</Text>
+          </View>
+
+          <Text style={{fontSize: 12, color: "#a9a9a9"}}> * 선택 약관에 동의하지 않아도 회원가입이 가능합니다. </Text>
+        </View>
+
+        <View style={button_style.next_button}>
+            <TouchableOpacity 
+              style={{width: "100%"}}
+              onPress={() => next(this.state.check)} 
+            >
+              <Text style={{color: "#ffffff", fontSize: 20, textAlign:"center"}}> 다음 </Text>
+            </TouchableOpacity>
+        </View>
+      
       </View>
     );
   }
@@ -435,155 +478,257 @@ export class Sign2 extends React.Component {
   render() {
     const { navigation } = this.props;
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>{this.state.result}</Text>
-        <CheckBox disabled={true} value={this.state.authCheck} />
-        <Text>{this.state.authCheck ? "휴대폰 인증 완료" : "휴대폰 인증"}</Text>
-        <Picker
-          selectedValue={this.state.countryNum}
-          style={{ height: 30, width: 130 }}
-          onValueChange={(itemValue, itemIndex) =>
-            this.setState({ countryNum: itemValue })
-          }
-          // https://ko.wikipedia.org/wiki/국제전화_나라_번호
-        >
-          <Picker.Item label="대한민국(+82)" value="+82" />
-          <Picker.Item label="북한(+850)" value="+850" />
-          <Picker.Item label="인도네시아(+62)" value="+850" />
-        </Picker>
-        <TextInput
-          value={this.state.phoneNumber}
-          onChangeText={(val) => this.onChangedPhoneNumber(val)}
-          keyboardType="number-pad"
-          maxLength={14}
-          placeholder="01012341234"
-          autoCompleteType="tel"
-        />
-        <TouchableOpacity onPress={this.sendVerification}>
-          <Text>인증번호 전송</Text>
-        </TouchableOpacity>
-        <TextInput
-          value={this.state.authNum}
-          onChangeText={(val) => this.onChangedauthNum(val)}
-          keyboardType="number-pad"
-          maxLength={8}
-          placeholder="12345678"
-        />
-        <TouchableOpacity onPress={this.confirmCode}>
-          <Text>인증번호 확인</Text>
-        </TouchableOpacity>
+    <ScrollView>
+    <View style={{ flex: 1, margin:20, marginLeft:30, marginRight: 30,}}>
+      
+      {/* 휴대폰 인증 start*/}
+      <View style={{marginBottom: 70,}}>
+        <View style={SignIn.complete_alert_checkbox}>
+          <Text>{this.state.result}</Text>
+          <CheckBox disabled={true} value={this.state.authCheck} />
+          <Text>{this.state.authCheck ? "휴대폰 인증 완료" : "휴대폰 인증"}</Text>
+        </View>
+
+        <View>
+          <Picker
+            selectedValue={this.state.countryNum}
+            style={{ height: 30, width: 140 }}
+            onValueChange={(itemValue, itemIndex) =>
+              this.setState({ countryNum: itemValue })
+            }
+            // https://ko.wikipedia.org/wiki/국제전화_나라_번호
+          >
+            <Picker.Item label="대한민국(+82)" value="+82" />
+            <Picker.Item label="북한(+850)" value="+850" />
+            <Picker.Item label="인도네시아(+62)" value="+850" />
+          </Picker>
+          <View style={SignIn.phone_auth}>
+            <View style={SignIn.input}>
+            <TextInput
+              value={this.state.phoneNumber}
+              onChangeText={(val) => this.onChangedPhoneNumber(val)}
+              keyboardType="number-pad"
+              maxLength={14}
+              placeholder="01012341234"
+              autoCompleteType="tel"
+              style={{fontSize: 15,}}
+            />
+            </View>
+            <View style={SignIn.auth_button}>
+              <TouchableOpacity onPress={this.sendVerification}>
+                <Text style={{color: "#ffffff", fontSize: 12, textAlign: "center"}}>인증번호 전송</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+
+          <View style={[SignIn.phone_auth, {marginTop:10,}]}>
+            <View style={SignIn.input}>
+              <TextInput
+                value={this.state.authNum}
+                onChangeText={(val) => this.onChangedauthNum(val)}
+                keyboardType="number-pad"
+                maxLength={8}
+                placeholder="12345678"
+                style={{fontSize: 15,}}
+              />
+            </View>
+            <View style={SignIn.auth_button}>
+              <TouchableOpacity onPress={this.confirmCode}>
+                <Text style={{color: "#ffffff", fontSize: 12, textAlign: "center"}}>인증번호 확인</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+      </View>
+
         <FirebaseRecaptchaVerifierModal
           ref={this.recaptchaVerifier}
           firebaseConfig={firebase.app().options}
         />
-        <CheckBox disabled={true} value={this.state.signCheck} />
-        <Text>
-          {this.state.signCheck ? "회원 정보 입력 완료" : "회원 정보 입력"}
-        </Text>
-        <TextInput
-          value={this.state.nickname}
-          onChangeText={(val) => this.onChangednickname(val)}
-          maxLength={20}
-          placeholder="파리의택시드라이버"
-        />
-        <TextInput
-          value={this.state.id}
-          onChangeText={(val) => this.onChangedid(val)}
-          maxLength={20}
-          placeholder="slsl7862"
-        />
-        <TextInput
-          value={this.state.pw}
-          onChangeText={(val) => this.onChangedpw(val)}
-          maxLength={20}
-          placeholder="비밀번호"
-        />
-        <TextInput
-          value={this.state.pwCheck}
-          onChangeText={(val) => this.onChangedpwCheck(val)}
-          maxLength={20}
-          placeholder="비밀번호확인"
-        />
-        <Text>성별</Text>
-        <Button
-          title="남자"
-          onPress={() => this.onChangedgender(0)}
-          color={this.state.gender == 0 ? "#E5AF0B" : "#CBCED7"}
-        />
-        <Button
-          title="여자"
-          onPress={() => this.onChangedgender(1)}
-          color={this.state.gender == 1 ? "#E5AF0B" : "#CBCED7"}
-        />
-        <TextInput
-          value={this.state.email}
-          onChangeText={(val) => this.onChangedemail(val)}
-          maxLength={40}
-          placeholder="이메일(선택) campustaxi@naver.com"
-        />
-        <TextInput
-          value={this.state.address}
-          onChangeText={(val) => this.onChangedaddress(val)}
-          maxLength={40}
-          placeholder="주소(선택) 서울 강북구 덕릉로52"
-        />
-        <CheckBox disabled={true} value={this.state.studentcardCheck} />
-        <Text>
-          {this.state.studentcardCheck ? "학생증 제출 완료" : "학생증 인증"}
-        </Text>
-        <Button title="학생증 사진 선택" onPress={this.onChooseImagePress} />
+      {/* 휴대폰 인증 end */}
 
+
+      {/* 회원정보 입력 start */}
+        <View style={SignIn.complete_alert_checkbox}>
+          <CheckBox disabled={true} value={this.state.signCheck} />
+          <Text>
+            {this.state.signCheck ? "회원 정보 입력 완료" : "회원 정보 입력"}
+          </Text>
+        </View>
+        
+        <View style={{marginBottom: 20,}}>
+          <Text style={{fontSize: 11, marginBottom: 2, color: "#7D849B"}}> 닉네임 </Text>
+          <View style={SignIn.input}>
+            <TextInput
+              value={this.state.nickname}
+              onChangeText={(val) => this.onChangednickname(val)}
+              maxLength={20}
+              placeholder="파리의택시드라이버"
+              style={{fontSize: 16, marginBottom: 5,}}
+            />
+          </View>
+        </View>
+
+        <View style={{marginBottom: 20,}}>
+          <Text style={{fontSize: 11, marginBottom: 2, color: "#7D849B"}}> 아이디 </Text>
+            <View style={SignIn.input}>
+              <TextInput
+                value={this.state.id}
+                onChangeText={(val) => this.onChangedid(val)}
+                maxLength={20}
+                placeholder="slsl7862"
+                style={{fontSize: 16, marginBottom: 5,}}
+              />
+            </View>
+        </View>
+
+        <View style={{marginBottom: 20,}}>
+          <Text style={{fontSize: 11, marginBottom: 2, color: "#7D849B"}}> 비밀번호 </Text>
+            <View style={SignIn.input}>
+              <TextInput
+                value={this.state.pw}
+                onChangeText={(val) => this.onChangedpw(val)}
+                maxLength={20}
+                placeholder="비밀번호"
+                style={{fontSize: 16, marginBottom: 5,}}
+              />
+            </View>
+        </View>
+
+        <View style={{marginBottom: 20,}}>
+          <Text style={{fontSize: 11, marginBottom: 2, color: "#7D849B"}}> 비밀번호 확인 </Text>
+          <View style={SignIn.input}>
+          <TextInput
+            value={this.state.pwCheck}
+            onChangeText={(val) => this.onChangedpwCheck(val)}
+            maxLength={20}
+            placeholder="비밀번호확인"
+            style={{fontSize: 16, marginBottom: 5,}}
+          />
+          </View>
+        </View>
+
+        <View style={{flex:1, width: 100}}>
+          <Text style={{fontSize: 11, marginBottom: 2, color: "#7D849B"}}> 성별 </Text>
+          <Button
+            title="남자"
+            onPress={() => this.onChangedgender(0)}
+            color={this.state.gender == 0 ? "#E5AF0B" : "#CBCED7"}
+          />
+          <Button
+            title="여자"
+            onPress={() => this.onChangedgender(1)}
+            color={this.state.gender == 1 ? "#E5AF0B" : "#CBCED7"}
+          />
+        </View>
+
+        <View style={{marginBottom: 20, marginTop: 30,}}>
+          <Text style={{fontSize: 11, marginBottom: 2, color: "#7D849B"}}> 이메일 (선택) </Text>
+          <View style={SignIn.input}>
+            <TextInput
+              value={this.state.email}
+              onChangeText={(val) => this.onChangedemail(val)}
+              maxLength={40}
+              placeholder="이메일(선택) campustaxi@naver.com"
+            />
+          </View>
+        </View>
+        
+        <View style={{marginBottom: 20,}}>
+          <Text style={{fontSize: 11, marginBottom: 2, color: "#7D849B"}}> 주소 (선택) </Text>
+          <View style={SignIn.input}>
+            <TextInput
+              value={this.state.address}
+              onChangeText={(val) => this.onChangedaddress(val)}
+              maxLength={40}
+              placeholder="주소(선택) 서울 강북구 덕릉로52"
+            />
+          </View>
+        </View>
+        {/* 회원정보 입력 end */}
+
+
+
+        {/* 학생증 start */}
+        <View style={[SignIn.complete_alert_checkbox, {marginTop: 50,}]}>
+          <CheckBox disabled={true} value={this.state.studentcardCheck} />
+          <Text>
+            {this.state.studentcardCheck ? "학생증 제출 완료" : "학생증 인증"}
+          </Text>
+        </View>
+
+        <Button title="학생증 사진 선택" onPress={this.onChooseImagePress} />
         <Image
           style={styles.logo}
           source={this.state.image ? { uri: this.state.image } : null}
         />
-        <TextInput
-          value={this.state.name}
-          onChangeText={(val) => this.onChangedname(val)}
-          maxLength={40}
-          placeholder="이름(본명) 윤수정"
-        />
-        <TextInput
-          value={this.state.univ}
-          onChangeText={(val) => this.onChangeduniv(val)}
-          maxLength={40}
-          placeholder="학교 택시 대학교"
-        />
-        <Button
-          title="가입 하기"
-          onPress={async () => {
-            this.confirmCode;
-            if (
-              this.state.authCheck &&
-              this.state.signCheck &&
-              this.state.studentcardCheck
-            ) {
-              this.uploadImage(this.state.image, "studentcard");
-              await userStore.addUser(
-                this.state.address,
-                this.state.email,
-                this.state.gender,
-                this.state.id,
-                this.state.pw,
-                this.state.name,
-                this.state.nickname,
-                this.state.countryNum + this.state.phoneNumber,
-                this.state.image,
-                this.state.univ,
-                this.state.policy
-              );
-              navigation.navigate("회원 가입 완료", {
-                id: this.state.id,
-                pw: this.state.pw,
-              });
-            } else {
-              alert(
-                "완료되지 않는 절차가 있습니다." + "\n사유:" + this.state.error
-              );
-            }
-          }}
-        />
-      </View>
+
+        <View style={{marginBottom: 20,}}>
+          <Text style={{fontSize: 11, marginBottom: 2, color: "#7D849B"}}> 이름 [본명] </Text>
+          <View style={SignIn.input}>
+            <TextInput
+              value={this.state.name}
+              onChangeText={(val) => this.onChangedname(val)}
+              maxLength={40}
+              placeholder="이름(본명) 윤수정"
+            />
+          </View>
+        </View>
+
+        <View style={{marginBottom: 20,}}>
+          <Text style={{fontSize: 11, marginBottom: 2, color: "#7D849B"}}> 학교 </Text>
+          <View style={SignIn.input}>
+            <TextInput
+              value={this.state.univ}
+              onChangeText={(val) => this.onChangeduniv(val)}
+              maxLength={40}
+              placeholder="학교 택시 대학교"
+            />
+          </View>
+        </View>
+
+    </View>
+
+    <View style={button_style.next_button}>
+      <TouchableOpacity
+        style={{width: "100%"}}
+        onPress={async () => {
+          this.confirmCode;
+          if (
+            this.state.authCheck &&
+            this.state.signCheck &&
+            this.state.studentcardCheck
+          ) {
+            this.uploadImage(this.state.image, "studentcard");
+            await userStore.addUser(
+              this.state.address,
+              this.state.email,
+              this.state.gender,
+              this.state.id,
+              this.state.pw,
+              this.state.name,
+              this.state.nickname,
+              this.state.countryNum + this.state.phoneNumber,
+              this.state.image,
+              this.state.univ,
+              this.state.policy
+            );
+            navigation.navigate("회원 가입 완료", {
+              id: this.state.id,
+              pw: this.state.pw,
+            });
+          } else {
+            alert(
+              "완료되지 않는 절차가 있습니다." + "\n사유:" + this.state.error
+            );
+          }
+        }}
+      > 
+        <Text style={{color: "#ffffff", fontSize: 20, textAlign:"center"}}> 가입하기 </Text>
+      </TouchableOpacity>
+    </View>
+
+    </ScrollView>
     );
   }
 }
@@ -592,7 +737,9 @@ const styles = StyleSheet.create({
   // 학생증 인증 사진 출력하는 css.infile
   logo: {
     width: 300,
-    height: 100,
+    height: 150,
+    alignSelf: "center",
+    marginTop: 15,
   },
 });
 
@@ -635,3 +782,78 @@ export class Sign3 extends Component {
     );
   }
 }
+
+
+
+const Terms = StyleSheet.create({
+  terms_container: { //nt
+    flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    margin:20,
+  },
+  nt_item: { //necessary_terms_item
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginBottom: 30,
+    justifyContent: "center",
+  },
+  nt_item_text: {
+    fontSize: 15,
+    textAlignVertical: "center",
+  },
+  not_necessary_temrs: { //nnt
+    flex: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "flex-end",
+  },
+  nnt_item: { //not_necessary_temrs_item
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  detail: {
+    color: "#a9a9a9",
+    fontSize: 12,
+  }
+})
+
+
+const SignIn = StyleSheet.create({
+  complete_alert_checkbox: {
+    flex:1,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  phone_auth: {
+    flex:1,
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  input: {
+    flex: 3,
+    borderBottomColor: "#a9a9a9",
+    borderBottomWidth: 1,
+  },
+  auth_button: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "#162A64",
+    marginLeft: 10,
+  },
+})
+
+
+const button_style = StyleSheet.create({
+  next_button: {
+    backgroundColor: "#162A64",
+    height: 50,
+    margin: 0,
+    alignSelf: "center",
+    justifyContent: "center", 
+    width: "100%",
+  },
+})
