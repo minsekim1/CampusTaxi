@@ -24,8 +24,16 @@ export default function LoginNav() {
   return (
     <NavigationContainer independent={true}>
       <Stack.Navigator>
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="WebLogin" component={WebLogin} />
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="WebLogin"
+          component={WebLogin}
+          options={{ headerShown: false }}
+        />
 
         <Stack.Screen
           name="로그인"
