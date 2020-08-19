@@ -325,12 +325,6 @@ function clientpage({ navigation }) {
           </Text>
           <Text style={{ marginBottom: 10 }}>{userStore.user.l}</Text>
         </View>
-        <View style={{ flex: 1 }}>
-          <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
-            학과
-          </Text>
-          <Text style={{ marginBottom: 10 }}>컴퓨터메카트로...</Text>
-        </View>
       </View>
       <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
       <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
@@ -365,7 +359,13 @@ function clientpage({ navigation }) {
       <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
         학생증인증
       </Text>
-      <Text style={{ marginBottom: 10, color: "#27BE5E" }}>
+      <Text
+        style={
+          userStore.user.n == 1
+            ? { marginBottom: 10, color: "#27BE5E" }
+            : { marginBottom: 10, color: "#F83C3C" }
+        }
+      >
         {userStore.user.n == 1 ? "완료" : "인증처리중"}
       </Text>
       <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
