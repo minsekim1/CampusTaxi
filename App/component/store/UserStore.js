@@ -244,6 +244,27 @@ export default class UserStore {
     this.user = tempdata;
     //this.storeData(this.user);
   }
+
+//userStore.globalTimeTolocalTime(userStore.user.e)
+  globalTimeTolocalTime(dateText) {
+    let localDate = new Date(dateText);
+    const week = ["일", "월", "화", "수", "목", "금", "토"];
+    const dayOfWeek = week[localDate.getDay()];
+    const date =
+      localDate.getFullYear() +
+      "년" +
+      (localDate.getMonth() + 1) +
+      "월" +
+      localDate.getDate() +
+      "일" +
+      dayOfWeek +
+      "요일" +
+      localDate.getHours() +
+      "시" +
+      localDate.getMinutes() +
+      "분";
+    return date;
+  }
 }
 
 // import Storage from "./Storage";

@@ -8,7 +8,7 @@ import { ListItem, Divider } from "react-native-elements";
 //약관 TXT import
 import { text1, text2, text3, text4 } from "../constant/policy.js";
 import { TextInput, Picker } from "react-native";
-
+import { bbsStore, userStore } from "store";
 function HomeScreen({ navigation }) {
   const list = [
     {
@@ -97,7 +97,7 @@ function HomeScreen({ navigation }) {
 }
 //내 정보: 회원정보 수정페이지
 function clientChangePage({ navigation: { goBack } }) {
-  const originName = "윤수정"; //원래이름
+  const originName = userStore.user.h; //원래이름
   const [clientName, onChangeName] = React.useState(originName);
   const originNickName = "DoyouLife"; //원래닉네임
   const [clientNickName, onChangeNickName] = React.useState(originNickName);
@@ -316,14 +316,14 @@ function clientpage({ navigation }) {
       <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
         이름
       </Text>
-      <Text style={{ marginBottom: 10 }}>윤수정</Text>
+      <Text style={{ marginBottom: 10 }}>{userStore.user.h}</Text>
       <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
       <View style={{ flexDirection: "row" }}>
         <View style={{ flex: 1 }}>
           <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
             학교
           </Text>
-          <Text style={{ marginBottom: 10 }}>삼육대학교</Text>
+          <Text style={{ marginBottom: 10 }}>{userStore.user.l}</Text>
         </View>
         <View style={{ flex: 1 }}>
           <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
@@ -336,32 +336,38 @@ function clientpage({ navigation }) {
       <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
         닉네임
       </Text>
-      <Text style={{ marginBottom: 10 }}>두유인생</Text>
+      <Text style={{ marginBottom: 10 }}>{userStore.user.i}</Text>
       <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
       <View style={{ flexDirection: "row" }}>
         <View style={{ flex: 1 }}>
           <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
             성별
           </Text>
-          <Text style={{ marginBottom: 10 }}>두유인생</Text>
+          <Text style={{ marginBottom: 10 }}>
+            {userStore.user.d == 0 ? "남자" : "여자"}
+          </Text>
         </View>
         <View style={{ flex: 1 }}>
           <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
             최초가입일
           </Text>
-          <Text style={{ marginBottom: 10 }}>2020년 06월 08일</Text>
+          <Text style={{ marginBottom: 10 }}>
+            {userStore.globalTimeTolocalTime(userStore.user.e)}
+          </Text>
         </View>
       </View>
       <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
       <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
         아이디
       </Text>
-      <Text style={{ marginBottom: 10 }}>campusTaxi@naver.com</Text>
+      <Text style={{ marginBottom: 10 }}>{userStore.user.b}</Text>
       <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
       <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
         학생증인증
       </Text>
-      <Text style={{ marginBottom: 10, color: "#27BE5E" }}>완료</Text>
+      <Text style={{ marginBottom: 10, color: "#27BE5E" }}>
+        {userStore.user.n == 1 ? "완료" : "인증처리중"}
+      </Text>
       <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
       <View style={{ alignItems: "center", marginBottom: 30 }}>
         <Button

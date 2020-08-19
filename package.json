@@ -6,7 +6,7 @@
     "start학교": "adb connect 192.168.194.106:5555 && expo start --android",
     "start연구실": "adb connect 192.168.185.219:5555 && expo start --android",
     "start웹": "expo web",
-    "gitUpload": "git add . && git commit -m \" SNS카카오/네이버/페북/구글 연동완료 구글 추가확인필요. \" && git push ",
+    "gitUpload": "git add . && git commit -m \" 설정:회원정보변경 페이지, 학과삭제\" && git push ",
     "gitPull": "git pull",
     "reactStartAndroid": "react-native run-android"
   },

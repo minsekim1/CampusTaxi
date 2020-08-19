@@ -71,7 +71,7 @@ class HomeScreen extends Component {
                 <Text style={campusStyle.Text.middleSize}> CAMPUS TAXI</Text>
               </View>
               <Text style={campusStyle.Text.mainUnivText}>
-                삼육 대학교
+                {userStore.user.l}
                 <Text style={campusStyle.Text.smallSize}>[서울]</Text>
               </Text>
               <Image style={campusStyle.Image.mainImage} source={ad} />
