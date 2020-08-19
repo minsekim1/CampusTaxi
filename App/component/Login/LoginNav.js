@@ -22,7 +22,7 @@ const Stack = createStackNavigator();
 
 export default function LoginNav() {
   return (
-    <NavigationContainer independent={true}>
+    <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="WebLogin" component={WebLogin} />
