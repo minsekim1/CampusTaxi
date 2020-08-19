@@ -60,7 +60,7 @@ export default class LoginScreen extends Component {
         />
         <Button
           title="회원가입"
-          onPress={() => navigation.navigate("이용동의")}
+          onPress={() => navigation.navigate("이용동의", { token: null })}
         />
       </View>
     );

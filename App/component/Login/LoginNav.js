@@ -19,7 +19,6 @@ import {
 import Navigation from "Navigation";
 
 const Stack = createStackNavigator();
-
 export default function LoginNav() {
   return (
     <NavigationContainer>
@@ -32,7 +31,7 @@ export default function LoginNav() {
         <Stack.Screen
           name="WebLogin"
           component={WebLogin}
-          options={{ headerShown: false }}
+          options={{ title: "SNS 소셜 로그인" }}
         />
 
         <Stack.Screen

@@ -21,6 +21,8 @@ import club from "image/club.png";
 import ski from "image/ski.png";
 import ocean from "image/ocean.png";
 
+import { bbsStore, userStore } from "store";
+
 class HomeScreen extends Component {
   constructor(props) {
     super(props);

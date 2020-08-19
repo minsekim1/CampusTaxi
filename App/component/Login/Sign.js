@@ -18,13 +18,18 @@ export default class Sign1 extends Component {
     super(props);
     this.state = {
       check: [true, true, true, true, true, true, true, true],
+      token: this.props.route.params.token,
     };
   }
   render() {
     const { navigation } = this.props;
-    function next(state) {
+
+    function next(state, token) {
       if (state[1] && state[2] && state[3]) {
-        navigation.navigate("회원 가입", { policy: state });
+        navigation.navigate("회원 가입", {
+          policy: state,
+          token: token,
+        });
       } else {
         alert("필수 동의 부분이 빠져있습니다.");
       }
@@ -215,7 +220,7 @@ export default class Sign1 extends Component {
         <View style={button_style.next_button}>
           <TouchableOpacity
             style={{ width: "100%" }}
-            onPress={() => next(this.state.check)}
+            onPress={() => next(this.state.check, this.state.token)}
           >
             <Text
               style={{ color: "#ffffff", fontSize: 20, textAlign: "center" }}
@@ -262,6 +267,7 @@ export class Sign2 extends React.Component {
       univ: "",
       error: "아무런 값이 입력되지 않았습니다.",
       policy: this.props.route.params.policy, //마케팅 정보 등 동의 사실 전달[true, true...]
+      token: this.props.route.params.token,
     };
   }
   //#region Firebase Phone Auth Functions
@@ -456,9 +462,11 @@ export class Sign2 extends React.Component {
   }
   checkSign() {
     if (
-      (this.state.nickname.length > 3) & (this.state.id.length > 4) &&
-      this.state.pw.length > 4 &&
-      this.state.pwCheck.length > 4
+      this.state.nickname.length > 3 &&
+      (this.state.token != null ||
+        (this.state.id.length > 4 &&
+          this.state.pw.length > 4 &&
+          this.state.pwCheck.length > 4))
     ) {
       if (this.state.pw == this.state.pwCheck) {
         userStore
@@ -613,55 +621,62 @@ export class Sign2 extends React.Component {
               />
             </View>
           </View>
+          {this.state.token == null ? (
+            <>
+              <View style={{ marginBottom: 20 }}>
+                <Text
+                  style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}
+                >
+                  {" "}
+                  아이디{" "}
+                </Text>
+                <View style={SignIn.input}>
+                  <TextInput
+                    value={this.state.id}
+                    onChangeText={(val) => this.onChangedid(val)}
+                    maxLength={20}
+                    placeholder="slsl7862"
+                    style={{ fontSize: 16, marginBottom: 5 }}
+                  />
+                </View>
+              </View>
 
-          <View style={{ marginBottom: 20 }}>
-            <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
-              {" "}
-              아이디{" "}
-            </Text>
-            <View style={SignIn.input}>
-              <TextInput
-                value={this.state.id}
-                onChangeText={(val) => this.onChangedid(val)}
-                maxLength={20}
-                placeholder="slsl7862"
-                style={{ fontSize: 16, marginBottom: 5 }}
-              />
-            </View>
-          </View>
-
-          <View style={{ marginBottom: 20 }}>
-            <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
-              {" "}
-              비밀번호{" "}
-            </Text>
-            <View style={SignIn.input}>
-              <TextInput
-                value={this.state.pw}
-                onChangeText={(val) => this.onChangedpw(val)}
-                maxLength={20}
-                placeholder="비밀번호"
-                style={{ fontSize: 16, marginBottom: 5 }}
-              />
-            </View>
-          </View>
-
-          <View style={{ marginBottom: 20 }}>
-            <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
-              {" "}
-              비밀번호 확인{" "}
-            </Text>
-            <View style={SignIn.input}>
-              <TextInput
-                value={this.state.pwCheck}
-                onChangeText={(val) => this.onChangedpwCheck(val)}
-                maxLength={20}
-                placeholder="비밀번호확인"
-                style={{ fontSize: 16, marginBottom: 5 }}
-              />
-            </View>
-          </View>
-
+              <View style={{ marginBottom: 20 }}>
+                <Text
+                  style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}
+                >
+                  {" "}
+                  비밀번호{" "}
+                </Text>
+                <View style={SignIn.input}>
+                  <TextInput
+                    value={this.state.pw}
+                    onChangeText={(val) => this.onChangedpw(val)}
+                    maxLength={20}
+                    placeholder="비밀번호"
+                    style={{ fontSize: 16, marginBottom: 5 }}
+                  />
+                </View>
+              </View>
+              <View style={{ marginBottom: 20 }}>
+                <Text
+                  style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}
+                >
+                  {" "}
+                  비밀번호 확인{" "}
+                </Text>
+                <View style={SignIn.input}>
+                  <TextInput
+                    value={this.state.pwCheck}
+                    onChangeText={(val) => this.onChangedpwCheck(val)}
+                    maxLength={20}
+                    placeholder="비밀번호확인"
+                    style={{ fontSize: 16, marginBottom: 5 }}
+                  />
+                </View>
+              </View>
+            </>
+          ) : null}
           <View style={{ flex: 1, width: 100 }}>
             <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
               {" "}
@@ -689,7 +704,7 @@ export class Sign2 extends React.Component {
                 value={this.state.email}
                 onChangeText={(val) => this.onChangedemail(val)}
                 maxLength={40}
-                placeholder="이메일(선택) campustaxi@naver.com"
+                placeholder="campustaxi@naver.com"
               />
             </View>
           </View>
@@ -704,7 +719,7 @@ export class Sign2 extends React.Component {
                 value={this.state.address}
                 onChangeText={(val) => this.onChangedaddress(val)}
                 maxLength={40}
-                placeholder="주소(선택) 서울 강북구 덕릉로52"
+                placeholder="서울 강북구 덕릉로52"
               />
             </View>
           </View>
@@ -766,22 +781,39 @@ export class Sign2 extends React.Component {
                 this.state.studentcardCheck
               ) {
                 this.uploadImage(this.state.image, "studentcard");
-                await userStore.addUser(
-                  this.state.address,
-                  this.state.email,
-                  this.state.gender,
-                  this.state.id,
-                  this.state.pw,
-                  this.state.name,
-                  this.state.nickname,
-                  this.state.countryNum + this.state.phoneNumber,
-                  this.state.image,
-                  this.state.univ,
-                  this.state.policy
-                );
+                if (this.state.token == null) {
+                  await userStore.addUser(
+                    this.state.address,
+                    this.state.email,
+                    this.state.gender,
+                    this.state.id,
+                    this.state.pw,
+                    this.state.name,
+                    this.state.nickname,
+                    this.state.countryNum + this.state.phoneNumber,
+                    this.state.image,
+                    this.state.univ,
+                    this.state.policy
+                  );
+                } else {
+                  await userStore.addUserToken(
+                    this.state.address,
+                    this.state.email,
+                    this.state.gender,
+                    this.state.name,
+                    this.state.nickname,
+                    this.state.countryNum + this.state.phoneNumber,
+                    this.state.image,
+                    this.state.univ,
+                    this.state.policy,
+                    this.state.token
+                  );
+                }
+
                 navigation.navigate("회원 가입 완료", {
                   id: this.state.id,
                   pw: this.state.pw,
+                  token: this.state.token,
                 });
               } else {
                 alert(
@@ -809,7 +841,7 @@ const styles = StyleSheet.create({
   // 학생증 인증 사진 출력하는 css.infile
   logo: {
     width: 300,
-    height: 150,
+    height: 450,
     alignSelf: "center",
     marginTop: 15,
   },
@@ -821,6 +853,7 @@ export class Sign3 extends Component {
     this.state = {
       id: this.props.route.params.id,
       pw: this.props.route.params.pw,
+      token: this.props.route.params.token,
     };
   }
   render() {
@@ -838,16 +871,20 @@ export class Sign3 extends Component {
         </Text>
         <Button
           title="처음으로 돌아가기"
-          onPress={() => navigation.navigate("로그인")}
+          onPress={() => navigation.navigate("Login")}
         />
         <Button
           title="로 그 인"
           onPress={() => {
-            userStore.login(this.state.id, this.state.pw).then((result) => {
-              if (result) {
-                navigation.navigate("home");
-              }
-            });
+            if (this.state.token != null) {
+              userStore
+                .loginToken(this.state.token)
+                .then(() => navigation.navigate("home"));
+            } else {
+              userStore
+                .login(this.state.id, this.state.pw)
+                .then(() => navigation.navigate("home"));
+            }
           }}
         />
       </View>

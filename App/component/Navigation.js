@@ -20,12 +20,7 @@ import MapScreen from "component/MapScreen/MapScreen";
 import MychatScreen from "MychatScreen";
 import campusStyle from "style";
 const Tab = createBottomTabNavigator();
-
-import { observer, inject } from "mobx-react";
-
-// @inject("bbs")
-// @inject("user")
-// @observer
+//import { observer, inject } from "mobx-react";
 export default class Navigation extends Component {
   constructor(props) {
     super(props);
@@ -35,6 +30,10 @@ export default class Navigation extends Component {
     };
   }
   render() {
+    if (!userStore.isKey()) {
+      alert("로그아웃되었습니다.");
+      this.props.navigation.navigate("Login");
+    }
     const defaultNavOption = {
       headerStyle: {
         backgroundColor: "#0D3664",

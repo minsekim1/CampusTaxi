@@ -22,7 +22,10 @@ try {
 import { YellowBox } from "react-native";
 import _ from "lodash";
 
-YellowBox.ignoreWarnings(["Setting a timer"]);
+YellowBox.ignoreWarnings([
+  "Setting a timer",
+  "expo-google-sign-in is not supported",
+]);
 const _console = _.clone(console);
 console.warn = (message) => {
   if (message.indexOf("Setting a timer") <= -1) {
