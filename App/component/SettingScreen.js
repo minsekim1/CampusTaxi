@@ -100,7 +100,8 @@ function clientChangePage({ navigation: { goBack } }) {
   const originName = userStore.user.h; //원래이름
   const [clientName, onChangeName] = React.useState(originName);
   const originNickName = "DoyouLife"; //원래닉네임
-  const [clientNickName, onChangeNickName] = React.useState(originNickName);
+  const [clientNickName, onChangeNickName] = React.useState(userStore.user.i);
+  const [email, setEmail] = React.useState(userStore.user.b);
   const [isVaildNickName, setVaildNickName] = React.useState(1); //1=수정가능 2=사용불가능 3=적용가능
   let NickNameColor = {
     1: "blue",
@@ -108,11 +109,12 @@ function clientChangePage({ navigation: { goBack } }) {
     3: "#27BE5E", //green
   }[isVaildNickName];
   const originGender = "여자";
-  const [clientGender, setChangeGender] = React.useState(originGender);
+  const [clientGender, setChangeGender] = React.useState(userStore.user.d);
   const [clientCert, onChangeCert] = React.useState("완료");
 
   //수정완료 버튼
-  function submit() {
+  async function submit() {
+    await userStore.changeUserAll();
     goBack();
   }
   //샘플 아이디 데이터
@@ -181,13 +183,9 @@ function clientChangePage({ navigation: { goBack } }) {
           <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
             학교
           </Text>
-          <Text style={{ marginBottom: 10, color: "gray" }}>삼육대학교</Text>
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
-            학과
+          <Text style={{ marginBottom: 10, color: "gray" }}>
+            {userStore.user.l}
           </Text>
-          <Text style={{ marginBottom: 10, color: "gray" }}>완료</Text>
         </View>
       </View>
       {/* 닉네임 */}
@@ -229,15 +227,17 @@ function clientChangePage({ navigation: { goBack } }) {
             selectedValue={clientGender}
             onValueChange={(itemValue, itemIndex) => setChangeGender(itemValue)}
           >
-            <Picker.Item label="여자" value="여자" />
-            <Picker.Item label="남자" value="남자" />
+            <Picker.Item label="여자" value="1" />
+            <Picker.Item label="남자" value="0" />
           </Picker>
+
           <Divider
             style={{
               borderColor: originGender == clientGender ? "blue" : "#27BE5E",
               borderBottomWidth: 2,
             }}
           />
+
           <Text
             style={{
               marginBottom: 15,
@@ -254,19 +254,45 @@ function clientChangePage({ navigation: { goBack } }) {
           <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
             최초가입일
           </Text>
-          <Text style={{ fontSize: 18, marginTop: 16, color: "gray" }}>
-            2020년 06월 08일
+          <Text
+            style={{ fontSize: 18, fontSize: 11, marginTop: 16, color: "gray" }}
+          >
+            {userStore.globalTimeTolocalTime(userStore.user.e)}
           </Text>
         </View>
       </View>
       {/* 아이디 */}
-      <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
-        아이디
-      </Text>
-      <Text style={{ marginBottom: 10 }}>campusTaxi@naver.com</Text>
-      <Text style={{ marginBottom: 15, color: "#F83C3C", fontSize: 11 }}>
-        ※ 아이디 변경은 탈퇴후 재가입 바랍니다.
-      </Text>
+
+      <View style={{ flexDirection: "row" }}>
+        <View style={{ flex: 1 }}>
+          <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+            아이디
+          </Text>
+          <Text style={{ marginBottom: 10 }}>{userStore.user.f}</Text>
+          <Text style={{ marginBottom: 15, color: "#F83C3C", fontSize: 11 }}>
+            ※ 아이디 변경은 탈퇴후 재가입 바랍니다.
+          </Text>
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+            이메일
+          </Text>
+          <TextInput
+            placeholder="사용할 이메일을 입력해주세요."
+            style={{
+              fontSize: 18,
+              padding: 0,
+              paddingBottom: 5,
+              margin: 0,
+              borderBottomWidth: 2,
+              fontSize: 11,
+            }}
+            onChangeText={(text) => setEmail(text)}
+            value={email}
+          />
+        </View>
+      </View>
+
       <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
       {/* 학생증 인증 */}
       <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
@@ -274,13 +300,24 @@ function clientChangePage({ navigation: { goBack } }) {
       </Text>
       <View style={{ flexDirection: "row" }}>
         <View style={{ flex: 3 }}>
-          <Text style={{ marginBottom: 10, color: "#27BE5E" }}>완료</Text>
+          <Text
+            style={
+              userStore.user.n == 1
+                ? { marginBottom: 10, color: "#27BE5E" }
+                : { marginBottom: 10, color: "#F83C3C" }
+            }
+          >
+            {userStore.user.n == 1 ? "완료" : "인증처리중"}
+          </Text>
         </View>
         <View style={{ flex: 1 }}>
           <Button
             containerStyle={{ borderRadius: 100 }}
             titleStyle={{ fontSize: 10, fontWeight: "100" }}
-            buttonStyle={{ backgroundColor: "#F83C3C", height: 17 }}
+            buttonStyle={{
+              backgroundColor: "#F83C3C",
+              minHeight: 21,
+            }}
             title="학생증 재인증"
           ></Button>
           {/* <Input type="file" name="file" onChange={null}/> */}
@@ -312,7 +349,7 @@ function clientpage({ navigation }) {
         backgroundColor: "white",
       }}
     >
-      <Text style={{ marginBottom: 20, padding: 10 }}>계정</Text>
+      <Text style={{ marginBottom: 20, padding: 10, fontSize: 24 }}>계정</Text>
       <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
         이름
       </Text>
@@ -345,16 +382,30 @@ function clientpage({ navigation }) {
           <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
             최초가입일
           </Text>
-          <Text style={{ marginBottom: 10 }}>
+          <Text style={{ marginBottom: 10, fontSize: 11 }}>
             {userStore.globalTimeTolocalTime(userStore.user.e)}
           </Text>
         </View>
       </View>
       <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
-      <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
-        아이디
-      </Text>
-      <Text style={{ marginBottom: 10 }}>{userStore.user.b}</Text>
+
+      <View style={{ flexDirection: "row" }}>
+        <View style={{ flex: 1 }}>
+          <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+            아이디
+          </Text>
+          <Text style={{ marginBottom: 10 }}>{userStore.user.f}</Text>
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+            이메일
+          </Text>
+          <Text style={{ marginBottom: 10, fontSize: 11 }}>
+            {userStore.user.b}
+          </Text>
+        </View>
+      </View>
+
       <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
       <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
         학생증인증

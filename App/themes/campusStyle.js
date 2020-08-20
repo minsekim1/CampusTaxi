@@ -88,6 +88,8 @@ const view = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 0,
     elevation: 5,
+    maxWidth: 300,
+    minHeight: 100,
   },
   wideWhite: {
     width: wp(100),

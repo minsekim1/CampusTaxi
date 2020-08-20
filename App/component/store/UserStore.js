@@ -196,6 +196,27 @@ export default class UserStore {
       .ref("bbs/data/" + userkey + "/" + props)
       .set(value);
   }
+  //회원정보바꾸기
+  changeUserAll(
+    userkey,
+    address,
+    email,
+    gender, //0 = 남자 1 = 여자
+    loginid,
+    loginpassword,
+    name,
+    nickname,
+    phone,
+    studentcard,
+    univ,
+    policy
+  ) {
+    //props는 a => available이런식
+    firebase
+      .database()
+      .ref("bbs/data/" + userkey + "/" + props)
+      .set(value);
+  }
   //token: this.props.route.params.token,
   //navigation.navigate("회원 가입", { policy: state, token: this.props.route.params.token });
   async getUser(userkey) {
@@ -245,7 +266,7 @@ export default class UserStore {
     //this.storeData(this.user);
   }
 
-//userStore.globalTimeTolocalTime(userStore.user.e)
+  //userStore.globalTimeTolocalTime(userStore.user.e)
   globalTimeTolocalTime(dateText) {
     let localDate = new Date(dateText);
     const week = ["일", "월", "화", "수", "목", "금", "토"];
