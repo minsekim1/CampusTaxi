@@ -121,7 +121,7 @@ export default class UserStore {
           tempdata = JSON.parse(JSON.stringify(snap));
           if (tempdata && snap.val() != null && tempdata.g == userpassword) {
             this.user = tempdata;
-            alert("정상적으로 로그인되었습니다.");
+            //alert("정상적으로 로그인되었습니다.");
             result = true;
           } else {
             alert("없는 아이디이거나 비밀번호가 다릅니다.");
