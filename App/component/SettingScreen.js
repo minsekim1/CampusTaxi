@@ -7,7 +7,8 @@ import { Button, ThemeProvider } from "react-native-elements";
 import { ListItem, Divider } from "react-native-elements";
 //약관 TXT import
 import { text1, text2, text3, text4 } from "../constant/policy.js";
-import { TextInput, Picker } from "react-native";
+import { TextInput } from "react-native";
+import { Picker } from "@react-native-community/picker";
 import { bbsStore, userStore } from "store";
 function HomeScreen({ navigation }) {
   const list = [
@@ -98,47 +99,44 @@ function HomeScreen({ navigation }) {
 //내 정보: 회원정보 수정페이지
 function clientChangePage({ navigation: { goBack } }) {
   const originName = userStore.user.h; //원래이름
-  const [clientName, onChangeName] = React.useState(originName);
-  const originNickName = "DoyouLife"; //원래닉네임
-  const [clientNickName, onChangeNickName] = React.useState(userStore.user.i);
-  const [email, setEmail] = React.useState(userStore.user.b);
-  const [isVaildNickName, setVaildNickName] = React.useState(1); //1=수정가능 2=사용불가능 3=적용가능
+  const [clientName, onChangeName] = useState(originName);
+  const originNickName = userStore.user.i; //원래닉네임
+  const [clientNickName, onChangeNickName] = useState(userStore.user.i);
+  const [email, setEmail] = useState(userStore.user.b);
+  const [isVaildNickName, setVaildNickName] = useState(1); //1=수정가능 2=사용불가능 3=적용가능
   let NickNameColor = {
     1: "blue",
     2: "#F83C3C", //red
     3: "#27BE5E", //green
   }[isVaildNickName];
-  const originGender = "여자";
-  const [clientGender, setChangeGender] = React.useState(userStore.user.d);
-  const [clientCert, onChangeCert] = React.useState("완료");
+  const originGender = userStore.user.d;
+  const [clientGender, setChangeGender] = useState(userStore.user.d);
+  const [clientCert, onChangeCert] = useState("완료");
 
   //수정완료 버튼
-  async function submit() {
-    await userStore.changeUserAll();
+  async function submit(userkey, email, gender, name, nickname) {
+    if (isVaildNickName == 1 || isVaildNickName == 3) {
+      await userStore.changeUserAll(userkey, email, gender, name, nickname);
+    } else {
+      alert("이미 있는 닉네임입니다. 다른 닉네임을 골라주세요.");
+    }
     goBack();
   }
   //샘플 아이디 데이터
-  const SampleIdList = ["Mins", "준상"];
   function changeNickName(changedNickName) {
-    let differ = true;
-    //DB에 이미 있는 닉네임인지 확인하기
-    SampleIdList.map((name, i) => {
-      if (changedNickName == name || changedNickName == "") {
-        //이미 있을경우
-        setVaildNickName(2);
-        differ = false;
-      }
-      if (changedNickName == originNickName) {
-        //원래 아이디와 같을 경우
-        setVaildNickName(1);
-        differ = false;
-      }
-    });
-    if (differ) {
-      //없을경우
-      setVaildNickName(3);
-    }
     onChangeNickName(changedNickName);
+    //DB에 이미 있는 닉네임인지 확인하기
+    if (changedNickName != userStore.user.i) {
+      userStore.findUserByAttributes("i", changedNickName).then((result) => {
+        if (result) {
+          setVaildNickName(2);
+        } else {
+          setVaildNickName(3);
+        }
+      });
+    } else {
+      setVaildNickName(1);
+    }
   }
   return (
     <ScrollView
@@ -225,18 +223,11 @@ function clientChangePage({ navigation: { goBack } }) {
           </Text>
           <Picker
             selectedValue={clientGender}
-            onValueChange={(itemValue, itemIndex) => setChangeGender(itemValue)}
+            onValueChange={(val, index) => setChangeGender(val)}
           >
             <Picker.Item label="여자" value="1" />
             <Picker.Item label="남자" value="0" />
           </Picker>
-
-          <Divider
-            style={{
-              borderColor: originGender == clientGender ? "blue" : "#27BE5E",
-              borderBottomWidth: 2,
-            }}
-          />
 
           <Text
             style={{
@@ -330,7 +321,15 @@ function clientChangePage({ navigation: { goBack } }) {
         <Button
           containerStyle={{ borderRadius: 100 }}
           buttonStyle={{ backgroundColor: "#172864", width: 189 }}
-          onPress={() => submit()}
+          onPress={() =>
+            submit(
+              userStore.userkey,
+              email,
+              clientGender,
+              clientName,
+              clientNickName
+            )
+          }
           title="수정 완료"
         />
       </View>
@@ -338,100 +337,153 @@ function clientChangePage({ navigation: { goBack } }) {
   );
 }
 //내 정보 페이지
-function clientpage({ navigation }) {
-  return (
-    <ScrollView
-      style={{
-        paddingLeft: 20,
-        paddingRight: 20,
-        paddingTop: 20,
-        paddingBottom: 20,
-        backgroundColor: "white",
-      }}
-    >
-      <Text style={{ marginBottom: 20, padding: 10, fontSize: 24 }}>계정</Text>
-      <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
-        이름
-      </Text>
-      <Text style={{ marginBottom: 10 }}>{userStore.user.h}</Text>
-      <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
-      <View style={{ flexDirection: "row" }}>
-        <View style={{ flex: 1 }}>
-          <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
-            학교
-          </Text>
-          <Text style={{ marginBottom: 10 }}>{userStore.user.l}</Text>
-        </View>
-      </View>
-      <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
-      <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
-        닉네임
-      </Text>
-      <Text style={{ marginBottom: 10 }}>{userStore.user.i}</Text>
-      <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
-      <View style={{ flexDirection: "row" }}>
-        <View style={{ flex: 1 }}>
-          <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
-            성별
-          </Text>
-          <Text style={{ marginBottom: 10 }}>
-            {userStore.user.d == 0 ? "남자" : "여자"}
-          </Text>
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
-            최초가입일
-          </Text>
-          <Text style={{ marginBottom: 10, fontSize: 11 }}>
-            {userStore.globalTimeTolocalTime(userStore.user.e)}
-          </Text>
-        </View>
-      </View>
-      <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
+import { Observer, useLocalStore } from "mobx-react";
 
-      <View style={{ flexDirection: "row" }}>
-        <View style={{ flex: 1 }}>
-          <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
-            아이디
-          </Text>
-          <Text style={{ marginBottom: 10 }}>{userStore.user.f}</Text>
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
-            이메일
-          </Text>
-          <Text style={{ marginBottom: 10, fontSize: 11 }}>
-            {userStore.user.b}
-          </Text>
-        </View>
-      </View>
+class clientpage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: userStore.user.h,
+      univ: userStore.user.l,
+      nickname: userStore.user.i,
+      gender: userStore.user.d,
+      firstDate: userStore.user.e,
+      id: userStore.user.f,
+      email: userStore.user.b,
+      auth: userStore.user.n,
+    };
+  }
+  // navigation.addListener("focus", () => {
+  //   alert(userStore.user.i);
+  // });
 
-      <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
-      <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
-        학생증인증
-      </Text>
-      <Text
-        style={
-          userStore.user.n == 1
-            ? { marginBottom: 10, color: "#27BE5E" }
-            : { marginBottom: 10, color: "#F83C3C" }
-        }
+  render() {
+    const { navigation } = this.props;
+    return (
+      <ScrollView
+        style={{
+          paddingLeft: 20,
+          paddingRight: 20,
+          paddingTop: 20,
+          paddingBottom: 20,
+          backgroundColor: "white",
+        }}
       >
-        {userStore.user.n == 1 ? "완료" : "인증처리중"}
-      </Text>
-      <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
-      <View style={{ alignItems: "center", marginBottom: 30 }}>
-        <Button
-          style={{ borderRadius: 100 }}
-          containerStyle={{ borderRadius: 100 }}
-          buttonStyle={{ backgroundColor: "#172864", width: 189 }}
-          title="회원정보 수정"
-          onPress={() => navigation.navigate("회원정보 수정")}
-        />
-      </View>
-    </ScrollView>
-  );
+        <Text style={{ marginBottom: 20, padding: 10, fontSize: 24 }}>
+          계정
+        </Text>
+        <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+          이름
+        </Text>
+
+        <Observer>
+          {() => <Text style={{ marginBottom: 10 }}>{userStore.user.h}</Text>}
+        </Observer>
+
+        <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
+        <View style={{ flexDirection: "row" }}>
+          <View style={{ flex: 1 }}>
+            <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+              학교
+            </Text>
+            <Observer>
+              {() => (
+                <Text style={{ marginBottom: 10 }}>{userStore.user.l}</Text>
+              )}
+            </Observer>
+          </View>
+        </View>
+        <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
+        <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+          닉네임
+        </Text>
+        <Observer>
+          {() => <Text style={{ marginBottom: 10 }}>{userStore.user.i}</Text>}
+        </Observer>
+        <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
+        <View style={{ flexDirection: "row" }}>
+          <View style={{ flex: 1 }}>
+            <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+              성별
+            </Text>
+            <Observer>
+              {() => (
+                <Text style={{ marginBottom: 10 }}>
+                  {userStore.user.d == 0 ? "남자" : "여자"}
+                </Text>
+              )}
+            </Observer>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+              최초가입일
+            </Text>
+            <Text style={{ marginBottom: 10, fontSize: 11 }}></Text>
+
+            <Observer>
+              {() => (
+                <Text style={{ marginBottom: 10 }}>
+                  {userStore.globalTimeTolocalTime(userStore.user.e)}
+                </Text>
+              )}
+            </Observer>
+          </View>
+        </View>
+        <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
+
+        <View style={{ flexDirection: "row" }}>
+          <View style={{ flex: 1 }}>
+            <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+              아이디
+            </Text>
+            <Observer>
+              {() => (
+                <Text style={{ marginBottom: 10 }}>{userStore.user.f}</Text>
+              )}
+            </Observer>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+              이메일
+            </Text>
+            <Observer>
+              {() => (
+                <Text style={{ marginBottom: 10, fontSize: 11 }}>
+                  {userStore.user.b}
+                </Text>
+              )}
+            </Observer>
+          </View>
+        </View>
+
+        <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
+        <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
+          학생증인증
+        </Text>
+        <Text
+          style={
+            "auth" == 1
+              ? { marginBottom: 10, color: "#27BE5E" }
+              : { marginBottom: 10, color: "#F83C3C" }
+          }
+        >
+          {"auth" == 1 ? "완료" : "인증처리중"}
+        </Text>
+        <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
+        <View style={{ alignItems: "center", marginBottom: 30 }}>
+          <Button
+            style={{ borderRadius: 100 }}
+            containerStyle={{ borderRadius: 100 }}
+            buttonStyle={{ backgroundColor: "#172864", width: 189 }}
+            title="회원정보 수정"
+            onPress={() => navigation.navigate("회원정보 수정")}
+          />
+        </View>
+      </ScrollView>
+    );
+  }
 }
+
 function clientpageAlram() {
   return (
     <View

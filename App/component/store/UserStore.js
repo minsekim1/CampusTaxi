@@ -5,7 +5,8 @@
 export default class UserStore {
   @observable user = null;
   @observable userkey = null; //유저 아이디 or SNS로그인일 경우 토큰
-
+  @observable develop = true; //개발전용모드
+  //{userStore.develop == true ? "설정" : "홈"}
   //setKey: 유저키를 아이디/토큰으로 설정
   setKey(key) {
     this.userkey = key;
@@ -121,7 +122,6 @@ export default class UserStore {
           tempdata = JSON.parse(JSON.stringify(snap));
           if (tempdata && snap.val() != null && tempdata.g == userpassword) {
             this.user = tempdata;
-            //alert("정상적으로 로그인되었습니다.");
             result = true;
           } else {
             alert("없는 아이디이거나 비밀번호가 다릅니다.");
@@ -132,7 +132,7 @@ export default class UserStore {
     return result;
   }
   async loginToken(token) {
-    //onPress={() => UserStore.login("-s", "tkarnr78^@")}
+    //onPress={() => UserStore.loginToken("-s")}
     let tempdata = {};
     let result = false;
     //bbs에서 데이터를 가져와서 firebase json 형식에서 flatlist하기 좋은 형식으로 키값을 JSON 안으로 넣는다.
@@ -144,7 +144,7 @@ export default class UserStore {
         tempdata = JSON.parse(JSON.stringify(snap));
         if (tempdata && snap.val() != null) {
           this.user = tempdata;
-          alert("정상적으로 로그인되었습니다.");
+          //alert("정상적으로 로그인되었습니다.");
           result = true;
         } else {
           alert("없는 아이디이거나 비밀번호가 다릅니다.");
@@ -190,32 +190,34 @@ export default class UserStore {
       .set({});
   }
   changeUser(userkey, props, value) {
-    //props는 a => available이런식
     firebase
       .database()
-      .ref("bbs/data/" + userkey + "/" + props)
+      .ref("user/data/" + userkey + "/" + props)
       .set(value);
   }
   //회원정보바꾸기
   changeUserAll(
     userkey,
-    address,
     email,
     gender, //0 = 남자 1 = 여자
-    loginid,
-    loginpassword,
     name,
-    nickname,
-    phone,
-    studentcard,
-    univ,
-    policy
+    nickname
   ) {
     //props는 a => available이런식
+    let updateUser = {
+      b: email,
+      d: gender,
+      h: name,
+      i: nickname,
+    };
     firebase
       .database()
-      .ref("bbs/data/" + userkey + "/" + props)
-      .set(value);
+      .ref("user/data/" + userkey)
+      .update(updateUser);
+    this.user.b = email;
+    this.user.d = gender;
+    this.user.h = name;
+    this.user.i = nickname;
   }
   //token: this.props.route.params.token,
   //navigation.navigate("회원 가입", { policy: state, token: this.props.route.params.token });
@@ -229,41 +231,6 @@ export default class UserStore {
         return JSON.stringify(result);
       });
     return result;
-  }
-
-  // Update User : firebase에서 user를 가져와 store에 저장한다
-  async updateUser(userkey) {
-    let tempdata = [];
-    //bbs에서 데이터를 가져와서 firebase json 형식에서 flatlist하기 좋은 형식으로 키값을 JSON 안으로 넣는다.
-    await firebase
-      .database()
-      .ref("user/data/" + userkey)
-      .once("value", (snap) => {
-        snap.forEach((item) => {
-          // json을 string으로 바꾸었다가 다시 json 형식으로 표준화
-          // 그냥하면 안됌
-          tempdata.push(JSON.parse(JSON.stringify(item)));
-        });
-      });
-    this.user = tempdata;
-    //this.storeData(this.user);
-  }
-
-  async updateUser() {
-    let tempdata = [];
-    //bbs에서 데이터를 가져와서 firebase json 형식에서 flatlist하기 좋은 형식으로 키값을 JSON 안으로 넣는다.
-    await firebase
-      .database()
-      .ref("user/data/" + this.user.m)
-      .once("value", (snap) => {
-        snap.forEach((item) => {
-          // json을 string으로 바꾸었다가 다시 json 형식으로 표준화
-          // 그냥하면 안됌
-          tempdata.push(JSON.parse(JSON.stringify(item)));
-        });
-      });
-    this.user = tempdata;
-    //this.storeData(this.user);
   }
 
   //userStore.globalTimeTolocalTime(userStore.user.e)

@@ -16,7 +16,7 @@ const firebase = require("firebase");
 try {
   firebase.initializeApp(firebaseConfig);
 } catch (error) {}
-
+//{userStore.develop == true ? "설정" : "홈"}
 //#endregion
 //#region 경고창 무시: Setting a timer for a long period of time, i.e. multiple minute
 import { YellowBox } from "react-native";
@@ -25,6 +25,7 @@ import _ from "lodash";
 YellowBox.ignoreWarnings([
   "Setting a timer",
   "expo-google-sign-in is not supported",
+  "@firebase/database:", //파이어베이스 null 등 모든 경고 닫음
 ]);
 const _console = _.clone(console);
 console.warn = (message) => {

@@ -12,7 +12,7 @@ import {
   CheckBox,
 } from "react-native";
 import { bbsStore, userStore } from "store";
-
+import { ButtonGroup } from "react-native-elements";
 export default class Sign1 extends Component {
   constructor(props) {
     super(props);
@@ -212,8 +212,7 @@ export default class Sign1 extends Component {
           </View>
 
           <Text style={{ fontSize: 12, color: "#a9a9a9" }}>
-            {" "}
-            * 선택 약관에 동의하지 않아도 회원가입이 가능합니다.{" "}
+            * 선택 약관에 동의하지 않아도 회원가입이 가능합니다.
           </Text>
         </View>
 
@@ -225,8 +224,7 @@ export default class Sign1 extends Component {
             <Text
               style={{ color: "#ffffff", fontSize: 20, textAlign: "center" }}
             >
-              {" "}
-              다음{" "}
+              다음
             </Text>
           </TouchableOpacity>
         </View>
@@ -527,7 +525,7 @@ export class Sign2 extends React.Component {
             <View>
               <Picker
                 selectedValue={this.state.countryNum}
-                style={{ height: 30, width: 140 }}
+                style={{ height: 30, width: "100%" }}
                 onValueChange={(itemValue, itemIndex) =>
                   this.setState({ countryNum: itemValue })
                 }
@@ -535,7 +533,7 @@ export class Sign2 extends React.Component {
               >
                 <Picker.Item label="대한민국(+82)" value="+82" />
                 <Picker.Item label="북한(+850)" value="+850" />
-                <Picker.Item label="인도네시아(+62)" value="+850" />
+                <Picker.Item label="인도네시아(+62)" value="+62" />
               </Picker>
               <View style={SignIn.phone_auth}>
                 <View style={SignIn.input}>
@@ -608,8 +606,7 @@ export class Sign2 extends React.Component {
 
           <View style={{ marginBottom: 20 }}>
             <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
-              {" "}
-              닉네임{" "}
+              닉네임
             </Text>
             <View style={SignIn.input}>
               <TextInput
@@ -627,15 +624,14 @@ export class Sign2 extends React.Component {
                 <Text
                   style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}
                 >
-                  {" "}
-                  아이디{" "}
+                  아이디
                 </Text>
                 <View style={SignIn.input}>
                   <TextInput
                     value={this.state.id}
                     onChangeText={(val) => this.onChangedid(val)}
                     maxLength={20}
-                    placeholder="slsl7862"
+                    placeholder="아이디"
                     style={{ fontSize: 16, marginBottom: 5 }}
                   />
                 </View>
@@ -645,8 +641,7 @@ export class Sign2 extends React.Component {
                 <Text
                   style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}
                 >
-                  {" "}
-                  비밀번호{" "}
+                  비밀번호
                 </Text>
                 <View style={SignIn.input}>
                   <TextInput
@@ -662,8 +657,7 @@ export class Sign2 extends React.Component {
                 <Text
                   style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}
                 >
-                  {" "}
-                  비밀번호 확인{" "}
+                  비밀번호 확인
                 </Text>
                 <View style={SignIn.input}>
                   <TextInput
@@ -677,27 +671,23 @@ export class Sign2 extends React.Component {
               </View>
             </>
           ) : null}
-          <View style={{ flex: 1, width: 100 }}>
+          <View style={{ marginBottom: 20 }}>
             <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
-              {" "}
-              성별{" "}
+              성별
             </Text>
-            <Button
-              title="남자"
-              onPress={() => this.onChangedgender(0)}
-              color={this.state.gender == 0 ? "#E5AF0B" : "#CBCED7"}
-            />
-            <Button
-              title="여자"
-              onPress={() => this.onChangedgender(1)}
-              color={this.state.gender == 1 ? "#E5AF0B" : "#CBCED7"}
+            <ButtonGroup
+              onPress={(value) => this.onChangedgender(value)}
+              selectedIndex={this.state.gender}
+              buttons={["남자", "여자"]} //#CBCED7 E5AF0B
+              containerStyle={{ backgroundColor: "#CBCED7", maxHeight: 60 }}
+              selectedButtonStyle={{
+                backgroundColor: "#E5AF0B",
+              }}
             />
           </View>
-
-          <View style={{ marginBottom: 20, marginTop: 30 }}>
+          <View style={{ marginBottom: 20 }}>
             <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
-              {" "}
-              이메일 (선택){" "}
+              이메일 (선택)
             </Text>
             <View style={SignIn.input}>
               <TextInput
@@ -711,8 +701,7 @@ export class Sign2 extends React.Component {
 
           <View style={{ marginBottom: 20 }}>
             <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
-              {" "}
-              주소 (선택){" "}
+              주소 (선택)
             </Text>
             <View style={SignIn.input}>
               <TextInput
@@ -739,10 +728,9 @@ export class Sign2 extends React.Component {
             source={this.state.image ? { uri: this.state.image } : null}
           />
 
-          <View style={{ marginBottom: 20 }}>
+          <View style={{ marginBottom: 20, marginTop: 20 }}>
             <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
-              {" "}
-              이름 [본명]{" "}
+              이름 [본명]
             </Text>
             <View style={SignIn.input}>
               <TextInput
@@ -756,8 +744,7 @@ export class Sign2 extends React.Component {
 
           <View style={{ marginBottom: 20 }}>
             <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
-              {" "}
-              학교{" "}
+              학교
             </Text>
             <View style={SignIn.input}>
               <TextInput
@@ -827,8 +814,7 @@ export class Sign2 extends React.Component {
             <Text
               style={{ color: "#ffffff", fontSize: 20, textAlign: "center" }}
             >
-              {" "}
-              가입하기{" "}
+              가입하기
             </Text>
           </TouchableOpacity>
         </View>
@@ -922,6 +908,7 @@ const Terms = StyleSheet.create({
     //not_necessary_temrs_item
     flexDirection: "row",
     flexWrap: "wrap",
+    marginLeft: 5,
   },
   detail: {
     color: "#a9a9a9",

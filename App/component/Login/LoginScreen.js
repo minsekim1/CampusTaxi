@@ -2,10 +2,10 @@ import * as React from "react";
 import { Component, useState } from "react";
 import {
   StyleSheet,
-  Button, 
+  Button,
   View,
-  Text, 
-  TouchableOpacity, 
+  Text,
+  TouchableOpacity,
   TextInput,
   ImageBackground,
   Image,
@@ -15,7 +15,11 @@ import { bbsStore, userStore } from "store";
 export default class LoginScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = { id: "", pw: "" };
+    if (userStore.develop) {
+      this.state = { id: "slsl7862", pw: "tkarnr" };
+    } else {
+      this.state = { id: "", pw: "" };
+    }
   }
   render() {
     const { navigation } = this.props;
@@ -28,100 +32,112 @@ export default class LoginScreen extends Component {
     }
     return (
       <View style={LoginStyle.container}>
-      <ImageBackground 
-        source={require("../../../assets/background.png")}
-        style={LoginStyle.background}
-      >
-        {/* header */}
-        <View style={LoginStyle.header}>
-          <Image style={LoginStyle.logo} source={require("../../image/logo.png")}/>
-            <View style={{marginTop:10,}}>
-            <Text style={{color: "#ffffff", fontSize: 18}}>CAMPUS TAXI</Text>
-            </View>
-        </View>
-
-        <View style={LoginStyle.body}>
-          <View style={LoginStyle.login_input_container}>
-            <TextInput
-              placeholder="아이디를 입력해주세요"
-              placeholderTextColor="#f0f0f0"
-              style={LoginStyle.login_input_text}
-              value={this.state.id}
-              onChangeText={(textEntry) => this.setState({ id: textEntry })}
-              onSubmitEditing={() => login(this.state.id, this.state.pw)}
+        <ImageBackground
+          source={require("../../../assets/background.png")}
+          style={LoginStyle.background}
+        >
+          {/* header */}
+          <View style={LoginStyle.header}>
+            <Image
+              style={LoginStyle.logo}
+              source={require("../../image/logo.png")}
             />
-            <TextInput
-              placeholder="비밀번호을 입력해주세요"
-              placeholderTextColor="#f0f0f0"
-              style={LoginStyle.login_input_text}
-              value={this.state.pw}
-              onChangeText={(textEntry) => this.setState({ pw: textEntry })}
-              onSubmitEditing={() => login(this.state.id, this.state.pw)}
-              secureTextEntry
-            />
-          </View>
-
-          <View style={{flexDirection: "row", width: "60%", marginBottom:40,}}>
-            <View style={{flex: 2, alignItems: "flex-end"}}>
-            <TouchableOpacity 
-              onPress={() => navigation.navigate("아이디 찾기")} 
-            >
-              <Text style={{color: "#f0f0f0"}}> 아이디 찾기 </Text>
-            </TouchableOpacity>
-            </View>
-
-            <View style={{flex:1, alignItems:"center"}}>
-            <Text style={{color: "#f0f0f0", fontWeight: "bold"}}> | </Text>
-            </View>
-
-            <View style={{flex: 2, alignItems: "flex-start"}}>
-            <TouchableOpacity 
-              onPress={() => navigation.navigate("비밀번호 찾기")} 
-            >
-              <Text style={{color: "#f0f0f0"}}> 비밀번호 찾기 </Text>
-            </TouchableOpacity>
+            <View style={{ marginTop: 10 }}>
+              <Text style={{ color: "#ffffff", fontSize: 18 }}>
+                CAMPUS TAXI
+              </Text>
             </View>
           </View>
 
-          <View style={LoginStyle.button_container}>
-            <View style={[LoginStyle.login_btn_style, LoginStyle.login_btn]}>
-              <TouchableOpacity
-                onPress={() => login(this.state.id, this.state.pw)}
-                style={{height: "100%"}}
-              >
-                <View style={LoginStyle.login_text}>
-                  <Text style={{fontSize: 18, fontWeight: "bold"}}> 
-                    로그인하기 
-                  </Text>
-                </View>
-              </TouchableOpacity>
+          <View style={LoginStyle.body}>
+            <View style={LoginStyle.login_input_container}>
+              <TextInput
+                placeholder="아이디를 입력해주세요"
+                placeholderTextColor="#f0f0f0"
+                style={LoginStyle.login_input_text}
+                value={this.state.id}
+                onChangeText={(textEntry) => this.setState({ id: textEntry })}
+                onSubmitEditing={() => login(this.state.id, this.state.pw)}
+              />
+              <TextInput
+                placeholder="비밀번호을 입력해주세요"
+                placeholderTextColor="#f0f0f0"
+                style={LoginStyle.login_input_text}
+                value={this.state.pw}
+                onChangeText={(textEntry) => this.setState({ pw: textEntry })}
+                onSubmitEditing={() => login(this.state.id, this.state.pw)}
+                secureTextEntry
+              />
             </View>
-            
-            <View style={LoginStyle.login_btn_style}>
-              <TouchableOpacity
-                onPress={() => navigation.navigate("이용동의", { token: null })}
-              >
-                <Text style={{textAlign: "center", color: "#ffffff", fontSize: 18, fontWeight:"bold",}}> 
-                  회원가입
+
+            <View
+              style={{ flexDirection: "row", width: "60%", marginBottom: 40 }}
+            >
+              <View style={{ flex: 2, alignItems: "flex-end" }}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("아이디 찾기")}
+                >
+                  <Text style={{ color: "#f0f0f0" }}> 아이디 찾기 </Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={{ flex: 1, alignItems: "center" }}>
+                <Text style={{ color: "#f0f0f0", fontWeight: "bold" }}>
+                  {" "}
+                  |{" "}
                 </Text>
-              </TouchableOpacity>
+              </View>
+
+              <View style={{ flex: 2, alignItems: "flex-start" }}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("비밀번호 찾기")}
+                >
+                  <Text style={{ color: "#f0f0f0" }}> 비밀번호 찾기 </Text>
+                </TouchableOpacity>
+              </View>
             </View>
 
+            <View style={LoginStyle.button_container}>
+              <View style={[LoginStyle.login_btn_style, LoginStyle.login_btn]}>
+                <TouchableOpacity
+                  onPress={() => login(this.state.id, this.state.pw)}
+                  style={{ height: "100%" }}
+                >
+                  <View style={LoginStyle.login_text}>
+                    <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                      로그인하기
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+
+              <View style={LoginStyle.login_btn_style}>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("이용동의", { token: null })
+                  }
+                >
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      color: "#ffffff",
+                      fontSize: 18,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    회원가입
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
-        </View>
-      
-      </ImageBackground>
+        </ImageBackground>
       </View>
     );
   }
 }
 
-
 //onPress={() => login(this.state.id, this.state.pw)}
-
-
-
-
 
 ////// 스타일 //////
 const LoginStyle = StyleSheet.create({
@@ -187,4 +203,4 @@ const LoginStyle = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-})
+});

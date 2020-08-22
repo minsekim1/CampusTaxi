@@ -156,6 +156,7 @@ export default class Navigation extends Component {
           activeTintColor: "tomato",
           inactiveTintColor: "gray",
         }}
+        initialRouteName="홈"
       >
         <Tab.Screen name="홈" component={HomeStackScreen} />
         <Tab.Screen name="내 채팅" component={MychatStackScreen} />
