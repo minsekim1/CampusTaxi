@@ -3,7 +3,7 @@ import { observable } from "mobx";
 import "mobx-react-lite/batchingForReactDom";
 const firebase = require("firebase");
 import _ from "lodash";
-
+import { userStore } from "store";
 // import { bbsStore, userStore } from "store";
 export default class BbsStore {
   // "availableA" : "int",
@@ -21,6 +21,8 @@ export default class BbsStore {
   // "personpresentM" : "int",
   // "startplaceN" : "string:DB"
   @observable bbs = [];
+  @observable bbsnow = []; //현재 접속중인 bbs의 정보
+  @observable bbsuser = []; //접속중인 bbs안에 있는 유저들의 정보
   async getAllBbs() {
     //onPress={() => BbsStore.getBbs("-MDrAW9yVgYg8BSehz4e")}
     let result = [];
@@ -156,7 +158,6 @@ export default class BbsStore {
       .set(value);
   }
   getBbs(bbskey) {
-    //onPress={() => BbsStore.getBbs("-MDrAW9yVgYg8BSehz4e")}
     let result = {};
     firebase
       .database()
@@ -165,5 +166,25 @@ export default class BbsStore {
         result = s.val();
         return JSON.stringify(result);
       });
+  }
+  async setbbsnow(bbskey) {
+    firebase
+      .database()
+      .ref("bbs/data/" + bbskey)
+      .once("value", (snapshot) => {
+        this.bbsnow = JSON.parse(JSON.stringify(snapshot));
+      });
+  }
+  setbbsuser(userlist) {
+    let result = [];
+    Object.keys(userlist).map(
+      async (key) =>
+        await userStore
+          .getUser(key)
+          .then((r) => result.push(JSON.parse(JSON.stringify(r))))
+          .then(() => {
+            this.bbsuser = result;
+          })
+    );
   }
 }
