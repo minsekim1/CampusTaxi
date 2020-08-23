@@ -67,18 +67,20 @@ export default class chatroomScreen extends Component {
       });
   }
   async sendMessage() {
-    await this.getServerTime(); //현재 시간을 가져옵니다.
-    await firebase //파이어베이스 push
-      .database()
-      .ref("bbs/data/" + this.state.bbskey + "/d")
-      .push({
-        db: this.state.myname,
-        dc: String(this.state.time),
-        dd: this.state.textInput,
-      });
-    await this.updateChattingDate();
-    this.setState({ textInput: "" }); //Input의 채팅 내용을 지웁니다.
-    this.flatListRef.scrollToEnd({ animated: false }); // 채팅을 가장 아래로 내립니다.
+    if (this.state.textInput != "") {
+      await this.getServerTime(); //현재 시간을 가져옵니다.
+      await firebase //파이어베이스 push
+        .database()
+        .ref("bbs/data/" + this.state.bbskey + "/d")
+        .push({
+          db: this.state.myname,
+          dc: String(this.state.time),
+          dd: this.state.textInput,
+        });
+      await this.updateChattingDate();
+      this.setState({ textInput: "" }); //Input의 채팅 내용을 지웁니다.
+      this.flatListRef.scrollToEnd({ animated: false }); // 채팅을 가장 아래로 내립니다.
+    }
   }
 
   //#endregion

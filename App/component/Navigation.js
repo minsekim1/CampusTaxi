@@ -99,10 +99,19 @@ export default class Navigation extends Component {
       return (
         <MychatStack.Navigator initialRouteName="내 채팅">
           <MychatStack.Screen
-            options={showNavOption}
+            options={{
+              headerLeft: null,
+              headerStyle: {
+                backgroundColor: "#0D3664",
+              },
+              headerTintColor: "#fff",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+              headerTitleAlign: "center",
+            }}
             name="내 채팅"
             component={MychatScreen}
-            initialParams={{ userkey: this.state.clientName }}
           />
           <MychatStack.Screen
             name="채팅방"

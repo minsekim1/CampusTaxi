@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-community/async-storage";
 import { observable } from "mobx";
+import "mobx-react-lite/batchingForReactDom";
 const firebase = require("firebase");
 import _ from "lodash";
 
@@ -28,7 +29,8 @@ export default class BbsStore {
       .ref("bbs/data")
       .once("value", (snap) => {
         snap.forEach((i) => {
-          result.push(_.cloneDeep(i));
+          //result.push(_.cloneDeep(i));
+          result.push(JSON.parse(JSON.stringify(i)));
         });
       });
     this.bbs = result;
@@ -54,7 +56,7 @@ export default class BbsStore {
         //밀리초제거
         const datatime =
           result.datetime.slice(0, 21) + result.datetime.slice(26, 32);
-        let localDate = new Date(result);
+        let localDate = new Date(datatime);
         const week = ["일", "월", "화", "수", "목", "금", "토"];
         const dayOfWeek = week[localDate.getDay()];
         const date =
@@ -87,7 +89,6 @@ export default class BbsStore {
           i: leadername,
           j: meetingdate,
           k: personmax,
-          l: [leadername],
           m: 1,
           n: startplace,
         };
@@ -97,76 +98,18 @@ export default class BbsStore {
           .ref("bbs/data/" + newkey + "/b")
           .set(newkey);
         this.bbs.push(newBbs);
+        // 채팅데이터에 유저키 추가
+        firebase
+          .database()
+          .ref("bbs/data/" + newkey + "/l/" + userkey)
+          .set(1);
         // 유저 데이터에 새로운 방 추가
         firebase
           .database()
-          .ref("user/data/" + userkey + "/c")
-          .push(newkey);
+          .ref("user/data/" + userkey + "/c/" + newkey)
+          .set(1);
       });
   }
-
-  // fetch("http://worldtimeapi.org/api/timezone/Asia/Seoul")
-  //   .then((res) => res.json())
-  //   .then((result) => {
-  //     const datatime =
-  //       result.datetime.slice(0, 21) +
-  //       result.datetime.slice(26, 32);
-  //     const localtime = _getLocaleStrting(date);
-  //     //파이어베이스에 데이터를 올립니다. push
-  //     let newBbsKey = firebase
-  //       .database()
-  //       .ref("bbs/data")
-  //       .push();
-  //     //파이어베이스 임시 키값을 현재 키값으로 변경
-  //     let newRoom = {
-  //       a: "출발 대기", //available0
-  //       b: newBbsKey.key, //bbskey1
-  //       c: createRoomCategory, //bbstype2
-  //       d: {
-  //         "-MA_aaaaa": {
-  //           da: "-MA_aaaaa",
-  //           db: "SYSTEM",
-  //           dc: datatime,
-  //           dd:
-  //             localtime.slice(0, 10) + " 방이 생성되었습니다.",
-  //         },
-  //       }, //chat3
-  //       e: { ea: 0, eb: "" }, //cost4
-  //       f: datatime, //createdate5
-  //       g: createRoomendplace, //endplace6
-  //       h: createRoomGender == 0 ? mygender : "all", //gender7
-  //       i: myname, //leadername8
-  //       j: localtime, //meetingdate9
-  //       k: createRoompersonmax, //personmax10
-  //       l: [userkey], //personmember11
-  //       m: 1, //personpresent12
-  //       n: createRoomstartplace, //startplace13
-  //     };
-  //     //바뀐 키값으로 다시 올리기
-  //     firebase
-  //       .database()
-  //       .ref("bbs/data/" + newBbsKey.key)
-  //       .set(newRoom);
-  //     //roomList를 파이어베이스에 올린 버전으로 가져옵니다.
-  //     firebase
-  //       .database()
-  //       .ref("bbs/data")
-  //       .once("value", function (snapshot) {
-  //         let resultRoom = [];
-  //         snapshot.forEach(function (snap) {
-  //           let item = snap.val();
-  //           item.key = snap.key;
-  //           resultRoom.push(item);
-  //         });
-  //         setRoomList(resultRoom);
-  //       });
-  //     // 유저 데이터에 새로운 방 추가
-  //     firebase
-  //       .database()
-  //       .ref("user/data/" + userkey + "/c")
-  //       .push(newBbsKey.key);
-  //     setCreateRoomVisible(!isCreateRoomVisible);
-  //   });
 
   //#endregion
   // Hide bbs : 클라이언트에게 숨기기만함
@@ -186,6 +129,18 @@ export default class BbsStore {
       .ref("bbs/data/" + bbskey)
       .set({});
     // this.bbs.pop();
+  }
+  outBbs(userkey, bbskey) {
+    //클라이언트가 해당 방을 나감, 또는 추방.
+    //bbs 데이터에서 고객명 지우기.
+    firebase
+      .database()
+      .ref("bbs/data/" + bbskey + "/l/" + userkey)
+      .set(0);
+    firebase
+      .database()
+      .ref("user/data/" + userkey + "/c/" + bbskey)
+      .set(0); //1은 방들어갈때 적용
   }
   changeBbsValue(bbskey, props, value) {
     //props는 a => available이런식

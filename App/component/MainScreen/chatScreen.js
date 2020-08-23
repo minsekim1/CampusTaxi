@@ -1,14 +1,8 @@
 //#region imports
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  FlatList,
-  Image,
-  TouchableOpacity,
-  Picker,
-  Modal,
-} from "react-native";
-// import Modal from "react-native-modal";
+import { View, FlatList, Image, TouchableOpacity } from "react-native";
+import { Picker } from "@react-native-community/picker";
+import Modal from "react-native-modal";
 import {
   Header,
   ListItem,
@@ -24,6 +18,7 @@ import DateTimePicker from "@react-native-community/datetimepicker"; //방생성
 import crown from "image/crown.png";
 const firebase = require("firebase");
 import { bbsStore, userStore } from "store";
+import { Observer } from "mobx-react";
 //#endregion
 
 //채팅목록 화면
@@ -33,7 +28,6 @@ export default function chatScreen({ route, navigation }) {
   const userkey = userStore.user.f;
   useEffect(() => {
     bbsStore.getAllBbs();
-    bbsStore.print();
     updateUserdata(userkey);
     placeUpdate();
   }, [userkey]);
@@ -50,7 +44,6 @@ export default function chatScreen({ route, navigation }) {
       .database()
       .ref("user/data/" + userkey + "/c")
       .once("value", (snapshot) => {
-        //alert(Object.keys(snapshot).length);
         setMyRoomCount(Object.keys(snapshot).length);
       });
     return myRoomCount;
@@ -71,7 +64,8 @@ export default function chatScreen({ route, navigation }) {
   const [createRoompersonmax, setCreateRoompersonmax] = useState(4);
   const [createRoomstartplace, setCreateRoomstartplace] = useState();
   const [createRoomendplace, setCreateRoomendplace] = useState();
-  const [createRoomGender, setCreateRoomGender] = useState(userStore.user.d);
+  const [createRoomGender, setCreateRoomGender] = useState(1);
+  const [createSelectGender, setCreateSelectGender] = useState(2);
 
   const [startplace, setStartplace] = useState([]);
   const [endplace, setEndplace] = useState([]);
@@ -293,108 +287,99 @@ export default function chatScreen({ route, navigation }) {
       />
       {/* 채팅목록 출력부분 */}
       <FlatList
-        keyExtractor={(item) => item.key}
-        data={roomList}
+        keyExtractor={(item) => item.b}
+        data={bbsStore.bbs}
         renderItem={({ item, index }) => {
-          if (item != null && filterCategory == item.c) {
-            return (
-              <TouchableOpacity
-                onPress={() => {
-                  if (true) {
-                    //checkUserEnterChatRoom() < 2
-                    firebase
-                      .database()
-                      .ref("user/data/" + userkey + "/c")
-                      .push(item.b);
-                    navigation.navigate("채팅방", {
-                      bbskey: item.b,
-                      gender: item.h,
-                      leadername: item.i,
-                      startplace: item.n,
-                      endplace: item.g,
-                      mygender: mygender,
-                      myname: myname,
-                      meetingdate: item.j,
-                      personmember: item.i,
-                      personmax: item.k,
-                    });
-                  } else {
-                    alert(
-                      "채팅방은 최대 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭 에서 채팅방 나가기를 해주세요."
-                    );
-                  }
-                }}
-                style={{ backgroundColor: "white", padding: 10 }}
-              >
-                <View style={campusStyle.View.row}>
-                  <View
-                    style={{
-                      borderRadius: 100,
-                      width: 62,
-                      height: 62,
-                      backgroundColor:
-                        item.h == "woman"
-                          ? "#DE22A3"
-                          : item.h == "man"
-                          ? "#55A1EE"
-                          : "#3A3A3A",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text style={campusStyle.Text.middleBold}>{index}</Text>
-                    <Text style={campusStyle.Text.middleBold}>
-                      {item.h == "woman"
-                        ? "여자"
-                        : item.h == "man"
-                        ? "남자"
-                        : "남 여"}
-                    </Text>
-                  </View>
-                  <View style={{ flex: 6 }}>
-                    <View style={campusStyle.View.row}>
-                      <Image
-                        style={{ width: 23, height: 15, marginLeft: 10 }}
-                        source={crown}
-                      />
-                      <Text>{item.i}</Text>
-                    </View>
-                    <Text style={{ marginLeft: 10 }}>출발지:{item.n}</Text>
-                    <Text style={{ marginLeft: 10 }}>도착지:{item.g}</Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    {(() => {
-                      if (item.k === item.m)
-                        return (
-                          <Text style={campusStyle.Text.red}>
-                            {item.m}/{item.k}
-                          </Text>
-                        );
-                      else
-                        return (
-                          <Text>
-                            {item.m}/{item.k}
-                          </Text>
-                        );
-                    })()}
-                  </View>
-                  <View style={{ flex: 3, alignItems: "center" }}>
-                    <Text style={campusStyle.Text.grayDDark}>출발시간▼</Text>
-                    <Text style={campusStyle.Text.grayDDark}>
-                      {String(item.j)
-                        .replace("년", "/")
-                        .replace("월", "/")
-                        .replace("일", "(")
-                        .replace("요일", ")")
-                        .replace("시", ":")
-                        .replace("분", "")}
-                    </Text>
-                    <Text style={campusStyle.Text.grayDDark}>{item.a}</Text>
-                  </View>
+          return (
+            <TouchableOpacity
+              onPress={() => {
+                if (true) {
+                  //checkUserEnterChatRoom() < 2
+                  firebase
+                    .database()
+                    .ref("bbs/data/" + item.b + "/l/" + userStore.userkey)
+                    .set(1);
+                  firebase
+                    .database()
+                    .ref("user/data/" + userStore.userkey + "/c/" + item.b)
+                    .set(1);
+                  navigation.navigate("채팅방", {
+                    bbskey: item.b,
+                    gender: item.h,
+                    leadername: item.i,
+                    startplace: item.n,
+                    endplace: item.g,
+                    mygender: mygender,
+                    myname: myname,
+                    meetingdate: item.j,
+                    personmember: item.i,
+                    personmax: item.k,
+                  });
+                } else {
+                  alert(
+                    "채팅방은 최대 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭 에서 채팅방 나가기를 해주세요."
+                  );
+                }
+              }}
+              style={{ backgroundColor: "white", padding: 10 }}
+            >
+              <View style={campusStyle.View.row}>
+                <View
+                  style={{
+                    borderRadius: 100,
+                    width: 62,
+                    height: 62,
+                    backgroundColor:
+                      item.h == 0
+                        ? "#579FEE"
+                        : item.h == 1
+                        ? "#C278DE"
+                        : "#3A3A3A",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={campusStyle.Text.middleBold}>{index}</Text>
+                  <Text style={campusStyle.Text.middleBold}>
+                    {item.h == 0 ? "남자" : item.h == 1 ? "여자" : "모두"}
+                  </Text>
                 </View>
-              </TouchableOpacity>
-            );
-          }
+                <View style={{ flex: 6 }}>
+                  <View style={campusStyle.View.row}>
+                    <Image
+                      style={{ width: 23, height: 15, marginLeft: 10 }}
+                      source={crown}
+                    />
+                    <Text>{item.i}</Text>
+                  </View>
+                  <Text style={{ marginLeft: 10 }}>출발지:{item.n}</Text>
+                  <Text style={{ marginLeft: 10 }}>도착지:{item.g}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  {(() => {
+                    if (item.k === item.m)
+                      return (
+                        <Text style={campusStyle.Text.red}>
+                          {item.m}/{item.k}
+                        </Text>
+                      );
+                    else
+                      return (
+                        <Text>
+                          {item.m}/{item.k}
+                        </Text>
+                      );
+                  })()}
+                </View>
+                <View style={{ flex: 3, alignItems: "center" }}>
+                  <Text style={campusStyle.Text.grayDDark}>탑승시간▼</Text>
+                  <Text style={campusStyle.Text.grayDDark}>
+                    {userStore.globalTimeTolocalTime(item.f)}
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          );
         }}
       />
       {/* 방만들기 버튼부분 */}
@@ -508,7 +493,15 @@ export default function chatScreen({ route, navigation }) {
                 selectedButtonStyle={{ backgroundColor: "#F8BD3C" }}
                 textStyle={{ fontSize: 16 }}
                 selectedIndex={createRoomGender}
-                onPress={(index) => setCreateRoomGender(index)}
+                onPress={(index) => {
+                  if (index == 0) {
+                    setCreateRoomGender(0);
+                    setCreateSelectGender(Number(userStore.user.d));
+                  } else {
+                    setCreateRoomGender(1);
+                    setCreateSelectGender(2);
+                  }
+                }}
                 buttons={["동성만", "남녀모두"]}
               ></ButtonGroup>
             </View>
@@ -518,17 +511,24 @@ export default function chatScreen({ route, navigation }) {
                 buttonStyle={campusStyle.Button.groupActive}
                 title="방 생성"
                 onPress={() => {
-                  bbsStore.addBbs(
-                    createRoomCategory,
-                    createRoomendplace,
-                    createRoomGender,
-                    myname,
-                    date,
-                    createRoompersonmax,
-                    createRoomstartplace,
-                    userStore.user.m
-                  );
-                  setCreateRoomVisible(!isCreateRoomVisible);
+                  if (
+                    createRoomendplace == null ||
+                    createRoomstartplace == null
+                  ) {
+                    alert("출발지 또는 도착지를 선택해주세요.");
+                  } else {
+                    bbsStore.addBbs(
+                      createRoomCategory,
+                      createRoomendplace,
+                      createSelectGender,
+                      myname,
+                      date,
+                      createRoompersonmax,
+                      createRoomstartplace,
+                      userStore.userkey
+                    );
+                    setCreateRoomVisible(!isCreateRoomVisible);
+                  }
                 }}
               />
               <Button

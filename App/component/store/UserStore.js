@@ -1,9 +1,10 @@
 // #사용법
 // 1. import { bbsStore, userStore } from "store";
 // 2. onPress={() => userStore.addUser(1, 2, 3, 4, 5, 6, 7, 8,9,10)}
-
+import "mobx-react-lite/batchingForReactDom";
 export default class UserStore {
   @observable user = null;
+  @observable userbbs = null;
   @observable userkey = null; //유저 아이디 or SNS로그인일 경우 토큰
   @observable develop = true; //개발전용모드
   //{userStore.develop == true ? "설정" : "홈"}
@@ -252,6 +253,25 @@ export default class UserStore {
       localDate.getMinutes() +
       "분";
     return date;
+  }
+
+  setuserbbs(userbbs) {
+    //this.userkey
+    let result = [];
+
+    //유저데이터 에서 하나씩 bbs를 가져옴
+    Object.keys(userbbs).map((snapkey) => {
+      if (snapkey != null) {
+        firebase
+          .database()
+          .ref("bbs/data/" + snapkey)
+          .once("value", (snap2) => {
+            result.push(JSON.parse(JSON.stringify(snap2)));
+          });
+      }
+    });
+
+    this.userbbs = result;
   }
 }
 

@@ -9,32 +9,30 @@ import {
   Dimensions,
   TouchableHighlight,
   TouchableOpacity,
-  Alert,
   Text,
 } from "react-native";
+import { bbsStore, userStore } from "store";
 import { Input, Badge } from "react-native-elements";
 import campusStyle from "style";
 import crown from "image/crown.png";
+import { Observer } from "mobx-react";
 const firebase = require("firebase");
 
 export default function MychatScreen({ route, navigation }) {
-  const [roomList, setRoomList] = useState();
   const [inital, setInital] = useState(true);
-  const [userkey, setUserkey] = useState("");
+  const [userkey, setUserkey] = useState(userStore.userkey);
 
   useEffect(() => {
+    userStore.setuserbbs(userStore.user.c);
     //userkey 넣기
-
-    route.params ? setUserkey(route.params.userkey) : null;
+    //route.params ? setUserkey(route.params.userkey) : null;
     //해당 유저의 keyy를 이용하여 내 채팅 목록을 채워넣음
-
     // userStore.updateUser(); //유저 정보 업데이트
-    let resultarr = [];
-    alert(userStore.user);
-    if (userStore.user.c != null)
-      Object.values(userStore.user.c).forEach((i) => resultarr.push(i));
-    setRoomList(resultarr);
-    setInital(false);
+    // let resultarr = [];
+    // alert(userStore.user);
+    // if (userStore.user.c != null)
+    //   Object.values(userStore.user.c).forEach((i) => resultarr.push(i));
+    // setInital(false);
   }, []);
 
   //새로고침
@@ -45,13 +43,14 @@ export default function MychatScreen({ route, navigation }) {
   };
   const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(() => {
+    userStore.setuserbbs(userStore.user.c);
     setRefreshing(true);
     wait(500).then(() => setRefreshing(false));
   }, []);
 
   //#region 유저정보 업데이트
-  const [myname, setMyname] = useState();
-  const [mygender, setMygender] = useState();
+  //const [myname, setMyname] = useState();
+  //const [mygender, setMygender] = useState();
   return (
     <>
       {inital && (
@@ -59,102 +58,31 @@ export default function MychatScreen({ route, navigation }) {
           <Text>데이터를 받아오는 중입니다. 새로고침을 해주세요.</Text>
         </View>
       )}
+      <Observer>
+        {() => {
+          if (userStore.userbbs != []) {
+            console.log(userStore.userbbs);
+            return (
+              <Text style={campusStyle.Text.default}>
+                {console.log(userStore.userbbs)}
+                {userStore.userbbs.map(() => "asd")}
+              </Text>
+            );
+          } else {
+            return <Text style={campusStyle.Text.default}>null입니당</Text>;
+          }
+        }}
+      </Observer>
       <FlatList
         keyExtractor={(item) => item.id}
-        data={roomList}
-        extraData={roomList}
+        data={userStore.userbbs}
+        extraData={userStore.userbbs}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         renderItem={({ item, index }) => {
           if (item != null) {
-            return (
-              <TouchableOpacity
-                key={index}
-                onPress={() => {
-                  navigation.navigate("채팅방", {
-                    bbskey: item.b,
-                    gender: item.h,
-                    leadername: item.i,
-                    startplace: item.n,
-                    endplace: item.g,
-                    mygender: mygender,
-                    myname: myname,
-                    meetingdate: item.j,
-                    personmember: item.i,
-                    personmax: item.k,
-                  });
-                }}
-                style={{ backgroundColor: "white", padding: 10 }}
-              >
-                <View style={campusStyle.View.row}>
-                  <View
-                    style={{
-                      borderRadius: 100,
-                      width: 62,
-                      height: 62,
-                      backgroundColor:
-                        item.h == "woman"
-                          ? "#DE22A3"
-                          : item.h == "man"
-                          ? "#55A1EE"
-                          : "#3A3A3A",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text style={campusStyle.Text.middleBold}>{index}</Text>
-                    <Text style={campusStyle.Text.middleBold}>
-                      {item.h == "woman"
-                        ? "여자"
-                        : item.h == "man"
-                        ? "남자"
-                        : "남 여"}
-                    </Text>
-                  </View>
-                  <View style={{ flex: 6 }}>
-                    <View style={campusStyle.View.row}>
-                      <Image
-                        style={{ width: 23, height: 15, marginLeft: 10 }}
-                        source={crown}
-                      />
-                      <Text>{item.i}</Text>
-                    </View>
-                    <Text style={{ marginLeft: 10 }}>출발지:{item.n}</Text>
-                    <Text style={{ marginLeft: 10 }}>도착지:{item.g}</Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    {(() => {
-                      if (item.k === item.m)
-                        return (
-                          <Text style={campusStyle.Text.red}>
-                            {item.m}/{item.k}
-                          </Text>
-                        );
-                      else
-                        return (
-                          <Text>
-                            {item.m}/{item.k}
-                          </Text>
-                        );
-                    })()}
-                  </View>
-                  <View style={{ flex: 3, alignItems: "center" }}>
-                    <Text style={campusStyle.Text.grayDDark}>출발시간▼</Text>
-                    <Text style={campusStyle.Text.grayDDark}>
-                      {String(item.j)
-                        .replace("년", "/")
-                        .replace("월", "/")
-                        .replace("일", "(")
-                        .replace("요일", ")")
-                        .replace("시", ":")
-                        .replace("분", "")}
-                    </Text>
-                    <Text style={campusStyle.Text.grayDDark}>{item.a}</Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            );
+            return <Text style={campusStyle.Text.default}>{index}</Text>;
           }
         }}
       />

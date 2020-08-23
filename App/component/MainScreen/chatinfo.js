@@ -13,8 +13,8 @@ import campusStyle from "style";
 import { TextInput } from "react-native-gesture-handler";
 import crown from "image/crown.png";
 const firebase = require("firebase");
-
-//실제 유저들이 채팅하는 화면
+import { bbsStore, userStore } from "store";
+//채팅방의 유저 목록
 export default function chatinfo({ route, navigation }) {
   let { bbskey } = route.params;
   const [chatinfo, setChatinfo] = useState([]);
@@ -38,7 +38,33 @@ export default function chatinfo({ route, navigation }) {
       });
   }
   //#endregion
-  return <>{/* 채팅 내용부분 */}</>;
+  return (
+    <>
+      <FlatList
+        data={chatinfo}
+        extraData={chatinfo}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <Text>{Object.keys(item.l).map((key) => key)}</Text>
+        )}
+      />
+      <View
+        stlye={{
+          position: "absolute",
+          bottom: 0,
+        }}
+      >
+        <Button
+          style={campusStyle.Button.default}
+          onPress={async () => {
+            await bbsStore.outBbs(userStore.userkey, bbskey);
+            navigation.pop(2);
+          }}
+          title="방나가기"
+        />
+      </View>
+    </>
+  );
 }
 
 function RenderChatMember() {}

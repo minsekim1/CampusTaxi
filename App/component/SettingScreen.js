@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { View, Text, ScrollView, Linking, StyleSheet } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { createStackNavigator } from "@react-navigation/stack";
 const Stack = createStackNavigator();
 //UI
@@ -71,29 +72,25 @@ function HomeScreen({ navigation }) {
   ];
 
   return (
-    <>
-      <ScrollView>
-        {list.map((item, i) =>
-          (function () {
-            return (
-              <ListItem
-                keyExtractor={(item) => item.id}
-                key={i}
-                title={
-                  <Text
-                    style={item.type === "text" ? styles.text : styles.title}
-                  >
-                    {item.title}
-                  </Text>
-                }
-                onPress={() => navigation.navigate({ name: item.navigation })} //styles.title item.type === "text" item.type === "title"
-                chevron
-              />
-            );
-          })()
-        )}
-      </ScrollView>
-    </>
+    <View>
+      {list.map((item, i) =>
+        (function () {
+          return (
+            <ListItem
+              keyExtractor={(item) => item.id}
+              key={i}
+              title={
+                <Text style={item.type === "text" ? styles.text : styles.title}>
+                  {item.title}
+                </Text>
+              }
+              onPress={() => navigation.navigate({ name: item.navigation })} //styles.title item.type === "text" item.type === "title"
+              chevron
+            />
+          );
+        })()
+      )}
+    </View>
   );
 }
 //내 정보: 회원정보 수정페이지
@@ -117,10 +114,10 @@ function clientChangePage({ navigation: { goBack } }) {
   async function submit(userkey, email, gender, name, nickname) {
     if (isVaildNickName == 1 || isVaildNickName == 3) {
       await userStore.changeUserAll(userkey, email, gender, name, nickname);
+      goBack();
     } else {
       alert("이미 있는 닉네임입니다. 다른 닉네임을 골라주세요.");
     }
-    goBack();
   }
   //샘플 아이디 데이터
   function changeNickName(changedNickName) {
@@ -245,9 +242,7 @@ function clientChangePage({ navigation: { goBack } }) {
           <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
             최초가입일
           </Text>
-          <Text
-            style={{ fontSize: 18, fontSize: 11, marginTop: 16, color: "gray" }}
-          >
+          <Text style={{ fontSize: 18, fontSize: 11, color: "gray" }}>
             {userStore.globalTimeTolocalTime(userStore.user.e)}
           </Text>
         </View>
@@ -314,7 +309,9 @@ function clientChangePage({ navigation: { goBack } }) {
           {/* <Input type="file" name="file" onChange={null}/> */}
         </View>
       </View>
-      <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
+      <Divider
+        style={{ marginTop: 20, marginBottom: 20, backgroundColor: "#D2D2D2" }}
+      />
 
       {/* 수정 완료 버튼 */}
       <View style={{ alignItems: "center", marginBottom: 30 }}>
@@ -418,8 +415,6 @@ class clientpage extends React.Component {
             <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
               최초가입일
             </Text>
-            <Text style={{ marginBottom: 10, fontSize: 11 }}></Text>
-
             <Observer>
               {() => (
                 <Text style={{ marginBottom: 10 }}>
@@ -620,7 +615,21 @@ function clientpageQuestion() {
 function SettingScreen() {
   return (
     <Stack.Navigator initialRouteName="설정">
-      <Stack.Screen options={navOptions} name="설정" component={HomeScreen} />
+      <Stack.Screen
+        options={{
+          headerLeft: null,
+          headerStyle: {
+            backgroundColor: "#0D3664",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerTitleAlign: "center",
+        }}
+        name="설정"
+        component={HomeScreen}
+      />
       <Stack.Screen
         options={navOptions}
         name="내 정보"
