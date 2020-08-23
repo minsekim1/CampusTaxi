@@ -30,7 +30,14 @@ export default class BbsStore {
       .once("value", (snap) => {
         snap.forEach((i) => {
           //result.push(_.cloneDeep(i));
-          result.push(JSON.parse(JSON.stringify(i)));
+          //현재 인원 재 계산
+          let snap3 = i.val();
+          let m = 0;
+          if (snap3.l != null) {
+            Object.values(snap3.l).map(() => m++);
+          }
+          snap3.m = m;
+          result.push(JSON.parse(JSON.stringify(snap3)));
         });
       });
     this.bbs = result;
@@ -89,7 +96,6 @@ export default class BbsStore {
           i: leadername,
           j: meetingdate,
           k: personmax,
-          m: 1,
           n: startplace,
         };
         let newkey = firebase.database().ref("bbs/data").push(newBbs).key;

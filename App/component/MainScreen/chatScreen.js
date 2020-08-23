@@ -287,7 +287,7 @@ export default function chatScreen({ route, navigation }) {
       />
       {/* 채팅목록 출력부분 */}
       <FlatList
-        keyExtractor={(item) => item.b}
+        keyExtractor={(item, i) => String(i)}
         data={bbsStore.bbs}
         renderItem={({ item, index }) => {
           return (
@@ -418,10 +418,10 @@ export default function chatScreen({ route, navigation }) {
                   setCreateRoomCategory(itemValue);
                 }}
               >
-                <Picker.Item color="gray" label={filter} />
-                {menuList.map((item) =>
+                <Picker.Item key="0" color="gray" label={filter} />
+                {menuList.map((item, i) =>
                   item != filter ? (
-                    <Picker.Item label={item} value={item} />
+                    <Picker.Item key={i} label={item} value={item} />
                   ) : null
                 )}
               </Picker>
@@ -432,9 +432,13 @@ export default function chatScreen({ route, navigation }) {
                   setCreateRoomstartplace(itemValue);
                 }}
               >
-                <Picker.Item value="" label="출발장소를 선택해주세요." />
-                {startplace.map((item) => (
-                  <Picker.Item label={item} value={item} />
+                <Picker.Item
+                  key="0"
+                  value=""
+                  label="출발장소를 선택해주세요."
+                />
+                {startplace.map((item, i) => (
+                  <Picker.Item key={i} label={item} value={item} />
                 ))}
               </Picker>
               <Text>도착장소</Text>
@@ -444,9 +448,13 @@ export default function chatScreen({ route, navigation }) {
                   setCreateRoomendplace(itemValue);
                 }}
               >
-                <Picker.Item value="" label="도착장소를 선택해주세요." />
-                {endplace.map((item) => (
-                  <Picker.Item label={item} value={item} />
+                <Picker.Item
+                  key="0"
+                  value=""
+                  label="도착장소를 선택해주세요."
+                />
+                {endplace.map((item, i) => (
+                  <Picker.Item key={i} label={item} value={item} />
                 ))}
               </Picker>
               <Text>탑승 시간</Text>
@@ -591,15 +599,15 @@ export default function chatScreen({ route, navigation }) {
                   setFilterCategory(itemValue);
                 }}
               >
-                <Picker.Item label="등교" value="등교" />
-                <Picker.Item label="하교" value="하교" />
-                <Picker.Item label="야작" value="야작" />
-                <Picker.Item label="독서실" value="독서실" />
-                <Picker.Item label="PC방" value="PC방" />
-                <Picker.Item label="놀이동산" value="놀이동산" />
-                <Picker.Item label="클럽" value="클럽" />
-                <Picker.Item label="스키장" value="스키장" />
-                <Picker.Item label="오션월드" value="오션월드" />
+                <Picker.Item key={0} label="등교" value="등교" />
+                <Picker.Item key={1} label="하교" value="하교" />
+                <Picker.Item key={2} label="야작" value="야작" />
+                <Picker.Item key={3} label="독서실" value="독서실" />
+                <Picker.Item key={4} label="PC방" value="PC방" />
+                <Picker.Item key={5} label="놀이동산" value="놀이동산" />
+                <Picker.Item key={6} label="클럽" value="클럽" />
+                <Picker.Item key={7} label="스키장" value="스키장" />
+                <Picker.Item key={8} label="오션월드" value="오션월드" />
               </Picker>
               <Text>출발장소</Text>
               <Picker
@@ -609,9 +617,9 @@ export default function chatScreen({ route, navigation }) {
                   setFilterStartplace(itemValue);
                 }}
               >
-                <Picker.Item label="무관" value="무관" />
-                {startplace.map((item) => (
-                  <Picker.Item label={item} value={item} />
+                <Picker.Item key={0} label="무관" value="무관" />
+                {startplace.map((item, i) => (
+                  <Picker.Item key={i} label={item} value={item} />
                 ))}
               </Picker>
               <Text>도착장소</Text>
@@ -622,9 +630,9 @@ export default function chatScreen({ route, navigation }) {
                   setFilterEndplace(itemValue);
                 }}
               >
-                <Picker.Item label="무관" value="무관" />
-                {endplace.map((item) => (
-                  <Picker.Item label={item} value={item} />
+                <Picker.Item key={0} label="무관" value="무관" />
+                {endplace.map((item, i) => (
+                  <Picker.Item key={i} label={item} value={item} />
                 ))}
               </Picker>
               <Text>탑승시간</Text>
@@ -636,9 +644,9 @@ export default function chatScreen({ route, navigation }) {
                       setFilterMeetingTimeStart(itemValue);
                     }}
                   >
-                    <Picker.Item label="전부" value="전부" />
-                    {timeLineStart.map((item) => (
-                      <Picker.Item label={item} value={item} />
+                    <Picker.Item key={0} label="전부" value="전부" />
+                    {timeLineStart.map((item, i) => (
+                      <Picker.Item key={i} label={item} value={item} />
                     ))}
                   </Picker>
                 </View>
@@ -649,9 +657,9 @@ export default function chatScreen({ route, navigation }) {
                       setFilterMeetingTimeEnd(itemValue);
                     }}
                   >
-                    <Picker.Item label="전부" value="전부" />
-                    {timeLineEnd.map((item) => (
-                      <Picker.Item label={item} value={item} />
+                    <Picker.Item key={0} label="전부" value="전부" />
+                    {timeLineEnd.map((item, i) => (
+                      <Picker.Item key={i} label={item} value={item} />
                     ))}
                   </Picker>
                 </View>
@@ -665,10 +673,10 @@ export default function chatScreen({ route, navigation }) {
                       setFilterPersonMin(itemValue);
                     }}
                   >
-                    <Picker.Item label="1" value="1" />
-                    <Picker.Item label="2" value="2" />
-                    <Picker.Item label="3" value="3" />
-                    <Picker.Item label="4" value="4" />
+                    <Picker.Item key={0} label="1" value="1" />
+                    <Picker.Item key={1} label="2" value="2" />
+                    <Picker.Item key={2} label="3" value="3" />
+                    <Picker.Item key={3} label="4" value="4" />
                   </Picker>
                 </View>
                 <View style={campusStyle.View.flex}>
@@ -678,10 +686,10 @@ export default function chatScreen({ route, navigation }) {
                       setFilterPersonMax(itemValue);
                     }}
                   >
-                    <Picker.Item label="1" value="1" />
-                    <Picker.Item label="2" value="2" />
-                    <Picker.Item label="3" value="3" />
-                    <Picker.Item label="4" value="4" />
+                    <Picker.Item key={0} label="1" value="1" />
+                    <Picker.Item key={1} label="2" value="2" />
+                    <Picker.Item key={2} label="3" value="3" />
+                    <Picker.Item key={3} label="4" value="4" />
                   </Picker>
                 </View>
               </View>

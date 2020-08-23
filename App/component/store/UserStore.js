@@ -4,7 +4,7 @@
 import "mobx-react-lite/batchingForReactDom";
 export default class UserStore {
   @observable user = null;
-  @observable userbbs = null;
+  @observable userbbs = [];
   @observable userkey = null; //유저 아이디 or SNS로그인일 경우 토큰
   @observable develop = true; //개발전용모드
   //{userStore.develop == true ? "설정" : "홈"}
@@ -255,23 +255,35 @@ export default class UserStore {
     return date;
   }
 
-  setuserbbs(userbbs) {
-    //this.userkey
+  async setuserbbs(userkey) {
     let result = [];
-
-    //유저데이터 에서 하나씩 bbs를 가져옴
-    Object.keys(userbbs).map((snapkey) => {
-      if (snapkey != null) {
-        firebase
-          .database()
-          .ref("bbs/data/" + snapkey)
-          .once("value", (snap2) => {
-            result.push(JSON.parse(JSON.stringify(snap2)));
+    await firebase
+      .database()
+      .ref("user/data/" + userkey + "/c")
+      .once("value", (snap) => {
+        if (snap.val() != null) {
+          this.user.c = JSON.parse(JSON.stringify(snap));
+          //유저데이터 에서 하나씩 bbs를 가져옴
+          Object.keys(this.user.c).map(async (snapkey) => {
+            if (snapkey != null) {
+              await firebase
+                .database()
+                .ref("bbs/data/" + snapkey)
+                .once("value", (snap2) => {
+                  //현재 인원 재 계산
+                  let snap3 = snap2.val();
+                  let m = 0;
+                  if (snap3.l != null) {
+                    Object.values(snap3.l).map(() => m++);
+                  }
+                  snap3.m = m;
+                  result.push(JSON.parse(JSON.stringify(snap3)));
+                });
+              this.userbbs = result;
+            }
           });
-      }
-    });
-
-    this.userbbs = result;
+        }
+      });
   }
 }
 

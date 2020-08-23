@@ -18,6 +18,7 @@ import { bbsStore, userStore } from "store";
 export default function chatinfo({ route, navigation }) {
   let { bbskey } = route.params;
   const [chatinfo, setChatinfo] = useState([]);
+  const [chatuserinfo, setChatuserinfo] = useState([]);
   //멤버 배열, 대화상대(현재, 최대)
   //#region 변수들
   useEffect(() => {
@@ -32,8 +33,17 @@ export default function chatinfo({ route, navigation }) {
         let item = [];
         item.push(snapshot.val());
         setChatinfo(item);
+
+        //현재 인원 재 계산
+        let snap3 = snapshot.val();
+        let m = 0;
+        if (snap3.l != null) {
+          Object.values(snap3.l).map(() => m++);
+        }
+        snap3.m = m;
+
         navigation.setOptions({
-          title: "대화상대(" + snapshot.val().m + "/" + snapshot.val().k + ")",
+          title: "대화상대(" + snap3.m + "/" + snapshot.val().k + ")",
         });
       });
   }
@@ -43,9 +53,14 @@ export default function chatinfo({ route, navigation }) {
       <FlatList
         data={chatinfo}
         extraData={chatinfo}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, i) => String(i)}
         renderItem={({ item }) => (
-          <Text>{Object.keys(item.l).map((key) => key)}</Text>
+          <Text>
+            {Object.keys(item.l).map((key) => key)}
+            {/* {Object.keys(item.l).map((key) =>
+              userStore.getUser(key).then((r) => r.a)
+            )} */}
+          </Text>
         )}
       />
       <View
