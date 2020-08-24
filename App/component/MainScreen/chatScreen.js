@@ -529,7 +529,7 @@ export default function chatScreen({ route, navigation }) {
                       createRoomCategory,
                       createRoomendplace,
                       createSelectGender,
-                      myname,
+                      userStore.user.i,
                       date,
                       createRoompersonmax,
                       createRoomstartplace,
