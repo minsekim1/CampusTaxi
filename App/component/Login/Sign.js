@@ -508,12 +508,13 @@ export class Sign2 extends React.Component {
       });
     }
   }
+
   //#endregion
   render() {
     const { navigation } = this.props;
     return (
       <ScrollView>
-        <View style={{ flex: 1, margin: 20, marginLeft: 30, marginRight: 30 }}>
+        <View style={{ flex: 1, margin: 20, marginLeft: 30, marginRight: 30,  }}>
           {/* 휴대폰 인증 start*/}
           <View style={{ marginBottom: 70 }}>
             <View style={SignIn.complete_alert_checkbox}>
@@ -524,56 +525,61 @@ export class Sign2 extends React.Component {
               </Text>
             </View>
 
-            <View>
-              <Picker
-                selectedValue={this.state.countryNum}
-                style={{ height: 30, width: 140 }}
-                onValueChange={(itemValue, itemIndex) =>
-                  this.setState({ countryNum: itemValue })
-                }
-                // https://ko.wikipedia.org/wiki/국제전화_나라_번호
-              >
-                <Picker.Item label="대한민국(+82)" value="+82" />
-                <Picker.Item label="북한(+850)" value="+850" />
-                <Picker.Item label="인도네시아(+62)" value="+850" />
-              </Picker>
+            <View style={{marginBottom: 20,}}>
               <View style={SignIn.phone_auth}>
-                <View style={SignIn.input}>
+                <View style={{flex: 1, borderWidth: 1, borderColor: "#959595", marginRight: 10, borderRadius: 5,}}>
+                <Picker
+                  selectedValue={this.state.countryNum}
+                  style={{ height: 30,}}
+                  onValueChange={(itemValue, itemIndex) =>
+                    this.setState({ countryNum: itemValue })
+                  }
+                  // https://ko.wikipedia.org/wiki/국제전화_나라_번호
+                >
+                  <Picker.Item label="대한민국(+82)" value="+82" />
+                  <Picker.Item label="북한(+850)" value="+850" />
+                  <Picker.Item label="인도네시아(+62)" value="+850" />
+                </Picker>
+                </View>
+
+                <View style={[SignIn.input, {borderWidth: 1, borderColor: "#959595",borderRadius: 5,} ]}>
                   <TextInput
                     value={this.state.phoneNumber}
                     onChangeText={(val) => this.onChangedPhoneNumber(val)}
                     keyboardType="number-pad"
                     maxLength={14}
-                    placeholder="01012341234"
+                    placeholder="휴대폰 번호"
                     autoCompleteType="tel"
-                    style={{ fontSize: 15 }}
+                    style={{ fontSize: 15, paddingLeft: 10, }}
                   />
                 </View>
-                <View style={SignIn.auth_button}>
-                  <TouchableOpacity onPress={this.sendVerification}>
-                    <Text
-                      style={{
-                        color: "#ffffff",
-                        fontSize: 12,
-                        textAlign: "center",
-                      }}
-                    >
-                      인증번호 전송
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+              </View>
+
+              <View style={SignIn.auth_button}>
+                <TouchableOpacity onPress={this.sendVerification}>
+                  <Text
+                    style={{
+                      color: "#ffffff",
+                      fontSize: 12,
+                      textAlign: "center",
+                    }}
+                  >
+                    인증번호 전송
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
+           
 
-            <View style={[SignIn.phone_auth, { marginTop: 10 }]}>
-              <View style={SignIn.input}>
+            <View style={{alignSelf: "center", width: "50%",}}>
+              <View style={[SignIn.input,{marginBottom: 20,}]}>
                 <TextInput
                   value={this.state.authNum}
                   onChangeText={(val) => this.onChangedauthNum(val)}
                   keyboardType="number-pad"
                   maxLength={8}
+                  style={{ fontSize: 15, textAlign: "center", }}
                   placeholder="12345678"
-                  style={{ fontSize: 15 }}
                 />
               </View>
               <View style={SignIn.auth_button}>
@@ -608,8 +614,7 @@ export class Sign2 extends React.Component {
 
           <View style={{ marginBottom: 20 }}>
             <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
-              {" "}
-              닉네임{" "}
+              닉네임
             </Text>
             <View style={SignIn.input}>
               <TextInput
@@ -624,11 +629,8 @@ export class Sign2 extends React.Component {
           {this.state.token == null ? (
             <>
               <View style={{ marginBottom: 20 }}>
-                <Text
-                  style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}
-                >
-                  {" "}
-                  아이디{" "}
+                <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
+                  아이디
                 </Text>
                 <View style={SignIn.input}>
                   <TextInput
@@ -642,11 +644,8 @@ export class Sign2 extends React.Component {
               </View>
 
               <View style={{ marginBottom: 20 }}>
-                <Text
-                  style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}
-                >
-                  {" "}
-                  비밀번호{" "}
+                <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
+                  비밀번호
                 </Text>
                 <View style={SignIn.input}>
                   <TextInput
@@ -659,11 +658,8 @@ export class Sign2 extends React.Component {
                 </View>
               </View>
               <View style={{ marginBottom: 20 }}>
-                <Text
-                  style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}
-                >
-                  {" "}
-                  비밀번호 확인{" "}
+                <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
+                  비밀번호 확인
                 </Text>
                 <View style={SignIn.input}>
                   <TextInput
@@ -677,27 +673,39 @@ export class Sign2 extends React.Component {
               </View>
             </>
           ) : null}
-          <View style={{ flex: 1, width: 100 }}>
+          <View style={{ flex: 1,}}>
             <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
-              {" "}
-              성별{" "}
+              성별
             </Text>
-            <Button
-              title="남자"
-              onPress={() => this.onChangedgender(0)}
-              color={this.state.gender == 0 ? "#E5AF0B" : "#CBCED7"}
-            />
-            <Button
-              title="여자"
-              onPress={() => this.onChangedgender(1)}
-              color={this.state.gender == 1 ? "#E5AF0B" : "#CBCED7"}
-            />
+
+            <View style={{flex: 1, flexDirection: "row", alignSelf: "center"}}>
+              <TouchableOpacity
+                style={[
+                  button_style.gender_change, {
+                    backgroundColor: this.state.gender == 0 ? "#E5AF0B" : "#CBCED7"
+                  }
+                ]}
+                onPress={() => this.onChangedgender(0)}
+              >
+                <Text style={{textAlign:"center"}}> 남자 </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  button_style.gender_change, {
+                    backgroundColor: this.state.gender == 1 ? "#E5AF0B" : "#CBCED7"
+                  }
+                ]}
+                onPress={() => this.onChangedgender(1)}
+              >
+                <Text style={{textAlign:"center"}}> 여자 </Text>
+              </TouchableOpacity>
+            </View>
           </View>
+
 
           <View style={{ marginBottom: 20, marginTop: 30 }}>
             <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
-              {" "}
-              이메일 (선택){" "}
+              이메일 (선택)
             </Text>
             <View style={SignIn.input}>
               <TextInput
@@ -711,8 +719,7 @@ export class Sign2 extends React.Component {
 
           <View style={{ marginBottom: 20 }}>
             <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
-              {" "}
-              주소 (선택){" "}
+              주소 (선택)
             </Text>
             <View style={SignIn.input}>
               <TextInput
@@ -739,10 +746,9 @@ export class Sign2 extends React.Component {
             source={this.state.image ? { uri: this.state.image } : null}
           />
 
-          <View style={{ marginBottom: 20 }}>
+          <View style={{ marginBottom: 20, marginTop: 20,}}>
             <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
-              {" "}
-              이름 [본명]{" "}
+              이름 [본명]
             </Text>
             <View style={SignIn.input}>
               <TextInput
@@ -756,8 +762,7 @@ export class Sign2 extends React.Component {
 
           <View style={{ marginBottom: 20 }}>
             <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
-              {" "}
-              학교{" "}
+              학교
             </Text>
             <View style={SignIn.input}>
               <TextInput
@@ -827,8 +832,7 @@ export class Sign2 extends React.Component {
             <Text
               style={{ color: "#ffffff", fontSize: 20, textAlign: "center" }}
             >
-              {" "}
-              가입하기{" "}
+              가입하기
             </Text>
           </TouchableOpacity>
         </View>
@@ -860,33 +864,58 @@ export class Sign3 extends Component {
     const { navigation } = this.props;
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>환영합니다!</Text>
-        <Text>
+
+      {/* logo && title */}
+      <View style={{flex: 1, justifyContent: "center", alignItems: "center" }}>
+        
+      </View>
+
+      {/* 환영 인사 */}
+      <View style={{flex: 2,}}>
+        <Text style={{fontSize: 21, textAlign: "center", color: "#6060DC"}}>
+          환영합니다!
+        </Text>
+        <Text style={{fontSize: 18, textAlign: "center"}}>
           해당 어플은 삼육대학교 창업동아리 '캠퍼스택시'가 제작하고 운영하는
           어플입니다.
+        </Text> <Text> {'\n'} </Text>
+        <Text style={{fontSize: 18, textAlign: "center"}}>
+          현재에는 채팅과 방만들기 기능만을 제공하고 있습니다.
+        </Text> <Text> {'\n'} </Text>
+        <Text style={{fontSize: 18, textAlign: "center"}}>
+          N분의 1 계산은 <Text style={{color: "#0000ff"}}> TOSS앱 </Text>, 택시 호출은 <Text style={{color: "#ffd700"}}> 카카오 택시 </Text> 를 이용해 주세요!
         </Text>
-        <Text>현재에는 채팅과 방만들기 기능만을 제공하고 있습니다.</Text>
-        <Text>
-          N분의 1 계산은 TOSS앱, 택시 호출은 카카오 택시를 이용해 주세요!
-        </Text>
-        <Button
-          title="처음으로 돌아가기"
-          onPress={() => navigation.navigate("Login")}
-        />
-        <Button
-          title="로 그 인"
-          onPress={() => {
-            if (this.state.token != null) {
-              userStore
-                .loginToken(this.state.token)
-                .then(() => navigation.navigate("home"));
-            } else {
-              userStore
-                .login(this.state.id, this.state.pw)
-                .then(() => navigation.navigate("home"));
-            }
-          }}
-        />
+
+        <View style={{position:"absolute", bottom: 0, width:"100%"}}>
+          <View style={[button_style.next_button, {backgroundColor: "#CBCED7"}]}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Login")}
+            >
+              <Text style={{color: "#ffffff", textAlign: "center", fontSize: 17,}}> 
+                처음으로 돌아가기 </Text>
+            </TouchableOpacity>
+          </View>
+          <View style={button_style.next_button}>
+            <TouchableOpacity
+              onPress={() => {
+                if (this.state.token != null) {
+                  userStore
+                    .loginToken(this.state.token)
+                    .then(() => navigation.navigate("home"));
+                } else {
+                  userStore
+                    .login(this.state.id, this.state.pw)
+                    .then(() => navigation.navigate("home"));
+                }
+              }}
+              color="#162A64"
+            >
+              <Text style={{color: "#ffffff", textAlign: "center", fontSize: 17,}}> 로 그 인 </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+
       </View>
     );
   }
@@ -942,17 +971,21 @@ const SignIn = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     flexWrap: "wrap",
+    marginBottom: 30,
   },
   input: {
-    flex: 3,
+    flex: 1,
     borderBottomColor: "#a9a9a9",
     borderBottomWidth: 1,
   },
   auth_button: {
-    flex: 1,
     justifyContent: "center",
+    alignSelf: "center",
     backgroundColor: "#162A64",
     marginLeft: 10,
+    borderRadius: 20,
+    width: 180,
+    height: 37,
   },
 });
 
@@ -965,4 +998,10 @@ const button_style = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
   },
+  gender_change: {
+    borderRadius: 20,
+    height: 27,
+    width: "40%",
+    margin: 10,
+  }
 });
