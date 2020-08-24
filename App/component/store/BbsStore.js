@@ -38,6 +38,20 @@ export default class BbsStore {
   print() {
     alert(JSON.stringify(this.bbs));
   }
+  // firebase.~~.where()을 통해 조건에 맞는 문서를 가져오기
+  @observable selectedbbs = [];
+  getFilterBbs() {
+    let result = [];
+    firebase
+      .database()
+      .ref("bbs/data")
+      .once("value", (snap) => {
+        snap.forEach((i) => {
+          result.push(JSON.parse(JSON.stringify(i)));
+        });
+      });
+      this.selectedbbs = result;
+  }
 
   addBbs( //c, g, h, i, j, k, n
     bbstype,

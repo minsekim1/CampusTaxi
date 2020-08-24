@@ -24,7 +24,6 @@ import { Observer } from "mobx-react";
 //채팅목록 화면
 export default function chatScreen({ route, navigation }) {
   //#region Hooks & functions
-  const [roomList, setRoomList] = useState(bbsStore.bbs);
   const userkey = userStore.user.f;
   useEffect(() => {
     bbsStore.getAllBbs();
@@ -32,6 +31,7 @@ export default function chatScreen({ route, navigation }) {
     placeUpdate();
   }, [userkey]);
   const filter = route.params.filter;
+  const [roomList, setRoomList] = useState(bbsStore.bbs);
 
   //#region 유저정보 업데이트
   const [myname, setname] = useState(userStore.user.h);
@@ -57,6 +57,17 @@ export default function chatScreen({ route, navigation }) {
   const [filterMeetingTimeEnd, setFilterMeetingTimeEnd] = useState("전부");
   const [filterPersonMin, setFilterPersonMin] = useState("1");
   const [filterPersonMax, setFilterPersonMax] = useState("4");
+  
+  // 승우 작업 - Filtering in All chat list
+  function getFiltferBbs() {
+    let result = bbsStore.bbs;
+    result = result.filter((element) => {
+      return element.i == "파리의드라이";
+    });
+    //alert(JSON.stringify(result));
+    setRoomList(result);
+    //console.log(bbsStore.bbs);
+  }
 
   const [isSearchVisible, setSearchVisible] = useState(false);
   const [isCreateRoomVisible, setCreateRoomVisible] = useState(false);
@@ -285,10 +296,10 @@ export default function chatScreen({ route, navigation }) {
           </View>
         }
       />
-      {/* 채팅목록 출력부분 */}
+      {/* 채팅목록 출력부분 승우 작업 */} 
       <FlatList
         keyExtractor={(item) => item.b}
-        data={bbsStore.bbs}
+        data={roomList}
         renderItem={({ item, index }) => {
           return (
             <TouchableOpacity
@@ -692,7 +703,7 @@ export default function chatScreen({ route, navigation }) {
                 setFilterVisible(!isFilterVisible);
               }}
             />
-            <Button title="Check" onPress="() => {}" />
+            <Button title="Check" onPress={getFiltferBbs} />
           </View>
         </Modal>
       ) : null}
