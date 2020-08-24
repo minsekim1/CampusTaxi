@@ -26,12 +26,14 @@ export default function chatinfo({ route, navigation }) {
   }, [bbskey]);
   async function updateChatinfo(bbskey) {
     // i:방장 h:성별 l.ma : 인간1 m:현재인원 k:최대인원
-    await bbsStore.setbbsnow(bbskey);
-    await bbsStore.setbbsuser(bbsStore.bbsnow.l);
-    let m = 0;
-    Object.keys(bbsStore.bbsnow.l).forEach(() => m++);
-    navigation.setOptions({
-      title: "대화상대(" + m + "/" + bbsStore.bbsnow.k + ")",
+    bbsStore.setbbsnow(bbskey).then(() => {
+      bbsStore.setbbsuser(bbsStore.bbsnow.l).then(() => {
+        let m = 0;
+        Object.keys(bbsStore.bbsnow.l).forEach(() => m++);
+        navigation.setOptions({
+          title: "대화상대(" + m + "/" + bbsStore.bbsnow.k + ")",
+        });
+      });
     });
   }
   //#endregion
@@ -41,17 +43,58 @@ export default function chatinfo({ route, navigation }) {
         data={bbsStore.bbsuser}
         extraData={bbsStore.bbsuser}
         keyExtractor={(item, i) => String(i)}
-        renderItem={(item, i) => {
-          let svg = bbsStore.bbsnow.i != item.d ? <womanCrownSVG /> : "null";
+        renderItem={({ item }) => {
           return (
-            <View style={{ padding: 10 }}>
-              <View key={i} style={campusStyle.View.row}>
-                {/* 방장인지 아닌지 체크 item.d == 0 ? "남자" : "여자"*/}
-                <womanCrownSVG />
-                <View style={{ flex: 6, padding: 10 }}>
-                  <Text style={{ fontWeight: "bold" }}>{item.i}</Text>
-                  <Text>{item.l}</Text>
+            <View style={campusStyle.View.row}>
+              <View
+                style={{
+                  borderRadius: 100,
+                  width: 62,
+                  height: 62,
+                  backgroundColor:
+                    item.h == "woman"
+                      ? "#DE22A3"
+                      : item.h == "man"
+                      ? "#55A1EE"
+                      : "#3A3A3A",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={campusStyle.Text.middleBold}>
+                  {item.h == "woman"
+                    ? "여자"
+                    : item.h == "man"
+                    ? "남자"
+                    : "남 여"}
+                </Text>
+              </View>
+              <View style={{ flex: 6 }}>
+                <View style={campusStyle.View.row}>
+                  <Image
+                    style={{ width: 23, height: 15, marginLeft: 10 }}
+                    source={crown}
+                  />
+                  <Text>{item.i}</Text>
                 </View>
+                <Text style={{ marginLeft: 10 }}>출발지:{item.n}</Text>
+                <Text style={{ marginLeft: 10 }}>도착지:{item.g}</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                {(() => {
+                  if (item.k === item.m)
+                    return (
+                      <Text style={campusStyle.Text.red}>
+                        {item.m}/{item.k}
+                      </Text>
+                    );
+                  else
+                    return (
+                      <Text>
+                        {item.m}/{item.k}
+                      </Text>
+                    );
+                })()}
               </View>
             </View>
           );
@@ -64,7 +107,6 @@ export default function chatinfo({ route, navigation }) {
         }}
       >
         <Button
-          style={campusStyle.Button.default}
           onPress={async () => {
             await bbsStore.outBbs(userStore.userkey, bbskey);
             navigation.pop(2);
@@ -76,7 +118,7 @@ export default function chatinfo({ route, navigation }) {
   );
 }
 
-function womanCrownSVG(props: React.SVGProps<SVGSVGElement>) {
+function womanCrownSVG() {
   return (
     <Svg width={46} height={53} viewBox="0 0 46 53">
       <Path d="M23 7A23 23 0 110 30 23 23 0 0123 7z" fill="#c278de" />

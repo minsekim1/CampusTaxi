@@ -229,6 +229,7 @@ export default class UserStore {
       .ref("user/data/" + userkey)
       .once("value", (s) => {
         result = s.val();
+        alert(result);
         return JSON.stringify(result);
       });
     return result;

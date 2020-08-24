@@ -3,7 +3,6 @@ import { observable } from "mobx";
 import "mobx-react-lite/batchingForReactDom";
 const firebase = require("firebase");
 import _ from "lodash";
-import { userStore } from "store";
 // import { bbsStore, userStore } from "store";
 export default class BbsStore {
   // "availableA" : "int",
@@ -175,14 +174,15 @@ export default class BbsStore {
         this.bbsnow = JSON.parse(JSON.stringify(snapshot));
       });
   }
-  setbbsuser(userlist) {
+  async setbbsuser(userlist) {
     let result = [];
-    Object.keys(userlist).map(
+    await Object.keys(userlist).map(
       async (key) =>
-        await userStore
-          .getUser(key)
-          .then((r) => result.push(JSON.parse(JSON.stringify(r))))
-          .then(() => {
+        await firebase
+          .database()
+          .ref("user/data/" + key)
+          .once("value", (s) => {
+            result.push(JSON.parse(JSON.stringify(s.val())));
             this.bbsuser = result;
           })
     );
