@@ -59,12 +59,65 @@ export default function chatScreen({ route, navigation }) {
   const [filterPersonMax, setFilterPersonMax] = useState("4");
   
   // 승우 작업 - Filtering in All chat list
+  function search(user){
+    return Object.keys(this).every((key) => user[key] === this[key]);
+  }
+
   function getFiltferBbs() {
-    let result = bbsStore.bbs;
-    result = result.filter((element) => {
-      return element.i == "파리의드라이";
-    });
-    //alert(JSON.stringify(result));
+    let result;
+    /* if (!(filterMeetingTimeEnd == "전부")) {
+      result = firebase.database().ref("bbs/data").
+    } else if (!(filterMeetingTimeStart == "전부")) {
+      result = firebase.database().ref("bbs/data").
+    }
+    if (!(filterMeetingTimeStart == "전부" && filterMeetingTimeEnd == "전부")) {
+      let result = bbsStore.bbs;
+    } */
+    
+    result = bbsStore.bbs;
+    let query = {
+      c: filterCategory,
+    }
+    query.h = Number(filterPersonMin);
+    query.k = Number(filterPersonMax);
+    if (!(filterStartplace=="무관")) {
+      query.n = filterStartplace;
+    }
+    if (!(filterEndplace=="무관")) {
+      query.g = filterEndplace;
+    }
+
+
+    /* let query = {
+      c : filterCategory, // 카테고리
+      n : filterStartplace, // 출발지
+      g : filterEndplace, // 도착지
+      k : filterPersonMax, // 탑승인원 최대
+      h : filterPersonMin, // 탑승인원 최소
+    };
+    if (filterEndplace == "무관") {
+      query = {
+        c : filterCategory, // 카테고리
+        n : filterStartplace, // 출발지
+        k : filterPersonMax, // 탑승인원 최대
+        h : filterPersonMin, // 탑승인원 최소
+      };
+    } else if (filterStartplace == "무관") {
+      query = {
+        c : filterCategory, // 카테고리
+        g : filterEndplace, // 도착지
+        k : filterPersonMax, // 탑승인원 최대
+        h : filterPersonMin, // 탑승인원 최소
+      };
+    } else if (filterEndplace == "무관" && filterStartplace == "무관") {
+      query = {
+        c : filterCategory
+      };
+    } */
+
+
+    result = result.filter(search, query);
+    alert(JSON.stringify(result));
     setRoomList(result);
     //console.log(bbsStore.bbs);
   }
@@ -296,7 +349,7 @@ export default function chatScreen({ route, navigation }) {
           </View>
         }
       />
-      {/* 채팅목록 출력부분 승우 작업 */} 
+      {/* 채팅목록 출력부분 */} 
       <FlatList
         keyExtractor={(item) => item.b}
         data={roomList}

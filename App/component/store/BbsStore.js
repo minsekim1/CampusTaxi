@@ -39,7 +39,7 @@ export default class BbsStore {
     alert(JSON.stringify(this.bbs));
   }
   // firebase.~~.where()을 통해 조건에 맞는 문서를 가져오기
-  @observable selectedbbs = [];
+/*   @observable selectedbbs = [];
   getFilterBbs() {
     let result = [];
     firebase
@@ -51,7 +51,7 @@ export default class BbsStore {
         });
       });
       this.selectedbbs = result;
-  }
+  } */
 
   addBbs( //c, g, h, i, j, k, n
     bbstype,
