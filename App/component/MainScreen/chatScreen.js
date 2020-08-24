@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { View, FlatList, Image, TouchableOpacity } from "react-native";
 import { Picker } from "@react-native-community/picker";
 import Modal from "react-native-modal";
+import * as globalTimeAPI from '../Email/globalTimeAPI.js'
 import {
   Header,
   ListItem,
@@ -73,8 +74,9 @@ export default function chatScreen({ route, navigation }) {
     if (!(filterMeetingTimeStart == "전부" && filterMeetingTimeEnd == "전부")) {
       let result = bbsStore.bbs;
     } */
-    
+
     result = bbsStore.bbs;
+
     let query = {
       c: filterCategory,
     }
@@ -117,7 +119,21 @@ export default function chatScreen({ route, navigation }) {
 
 
     result = result.filter(search, query);
-    alert(JSON.stringify(result));
+    /* if((Number) (filterMeetingTimeStart.replace(/[^0-9]/g, '')) > (Number)(globalTimeAPI.getGlobalTimeHourandMinute(globalTimeAPI.getGlobalTimeHour(result.f), globalTimeAPI.getGlobalTimeMinute(result.f)))) {
+      
+    } */
+
+    alert((Number)(filterMeetingTimeStart.replace(/[^0-9]/), ''));
+
+    /* alert((Number)(globalTimeAPI.getGlobalTimeHourandMinute(globalTimeAPI.getGlobalTimeHour(result.f), globalTimeAPI.getGlobalTimeMinute(result.f))));
+    if (!(filterMeetingTimeEnd == "전부")) {
+      result = result.filter((Number)(filterMeetingTimeStart) < (Number)(globalTimeAPI.getGlobalTimeHourandMinute(globalTimeAPI.getGlobalTimeHour(result.f), globalTimeAPI.getGlobalTimeMinute(result.f))));
+    } else if (!(filterMeetingTimeStart == "전부")) {
+      result = result.filter(0 < (Number)(globalTimeAPI.getGlobalTimeHourandMinute(globalTimeAPI.getGlobalTimeHour(result.f), globalTimeAPI.getGlobalTimeMinute(result.f))))
+    } else if (!(filterMeetingTimeStart == "전부" && filterMeetingTimeEnd == "전부")) {
+      
+    } */
+    //alert(JSON.stringify(result));
     setRoomList(result);
     //console.log(bbsStore.bbs);
   }
@@ -209,104 +225,104 @@ export default function chatScreen({ route, navigation }) {
     return result;
   }
   const timeLineStart = [
-    "00:00부터",
-    "00:30부터",
-    "01:00부터",
-    "01:30부터",
-    "02:00부터",
-    "02:30부터",
-    "03:00부터",
-    "03:30부터",
-    "04:00부터",
-    "04:30부터",
-    "05:00부터",
-    "05:30부터",
-    "06:00부터",
-    "06:30부터",
-    "07:00부터",
-    "07:30부터",
-    "08:00부터",
-    "08:30부터",
-    "09:00부터",
-    "09:30부터",
-    "10:00부터",
-    "10:30부터",
-    "11:00부터",
-    "11:30부터",
-    "12:00부터",
-    "12:30부터",
-    "13:00부터",
-    "13:30부터",
-    "14:00부터",
-    "14:30부터",
-    "15:00부터",
-    "15:30부터",
-    "16:00부터",
-    "16:30부터",
-    "17:00부터",
-    "17:30부터",
-    "18:00부터",
-    "18:30부터",
-    "19:00부터",
-    "19:30부터",
-    "20:00부터",
-    "20:30부터",
-    "21:00부터",
-    "21:30부터",
-    "22:00부터",
-    "22:30부터",
-    "23:00부터",
-    "23:30부터",
+    "00:00",
+    "00:30",
+    "01:00",
+    "01:30",
+    "02:00",
+    "02:30",
+    "03:00",
+    "03:30",
+    "04:00",
+    "04:30",
+    "05:00",
+    "05:30",
+    "06:00",
+    "06:30",
+    "07:00",
+    "07:30",
+    "08:00",
+    "08:30",
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00",
+    "15:30",
+    "16:00",
+    "16:30",
+    "17:00",
+    "17:30",
+    "18:00",
+    "18:30",
+    "19:00",
+    "19:30",
+    "20:00",
+    "20:30",
+    "21:00",
+    "21:30",
+    "22:00",
+    "22:30",
+    "23:00",
+    "23:30",
   ];
   const timeLineEnd = [
-    "00:00까지",
-    "00:30까지",
-    "01:00까지",
-    "01:30까지",
-    "02:00까지",
-    "02:30까지",
-    "03:00까지",
-    "03:30까지",
-    "04:00까지",
-    "04:30까지",
-    "05:00까지",
-    "05:30까지",
-    "06:00까지",
-    "06:30까지",
-    "07:00까지",
-    "07:30까지",
-    "08:00까지",
-    "08:30까지",
-    "09:00까지",
-    "09:30까지",
-    "10:00까지",
-    "10:30까지",
-    "11:00까지",
-    "11:30까지",
-    "12:00까지",
-    "12:30까지",
-    "13:00까지",
-    "13:30까지",
-    "14:00까지",
-    "14:30까지",
-    "15:00까지",
-    "15:30까지",
-    "16:00까지",
-    "16:30까지",
-    "17:00까지",
-    "17:30까지",
-    "18:00까지",
-    "18:30까지",
-    "19:00까지",
-    "19:30까지",
-    "20:00까지",
-    "20:30까지",
-    "21:00까지",
-    "21:30까지",
-    "22:00까지",
-    "22:30까지",
-    "23:00까지",
-    "23:30까지",
+    "00:00",
+    "00:30",
+    "01:00",
+    "01:30",
+    "02:00",
+    "02:30",
+    "03:00",
+    "03:30",
+    "04:00",
+    "04:30",
+    "05:00",
+    "05:30",
+    "06:00",
+    "06:30",
+    "07:00",
+    "07:30",
+    "08:00",
+    "08:30",
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00",
+    "15:30",
+    "16:00",
+    "16:30",
+    "17:00",
+    "17:30",
+    "18:00",
+    "18:30",
+    "19:00",
+    "19:30",
+    "20:00",
+    "20:30",
+    "21:00",
+    "21:30",
+    "22:00",
+    "22:30",
+    "23:00",
+    "23:30",
   ];
   //#endregion Hooks & functions
   return (

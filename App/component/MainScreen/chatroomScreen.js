@@ -174,7 +174,15 @@ export default class chatroomScreen extends Component {
                     title=""
                     icon={<Icon name="search" size={24} color="white" />}
                     onPress={() => {
-                      // setFilterVisible(true);
+                      //alert(JSON.stringify(this.state.chattingData));
+                      let result = this.state.chattingData;
+                      for(let i = 0; i < result.length; i++) {
+                        // "테스트"를 입력 변수로 변경한다. 찾기 기능으로 대화 내용 스캔.
+                        if(result[i]['dd'] == "테스트"){ 
+                          console.log(result[i]['dd']);
+                        }
+                      }
+                      //setFilterVisible(true);
                     }}
                   />
                   <Button
