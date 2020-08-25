@@ -58,22 +58,13 @@ export default function chatScreen({ route, navigation }) {
   const [filterMeetingTimeEnd, setFilterMeetingTimeEnd] = useState("전부");
   const [filterPersonMin, setFilterPersonMin] = useState("1");
   const [filterPersonMax, setFilterPersonMax] = useState("4");
-  
-  // 승우 작업 - Filtering in All chat list
+  // -- Filter function start
   function search(user){
     return Object.keys(this).every((key) => user[key] === this[key]);
   }
 
   function getFiltferBbs() {
     let result;
-    /* if (!(filterMeetingTimeEnd == "전부")) {
-      result = firebase.database().ref("bbs/data").
-    } else if (!(filterMeetingTimeStart == "전부")) {
-      result = firebase.database().ref("bbs/data").
-    }
-    if (!(filterMeetingTimeStart == "전부" && filterMeetingTimeEnd == "전부")) {
-      let result = bbsStore.bbs;
-    } */
 
     result = bbsStore.bbs;
 
@@ -91,12 +82,6 @@ export default function chatScreen({ route, navigation }) {
     if (!(filterMeetingTimeStart == "전부")) {
       let filterMeetingTimeStart_time = TimeAPI.timetoint(filterMeetingTimeStart);
       result = result.filter(result => TimeAPI.hourandminute(result.f) > filterMeetingTimeStart_time);
-      
-      /* result = result.filter(() => {
-        //alert(TimeAPI.hourandminute(result.f));
-        return TimeAPI.hourandminute(result.f) > filterMeetingTimeStart_time;
-      }); */
-      // alert(TimeAPI.timetoint(filterMeetingTimeStart));
     }
     if (!(filterMeetingTimeEnd == "전부")) {
       let filterMeetingTimeEnd_time = TimeAPI.timetoint(filterMeetingTimeEnd);
@@ -106,10 +91,9 @@ export default function chatScreen({ route, navigation }) {
 
     result = result.filter(search, query);
 
-    //alert(JSON.stringify(result));
     setRoomList(result);
-    //console.log(bbsStore.bbs);
   }
+  // -- Filter function end
 
   const [isSearchVisible, setSearchVisible] = useState(false);
   const [isCreateRoomVisible, setCreateRoomVisible] = useState(false);
