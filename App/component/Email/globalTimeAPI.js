@@ -5,11 +5,11 @@ export function timetoint(time) { // yes using
     return (Number)(result);
 }
 
-export function hourandminute(dateText) { // yes useing
+export function hourandminute(dateText) { // yes using
     let localDate = new Date(dateText);
     return localDate.getHours() + "" + localDate.getMinutes();
 }
 
-export function getGlobalTimeHourandMinute(hour, min) { // no useing
+export function getGlobalTimeHourandMinute(hour, min) { // no using
     return hour + "" + min;
 }
