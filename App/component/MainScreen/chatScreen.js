@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { View, FlatList, Image, TouchableOpacity } from "react-native";
 import { Picker } from "@react-native-community/picker";
 import Modal from "react-native-modal";
-import * as globalTimeAPI from '../Email/globalTimeAPI.js'
+import * as TimeAPI from '../Email/globalTimeAPI.js'
 import {
   Header,
   ListItem,
@@ -88,51 +88,24 @@ export default function chatScreen({ route, navigation }) {
     if (!(filterEndplace=="무관")) {
       query.g = filterEndplace;
     }
-
-
-    /* let query = {
-      c : filterCategory, // 카테고리
-      n : filterStartplace, // 출발지
-      g : filterEndplace, // 도착지
-      k : filterPersonMax, // 탑승인원 최대
-      h : filterPersonMin, // 탑승인원 최소
-    };
-    if (filterEndplace == "무관") {
-      query = {
-        c : filterCategory, // 카테고리
-        n : filterStartplace, // 출발지
-        k : filterPersonMax, // 탑승인원 최대
-        h : filterPersonMin, // 탑승인원 최소
-      };
-    } else if (filterStartplace == "무관") {
-      query = {
-        c : filterCategory, // 카테고리
-        g : filterEndplace, // 도착지
-        k : filterPersonMax, // 탑승인원 최대
-        h : filterPersonMin, // 탑승인원 최소
-      };
-    } else if (filterEndplace == "무관" && filterStartplace == "무관") {
-      query = {
-        c : filterCategory
-      };
-    } */
+    if (!(filterMeetingTimeStart == "전부")) {
+      let filterMeetingTimeStart_time = TimeAPI.timetoint(filterMeetingTimeStart);
+      result = result.filter(result => TimeAPI.hourandminute(result.f) > filterMeetingTimeStart_time);
+      
+      /* result = result.filter(() => {
+        //alert(TimeAPI.hourandminute(result.f));
+        return TimeAPI.hourandminute(result.f) > filterMeetingTimeStart_time;
+      }); */
+      // alert(TimeAPI.timetoint(filterMeetingTimeStart));
+    }
+    if (!(filterMeetingTimeEnd == "전부")) {
+      let filterMeetingTimeEnd_time = TimeAPI.timetoint(filterMeetingTimeEnd);
+      result = result.filter(result => TimeAPI.hourandminute(result.f) < filterMeetingTimeEnd_time);
+    }
 
 
     result = result.filter(search, query);
-    /* if((Number) (filterMeetingTimeStart.replace(/[^0-9]/g, '')) > (Number)(globalTimeAPI.getGlobalTimeHourandMinute(globalTimeAPI.getGlobalTimeHour(result.f), globalTimeAPI.getGlobalTimeMinute(result.f)))) {
-      
-    } */
 
-    alert((Number)(filterMeetingTimeStart.replace(/[^0-9]/), ''));
-
-    /* alert((Number)(globalTimeAPI.getGlobalTimeHourandMinute(globalTimeAPI.getGlobalTimeHour(result.f), globalTimeAPI.getGlobalTimeMinute(result.f))));
-    if (!(filterMeetingTimeEnd == "전부")) {
-      result = result.filter((Number)(filterMeetingTimeStart) < (Number)(globalTimeAPI.getGlobalTimeHourandMinute(globalTimeAPI.getGlobalTimeHour(result.f), globalTimeAPI.getGlobalTimeMinute(result.f))));
-    } else if (!(filterMeetingTimeStart == "전부")) {
-      result = result.filter(0 < (Number)(globalTimeAPI.getGlobalTimeHourandMinute(globalTimeAPI.getGlobalTimeHour(result.f), globalTimeAPI.getGlobalTimeMinute(result.f))))
-    } else if (!(filterMeetingTimeStart == "전부" && filterMeetingTimeEnd == "전부")) {
-      
-    } */
     //alert(JSON.stringify(result));
     setRoomList(result);
     //console.log(bbsStore.bbs);
