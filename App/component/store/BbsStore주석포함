@@ -1,0 +1,86 @@
+// import { bbsStore, userStore } from "store";
+
+  // "availableA" : "int",
+  // "bbskeyB" : "String",
+  // "bbstypeC" : "int",
+  // "chatD" : [ [ null, "usernameB", "timeC", "sayD" ] ],
+  // "costE" : [ [ "costkeyA", "costvalueB", "paymentC" ] ],
+  // "createdateF" : "timestamp",
+  // "endplaceG" : "string:DB",
+  // "genderH" : "int",
+  // "leadernameI" : "string:DB",
+  // "meetingdateJ" : "timestamp",
+  // "personmaxK" : "int",
+  // "personmemberL" : "Array",
+  // "personpresentM" : "int",
+  // "startplaceN" : "string:DB"
+  @observable bbs = [];
+  @observable bbsnow = []; //현재 접속중인 bbs의 정보
+  @observable bbsuser = []; //접속중인 bbs안에 있는 유저들의 정보
+  @observable selectedbbs = [];
+  @observable test = []; //테스트
+
+  onbbstest() {
+    //예시1 bbsDB를 이용하여 firebase에서 데이터를 가져옵니다.
+    //on은 실시간 연동을 의미합니다.
+    this.bbsDB("").on("value", (snap) => {
+      this.test = snap.val();
+    });
+    //예시2 firebase함수를 이용하여 firebase에서 데이터를 가져옵니다.
+    // firebase
+    //   .database()
+    //   .ref("bbs/data")
+    //   .on("value", (snap) => {
+    //     this.test = snap.val();
+    //   });
+    //위 두 예시의 결과는 같습니다.
+  }
+  getFilterBbs() {  }
+  async getAllBbs() {  }
+  print() {  }
+
+  addBbs( //c, g, h, i, j, k, n
+    bbstype,
+    endplace,
+    gender,
+    leadername,
+    meetingdate,
+    personmax,
+    startplace,
+    userkey
+  ) { }
+
+  //#endregion
+  // Hide bbs : 클라이언트에게 숨기기만함
+  hideBbs(bbskey) {  }
+  // Remove bbs : 데이터를 완전히 지움
+  removeBbs(bbskey) {  }
+  outBbs(userkey, bbskey) {
+        //클라이언트가 해당 방을 나감, 또는 추방.
+    //bbs 데이터에서 고객명 지우기.
+  
+  }
+  changeBbsValue(bbskey, props, value) {  }
+  getBbs(bbskey) {  }
+  setbbs(result) {  }
+  async setbbsnow(bbskey) {  }
+  async setbbsuser(userlist) {  }
+
+  //this.key(snap).then((r) => (this.placeStart = r));
+  //this.val(snap).then((r) => (this.placeStart = r));
+  //V = val() / K = key
+  async key(snap) {
+    let arr = [];
+    snap.forEach((i) => {
+      arr.push(i.key);
+    });
+    return arr;
+  }
+  async val(snap) {
+    let arr = [];
+    snap.forEach((i) => {
+      arr.push(JSON.parse(JSON.stringify(i.val())));
+    });
+    return arr;
+  }
+}

@@ -8,43 +8,40 @@ export default class AnotherStore {
 
   getPlaceOnce() {
     this.placeDB("endplace").once("value", (snap) => {
-      this.array(snap).then((r) => (this.placeEnd = r));
+      this.key(snap).then((r) => (this.placeEnd = r));
     });
 
     this.placeDB("startplace").once("value", (snap) => {
-      this.array(snap).then((r) => (this.placeStart = r));
-      /*해당 주석 부분은 위의 this.array 와 결과가 같습니다.
-      let arr = [];
-      snapshot.forEach((snap) => {
-        arr.push(snap.key);
-      });*/
+      this.key(snap).then((r) => (this.placeStart = r));
     });
   }
-  /*
-  //async로 시작하는 함수는 bbsDB와 on으로 실시간연동이 되어있는 것을 뜻합니다.
-  asynctest() {
-    //예시1 bbsDB를 이용하여 firebase에서 데이터를 가져옵니다.
-    //on은 실시간 연동을 의미합니다.
-    this.test$DB("").on("value", (snap) => {
-      this.test = snap.val();
-    });
+
+  print(value) {
+    if (value == "place") alert(JSON.stringify(this.place));
+    else if (value == "test") alert(JSON.stringify(this.test));
   }
-*/
-  //jsonToArray
-  async array(snap) {
+
+  //#region store공통함수
+  //this.key(snap).then((r) => (this.placeStart = r));
+  //this.val(snap).then((r) => (this.placeStart = r));
+  //V = val() / K = key
+  async key(snap) {
     let arr = [];
     snap.forEach((i) => {
       arr.push(i.key);
     });
     return arr;
   }
-  print(value) {
-    if (value == "place") alert(JSON.stringify(this.place));
-    else if (value == "test") alert(JSON.stringify(this.test));
+  async val(snap) {
+    let arr = [];
+    snap.forEach((i) => {
+      arr.push(JSON.parse(JSON.stringify(i.val())));
+    });
+    return arr;
   }
   //시간함수입니다. 로컬(한국시간)과 글로벌(국제표준시)를 바꾸어줍니다.
   //_getLocaleStrting => toLocal
-    function toLocal(date) {
+  toLocal(date) {
     const localDate = new Date(date.toString());
     const week = ["일", "월", "화", "수", "목", "금", "토"];
     const dayOfWeek = week[localDate.getDay()];
@@ -63,6 +60,7 @@ export default class AnotherStore {
       "분";
     return result;
   }
+  //#endregion store공통함수
 }
 
 import AsyncStorage from "@react-native-community/async-storage";

@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   Text,
 } from "react-native";
-import { bbsStore, userStore } from "store";
+import { bbsStore, userStore, anotherStore } from "store";
 import { Input, Badge } from "react-native-elements";
 import campusStyle from "style";
 import crown from "image/crown.png";
@@ -155,7 +155,7 @@ export default function MychatScreen({ route, navigation }) {
                               탑승시간▼
                             </Text>
                             <Text style={campusStyle.Text.grayDDark}>
-                              {userStore.globalTimeTolocalTime(item.f)}
+                              {anotherStore.toLocal(item.f)}
                             </Text>
                           </View>
                         </View>

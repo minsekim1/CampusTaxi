@@ -4,7 +4,6 @@ export default function chatScreen({ route, navigation }) {
   const userkey = userStore.user.f;
   bbsStore.asyncAllBbs();
   useEffect(() => {
-    updateUserdata(userkey);
     placeUpdate();
   }, [userkey]);
   const filter = route.params.filter;
@@ -13,7 +12,6 @@ export default function chatScreen({ route, navigation }) {
   //#region 유저정보 업데이트
   const [myname, setname] = useState(userStore.user.h);
   const [mygender, setgender] = useState(userStore.user.d);
-  function updateUserdata(userkey) {}
   //유저가 들어간 채팅방의 개수를 알려줍니다.
   const [myRoomCount, setMyRoomCount] = useState(0);
   async function checkUserEnterChatRoom() {
@@ -33,7 +31,6 @@ export default function chatScreen({ route, navigation }) {
   function search(user) {
     return Object.keys(this).every((key) => user[key] === this[key]);
   }
-  bbsStore.onbbstest();
   function getFiltferBbs() {
     let result;
 
@@ -118,14 +115,8 @@ export default function chatScreen({ route, navigation }) {
     setMode(currentMode);
   };
 
-  const showDatepicker = () => {
-    showMode("date");
-  };
-
-  const showTimepicker = () => {
-    showMode("time");
-  };
-
+  const showDatepicker = () => showMode("date");
+  const showTimepicker = () => showMode("time");
   const timeLineStart = [
     "00:00",
     "00:30",
@@ -358,7 +349,7 @@ export default function chatScreen({ route, navigation }) {
                     <View style={{ flex: 3, alignItems: "center" }}>
                       <Text style={campusStyle.Text.grayDDark}>탑승시간▼</Text>
                       <Text style={campusStyle.Text.grayDDark}>
-                        {userStore.globalTimeTolocalTime(item.f)}
+                        {anotherStore.toLocal(item.f)}
                       </Text>
                     </View>
                   </View>
