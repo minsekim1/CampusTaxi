@@ -22,6 +22,48 @@ export default class BbsStore {
   @observable bbs = [];
   @observable bbsnow = []; //현재 접속중인 bbs의 정보
   @observable bbsuser = []; //접속중인 bbs안에 있는 유저들의 정보
+  @observable selectedbbs = [];
+  @observable test = []; //테스트
+
+  bbsDB = (name) => firebase.database().ref("bbs/data/" + name);
+  //async로 시작하는 함수는 bbsDB와 on으로 실시간연동이 되어있는 것을 뜻합니다.
+  asyncAllBbs() {
+    let result = [];
+    this.bbsDB("").on("value", (snap) => {
+      snap.forEach((i) => {
+        result.push(JSON.parse(JSON.stringify(i.val())));
+      });
+    });
+    this.bbs = result;
+  }
+
+  onbbstest() {
+    //예시1 bbsDB를 이용하여 firebase에서 데이터를 가져옵니다.
+    //on은 실시간 연동을 의미합니다.
+    this.bbsDB("").on("value", (snap) => {
+      this.test = snap.val();
+    });
+    //예시2 firebase함수를 이용하여 firebase에서 데이터를 가져옵니다.
+    // firebase
+    //   .database()
+    //   .ref("bbs/data")
+    //   .on("value", (snap) => {
+    //     this.test = snap.val();
+    //   });
+    //위 두 예시의 결과는 같습니다.
+  }
+  getFilterBbs() {
+    let result = [];
+    firebase
+      .database()
+      .ref("bbs/data")
+      .once("value", (snap) => {
+        snap.forEach((i) => {
+          result.push(JSON.parse(JSON.stringify(i)));
+        });
+      });
+    this.selectedbbs = result;
+  }
   async getAllBbs() {
     //onPress={() => BbsStore.getBbs("-MDrAW9yVgYg8BSehz4e")}
     let result = [];
@@ -31,14 +73,7 @@ export default class BbsStore {
       .once("value", (snap) => {
         snap.forEach((i) => {
           //result.push(_.cloneDeep(i));
-          //현재 인원 재 계산
-          let snap3 = i.val();
-          let m = 0;
-          if (snap3.l != null) {
-            Object.values(snap3.l).map(() => m++);
-          }
-          snap3.m = m;
-          result.push(JSON.parse(JSON.stringify(snap3)));
+          result.push(JSON.parse(JSON.stringify(i.val())));
         });
       });
     this.bbs = result;
@@ -165,6 +200,9 @@ export default class BbsStore {
         result = s.val();
         return JSON.stringify(result);
       });
+  }
+  setbbs(result) {
+    this.bbs = result;
   }
   async setbbsnow(bbskey) {
     firebase

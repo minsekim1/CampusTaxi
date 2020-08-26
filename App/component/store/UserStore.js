@@ -9,6 +9,15 @@ export default class UserStore {
   @observable develop = true; //개발전용모드
   //{userStore.develop == true ? "설정" : "홈"}
   //setKey: 유저키를 아이디/토큰으로 설정
+  userDB = (name) => firebase.database().ref("user/data/" + name);
+  asyncUser() {
+    if (userkey != null) {
+      userDB(userkey).on("value", (snap) => {
+        this.user = JSON.parse(JSON.stringify(snap));
+      });
+    }
+  }
+
   setKey(key) {
     this.userkey = key;
   }
@@ -272,13 +281,7 @@ export default class UserStore {
                 .ref("bbs/data/" + snapkey)
                 .once("value", (snap2) => {
                   //현재 인원 재 계산
-                  let snap3 = snap2.val();
-                  let m = 0;
-                  if (snap3.l != null) {
-                    Object.values(snap3.l).map(() => m++);
-                  }
-                  snap3.m = m;
-                  result.push(JSON.parse(JSON.stringify(snap3)));
+                  result.push(JSON.parse(JSON.stringify(snap2.val())));
                 });
               this.userbbs = result;
             }

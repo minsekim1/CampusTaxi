@@ -72,3 +72,19 @@ export default class UserStore {
   @observable userkey = null; //유저 아이디 or SNS로그인일 경우 토큰
   @observable develop = true; //개발전용모드
 [출처] [MobX] 2. 텍스트 바꾸기|작성자 드론
+
+////////////////////////////////////////////////////////////////default
+실시간 데이터 받기
+ store js
+  @observable test = []; //테스트
+
+  onbbstest() {
+    firebase
+      .database()
+      .ref("bbs/data")
+      .on("value", (snap) => {
+        this.test = snap.val();
+      });
+  }
+  페이지 js
+ <Observer>{() => <Text>{JSON.stringify(bbsStore.test)}</Text>}</Observer>

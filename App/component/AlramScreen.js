@@ -1,6 +1,7 @@
 import React, { Component, useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import "react-native-gesture-handler";
+import { bbsStore, userStore } from "store";
 import crown from "image/crown.png";
 import {
   SafeAreaView,
@@ -15,6 +16,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
+import { Observer } from "mobx-react";
 const alarmData = [
   //알림의 실제 데이터
   {
@@ -58,6 +60,7 @@ const alarmData = [
 //알림 아이템 View
 function AlarmItem({ title, imgurl, content, hour, min, icon }) {
   let day = "오전";
+
   if (hour >= 12) {
     hour -= 12;
     day = "오후";
@@ -106,9 +109,11 @@ function AlarmItem({ title, imgurl, content, hour, min, icon }) {
 }
 // 메인 클래스 //
 const AlramScreen = () => {
+  bbsStore.onbbstest();
   return (
     <View style={styles.ContentContainer}>
-      <FlatList
+      <Observer>{() => <Text>{JSON.stringify(bbsStore.test)}</Text>}</Observer>
+      {/* <FlatList
         keyExtractor={(item) => item.id}
         data={alarmData}
         renderItem={({ item }) => (
@@ -123,7 +128,7 @@ const AlramScreen = () => {
             date={item.date}
           />
         )}
-      />
+      /> */}
     </View>
   );
 };

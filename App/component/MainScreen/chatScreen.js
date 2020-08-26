@@ -1,37 +1,14 @@
-//#region imports
-import React, { useState, useEffect } from "react";
-import { View, FlatList, Image, TouchableOpacity } from "react-native";
-import { Picker } from "@react-native-community/picker";
-import Modal from "react-native-modal";
-import {
-  Header,
-  ListItem,
-  Icon,
-  Text,
-  Card,
-  Button,
-  ButtonGroup,
-  Input,
-} from "react-native-elements";
-import campusStyle from "style";
-import DateTimePicker from "@react-native-community/datetimepicker"; //방생성시간picker
-import crown from "image/crown.png";
-const firebase = require("firebase");
-import { bbsStore, userStore } from "store";
-import { Observer } from "mobx-react";
-//#endregion
-
 //채팅목록 화면
 export default function chatScreen({ route, navigation }) {
   //#region Hooks & functions
-  const [roomList, setRoomList] = useState(bbsStore.bbs);
   const userkey = userStore.user.f;
+  bbsStore.asyncAllBbs();
   useEffect(() => {
-    bbsStore.getAllBbs();
     updateUserdata(userkey);
     placeUpdate();
   }, [userkey]);
   const filter = route.params.filter;
+  //const [roomList, setRoomList] = useState(bbsStore.bbs);
 
   //#region 유저정보 업데이트
   const [myname, setname] = useState(userStore.user.h);
@@ -40,12 +17,7 @@ export default function chatScreen({ route, navigation }) {
   //유저가 들어간 채팅방의 개수를 알려줍니다.
   const [myRoomCount, setMyRoomCount] = useState(0);
   async function checkUserEnterChatRoom() {
-    await firebase
-      .database()
-      .ref("user/data/" + userkey + "/c")
-      .once("value", (snapshot) => {
-        setMyRoomCount(Object.keys(snapshot).length);
-      });
+    //userStore.user.c
     return myRoomCount;
   }
   //#endregion
@@ -57,12 +29,57 @@ export default function chatScreen({ route, navigation }) {
   const [filterMeetingTimeEnd, setFilterMeetingTimeEnd] = useState("전부");
   const [filterPersonMin, setFilterPersonMin] = useState("1");
   const [filterPersonMax, setFilterPersonMax] = useState("4");
+  // -- Filter function start
+  function search(user) {
+    return Object.keys(this).every((key) => user[key] === this[key]);
+  }
+  bbsStore.onbbstest();
+  function getFiltferBbs() {
+    let result;
+
+    result = bbsStore.bbs;
+
+    let query = {
+      c: filterCategory,
+    };
+    query.h = Number(filterPersonMin);
+    query.k = Number(filterPersonMax);
+    if (!(filterStartplace == "무관")) {
+      query.n = filterStartplace;
+    }
+    if (!(filterEndplace == "무관")) {
+      query.g = filterEndplace;
+    }
+    if (!(filterMeetingTimeStart == "전부")) {
+      let filterMeetingTimeStart_time = TimeAPI.timetoint(
+        filterMeetingTimeStart
+      );
+      result = result.filter(
+        (result) =>
+          TimeAPI.hourandminute(result.f) > filterMeetingTimeStart_time
+      );
+    }
+    if (!(filterMeetingTimeEnd == "전부")) {
+      let filterMeetingTimeEnd_time = TimeAPI.timetoint(filterMeetingTimeEnd);
+      result = result.filter(
+        (result) => TimeAPI.hourandminute(result.f) < filterMeetingTimeEnd_time
+      );
+    }
+
+    result = result.filter(search, query);
+
+    bbsStore.setbbs(result);
+    //setRoomList(result);
+  }
+  // -- Filter function end
 
   const [isSearchVisible, setSearchVisible] = useState(false);
   const [isCreateRoomVisible, setCreateRoomVisible] = useState(false);
   const [createRoomCategory, setCreateRoomCategory] = useState(filter);
   const [createRoompersonmax, setCreateRoompersonmax] = useState(4);
-  const [createRoomstartplace, setCreateRoomstartplace] = useState();
+  const [createRoomstartplace, setCreateRoomstartplace] = useState(
+    anotherStore.placeStart
+  );
   const [createRoomendplace, setCreateRoomendplace] = useState();
   const [createRoomGender, setCreateRoomGender] = useState(1);
   const [createSelectGender, setCreateSelectGender] = useState(2);
@@ -71,26 +88,9 @@ export default function chatScreen({ route, navigation }) {
   const [endplace, setEndplace] = useState([]);
   //endplace와 startplace를 서버데이터로 업데이트합니다.
   function placeUpdate() {
-    firebase
-      .database()
-      .ref("place/data/startplace")
-      .once("value", (snapshot) => {
-        let arr = [];
-        snapshot.forEach((snap) => {
-          arr.push(snap.key);
-        });
-        setStartplace(arr);
-      });
-    firebase
-      .database()
-      .ref("place/data/endplace")
-      .once("value", (snapshot) => {
-        let arr = [];
-        snapshot.forEach((snap) => {
-          arr.push(snap.key);
-        });
-        setEndplace(arr);
-      });
+    anotherStore.getPlaceOnce();
+    setStartplace(anotherStore.placeStart);
+    setEndplace(anotherStore.placeEnd);
   }
 
   const menuList = [
@@ -125,124 +125,106 @@ export default function chatScreen({ route, navigation }) {
   const showTimepicker = () => {
     showMode("time");
   };
-  function _getLocaleStrting(date) {
-    const localDate = new Date(date.toString());
-    const week = ["일", "월", "화", "수", "목", "금", "토"];
-    const dayOfWeek = week[localDate.getDay()];
-    const result =
-      localDate.getFullYear() +
-      "년" +
-      (localDate.getMonth() + 1) +
-      "월" +
-      localDate.getDate() +
-      "일" +
-      dayOfWeek +
-      "요일" +
-      localDate.getHours() +
-      "시" +
-      localDate.getMinutes() +
-      "분";
-    return result;
-  }
+
   const timeLineStart = [
-    "00:00부터",
-    "00:30부터",
-    "01:00부터",
-    "01:30부터",
-    "02:00부터",
-    "02:30부터",
-    "03:00부터",
-    "03:30부터",
-    "04:00부터",
-    "04:30부터",
-    "05:00부터",
-    "05:30부터",
-    "06:00부터",
-    "06:30부터",
-    "07:00부터",
-    "07:30부터",
-    "08:00부터",
-    "08:30부터",
-    "09:00부터",
-    "09:30부터",
-    "10:00부터",
-    "10:30부터",
-    "11:00부터",
-    "11:30부터",
-    "12:00부터",
-    "12:30부터",
-    "13:00부터",
-    "13:30부터",
-    "14:00부터",
-    "14:30부터",
-    "15:00부터",
-    "15:30부터",
-    "16:00부터",
-    "16:30부터",
-    "17:00부터",
-    "17:30부터",
-    "18:00부터",
-    "18:30부터",
-    "19:00부터",
-    "19:30부터",
-    "20:00부터",
-    "20:30부터",
-    "21:00부터",
-    "21:30부터",
-    "22:00부터",
-    "22:30부터",
-    "23:00부터",
-    "23:30부터",
+    "00:00",
+    "00:30",
+    "01:00",
+    "01:30",
+    "02:00",
+    "02:30",
+    "03:00",
+    "03:30",
+    "04:00",
+    "04:30",
+    "05:00",
+    "05:30",
+    "06:00",
+    "06:30",
+    "07:00",
+    "07:30",
+    "08:00",
+    "08:30",
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00",
+    "15:30",
+    "16:00",
+    "16:30",
+    "17:00",
+    "17:30",
+    "18:00",
+    "18:30",
+    "19:00",
+    "19:30",
+    "20:00",
+    "20:30",
+    "21:00",
+    "21:30",
+    "22:00",
+    "22:30",
+    "23:00",
+    "23:30",
   ];
   const timeLineEnd = [
-    "00:00까지",
-    "00:30까지",
-    "01:00까지",
-    "01:30까지",
-    "02:00까지",
-    "02:30까지",
-    "03:00까지",
-    "03:30까지",
-    "04:00까지",
-    "04:30까지",
-    "05:00까지",
-    "05:30까지",
-    "06:00까지",
-    "06:30까지",
-    "07:00까지",
-    "07:30까지",
-    "08:00까지",
-    "08:30까지",
-    "09:00까지",
-    "09:30까지",
-    "10:00까지",
-    "10:30까지",
-    "11:00까지",
-    "11:30까지",
-    "12:00까지",
-    "12:30까지",
-    "13:00까지",
-    "13:30까지",
-    "14:00까지",
-    "14:30까지",
-    "15:00까지",
-    "15:30까지",
-    "16:00까지",
-    "16:30까지",
-    "17:00까지",
-    "17:30까지",
-    "18:00까지",
-    "18:30까지",
-    "19:00까지",
-    "19:30까지",
-    "20:00까지",
-    "20:30까지",
-    "21:00까지",
-    "21:30까지",
-    "22:00까지",
-    "22:30까지",
-    "23:00까지",
-    "23:30까지",
+    "00:00",
+    "00:30",
+    "01:00",
+    "01:30",
+    "02:00",
+    "02:30",
+    "03:00",
+    "03:30",
+    "04:00",
+    "04:30",
+    "05:00",
+    "05:30",
+    "06:00",
+    "06:30",
+    "07:00",
+    "07:30",
+    "08:00",
+    "08:30",
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00",
+    "15:30",
+    "16:00",
+    "16:30",
+    "17:00",
+    "17:30",
+    "18:00",
+    "18:30",
+    "19:00",
+    "19:30",
+    "20:00",
+    "20:30",
+    "21:00",
+    "21:30",
+    "22:00",
+    "22:30",
+    "23:00",
+    "23:30",
   ];
   //#endregion Hooks & functions
   return (
@@ -286,102 +268,107 @@ export default function chatScreen({ route, navigation }) {
         }
       />
       {/* 채팅목록 출력부분 */}
-      <FlatList
-        keyExtractor={(item, i) => String(i)}
-        data={bbsStore.bbs}
-        renderItem={({ item, index }) => {
-          return (
-            <TouchableOpacity
-              onPress={() => {
-                if (true) {
-                  //checkUserEnterChatRoom() < 2
-                  firebase
-                    .database()
-                    .ref("bbs/data/" + item.b + "/l/" + userStore.userkey)
-                    .set(1);
-                  firebase
-                    .database()
-                    .ref("user/data/" + userStore.userkey + "/c/" + item.b)
-                    .set(1);
-                  navigation.navigate("채팅방", {
-                    bbskey: item.b,
-                    gender: item.h,
-                    leadername: item.i,
-                    startplace: item.n,
-                    endplace: item.g,
-                    mygender: mygender,
-                    myname: myname,
-                    meetingdate: item.j,
-                    personmember: item.i,
-                    personmax: item.k,
-                  });
-                } else {
-                  alert(
-                    "채팅방은 최대 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭 에서 채팅방 나가기를 해주세요."
-                  );
-                }
-              }}
-              style={{ backgroundColor: "white", padding: 10 }}
-            >
-              <View style={campusStyle.View.row}>
-                <View
-                  style={{
-                    borderRadius: 100,
-                    width: 62,
-                    height: 62,
-                    backgroundColor:
-                      item.h == 0
-                        ? "#579FEE"
-                        : item.h == 1
-                        ? "#C278DE"
-                        : "#3A3A3A",
-                    justifyContent: "center",
-                    alignItems: "center",
+      <Observer>
+        {() => (
+          <FlatList
+            keyExtractor={(item) => item.b}
+            data={bbsStore.bbs}
+            renderItem={({ item, index }) => {
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    if (true) {
+                      //checkUserEnterChatRoom() < 2
+                      firebase
+                        .database()
+                        .ref("bbs/data/" + item.b + "/l/" + userStore.userkey)
+                        .set(1);
+                      firebase
+                        .database()
+                        .ref("user/data/" + userStore.userkey + "/c/" + item.b)
+                        .set(1);
+                      navigation.navigate("채팅방", {
+                        bbskey: item.b,
+                        gender: item.h,
+                        leadername: item.i,
+                        startplace: item.n,
+                        endplace: item.g,
+                        mygender: mygender,
+                        myname: myname,
+                        meetingdate: item.j,
+                        personmember: item.i,
+                        personmax: item.k,
+                      });
+                    } else {
+                      alert(
+                        "채팅방은 최대 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭 에서 채팅방 나가기를 해주세요."
+                      );
+                    }
                   }}
+                  style={{ backgroundColor: "white", padding: 10 }}
                 >
-                  <Text style={campusStyle.Text.middleBold}>{index}</Text>
-                  <Text style={campusStyle.Text.middleBold}>
-                    {item.h == 0 ? "남자" : item.h == 1 ? "여자" : "모두"}
-                  </Text>
-                </View>
-                <View style={{ flex: 6 }}>
                   <View style={campusStyle.View.row}>
-                    <Image
-                      style={{ width: 23, height: 15, marginLeft: 10 }}
-                      source={crown}
-                    />
-                    <Text>{item.i}</Text>
+                    <View
+                      style={{
+                        borderRadius: 100,
+                        width: 62,
+                        height: 62,
+                        backgroundColor:
+                          item.h == 0
+                            ? "#579FEE"
+                            : item.h == 1
+                            ? "#C278DE"
+                            : "#3A3A3A",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text style={campusStyle.Text.middleBold}>{index}</Text>
+                      <Text style={campusStyle.Text.middleBold}>
+                        {item.h == 0 ? "남자" : item.h == 1 ? "여자" : "모두"}
+                      </Text>
+                    </View>
+                    <View style={{ flex: 6 }}>
+                      <View style={campusStyle.View.row}>
+                        <Image
+                          style={{ width: 23, height: 15, marginLeft: 10 }}
+                          source={crown}
+                        />
+                        <Text>{item.i}</Text>
+                      </View>
+                      <Text style={{ marginLeft: 10 }}>출발지:{item.n}</Text>
+                      <Text style={{ marginLeft: 10 }}>도착지:{item.g}</Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      {(() => {
+                        if (item.k === item.m)
+                          return (
+                            <Text style={campusStyle.Text.red}>
+                              {item.m}/{item.k}
+                            </Text>
+                          );
+                        else
+                          return (
+                            <Text>
+                              {item.m}/{item.k}
+                            </Text>
+                          );
+                      })()}
+                    </View>
+                    <View style={{ flex: 3, alignItems: "center" }}>
+                      <Text style={campusStyle.Text.grayDDark}>탑승시간▼</Text>
+                      <Text style={campusStyle.Text.grayDDark}>
+                        {userStore.globalTimeTolocalTime(item.f)}
+                      </Text>
+                    </View>
                   </View>
-                  <Text style={{ marginLeft: 10 }}>출발지:{item.n}</Text>
-                  <Text style={{ marginLeft: 10 }}>도착지:{item.g}</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  {(() => {
-                    if (item.k === item.m)
-                      return (
-                        <Text style={campusStyle.Text.red}>
-                          {item.m}/{item.k}
-                        </Text>
-                      );
-                    else
-                      return (
-                        <Text>
-                          {item.m}/{item.k}
-                        </Text>
-                      );
-                  })()}
-                </View>
-                <View style={{ flex: 3, alignItems: "center" }}>
-                  <Text style={campusStyle.Text.grayDDark}>탑승시간▼</Text>
-                  <Text style={campusStyle.Text.grayDDark}>
-                    {userStore.globalTimeTolocalTime(item.f)}
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          );
-        }}
-      />
+                </TouchableOpacity>
+              );
+            }}
+          />
+        )}
+      </Observer>
+
       {/* 방만들기 버튼부분 */}
       <View style={campusStyle.View.createRoomView}>
         <TouchableOpacity
@@ -418,10 +405,10 @@ export default function chatScreen({ route, navigation }) {
                   setCreateRoomCategory(itemValue);
                 }}
               >
-                <Picker.Item key="0" color="gray" label={filter} />
-                {menuList.map((item, i) =>
+                <Picker.Item color="gray" label={filter} />
+                {menuList.map((item) =>
                   item != filter ? (
-                    <Picker.Item key={i} label={item} value={item} />
+                    <Picker.Item label={item} value={item} />
                   ) : null
                 )}
               </Picker>
@@ -432,13 +419,9 @@ export default function chatScreen({ route, navigation }) {
                   setCreateRoomstartplace(itemValue);
                 }}
               >
-                <Picker.Item
-                  key="0"
-                  value=""
-                  label="출발장소를 선택해주세요."
-                />
-                {startplace.map((item, i) => (
-                  <Picker.Item key={i} label={item} value={item} />
+                <Picker.Item value="" label="출발장소를 선택해주세요." />
+                {anotherStore.placeStart.map((item) => (
+                  <Picker.Item label={item} value={item} />
                 ))}
               </Picker>
               <Text>도착장소</Text>
@@ -448,18 +431,14 @@ export default function chatScreen({ route, navigation }) {
                   setCreateRoomendplace(itemValue);
                 }}
               >
-                <Picker.Item
-                  key="0"
-                  value=""
-                  label="도착장소를 선택해주세요."
-                />
-                {endplace.map((item, i) => (
-                  <Picker.Item key={i} label={item} value={item} />
+                <Picker.Item value="" label="도착장소를 선택해주세요." />
+                {anotherStore.placeEnd.map((item) => (
+                  <Picker.Item label={item} value={item} />
                 ))}
               </Picker>
               <Text>탑승 시간</Text>
               <Text style={campusStyle.Text.center}>
-                {_getLocaleStrting(date)}
+                {anotherStore.toLocal(date)}
               </Text>
               <View style={campusStyle.View.row}>
                 <View style={campusStyle.View.flex}>
@@ -529,7 +508,7 @@ export default function chatScreen({ route, navigation }) {
                       createRoomCategory,
                       createRoomendplace,
                       createSelectGender,
-                      userStore.user.i,
+                      myname,
                       date,
                       createRoompersonmax,
                       createRoomstartplace,
@@ -599,15 +578,15 @@ export default function chatScreen({ route, navigation }) {
                   setFilterCategory(itemValue);
                 }}
               >
-                <Picker.Item key={0} label="등교" value="등교" />
-                <Picker.Item key={1} label="하교" value="하교" />
-                <Picker.Item key={2} label="야작" value="야작" />
-                <Picker.Item key={3} label="독서실" value="독서실" />
-                <Picker.Item key={4} label="PC방" value="PC방" />
-                <Picker.Item key={5} label="놀이동산" value="놀이동산" />
-                <Picker.Item key={6} label="클럽" value="클럽" />
-                <Picker.Item key={7} label="스키장" value="스키장" />
-                <Picker.Item key={8} label="오션월드" value="오션월드" />
+                <Picker.Item label="등교" value="등교" />
+                <Picker.Item label="하교" value="하교" />
+                <Picker.Item label="야작" value="야작" />
+                <Picker.Item label="독서실" value="독서실" />
+                <Picker.Item label="PC방" value="PC방" />
+                <Picker.Item label="놀이동산" value="놀이동산" />
+                <Picker.Item label="클럽" value="클럽" />
+                <Picker.Item label="스키장" value="스키장" />
+                <Picker.Item label="오션월드" value="오션월드" />
               </Picker>
               <Text>출발장소</Text>
               <Picker
@@ -617,9 +596,9 @@ export default function chatScreen({ route, navigation }) {
                   setFilterStartplace(itemValue);
                 }}
               >
-                <Picker.Item key={0} label="무관" value="무관" />
-                {startplace.map((item, i) => (
-                  <Picker.Item key={i} label={item} value={item} />
+                <Picker.Item label="무관" value="무관" />
+                {startplace.map((item) => (
+                  <Picker.Item label={item} value={item} />
                 ))}
               </Picker>
               <Text>도착장소</Text>
@@ -630,9 +609,9 @@ export default function chatScreen({ route, navigation }) {
                   setFilterEndplace(itemValue);
                 }}
               >
-                <Picker.Item key={0} label="무관" value="무관" />
-                {endplace.map((item, i) => (
-                  <Picker.Item key={i} label={item} value={item} />
+                <Picker.Item label="무관" value="무관" />
+                {endplace.map((item) => (
+                  <Picker.Item label={item} value={item} />
                 ))}
               </Picker>
               <Text>탑승시간</Text>
@@ -644,9 +623,9 @@ export default function chatScreen({ route, navigation }) {
                       setFilterMeetingTimeStart(itemValue);
                     }}
                   >
-                    <Picker.Item key={0} label="전부" value="전부" />
-                    {timeLineStart.map((item, i) => (
-                      <Picker.Item key={i} label={item} value={item} />
+                    <Picker.Item label="전부" value="전부" />
+                    {timeLineStart.map((item) => (
+                      <Picker.Item label={item} value={item} />
                     ))}
                   </Picker>
                 </View>
@@ -657,9 +636,9 @@ export default function chatScreen({ route, navigation }) {
                       setFilterMeetingTimeEnd(itemValue);
                     }}
                   >
-                    <Picker.Item key={0} label="전부" value="전부" />
-                    {timeLineEnd.map((item, i) => (
-                      <Picker.Item key={i} label={item} value={item} />
+                    <Picker.Item label="전부" value="전부" />
+                    {timeLineEnd.map((item) => (
+                      <Picker.Item label={item} value={item} />
                     ))}
                   </Picker>
                 </View>
@@ -673,10 +652,10 @@ export default function chatScreen({ route, navigation }) {
                       setFilterPersonMin(itemValue);
                     }}
                   >
-                    <Picker.Item key={0} label="1" value="1" />
-                    <Picker.Item key={1} label="2" value="2" />
-                    <Picker.Item key={2} label="3" value="3" />
-                    <Picker.Item key={3} label="4" value="4" />
+                    <Picker.Item label="1" value="1" />
+                    <Picker.Item label="2" value="2" />
+                    <Picker.Item label="3" value="3" />
+                    <Picker.Item label="4" value="4" />
                   </Picker>
                 </View>
                 <View style={campusStyle.View.flex}>
@@ -686,10 +665,10 @@ export default function chatScreen({ route, navigation }) {
                       setFilterPersonMax(itemValue);
                     }}
                   >
-                    <Picker.Item key={0} label="1" value="1" />
-                    <Picker.Item key={1} label="2" value="2" />
-                    <Picker.Item key={2} label="3" value="3" />
-                    <Picker.Item key={3} label="4" value="4" />
+                    <Picker.Item label="1" value="1" />
+                    <Picker.Item label="2" value="2" />
+                    <Picker.Item label="3" value="3" />
+                    <Picker.Item label="4" value="4" />
                   </Picker>
                 </View>
               </View>
@@ -700,10 +679,34 @@ export default function chatScreen({ route, navigation }) {
                 setFilterVisible(!isFilterVisible);
               }}
             />
-            <Button title="Check" onPress="() => {}" />
+            <Button title="Check" onPress={getFiltferBbs} />
           </View>
         </Modal>
       ) : null}
     </>
   );
 }
+
+//#region imports
+import React, { useState, useEffect } from "react";
+import { View, FlatList, Image, TouchableOpacity } from "react-native";
+import { Picker } from "@react-native-community/picker";
+import Modal from "react-native-modal";
+import * as TimeAPI from "../Email/globalTimeAPI.js";
+import {
+  Header,
+  ListItem,
+  Icon,
+  Text,
+  Card,
+  Button,
+  ButtonGroup,
+  Input,
+} from "react-native-elements";
+import campusStyle from "style";
+import DateTimePicker from "@react-native-community/datetimepicker"; //방생성시간picker
+import crown from "image/crown.png";
+const firebase = require("firebase");
+import { bbsStore, userStore, anotherStore } from "store";
+import { Observer } from "mobx-react";
+//#endregion
