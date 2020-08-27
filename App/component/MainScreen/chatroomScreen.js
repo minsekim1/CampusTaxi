@@ -32,10 +32,11 @@ export default class chatroomScreen extends Component {
       personmax: this.props.route.params.personmax,
       meetingdate: this.props.route.params.meetingdate,
       chattingData: [],
-      flatList: false,
+      refreshing: false,
       time: new Date(),
     };
   }
+
   componentDidMount() {
     this.updateChattingDate();
   }
@@ -204,7 +205,7 @@ export default class chatroomScreen extends Component {
         {/* 채팅 내용부분 */}
         <FlatList
           data={this.state.chattingData}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item, i) => String(i)}
           ref={(ref) => {
             this.flatListRef = ref;
           }}

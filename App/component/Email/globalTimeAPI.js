@@ -1,5 +1,3 @@
-
-
 export function timetoint(time) { // yes using
     let result = time.replace(/[^0-9]/g,"");
     return (Number)(result);

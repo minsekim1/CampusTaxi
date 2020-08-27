@@ -21,14 +21,12 @@ const firebase = require("firebase");
 import { bbsStore, userStore } from "store";
 import { Observer } from "mobx-react";
 //#endregion
-
 //채팅목록 화면
 export default function chatScreen({ route, navigation }) {
   //#region Hooks & functions
   const userkey = userStore.user.f;
+  bbsStore.asyncAllBbs();
   useEffect(() => {
-    bbsStore.getAllBbs();
-    updateUserdata(userkey);
     placeUpdate();
   }, [userkey]);
   const filter = route.params.filter;
@@ -37,16 +35,10 @@ export default function chatScreen({ route, navigation }) {
   //#region 유저정보 업데이트
   const [myname, setname] = useState(userStore.user.h);
   const [mygender, setgender] = useState(userStore.user.d);
-  function updateUserdata(userkey) {}
   //유저가 들어간 채팅방의 개수를 알려줍니다.
   const [myRoomCount, setMyRoomCount] = useState(0);
   async function checkUserEnterChatRoom() {
-    await firebase
-      .database()
-      .ref("user/data/" + userkey + "/c")
-      .once("value", (snapshot) => {
-        setMyRoomCount(Object.keys(snapshot).length);
-      });
+    //userStore.user.c
     return myRoomCount;
   }
   //#endregion
@@ -65,12 +57,11 @@ export default function chatScreen({ route, navigation }) {
 
   function getFiltferBbs() {
     let result;
-
     result = bbsStore.bbs;
 
     let query = {
       c: filterCategory,
-    }
+    };
     query.h = Number(filterPersonMin);
     query.k = Number(filterPersonMax);
     if (!(filterStartplace=="무관")) {
@@ -88,9 +79,7 @@ export default function chatScreen({ route, navigation }) {
       result = result.filter(result => TimeAPI.hourandminute(result.f) < filterMeetingTimeEnd_time);
     }
 
-
     result = result.filter(search, query);
-
     setRoomList(result);
   }
   // -- Filter function end
@@ -99,7 +88,9 @@ export default function chatScreen({ route, navigation }) {
   const [isCreateRoomVisible, setCreateRoomVisible] = useState(false);
   const [createRoomCategory, setCreateRoomCategory] = useState(filter);
   const [createRoompersonmax, setCreateRoompersonmax] = useState(4);
-  const [createRoomstartplace, setCreateRoomstartplace] = useState();
+  const [createRoomstartplace, setCreateRoomstartplace] = useState(
+    anotherStore.placeStart
+  );
   const [createRoomendplace, setCreateRoomendplace] = useState();
   const [createRoomGender, setCreateRoomGender] = useState(1);
   const [createSelectGender, setCreateSelectGender] = useState(2);
@@ -108,26 +99,9 @@ export default function chatScreen({ route, navigation }) {
   const [endplace, setEndplace] = useState([]);
   //endplace와 startplace를 서버데이터로 업데이트합니다.
   function placeUpdate() {
-    firebase
-      .database()
-      .ref("place/data/startplace")
-      .once("value", (snapshot) => {
-        let arr = [];
-        snapshot.forEach((snap) => {
-          arr.push(snap.key);
-        });
-        setStartplace(arr);
-      });
-    firebase
-      .database()
-      .ref("place/data/endplace")
-      .once("value", (snapshot) => {
-        let arr = [];
-        snapshot.forEach((snap) => {
-          arr.push(snap.key);
-        });
-        setEndplace(arr);
-      });
+    anotherStore.getPlaceOnce();
+    setStartplace(anotherStore.placeStart);
+    setEndplace(anotherStore.placeEnd);
   }
 
   const menuList = [
@@ -155,32 +129,8 @@ export default function chatScreen({ route, navigation }) {
     setMode(currentMode);
   };
 
-  const showDatepicker = () => {
-    showMode("date");
-  };
-
-  const showTimepicker = () => {
-    showMode("time");
-  };
-  function _getLocaleStrting(date) {
-    const localDate = new Date(date.toString());
-    const week = ["일", "월", "화", "수", "목", "금", "토"];
-    const dayOfWeek = week[localDate.getDay()];
-    const result =
-      localDate.getFullYear() +
-      "년" +
-      (localDate.getMonth() + 1) +
-      "월" +
-      localDate.getDate() +
-      "일" +
-      dayOfWeek +
-      "요일" +
-      localDate.getHours() +
-      "시" +
-      localDate.getMinutes() +
-      "분";
-    return result;
-  }
+  const showDatepicker = () => showMode("date");
+  const showTimepicker = () => showMode("time");
   const timeLineStart = [
     "00:00",
     "00:30",
@@ -322,103 +272,108 @@ export default function chatScreen({ route, navigation }) {
           </View>
         }
       />
-      {/* 채팅목록 출력부분 */} 
-      <FlatList
-        keyExtractor={(item) => item.b}
-        data={roomList}
-        renderItem={({ item, index }) => {
-          return (
-            <TouchableOpacity
-              onPress={() => {
-                if (true) {
-                  //checkUserEnterChatRoom() < 2
-                  firebase
-                    .database()
-                    .ref("bbs/data/" + item.b + "/l/" + userStore.userkey)
-                    .set(1);
-                  firebase
-                    .database()
-                    .ref("user/data/" + userStore.userkey + "/c/" + item.b)
-                    .set(1);
-                  navigation.navigate("채팅방", {
-                    bbskey: item.b,
-                    gender: item.h,
-                    leadername: item.i,
-                    startplace: item.n,
-                    endplace: item.g,
-                    mygender: mygender,
-                    myname: myname,
-                    meetingdate: item.j,
-                    personmember: item.i,
-                    personmax: item.k,
-                  });
-                } else {
-                  alert(
-                    "채팅방은 최대 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭 에서 채팅방 나가기를 해주세요."
-                  );
-                }
-              }}
-              style={{ backgroundColor: "white", padding: 10 }}
-            >
-              <View style={campusStyle.View.row}>
-                <View
-                  style={{
-                    borderRadius: 100,
-                    width: 62,
-                    height: 62,
-                    backgroundColor:
-                      item.h == 0
-                        ? "#579FEE"
-                        : item.h == 1
-                        ? "#C278DE"
-                        : "#3A3A3A",
-                    justifyContent: "center",
-                    alignItems: "center",
+      {/* 채팅목록 출력부분 */}
+      <Observer>
+        {() => (
+          <FlatList
+            keyExtractor={(item) => item.b}
+            data={bbsStore.bbs}
+            renderItem={({ item, index }) => {
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    if (true) {
+                      //checkUserEnterChatRoom() < 2
+                      firebase
+                        .database()
+                        .ref("bbs/data/" + item.b + "/l/" + userStore.userkey)
+                        .set(1);
+                      firebase
+                        .database()
+                        .ref("user/data/" + userStore.userkey + "/c/" + item.b)
+                        .set(1);
+                      navigation.navigate("채팅방", {
+                        bbskey: item.b,
+                        gender: item.h,
+                        leadername: item.i,
+                        startplace: item.n,
+                        endplace: item.g,
+                        mygender: mygender,
+                        myname: myname,
+                        meetingdate: item.j,
+                        personmember: item.i,
+                        personmax: item.k,
+                      });
+                    } else {
+                      alert(
+                        "채팅방은 최대 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭 에서 채팅방 나가기를 해주세요."
+                      );
+                    }
                   }}
+                  style={{ backgroundColor: "white", padding: 10 }}
                 >
-                  <Text style={campusStyle.Text.middleBold}>{index}</Text>
-                  <Text style={campusStyle.Text.middleBold}>
-                    {item.h == 0 ? "남자" : item.h == 1 ? "여자" : "모두"}
-                  </Text>
-                </View>
-                <View style={{ flex: 6 }}>
                   <View style={campusStyle.View.row}>
-                    <Image
-                      style={{ width: 23, height: 15, marginLeft: 10 }}
-                      source={crown}
-                    />
-                    <Text>{item.i}</Text>
+                    <View
+                      style={{
+                        borderRadius: 100,
+                        width: 62,
+                        height: 62,
+                        backgroundColor:
+                          item.h == 0
+                            ? "#579FEE"
+                            : item.h == 1
+                            ? "#C278DE"
+                            : "#3A3A3A",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text style={campusStyle.Text.middleBold}>{index}</Text>
+                      <Text style={campusStyle.Text.middleBold}>
+                        {item.h == 0 ? "남자" : item.h == 1 ? "여자" : "모두"}
+                      </Text>
+                    </View>
+                    <View style={{ flex: 6 }}>
+                      <View style={campusStyle.View.row}>
+                        <Image
+                          style={{ width: 23, height: 15, marginLeft: 10 }}
+                          source={crown}
+                        />
+                        <Text>{item.i}</Text>
+                      </View>
+                      <Text style={{ marginLeft: 10 }}>출발지:{item.n}</Text>
+                      <Text style={{ marginLeft: 10 }}>도착지:{item.g}</Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      {(() => {
+                        if (item.k === item.m)
+                          return (
+                            <Text style={campusStyle.Text.red}>
+                              {item.m}/{item.k}
+                            </Text>
+                          );
+                        else
+                          return (
+                            <Text>
+                              {item.m}/{item.k}
+                            </Text>
+                          );
+                      })()}
+                    </View>
+                    <View style={{ flex: 3, alignItems: "center" }}>
+                      <Text style={campusStyle.Text.grayDDark}>탑승시간▼</Text>
+                      <Text style={campusStyle.Text.grayDDark}>
+                        {anotherStore.toLocal(item.f)}
+                      </Text>
+                    </View>
                   </View>
-                  <Text style={{ marginLeft: 10 }}>출발지:{item.n}</Text>
-                  <Text style={{ marginLeft: 10 }}>도착지:{item.g}</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  {(() => {
-                    if (item.k === item.m)
-                      return (
-                        <Text style={campusStyle.Text.red}>
-                          {item.m}/{item.k}
-                        </Text>
-                      );
-                    else
-                      return (
-                        <Text>
-                          {item.m}/{item.k}
-                        </Text>
-                      );
-                  })()}
-                </View>
-                <View style={{ flex: 3, alignItems: "center" }}>
-                  <Text style={campusStyle.Text.grayDDark}>탑승시간▼</Text>
-                  <Text style={campusStyle.Text.grayDDark}>
-                    {userStore.globalTimeTolocalTime(item.f)}
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          );
-        }}
-      />
+                </TouchableOpacity>
+              );
+            }}
+          />
+        )}
+      </Observer>
+
       {/* 방만들기 버튼부분 */}
       <View style={campusStyle.View.createRoomView}>
         <TouchableOpacity
@@ -470,7 +425,7 @@ export default function chatScreen({ route, navigation }) {
                 }}
               >
                 <Picker.Item value="" label="출발장소를 선택해주세요." />
-                {startplace.map((item) => (
+                {anotherStore.placeStart.map((item) => (
                   <Picker.Item label={item} value={item} />
                 ))}
               </Picker>
@@ -482,13 +437,13 @@ export default function chatScreen({ route, navigation }) {
                 }}
               >
                 <Picker.Item value="" label="도착장소를 선택해주세요." />
-                {endplace.map((item) => (
+                {anotherStore.placeEnd.map((item) => (
                   <Picker.Item label={item} value={item} />
                 ))}
               </Picker>
               <Text>탑승 시간</Text>
               <Text style={campusStyle.Text.center}>
-                {_getLocaleStrting(date)}
+                {anotherStore.toLocal(date)}
               </Text>
               <View style={campusStyle.View.row}>
                 <View style={campusStyle.View.flex}>
@@ -558,7 +513,7 @@ export default function chatScreen({ route, navigation }) {
                       createRoomCategory,
                       createRoomendplace,
                       createSelectGender,
-                      myname,
+                      userStore.user.i,
                       date,
                       createRoompersonmax,
                       createRoomstartplace,
@@ -736,3 +691,27 @@ export default function chatScreen({ route, navigation }) {
     </>
   );
 }
+
+//#region imports
+import React, { useState, useEffect } from "react";
+import { View, FlatList, Image, TouchableOpacity } from "react-native";
+import { Picker } from "@react-native-community/picker";
+import Modal from "react-native-modal";
+import * as TimeAPI from "../Email/globalTimeAPI.js";
+import {
+  Header,
+  ListItem,
+  Icon,
+  Text,
+  Card,
+  Button,
+  ButtonGroup,
+  Input,
+} from "react-native-elements";
+import campusStyle from "style";
+import DateTimePicker from "@react-native-community/datetimepicker"; //방생성시간picker
+import crown from "image/crown.png";
+const firebase = require("firebase");
+import { bbsStore, userStore, anotherStore } from "store";
+import { Observer } from "mobx-react";
+//#endregion
