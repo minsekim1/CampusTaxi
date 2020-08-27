@@ -42,7 +42,6 @@ export default function chatScreen({ route, navigation }) {
     query.h = Number(filterPersonMin);
     query.k = Number(filterPersonMax);
     if (!(filterStartplace == "무관")) {
-      query.n = filterStartplace;
     }
     if (!(filterEndplace == "무관")) {
       query.g = filterEndplace;
@@ -499,7 +498,7 @@ export default function chatScreen({ route, navigation }) {
                       createRoomCategory,
                       createRoomendplace,
                       createSelectGender,
-                      myname,
+                      userStore.user.i,
                       date,
                       createRoompersonmax,
                       createRoomstartplace,

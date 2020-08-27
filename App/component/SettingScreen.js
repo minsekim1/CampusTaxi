@@ -10,7 +10,7 @@ import { ListItem, Divider } from "react-native-elements";
 import { text1, text2, text3, text4 } from "../constant/policy.js";
 import { TextInput } from "react-native";
 import { Picker } from "@react-native-community/picker";
-import { bbsStore, userStore } from "store";
+import { bbsStore, userStore, anotherStore } from "store";
 function HomeScreen({ navigation }) {
   const list = [
     {
@@ -22,15 +22,15 @@ function HomeScreen({ navigation }) {
       title: "내 정보",
       navigation: "내 정보",
     },
-    {
-      type: "title",
-      title: "앱 설정",
-    },
-    {
-      type: "text",
-      title: "알림 설정",
-      navigation: "알림 설정",
-    },
+    // {
+    //   type: "title",
+    //   title: "앱 설정",
+    // },
+    // {
+    //   type: "text",
+    //   title: "알림 설정",
+    //   navigation: "알림 설정",
+    // },
     {
       type: "title",
       title: "앱 정보",
@@ -72,7 +72,7 @@ function HomeScreen({ navigation }) {
   ];
 
   return (
-    <View>
+    <ScrollView>
       {list.map((item, i) =>
         (function () {
           return (
@@ -90,7 +90,7 @@ function HomeScreen({ navigation }) {
           );
         })()
       )}
-    </View>
+    </ScrollView>
   );
 }
 //내 정보: 회원정보 수정페이지
@@ -243,7 +243,7 @@ function clientChangePage({ navigation: { goBack } }) {
             최초가입일
           </Text>
           <Text style={{ fontSize: 18, fontSize: 11, color: "gray" }}>
-            {userStore.globalTimeTolocalTime(userStore.user.e)}
+            {anotherStore.toLocal(userStore.user.e)}
           </Text>
         </View>
       </View>
@@ -335,7 +335,6 @@ function clientChangePage({ navigation: { goBack } }) {
 }
 //내 정보 페이지
 import { Observer, useLocalStore } from "mobx-react";
-
 class clientpage extends React.Component {
   constructor(props) {
     super(props);
@@ -350,11 +349,8 @@ class clientpage extends React.Component {
       auth: userStore.user.n,
     };
   }
-  // navigation.addListener("focus", () => {
-  //   alert(userStore.user.i);
-  // });
-
   render() {
+    userStore.asyncUser();
     const { navigation } = this.props;
     return (
       <ScrollView
@@ -418,7 +414,7 @@ class clientpage extends React.Component {
             <Observer>
               {() => (
                 <Text style={{ marginBottom: 10 }}>
-                  {userStore.globalTimeTolocalTime(userStore.user.e)}
+                  {anotherStore.toLocal(userStore.user.e)}
                 </Text>
               )}
             </Observer>
@@ -455,15 +451,20 @@ class clientpage extends React.Component {
         <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
           학생증인증
         </Text>
-        <Text
-          style={
-            "auth" == 1
-              ? { marginBottom: 10, color: "#27BE5E" }
-              : { marginBottom: 10, color: "#F83C3C" }
-          }
-        >
-          {"auth" == 1 ? "완료" : "인증처리중"}
-        </Text>
+        <Observer>
+          {() => (
+            <Text
+              style={
+                userStore.user.n == 1
+                  ? { marginBottom: 10, color: "#27BE5E" }
+                  : { marginBottom: 10, color: "#F83C3C" }
+              }
+            >
+              {userStore.user.n == 1 ? "완료" : "인증처리중"}
+            </Text>
+          )}
+        </Observer>
+
         <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
         <View style={{ alignItems: "center", marginBottom: 30 }}>
           <Button
@@ -502,7 +503,7 @@ function clientpageAppvesion() {
         justifyContent: "center",
       }}
     >
-      <Text>Details Screen</Text>
+      <Text>Version 1.1B</Text>
     </View>
   );
 }

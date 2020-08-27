@@ -18,21 +18,16 @@ import { Observer } from "mobx-react";
 import Svg, { G, Circle, Path } from "react-native-svg";
 //채팅방의 유저 목록
 export default function chatinfo({ route, navigation }) {
-  let { bbskey } = route.params;
+  let bbskey = route.params.bbskey;
   //멤버 배열, 대화상대(현재, 최대)
   //#region 변수들
-  useEffect(() => {
-    // i:방장 h:성별 l.ma : 인간1 m:현재인원 k:최대인원
-    bbsStore.setbbsnow(bbskey).then(() => {
-      bbsStore.setbbsuser(bbsStore.bbsnow.l).then(() => {
-        let m = 0;
-        Object.keys(bbsStore.bbsnow.l).forEach(() => m++);
-        navigation.setOptions({
-          title: "대화상대(" + m + "/" + bbsStore.bbsnow.k + ")",
-        });
+  bbsStore.setbbsnow(bbskey).then(() => {
+    bbsStore.setbbsuser(bbsStore.bbsnow.l).then(() => {
+      navigation.setOptions({
+        title: "대화상대(" + bbsStore.bbsnow.m + "/" + bbsStore.bbsnow.k + ")",
       });
     });
-  }, [bbskey]);
+  });
   async function updateChatinfo(bbskey) {}
   //#endregion
   return (
@@ -45,13 +40,14 @@ export default function chatinfo({ route, navigation }) {
             keyExtractor={(item, i) => String(i)}
             renderItem={({ item }) => {
               const image =
-                bbsStore.bbsnow.i == item.i
+                bbsStore.bbsnow.i == userStore.user.i
                   ? userStore.user.d == 0
                     ? manCrownSVG
                     : womanCrownSVG
                   : userStore.user.d == 0
                   ? manSVG
                   : womanSVG;
+              item = JSON.parse(JSON.stringify(item));
               return (
                 <View style={{ flexDirection: "row", padding: 10 }}>
                   <View style={{ flex: 1 }}>

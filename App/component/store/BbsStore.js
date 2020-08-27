@@ -44,6 +44,7 @@ export default class BbsStore {
           i: i,
           j: j,
           k: k,
+          m: 1,
           n: n,
         };
         let newkey = this.bbsDB("").push(newBbs).key;
@@ -81,17 +82,20 @@ export default class BbsStore {
   }
 
   async setbbsnow(bbskey) {
-    this.bbsDB(bbskey).once("value", (snap) =>
-      this.val(snap).then((r) => (this.bbsnow = r))
-    );
+    this.bbsDB(bbskey).once("value", (snap) => (this.bbsnow = snap.val()));
   }
 
   async setbbsuser(userlist) {
+    let temp = [];
     await Object.keys(userlist).map(
       async (key) =>
-        await this.userDB(key).once("value", (snap) =>
-          this.val(snap).then((r) => (this.bbsuser = r))
-        )
+        await this.userDB(key)
+          .once("value", (snap) => {
+            temp.push(snap);
+          })
+          .then(() => {
+            this.bbsuser = temp;
+          })
     );
   }
 
