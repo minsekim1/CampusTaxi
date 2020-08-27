@@ -8,7 +8,7 @@
     "start웹": "expo web",
     "gitUpload": "git add . && git commit -m \" 백엔드작업끝/기타수정 1차 베타배포\" && git push ",
     "gitPull": "git pull",
-    "reactStartAndroid": "react-native run-android"
+    "플레이스토어 배포":"expo bulid:android"
   },
   "dependencies": {
     "@expo/vector-icons": "^10.0.0",
