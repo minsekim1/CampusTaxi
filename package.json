@@ -8,7 +8,9 @@
     "start웹": "expo web",
     "gitUpload": "git add . && git commit -m \" 백엔드작업끝/기타수정 1차 베타배포\" && git push ",
     "gitPull": "git pull",
-    "플레이스토어 배포":"expo bulid:android"
+    "플레이스토어 배포":"expo bulid:android",
+    "reactStartAndroid": "react-native run-android",
+    "git강제로덮어쓰기": "git checkout master &&  git branch NewBranch && git fetch --all  && git reset --hard origin/master"
   },
   "dependencies": {
     "@expo/vector-icons": "^10.0.0",
