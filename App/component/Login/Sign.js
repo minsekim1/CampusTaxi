@@ -273,27 +273,25 @@ export class Sign2 extends React.Component {
   //#region Firebase Phone Auth Functions
 
   sendVerification = async () => {
-    const phoneProvider = new firebase.auth.PhoneAuthProvider();
-    const verificationId = await phoneProvider
-      .verifyPhoneNumber(
-        this.state.countryNum + this.state.phoneNumber,
-        this.recaptchaVerifier.current
-      )
-      .then((r) => alert(r));
-    this.setState({
-      verificationId: verificationId,
-    });
-
-    // phoneProvider
-    //   .verifyPhoneNumber(
-    //     this.state.countryNum + this.state.phoneNumber,
-    //     this.recaptchaVerifier.current
-    //   )
-    //   .then((result) =>
-    //     this.setState({
-    //       verificationId: result,
-    //     })
-    //   );
+    if (
+      (this.state.countryNum + this.state.phoneNumber).length < 7 ||
+      (this.state.phoneNumber.slice(0, 3) != "010" &&
+        this.state.phoneNumber.slice(0, 3) != "011" &&
+        this.state.phoneNumber.slice(0, 3) != "017")
+    ) {
+      alert("잘못된 핸드폰 번호입니다.");
+    } else {
+      const phoneProvider = new firebase.auth.PhoneAuthProvider();
+      const verificationId = await phoneProvider
+        .verifyPhoneNumber(
+          this.state.countryNum + this.state.phoneNumber,
+          this.recaptchaVerifier.current
+        )
+        .then((r) => alert(r));
+      this.setState({
+        verificationId: verificationId,
+      });
+    }
   };
   confirmCode = () => {
     if (!this.state.verificationId) {
