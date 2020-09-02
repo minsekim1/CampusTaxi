@@ -693,25 +693,3 @@ export default function chatScreen({ route, navigation }) {
 }
 
 //#region imports
-import React, { useState, useEffect } from "react";
-import { View, FlatList, Image, TouchableOpacity } from "react-native";
-import { Picker } from "@react-native-community/picker";
-import Modal from "react-native-modal";
-import * as TimeAPI from "../Email/globalTimeAPI.js";
-import {
-  Header,
-  ListItem,
-  Icon,
-  Text,
-  Card,
-  Button,
-  ButtonGroup,
-  Input,
-} from "react-native-elements";
-import campusStyle from "style";
-import DateTimePicker from "@react-native-community/datetimepicker"; //방생성시간picker
-import crown from "image/crown.png";
-const firebase = require("firebase");
-import { bbsStore, userStore, anotherStore } from "store";
-import { Observer } from "mobx-react";
-//#endregion
