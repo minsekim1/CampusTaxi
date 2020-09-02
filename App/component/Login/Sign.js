@@ -266,7 +266,7 @@ export class Sign2 extends React.Component {
       error: "아무런 값이 입력되지 않았습니다.",
       policy: this.props.route.params.policy, //마케팅 정보 등 동의 사실 전달[true, true...]
       token: this.props.route.params.token,
-      confirmBtn: true,
+      confirmBtn: false,
     };
   }
   //#region Firebase Phone Auth Functions
@@ -309,7 +309,7 @@ export class Sign2 extends React.Component {
             if (result2 == null) {
               this.setState({
                 authCheck: true,
-                confirmBtn: false,
+                confirmBtn: true,
               });
             } else {
               alert("이미 등록된 번호입니다.");
@@ -568,7 +568,10 @@ export class Sign2 extends React.Component {
               </View>
 
               <View style={SignIn.auth_button}>
-                <TouchableOpacity onPress={this.sendVerification}>
+                <TouchableOpacity
+                  onPress={this.sendVerification}
+                  disabled={this.state.confirmBtn}
+                >
                   <Text
                     style={{
                       color: "#ffffff",
