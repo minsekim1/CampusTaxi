@@ -138,7 +138,11 @@ export default class UserStore {
     //     userStore
     //       .findUserByAttributes("a", "서울 노원구")
     //       .then((result) => alert(result));
-    const ref = this.userDB(id).orderByChild(attributes).equalTo(value);
+    const ref = firebase
+      .database()
+      .ref("user/data")
+      .orderByChild(attributes)
+      .equalTo(value);
     let userid = null;
     await ref.once("value", (snap) => {
       snap.forEach((childSnapshot) => {

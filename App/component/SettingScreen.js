@@ -11,6 +11,7 @@ import { text1, text2, text3, text4 } from "../constant/policy.js";
 import { TextInput } from "react-native";
 import { Picker } from "@react-native-community/picker";
 import { bbsStore, userStore, anotherStore } from "store";
+import Constants from "expo-constants";
 function HomeScreen({ navigation }) {
   const list = [
     {
@@ -503,7 +504,7 @@ function clientpageAppvesion() {
         justifyContent: "center",
       }}
     >
-      <Text>Version 1.1B</Text>
+      <Text>{Constants.nativeAppVersion}</Text>
     </View>
   );
 }
@@ -574,7 +575,7 @@ import { useState } from "react";
 function clientpageQuestion() {
   const [email_title, setemail_title] = useState("");
   const [email_body, setemail_body] = useState(
-    "안녕하세요. 사용하시는 기종이 무엇인가요?  무슨 일이세요?  결론이 궁금해요. "
+    "양식에 맞추어 이메일을 보내주세요. 제목양식: 아이디/닉네임/문의사항요약, 내용양식: 아이디 닉네임 문의사항 표기,"
   );
 
   function GO_SendFunction() {
