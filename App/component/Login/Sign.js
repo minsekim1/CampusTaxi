@@ -301,7 +301,6 @@ export class Sign2 extends React.Component {
       .auth()
       .signInWithCredential(credential)
       .then(() => {
-        // 인증완료 작업
         userStore
           .findUserByAttributes(
             "j",
@@ -546,7 +545,7 @@ export class Sign2 extends React.Component {
                   >
                     <Picker.Item label="대한민국(+82)" value="+82" />
                     <Picker.Item label="북한(+850)" value="+850" />
-                    <Picker.Item label="인도네시아(+62)" value="+850" />
+                    <Picker.Item label="인도네시아(+62)" value="+62" />
                   </Picker>
                 </View>
 

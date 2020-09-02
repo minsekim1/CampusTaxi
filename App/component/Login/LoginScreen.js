@@ -16,7 +16,7 @@ export default class LoginScreen extends Component {
   constructor(props) {
     super(props);
     if (userStore.develop) {
-      this.state = { id: "slsl7862", pw: "tkarnr" };
+      this.state = { id: "", pw: "" };
     } else {
       this.state = { id: "", pw: "" };
     }
