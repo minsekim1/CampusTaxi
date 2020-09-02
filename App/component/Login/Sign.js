@@ -237,6 +237,7 @@ import { Picker } from "@react-native-community/picker";
 import * as ImagePicker from "expo-image-picker";
 import { storage } from "firebase";
 const firebase = require("firebase");
+import * as ErrorRecovery from 'expo-error-recovery';
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
 export class Sign2 extends React.Component {
   recaptchaVerifier = createRef();
@@ -270,6 +271,11 @@ export class Sign2 extends React.Component {
     };
   }
   //#region Firebase Phone Auth Functions
+  componentDidCatch(error, info) {
+    // Display fallback UI
+    // You can also log the error to an error reporting service
+  }
+
   sendVerification = () => {
     const phoneProvider = new firebase.auth.PhoneAuthProvider();
     phoneProvider
@@ -311,6 +317,7 @@ export class Sign2 extends React.Component {
                 authCheck: true,
                 confirmBtn: true,
               });
+              this.SignIn.auth_button;
             } else {
               alert("이미 등록된 번호입니다.");
               this.setState({
@@ -567,7 +574,13 @@ export class Sign2 extends React.Component {
                 </View>
               </View>
 
-              <View style={SignIn.auth_button}>
+              <View
+                style={
+                  !this.state.confirmBtn
+                    ? SignIn.auth_button
+                    : SignIn.auth_deactiveButton
+                }
+              >
                 <TouchableOpacity
                   onPress={this.sendVerification}
                   disabled={this.state.confirmBtn}
@@ -596,7 +609,13 @@ export class Sign2 extends React.Component {
                   placeholder="12345678"
                 />
               </View>
-              <View style={SignIn.auth_button}>
+              <View
+                style={
+                  !this.state.confirmBtn
+                    ? SignIn.auth_button
+                    : SignIn.auth_deactiveButton
+                }
+              >
                 <TouchableOpacity
                   onPress={this.confirmCode}
                   disabled={this.state.confirmBtn}
@@ -1026,6 +1045,15 @@ const SignIn = StyleSheet.create({
     justifyContent: "center",
     alignSelf: "center",
     backgroundColor: "#162A64",
+    marginLeft: 10,
+    borderRadius: 20,
+    width: 180,
+    height: 37,
+  },
+  auth_deactiveButton: {
+    justifyContent: "center",
+    alignSelf: "center",
+    backgroundColor: "gray",
     marginLeft: 10,
     borderRadius: 20,
     width: 180,
