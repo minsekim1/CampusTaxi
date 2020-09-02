@@ -24,6 +24,7 @@ import _ from "lodash";
 YellowBox.ignoreWarnings([
   "Setting a timer",
   "expo-google-sign-in is not supported",
+  "Cancelled by user",
   "@firebase/database:", //파이어베이스 null 등 모든 경고 닫음
 ]);
 const _console = _.clone(console);

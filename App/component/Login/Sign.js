@@ -237,7 +237,7 @@ import { Picker } from "@react-native-community/picker";
 import * as ImagePicker from "expo-image-picker";
 import { storage } from "firebase";
 const firebase = require("firebase");
-import * as ErrorRecovery from 'expo-error-recovery';
+import * as ErrorRecovery from "expo-error-recovery";
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
 export class Sign2 extends React.Component {
   recaptchaVerifier = createRef();
@@ -271,23 +271,29 @@ export class Sign2 extends React.Component {
     };
   }
   //#region Firebase Phone Auth Functions
-  componentDidCatch(error, info) {
-    // Display fallback UI
-    // You can also log the error to an error reporting service
-  }
 
-  sendVerification = () => {
+  sendVerification = async () => {
     const phoneProvider = new firebase.auth.PhoneAuthProvider();
-    phoneProvider
+    const verificationId = await phoneProvider
       .verifyPhoneNumber(
         this.state.countryNum + this.state.phoneNumber,
         this.recaptchaVerifier.current
       )
-      .then((result) =>
-        this.setState({
-          verificationId: result,
-        })
-      );
+      .then((r) => alert(r));
+    this.setState({
+      verificationId: verificationId,
+    });
+
+    // phoneProvider
+    //   .verifyPhoneNumber(
+    //     this.state.countryNum + this.state.phoneNumber,
+    //     this.recaptchaVerifier.current
+    //   )
+    //   .then((result) =>
+    //     this.setState({
+    //       verificationId: result,
+    //     })
+    //   );
   };
   confirmCode = () => {
     if (!this.state.verificationId) {
