@@ -21,10 +21,10 @@ try {
 //#region 경고창 무시: Setting a timer for a long period of time, i.e. multiple minute
 import { YellowBox } from "react-native";
 import _ from "lodash";
-
 YellowBox.ignoreWarnings([
   "Setting a timer",
   "expo-google-sign-in is not supported",
+  "Cancelled by user",
   "@firebase/database:", //파이어베이스 null 등 모든 경고 닫음
 ]);
 const _console = _.clone(console);
@@ -34,6 +34,7 @@ console.warn = (message) => {
   }
 };
 // <Navigation />
+//에러제어
 //#endregion
 export default class App extends Component {
   render() {

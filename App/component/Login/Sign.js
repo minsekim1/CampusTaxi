@@ -212,8 +212,7 @@ export default class Sign1 extends Component {
           </View>
 
           <Text style={{ fontSize: 12, color: "#a9a9a9" }}>
-            {" "}
-            * 선택 약관에 동의하지 않아도 회원가입이 가능합니다.{" "}
+            * 선택 약관에 동의하지 않아도 회원가입이 가능합니다.
           </Text>
         </View>
 
@@ -225,8 +224,7 @@ export default class Sign1 extends Component {
             <Text
               style={{ color: "#ffffff", fontSize: 20, textAlign: "center" }}
             >
-              {" "}
-              다음{" "}
+              다음
             </Text>
           </TouchableOpacity>
         </View>
@@ -239,6 +237,7 @@ import { Picker } from "@react-native-community/picker";
 import * as ImagePicker from "expo-image-picker";
 import { storage } from "firebase";
 const firebase = require("firebase");
+import * as ErrorRecovery from "expo-error-recovery";
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
 export class Sign2 extends React.Component {
   recaptchaVerifier = createRef();
@@ -268,21 +267,30 @@ export class Sign2 extends React.Component {
       error: "아무런 값이 입력되지 않았습니다.",
       policy: this.props.route.params.policy, //마케팅 정보 등 동의 사실 전달[true, true...]
       token: this.props.route.params.token,
+      confirmBtn: false,
     };
   }
   //#region Firebase Phone Auth Functions
-  sendVerification = () => {
-    const phoneProvider = new firebase.auth.PhoneAuthProvider();
-    phoneProvider
-      .verifyPhoneNumber(
+
+  sendVerification = async () => {
+    if (
+      (this.state.countryNum + this.state.phoneNumber).length < 7 ||
+      (this.state.phoneNumber.slice(0, 3) != "010" &&
+        this.state.phoneNumber.slice(0, 3) != "011" &&
+        this.state.phoneNumber.slice(0, 3) != "017")
+    ) {
+      alert("잘못된 핸드폰 번호입니다.");
+    } else {
+      const phoneProvider = new firebase.auth.PhoneAuthProvider();
+      const verificationId = await phoneProvider.verifyPhoneNumber(
         this.state.countryNum + this.state.phoneNumber,
         this.recaptchaVerifier.current
-      )
-      .then((result) =>
-        this.setState({
-          verificationId: result,
-        })
       );
+      this.setState({
+        verificationId: verificationId,
+      });
+    }
+    alert(verificationId);
   };
   confirmCode = () => {
     if (!this.state.verificationId) {
@@ -310,7 +318,9 @@ export class Sign2 extends React.Component {
             if (result2 == null) {
               this.setState({
                 authCheck: true,
+                confirmBtn: true,
               });
+              this.SignIn.auth_button;
             } else {
               alert("이미 등록된 번호입니다.");
               this.setState({
@@ -567,8 +577,17 @@ export class Sign2 extends React.Component {
                 </View>
               </View>
 
-              <View style={SignIn.auth_button}>
-                <TouchableOpacity onPress={this.sendVerification}>
+              <View
+                style={
+                  !this.state.confirmBtn
+                    ? SignIn.auth_button
+                    : SignIn.auth_deactiveButton
+                }
+              >
+                <TouchableOpacity
+                  onPress={this.sendVerification}
+                  disabled={this.state.confirmBtn}
+                >
                   <Text
                     style={{
                       color: "#ffffff",
@@ -593,8 +612,17 @@ export class Sign2 extends React.Component {
                   placeholder="12345678"
                 />
               </View>
-              <View style={SignIn.auth_button}>
-                <TouchableOpacity onPress={this.confirmCode}>
+              <View
+                style={
+                  !this.state.confirmBtn
+                    ? SignIn.auth_button
+                    : SignIn.auth_deactiveButton
+                }
+              >
+                <TouchableOpacity
+                  onPress={this.confirmCode}
+                  disabled={this.state.confirmBtn}
+                >
                   <Text
                     style={{
                       color: "#ffffff",
@@ -899,15 +927,15 @@ export class Sign3 extends Component {
           <Text style={{ fontSize: 18, textAlign: "center" }}>
             해당 어플은 삼육대학교 창업동아리 '캠퍼스택시'가 제작하고 운영하는
             어플입니다.
-          </Text>{" "}
+          </Text>
           <Text> {"\n"} </Text>
           <Text style={{ fontSize: 18, textAlign: "center" }}>
             현재에는 채팅과 방만들기 기능만을 제공하고 있습니다.
-          </Text>{" "}
+          </Text>
           <Text> {"\n"} </Text>
           <Text style={{ fontSize: 18, textAlign: "center" }}>
             N분의 1 계산은 <Text style={{ color: "#0000ff" }}> TOSS앱 </Text>,
-            택시 호출은 <Text style={{ color: "#ffd700" }}> 카카오 택시 </Text>{" "}
+            택시 호출은 <Text style={{ color: "#ffd700" }}> 카카오 택시 </Text>
             를 이용해 주세요!
           </Text>
           <View style={{ position: "absolute", bottom: 0, width: "100%" }}>
@@ -922,7 +950,7 @@ export class Sign3 extends Component {
                     fontSize: 17,
                   }}
                 >
-                  처음으로 돌아가기{" "}
+                  처음으로 돌아가기
                 </Text>
               </TouchableOpacity>
             </View>
@@ -948,8 +976,7 @@ export class Sign3 extends Component {
                     fontSize: 17,
                   }}
                 >
-                  {" "}
-                  로 그 인{" "}
+                  로 그 인
                 </Text>
               </TouchableOpacity>
             </View>
@@ -1021,6 +1048,15 @@ const SignIn = StyleSheet.create({
     justifyContent: "center",
     alignSelf: "center",
     backgroundColor: "#162A64",
+    marginLeft: 10,
+    borderRadius: 20,
+    width: 180,
+    height: 37,
+  },
+  auth_deactiveButton: {
+    justifyContent: "center",
+    alignSelf: "center",
+    backgroundColor: "gray",
     marginLeft: 10,
     borderRadius: 20,
     width: 180,
