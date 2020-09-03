@@ -282,16 +282,15 @@ export class Sign2 extends React.Component {
       alert("잘못된 핸드폰 번호입니다.");
     } else {
       const phoneProvider = new firebase.auth.PhoneAuthProvider();
-      const verificationId = await phoneProvider
-        .verifyPhoneNumber(
-          this.state.countryNum + this.state.phoneNumber,
-          this.recaptchaVerifier.current
-        )
-        .then((r) => alert(r));
+      const verificationId = await phoneProvider.verifyPhoneNumber(
+        this.state.countryNum + this.state.phoneNumber,
+        this.recaptchaVerifier.current
+      );
       this.setState({
         verificationId: verificationId,
       });
     }
+    alert(verificationId);
   };
   confirmCode = () => {
     if (!this.state.verificationId) {
