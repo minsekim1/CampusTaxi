@@ -10,7 +10,7 @@ export default function chatScreen({ route, navigation }) {
   //const [roomList, setRoomList] = useState(bbsStore.bbs);
 
   //#region 유저정보 업데이트
-  const [myname, setname] = useState(userStore.user.h);
+  const [myname, setname] = useState(userStore.user.i);
   const [mygender, setgender] = useState(userStore.user.d);
   //유저가 들어간 채팅방의 개수를 알려줍니다.
   const [myRoomCount, setMyRoomCount] = useState(0);

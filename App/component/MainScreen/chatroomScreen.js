@@ -1,19 +1,3 @@
-//#region imports
-import React, { useState, useRef, Component } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  Image,
-  StatusBar,
-} from "react-native";
-import { Header, Icon, Button } from "react-native-elements";
-import campusStyle from "style";
-import { TextInput } from "react-native-gesture-handler";
-import crown from "image/crown.png";
-const firebase = require("firebase");
-
 //실제 유저들이 채팅하는 화면
 export default class chatroomScreen extends Component {
   //#region 변수들
@@ -387,3 +371,18 @@ const ItemStyle = StyleSheet.create({
     fontWeight: "400",
   },
 });
+
+import React, { useState, useRef, Component } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  StatusBar,
+} from "react-native";
+import { Header, Icon, Button } from "react-native-elements";
+import campusStyle from "style";
+import { TextInput } from "react-native-gesture-handler";
+import crown from "image/crown.png";
+const firebase = require("firebase");
