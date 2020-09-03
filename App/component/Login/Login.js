@@ -114,7 +114,7 @@ export default class Login extends React.Component {
             <View style={[styles.buttonContainer, styles.naver_btn]}>
               <TouchableOpacity
                 onPress={this.naverLogin}
-                disabled={this.state.isWeb}
+                disabled={this.state.isWeb || this.state.devING}
                 style={{ height: "100%" }}
               >
                 <View style={styles.btn_content_container}>
@@ -146,7 +146,8 @@ export default class Login extends React.Component {
                     >
                       {this.state.isWeb
                         ? "웹은 SNS를 지원하지 않습니다. 일반 로그인을 사용해주세요."
-                        : "네이버 로그인"}{" "}
+                        : "개발중"}
+                      {/* 네이버 로그인 */}
                     </Text>
                   </View>
                 </View>
@@ -161,7 +162,7 @@ export default class Login extends React.Component {
                     this.googleSignInAsync();
                   }
                 }}
-                disabled={this.state.isWeb}
+                disabled={this.state.isWeb || this.state.devING}
                 style={{ height: "100%" }}
               >
                 <View style={styles.btn_content_container}>
@@ -191,7 +192,8 @@ export default class Login extends React.Component {
                     >
                       {this.state.isWeb
                         ? "웹은 SNS를 지원하지 않습니다. 일반 로그인을 사용해주세요."
-                        : "구글 로그인"}{" "}
+                        : "개발중"}
+                      {/* 구글 로그인 */}
                     </Text>
                   </View>
                 </View>
@@ -201,7 +203,7 @@ export default class Login extends React.Component {
             <View style={[styles.buttonContainer, styles.facebook_btn]}>
               <TouchableOpacity
                 onPress={this.fbLogIn}
-                disabled={this.state.isWeb}
+                disabled={this.state.isWeb || this.state.devING}
                 style={{ height: "100%" }}
               >
                 <View style={styles.btn_content_container}>
@@ -228,7 +230,8 @@ export default class Login extends React.Component {
                     >
                       {this.state.isWeb
                         ? "웹은 SNS를 지원하지 않습니다. 일반 로그인을 사용해주세요."
-                        : "페이스북 로그인"}{" "}
+                        : "개발중"}
+                      {/* 페이스북 로그인 */}
                     </Text>
                   </View>
                 </View>

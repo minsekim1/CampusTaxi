@@ -199,19 +199,20 @@ export default class UserStore {
   //userStore.setuserbbs()
   //=>userStore.asyncuserbbs()
   async asyncuserbbs() {
-    let result = [];
+    let result = null;
     await this.userDB(this.userkey + "/c").on("value", (snap) => {
       if (snap.val() != null) {
+        result = [];
         Object.entries(snap.val()).map((r) => {
           if (r[1] == 1) {
             this.bbsDB(r[0]).on("value", (snap2) => {
               if (snap2 != null)
                 result.push(JSON.parse(JSON.stringify(snap2.val())));
             });
-            this.userbbs = result;
           }
         });
         //유저데이터 에서 하나씩 bbs를 가져옴
+        this.userbbs = result;
       }
     });
   }

@@ -1,26 +1,3 @@
-//#region imports
-import React, { useState, useEffect } from "react";
-import { View, FlatList, Image, TouchableOpacity } from "react-native";
-import { Picker } from "@react-native-community/picker";
-import Modal from "react-native-modal";
-import * as TimeAPI from '../Email/globalTimeAPI.js'
-import {
-  Header,
-  ListItem,
-  Icon,
-  Text,
-  Card,
-  Button,
-  ButtonGroup,
-  Input,
-} from "react-native-elements";
-import campusStyle from "style";
-import DateTimePicker from "@react-native-community/datetimepicker"; //방생성시간picker
-import crown from "image/crown.png";
-const firebase = require("firebase");
-import { bbsStore, userStore } from "store";
-import { Observer } from "mobx-react";
-//#endregion
 //채팅목록 화면
 export default function chatScreen({ route, navigation }) {
   //#region Hooks & functions
@@ -30,10 +7,10 @@ export default function chatScreen({ route, navigation }) {
     placeUpdate();
   }, [userkey]);
   const filter = route.params.filter;
-  const [roomList, setRoomList] = useState(bbsStore.bbs);
+  //const [roomList, setRoomList] = useState(bbsStore.bbs);
 
   //#region 유저정보 업데이트
-  const [myname, setname] = useState(userStore.user.h);
+  const [myname, setname] = useState(userStore.user.i);
   const [mygender, setgender] = useState(userStore.user.d);
   //유저가 들어간 채팅방의 개수를 알려줍니다.
   const [myRoomCount, setMyRoomCount] = useState(0);
@@ -51,12 +28,12 @@ export default function chatScreen({ route, navigation }) {
   const [filterPersonMin, setFilterPersonMin] = useState("1");
   const [filterPersonMax, setFilterPersonMax] = useState("4");
   // -- Filter function start
-  function search(user){
+  function search(user) {
     return Object.keys(this).every((key) => user[key] === this[key]);
   }
-
   function getFiltferBbs() {
     let result;
+
     result = bbsStore.bbs;
 
     let query = {
@@ -64,23 +41,31 @@ export default function chatScreen({ route, navigation }) {
     };
     query.h = Number(filterPersonMin);
     query.k = Number(filterPersonMax);
-    if (!(filterStartplace=="무관")) {
-      query.n = filterStartplace;
+    if (!(filterStartplace == "무관")) {
     }
-    if (!(filterEndplace=="무관")) {
+    if (!(filterEndplace == "무관")) {
       query.g = filterEndplace;
     }
     if (!(filterMeetingTimeStart == "전부")) {
-      let filterMeetingTimeStart_time = TimeAPI.timetoint(filterMeetingTimeStart);
-      result = result.filter(result => TimeAPI.hourandminute(result.f) > filterMeetingTimeStart_time);
+      let filterMeetingTimeStart_time = TimeAPI.timetoint(
+        filterMeetingTimeStart
+      );
+      result = result.filter(
+        (result) =>
+          TimeAPI.hourandminute(result.f) > filterMeetingTimeStart_time
+      );
     }
     if (!(filterMeetingTimeEnd == "전부")) {
       let filterMeetingTimeEnd_time = TimeAPI.timetoint(filterMeetingTimeEnd);
-      result = result.filter(result => TimeAPI.hourandminute(result.f) < filterMeetingTimeEnd_time);
+      result = result.filter(
+        (result) => TimeAPI.hourandminute(result.f) < filterMeetingTimeEnd_time
+      );
     }
 
     result = result.filter(search, query);
-    setRoomList(result);
+
+    bbsStore.setbbs(result);
+    //setRoomList(result);
   }
   // -- Filter function end
 
@@ -693,3 +678,25 @@ export default function chatScreen({ route, navigation }) {
 }
 
 //#region imports
+import React, { useState, useEffect } from "react";
+import { View, FlatList, Image, TouchableOpacity } from "react-native";
+import { Picker } from "@react-native-community/picker";
+import Modal from "react-native-modal";
+import * as TimeAPI from "../Email/globalTimeAPI.js";
+import {
+  Header,
+  ListItem,
+  Icon,
+  Text,
+  Card,
+  Button,
+  ButtonGroup,
+  Input,
+} from "react-native-elements";
+import campusStyle from "style";
+import DateTimePicker from "@react-native-community/datetimepicker"; //방생성시간picker
+import crown from "image/crown.png";
+const firebase = require("firebase");
+import { bbsStore, userStore, anotherStore } from "store";
+import { Observer } from "mobx-react";
+//#endregion

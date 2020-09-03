@@ -819,7 +819,7 @@ export class Sign2 extends React.Component {
                 value={this.state.univ}
                 onChangeText={(val) => this.onChangeduniv(val)}
                 maxLength={40}
-                placeholder="서울삼육대학교"
+                placeholder="삼육대학교"
               />
             </View>
           </View>
@@ -917,7 +917,9 @@ export class Sign3 extends Component {
         {/* logo && title */}
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        ></View>
+        >
+          <Image source={require("image/icon.png")} />
+        </View>
 
         {/* 환영 인사 */}
         <View style={{ flex: 2 }}>
@@ -928,11 +930,9 @@ export class Sign3 extends Component {
             해당 어플은 삼육대학교 창업동아리 '캠퍼스택시'가 제작하고 운영하는
             어플입니다.
           </Text>
-          <Text> {"\n"} </Text>
           <Text style={{ fontSize: 18, textAlign: "center" }}>
             현재에는 채팅과 방만들기 기능만을 제공하고 있습니다.
           </Text>
-          <Text> {"\n"} </Text>
           <Text style={{ fontSize: 18, textAlign: "center" }}>
             N분의 1 계산은 <Text style={{ color: "#0000ff" }}> TOSS앱 </Text>,
             택시 호출은 <Text style={{ color: "#ffd700" }}> 카카오 택시 </Text>
