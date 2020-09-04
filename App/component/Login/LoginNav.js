@@ -20,6 +20,26 @@ import LoadingScreen from "./LoadingScreen";
 
 const Stack = createStackNavigator();
 export default function LoginNav() {
+  const modalOptions = {
+    headerShown: false,
+    cardStyle: { backgroundColor: "transparent" },
+    cardOverlayEnabled: true,
+    cardStyleInterpolator: ({ current: { progress } }) => ({
+      cardStyle: {
+        opacity: progress.interpolate({
+          inputRange: [0, 0.5, 0.9, 1],
+          outputRange: [0, 0.1, 0.3, 0.7],
+        }),
+      },
+      overlayStyle: {
+        opacity: progress.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, 0.6],
+          extrapolate: "clamp",
+        }),
+      },
+    }),
+  };
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -42,7 +62,7 @@ export default function LoginNav() {
         <Stack.Screen
           name="loading"
           component={LoadingScreen}
-          options={{ headerShown: false }}
+          options={modalOptions}
         />
         <Stack.Screen name="이용동의" component={Sign1} />
         <Stack.Screen name="회원 가입" component={Sign2} />
