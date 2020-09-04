@@ -26,7 +26,7 @@ export default class LoginScreen extends Component {
     function login(id, pw) {
       userStore.login(id, pw).then((result) => {
         if (result) {
-          navigation.navigate("home");
+          navigation.navigate("loading");
         }
       });
     }

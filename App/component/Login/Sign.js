@@ -957,14 +957,11 @@ export class Sign3 extends Component {
             <View style={button_style.next_button}>
               <TouchableOpacity
                 onPress={() => {
+                  navigation.navigate("loading");
                   if (this.state.token != null) {
-                    userStore
-                      .loginToken(this.state.token)
-                      .then(() => navigation.navigate("home"));
+                    userStore.loginToken(this.state.token);
                   } else {
-                    userStore
-                      .login(this.state.id, this.state.pw)
-                      .then(() => navigation.navigate("home"));
+                    userStore.login(this.state.id, this.state.pw);
                   }
                 }}
                 color="#162A64"

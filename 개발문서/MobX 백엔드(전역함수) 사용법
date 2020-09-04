@@ -58,7 +58,6 @@ userStore
   });
 
   ///////////////////////////
-[출처] [MobX] 2. 텍스트 바꾸기|작성자 드론
   import { Observer } from "mobx-react";
 class clientpage extends React.Component {
 render(){
@@ -71,7 +70,6 @@ export default class UserStore {
   @observable user = null;
   @observable userkey = null; //유저 아이디 or SNS로그인일 경우 토큰
   @observable develop = true; //개발전용모드
-[출처] [MobX] 2. 텍스트 바꾸기|작성자 드론
 
 ////////////////////////////////////////////////////////////////default
 실시간 데이터 받기

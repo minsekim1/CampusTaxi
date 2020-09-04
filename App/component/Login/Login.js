@@ -290,21 +290,20 @@ export default class Login extends React.Component {
       const { type, user } = await GoogleSignIn.signInAsync();
 
       if (type === "success") {
-        //alert(`token: ${user.auth.accessToken}`);
+        this.props.navigation.navigate("loading");
+        alert(`token: ${user.auth.accessToken}`);
         this._syncUserWithStateAsync();
-        alert(user.auth);
-        // userStore.getUser(user.auth.accessToken).then((isUser) => {
-        //   if (isUser == null) {
-        //     alert("회원가입으로 넘어갑니다.");
-        //     this.props.navigation.navigate("이용동의", {
-        //       token: user.auth.accessToken,
-        //     });
-        //   } else {
-        //     userStore
-        //       .loginToken(user.auth.accessToken)
-        //       .then(() => this.props.navigation.navigate("home"));
-        //   }
-        // });
+        // alert(user.auth);
+        userStore.getUser(user.auth.accessToken).then((isUser) => {
+          if (isUser == null) {
+            alert("회원가입으로 넘어갑니다.");
+            this.props.navigation.navigate("이용동의", {
+              token: user.auth.accessToken,
+            });
+          } else {
+            userStore.loginToken(user.auth.accessToken);
+          }
+        });
       }
     } catch ({ message }) {
       alert("Login Error: " + message);
@@ -326,6 +325,7 @@ export default class Login extends React.Component {
       });
 
       if (type === "success") {
+        this.props.navigation.navigate("loading");
         // Get the user's name using Facebook's Graph API
         const url = `https://graph.facebook.com/me?access_token=${token}`;
         fetch(url)
@@ -342,9 +342,7 @@ export default class Login extends React.Component {
                   token: id,
                 });
               } else {
-                userStore
-                  .loginToken(id)
-                  .then(() => this.props.navigation.navigate("home"));
+                userStore.loginToken(id);
               }
             });
           });

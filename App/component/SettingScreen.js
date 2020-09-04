@@ -23,9 +23,14 @@ function HomeScreen({ navigation }) {
       title: "내 정보",
       navigation: "내 정보",
     },
+    {
+      type: "text",
+      title: "로그아웃",
+      navigation: "로그아웃",
+    },
     // {
     //   type: "title",
-    //   title: "앱 설정",
+    //   title: "로그아웃",
     // },
     // {
     //   type: "text",
@@ -614,6 +619,11 @@ function clientpageQuestion() {
     </View>
   );
 }
+function logout() {
+  userStore.logout();
+  alert("로그아웃 되었습니다.");
+  return <View></View>;
+}
 function SettingScreen() {
   return (
     <Stack.Navigator initialRouteName="설정">
@@ -677,6 +687,7 @@ function SettingScreen() {
         name="회원정보 수정"
         component={clientChangePage}
       />
+      <Stack.Screen options={navOptions} name="로그아웃" component={logout} />
     </Stack.Navigator>
   );
 }

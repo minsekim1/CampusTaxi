@@ -16,7 +16,7 @@ import {
   clientpagePolicy3,
   clientpagePolicy4,
 } from "../SettingScreen";
-import Navigation from "Navigation";
+import LoadingScreen from "./LoadingScreen";
 
 const Stack = createStackNavigator();
 export default function LoginNav() {
@@ -40,8 +40,8 @@ export default function LoginNav() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="home"
-          component={Navigation}
+          name="loading"
+          component={LoadingScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen name="이용동의" component={Sign1} />

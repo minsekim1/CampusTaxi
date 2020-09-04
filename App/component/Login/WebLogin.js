@@ -38,9 +38,8 @@ export default class WebLogin extends Component {
               token: data.response.id,
             });
           } else {
-            userStore
-              .loginToken(data.response.id)
-              .then(() => this.props.navigation.navigate("home"));
+            this.props.navigation.navigate("loading");
+            userStore.loginToken(data.response.id);
           }
         });
       } else if (this.state.api == "kakao") {
@@ -60,9 +59,8 @@ export default class WebLogin extends Component {
               token: data.id,
             });
           } else {
-            userStore
-              .loginToken(data.id)
-              .then(() => this.props.navigation.navigate("home"));
+            this.props.navigation.navigate("loading");
+            userStore.loginToken(data.id);
           }
         });
       }

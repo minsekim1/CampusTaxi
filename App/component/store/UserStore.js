@@ -19,7 +19,13 @@ export default class UserStore {
       });
     }
   }
-
+  logout() {
+    this.userkey = null;
+    this.user = null; //
+    this.userbbs = [];
+    this.userkey = null;
+    this.develop = true;
+  }
   setKey(key) {
     this.userkey = key;
   }
