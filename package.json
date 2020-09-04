@@ -4,7 +4,7 @@
     "start집": "adb connect 192.168.200.136:5555 && expo start --android",
     "start연구실": "adb connect 192.168.185.219:5555 && expo start --android",
     "start웹": "expo web",
-    "gitUpload": "git add . && git commit -m \" 페이스북 수정중 and 네이버 재검수 신청\" && git push ",
+    "gitUpload": "git add . && git commit -m \" 페이스북 로그인 수정완료\" && git push ",
     "gitPull": "git pull",
     "play플레이스토어배포": "expo build:android",
     "git강제로덮어쓰기": "git checkout master &&  git branch NewBranch && git fetch --all  && git reset --hard origin/master"
