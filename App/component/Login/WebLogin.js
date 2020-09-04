@@ -17,7 +17,7 @@ export default class WebLogin extends Component {
   }
 
   webViewEnd = async (event, props) => {
-    console.log(this.props.route.params.uri);
+    //console.log(this.props.route.params.uri);
     const result = JSON.parse(event.nativeEvent.data);
     if (result.status === "success") {
       // 성공적 네이버 로그인 완료

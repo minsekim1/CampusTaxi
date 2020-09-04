@@ -29,9 +29,27 @@ const kakao_login_uri = login_base_url + "/api/kakao/login";
 import * as Device from "expo-device";
 import { bbsStore, userStore } from "store";
 export default class Login extends React.Component {
-  state = { googleUser: null, isWeb: false };
+  state = {
+    googleUser: null, isWeb: false, text:
+   };
 
   componentDidMount() {
+    const url =
+      "https://graph.facebook.com/me?access_token=https://graph.facebook.com/me?access_token=EAAEZBzcZA8MVwBAJMgmqUZAs4aKObZBNufzujbBRSV4eKQTZCHjQc0VscDLB8QBuld5aNbPZBa6mUQQLLgoiZCsQTo0RMbvZCbictOYYFBZAxNYAtK1Cix6aLiZBuF17ZBHefQdyToeCQuifvqnCb9fJlrUgVZA2Dzb90vZBOOSt8urU8ZBbHdMUBnZBbaZAJJZC6m6d0GAUu4UN7XxWS478Lhk1FtHZCHSyaUmhkxPKwZD";
+    let request = new XMLHttpRequest();
+
+    // 서버의 응답(response)을 받는 콜백메소드 지정 [ 반드시 send()보다 먼저 만들어져 있어야 함. 비동기 방식이라서.. ]
+    // 서버로부터 응답을 받으면 자동으로 실행되는 메소드
+    request.onreadystatechange = () => {
+      // 서버의 응답이 올바른지 검사
+      if (request.status == 200 && request.readyState == 4) {
+        //200은 서버 응답 성공, 4는 응답이 끝났다.
+        // 응답된 데이터 text컴포넌트에 보이기 위해
+        // Text컴포넌트가 보여주는 this.state.text변수값을 변경
+        this.setState({ text: request.responseText });
+      }
+    };
+
     // "Windows", "Android" etc
     if (Device.brand == null) {
       //true면 웹
@@ -114,7 +132,7 @@ export default class Login extends React.Component {
             <View style={[styles.buttonContainer, styles.naver_btn]}>
               <TouchableOpacity
                 onPress={this.naverLogin}
-                disabled={this.state.isWeb || this.state.devING}
+                disabled={this.state.isWeb}
                 style={{ height: "100%" }}
               >
                 <View style={styles.btn_content_container}>
@@ -146,8 +164,7 @@ export default class Login extends React.Component {
                     >
                       {this.state.isWeb
                         ? "웹은 SNS를 지원하지 않습니다. 일반 로그인을 사용해주세요."
-                        : "개발중"}
-                      {/* 네이버 로그인 */}
+                        : "네이버 로그인"}
                     </Text>
                   </View>
                 </View>
@@ -203,7 +220,7 @@ export default class Login extends React.Component {
             <View style={[styles.buttonContainer, styles.facebook_btn]}>
               <TouchableOpacity
                 onPress={this.fbLogIn}
-                disabled={this.state.isWeb || this.state.devING}
+                disabled={this.state.isWeb}
                 style={{ height: "100%" }}
               >
                 <View style={styles.btn_content_container}>
@@ -230,8 +247,7 @@ export default class Login extends React.Component {
                     >
                       {this.state.isWeb
                         ? "웹은 SNS를 지원하지 않습니다. 일반 로그인을 사용해주세요."
-                        : "개발중"}
-                      {/* 페이스북 로그인 */}
+                        : "페이스북 로그인"}
                     </Text>
                   </View>
                 </View>
@@ -329,8 +345,10 @@ export default class Login extends React.Component {
         const response = await fetch(
           `https://graph.facebook.com/me?access_token=${token}`
         );
-        console.log(JSON.stringify(response));
-        // userStore.getUser(token).then((isUser) => {
+        const abb = await response.json().name;
+        console.log(`https://graph.facebook.com/me?access_token=${token}`);
+        console.log(abb);
+        // userStore.getUser(facebook_app_id).then((isUser) => {
         //   if (isUser == null) {
         //     alert("회원가입으로 넘어갑니다.");
         //     this.props.navigation.navigate("이용동의", {
