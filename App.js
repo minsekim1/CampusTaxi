@@ -1,7 +1,7 @@
 //#region imports
 import React, { Component } from "react";
 //시작 루트 컴포넌트
-import { SafeAreaView } from "react-native";
+import { SafeAreaView, View } from "react-native";
 import LoginNav from "./App/component/Login/LoginNav";
 import Navigation from "./App/component/Navigation";
 //최적화 설정
@@ -45,7 +45,7 @@ export default class App extends Component {
       <Provider>
         <PaperProvider>
           <SafeAreaProvider>
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView>
               <Observer>
                 {() => (!userStore.isKey() ? <LoginNav /> : <Navigation />)}
               </Observer>

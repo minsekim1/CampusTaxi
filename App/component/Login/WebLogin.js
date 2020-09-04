@@ -70,15 +70,13 @@ export default class WebLogin extends Component {
   };
 
   render() {
-    const props = this.props;
-    const { navigation } = this.props;
     return (
       <View style={styles.container}>
         <WebView
           ref={(ref) => (this.webview = ref)}
           source={{ uri: this.state.url }}
           useWebKit={true}
-          onMessage={(event) => this.webViewEnd(event, props)}
+          onMessage={(event) => this.webViewEnd(event, this.props)}
         />
       </View>
     );
