@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { View, Text, Platform, StyleSheet, Button } from "react-native";
+import {
+  View,
+  Text,
+  Platform,
+  StyleSheet,
+  Button,
+  BackHandler,
+} from "react-native";
 import WebView from "react-native-webview";
 import { bbsStore, userStore } from "store";
 

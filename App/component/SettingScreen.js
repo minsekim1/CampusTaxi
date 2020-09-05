@@ -196,7 +196,8 @@ function clientChangePage({ navigation: { goBack } }) {
       <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
         닉네임
       </Text>
-      <TextInput
+      <Text style={{ marginBottom: 10, color: "gray" }}>{clientNickName}</Text>
+      {/* <TextInput
         placeholder="사용할 닉네임을 입력해주세요."
         style={{
           fontSize: 18,
@@ -208,13 +209,20 @@ function clientChangePage({ navigation: { goBack } }) {
         }}
         onChangeText={(text) => changeNickName(text)}
         value={clientNickName}
-      />
-      <Text style={{ marginBottom: 15, color: NickNameColor, fontSize: 11 }}>
+      /> */}
+      <Text
+        style={{
+          marginBottom: 15,
+          color: "#F83C3C",
+          // NickNameColor
+          fontSize: 11,
+        }}
+      >
         {
           {
-            1: "수정 가능합니다.",
-            2: "이미 있거나 불가능한 닉네임입니다.",
-            3: "사용가능한 닉네임입니다.",
+            1: "현재 닉네임 변경은 불가능합니다.",
+            // 2: "이미 있거나 불가능한 닉네임입니다.",
+            // 3: "사용가능한 닉네임입니다.",
           }[isVaildNickName]
         }
       </Text>
@@ -578,9 +586,11 @@ import SendEmail from "./Email/EmailComposer";
 import { useState } from "react";
 
 function clientpageQuestion() {
-  const [email_title, setemail_title] = useState("");
+  const [email_title, setemail_title] = useState(
+    "제목: 아이디/닉네임/문의사항요약"
+  );
   const [email_body, setemail_body] = useState(
-    "양식에 맞추어 이메일을 보내주세요. 제목양식: 아이디/닉네임/문의사항요약, 내용양식: 아이디 닉네임 문의사항 표기,"
+    "양식에 맞추어 이메일을 보내주세요.\n  \n 내용: 아이디 닉네임 문의사항 표기"
   );
 
   function GO_SendFunction() {
@@ -599,21 +609,6 @@ function clientpageQuestion() {
       }}
     >
       <View>
-        <Text>제목</Text>
-        <TextInput
-          type="text"
-          name="email_title"
-          value={email_title}
-          onChange={({ target: { value } }) => setemail_title(value)}
-          autoFocus
-        />
-        <Text>내용</Text>
-        <TextInput
-          type="text"
-          name="email_body"
-          value={email_body}
-          onChange={({ target: { value } }) => setemail_body(value)}
-        />
         <Button title="문의 하기" onPress={GO_SendFunction} />
       </View>
     </View>

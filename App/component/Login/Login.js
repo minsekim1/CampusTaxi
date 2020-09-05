@@ -361,7 +361,7 @@ export default class Login extends React.Component {
   loginFailed = () => {};
 
   naverLogin = () => {
-    this.props.navigation.push("WebLogin", {
+    this.props.navigation.navigate("WebLogin", {
       uri: naver_login_uri,
       api: "naver",
       login: this.loginSuccess,
@@ -370,12 +370,17 @@ export default class Login extends React.Component {
   };
 
   kakaoLogin = () => {
-    this.props.navigation.push("WebLogin", {
-      uri: kakao_login_uri,
-      api: "kakao",
-      login: this.loginSuccess,
-      loginFail: this.loginFailed,
-    });
+    this.props.navigation.navigate(
+      "WebLogin",
+      JSON.parse(
+        JSON.stringify({
+          uri: kakao_login_uri,
+          api: "kakao",
+          login: this.loginSuccess,
+          loginFail: this.loginFailed,
+        })
+      )
+    );
   };
 }
 

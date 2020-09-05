@@ -45,7 +45,7 @@ export default class App extends Component {
       <Provider>
         <PaperProvider>
           <SafeAreaProvider>
-            <SafeAreaView>
+            <SafeAreaView style={{ flex: 1 }}>
               <Observer>
                 {() => (!userStore.isKey() ? <LoginNav /> : <Navigation />)}
               </Observer>

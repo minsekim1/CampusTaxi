@@ -4,7 +4,7 @@
     "start집": "adb connect 192.168.200.136:5555 && expo start --android",
     "start연구실": "adb connect 192.168.185.219:5555 && expo start --android",
     "start웹": "expo web",
-    "gitUpload": "git add . && git commit -m \" 로그아웃 버그 수정\" && git push ",
+    "gitUpload": "git add . && git commit -m \" 로그아웃 버그 수정 및 카톡/네이버 뒤로가기 튕김 수정 및 회원가입에 대학교 선택 추가\" && git push ",
     "gitPull": "git pull",
     "안드로이드빌드": "expo build:android",
     "git강제로덮어쓰기": "git checkout master &&  git branch NewBranch && git fetch --all  && git reset --hard origin/master"

@@ -5,7 +5,14 @@ import LoginScreen from "./LoginScreen";
 import Sign1, { Sign2, Sign3 } from "./Sign";
 import FindId1, { FindId2, FindId3 } from "./FindId";
 import FindPw1, { FindPw2, FindPw3, FindPw4, FindPw5 } from "./FindPw";
-
+import {
+  View,
+  Text,
+  ScrollView,
+  Linking,
+  StyleSheet,
+  Button,
+} from "react-native";
 //외주 부분
 import Login from "./Login";
 import WebLogin from "./WebLogin";
@@ -42,7 +49,7 @@ export default function LoginNav() {
   };
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="Login">
         <Stack.Screen
           name="Login"
           component={Login}
@@ -51,7 +58,16 @@ export default function LoginNav() {
         <Stack.Screen
           name="WebLogin"
           component={WebLogin}
-          options={{ title: "SNS 소셜 로그인" }}
+          options={({ navigation, route }) => ({
+            headerTitle: () => <Text>SNS 소셜 로그인</Text>,
+            headerLeft: () => (
+              <Button
+                title="뒤로가기"
+                onPress={() => navigation.navigate("로그인")}
+              />
+            ),
+          })}
+          //{{ back title: "SNS 소셜 로그인" }}
         />
 
         <Stack.Screen
@@ -59,11 +75,7 @@ export default function LoginNav() {
           component={LoginScreen}
           options={{ headerShown: false }}
         />
-        <Stack.Screen
-          name="loading"
-          component={LoadingScreen}
-          options={modalOptions}
-        />
+
         <Stack.Screen name="이용동의" component={Sign1} />
         <Stack.Screen name="회원 가입" component={Sign2} />
         <Stack.Screen name="회원 가입 완료" component={Sign3} />
@@ -80,6 +92,12 @@ export default function LoginNav() {
         <Stack.Screen name="개인정보처리방침" component={clientpagePolicy1} />
         <Stack.Screen name="위치정보 이용약관" component={clientpagePolicy2} />
         <Stack.Screen name="마케팅 정보 수신" component={clientpagePolicy4} />
+
+        <Stack.Screen
+          name="loading"
+          component={LoadingScreen}
+          options={modalOptions}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -107,13 +107,14 @@ export default class UserStore {
         tempdata = this.Json(snap);
         if (tempdata && snap.val() != null && tempdata.g == pw) {
           this.user = tempdata;
+          this.userkey = id;
           result = true;
         } else {
           alert("없는 아이디이거나 비밀번호가 다릅니다.");
         }
       });
     }
-    this.userkey = id;
+
     return result;
   }
   async loginToken(token) {
