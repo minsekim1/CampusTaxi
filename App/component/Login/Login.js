@@ -194,7 +194,8 @@ export default class Login extends React.Component {
                     >
                       {this.state.isWeb
                         ? "웹은 SNS를 지원하지 않습니다. 일반 로그인을 사용해주세요."
-                        : "구글 로그인"}
+                        : "구글 현재 미지원"}
+                      {/* 구글 로그인 */}
                     </Text>
                   </View>
                 </View>
@@ -428,7 +429,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   google_btn: {
-    backgroundColor: "#CC3731",
+    // backgroundColor: "#CC3731",
+    backgroundColor: "gray",
     borderRadius: 30,
   },
   facebook_btn: {
