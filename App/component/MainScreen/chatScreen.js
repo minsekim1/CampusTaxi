@@ -1,12 +1,10 @@
 //채팅목록 화면
 export default function chatScreen({ route, navigation }) {
-  const [filtingonoff, setfiltingonoff] = useState(1);
-  var bbsJSON;
+  const [filtingonoff, setfiltingonoff] = useState(1); // 필터작동 스위치
   //#region Hooks & functions
   const userkey = userStore.user.f;
   if(filtingonoff) {
     bbsStore.asyncAllBbs();
-    bbsJSON = bbsStore.bbs;
   }
   
   useEffect(() => {
@@ -188,9 +186,10 @@ export default function chatScreen({ route, navigation }) {
     return Object.keys(this).every((key) => user[key] === this[key]);
   }
   function getFiltferBbs() {
-    //bbsStore.asyncAllBbs();
     setfiltingonoff(1);
-    let result = bbsJSON;
+    //bbsStore.asyncAllBbs();
+    let result = bbsStore.bbs;
+    //let temp = bbsStore.bbs;
 
     let query = {
       c: filterCategory,
@@ -216,11 +215,8 @@ export default function chatScreen({ route, navigation }) {
         (result) => TimeAPI.hourandminute(result.f) < filterMeetingTimeEnd_time
       );
     }
-    console.log(bbsJSON);
 
     bbsStore.bbs = result.filter(search, query);
-
-    setfiltingonoff(0);
     //console.log(bbsStore.bbs);
     //setRoomList(result);
   }
@@ -676,6 +672,7 @@ export default function chatScreen({ route, navigation }) {
               title="Hide modal"
               onPress={() => {
                 setFilterVisible(!isFilterVisible);
+                setfiltingonoff(0);
               }}
             />
             <Button title="Check" onPress={getFiltferBbs} />
