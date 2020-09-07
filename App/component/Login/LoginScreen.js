@@ -25,9 +25,7 @@ export default class LoginScreen extends Component {
     const { navigation } = this.props;
     function login(id, pw) {
       userStore.login(id, pw).then((result) => {
-        if (result) {
-          navigation.navigate("home");
-        }
+        if (result) navigation.navigate("loading");
       });
     }
     return (
@@ -82,10 +80,7 @@ export default class LoginScreen extends Component {
               </View>
 
               <View style={{ flex: 1, alignItems: "center" }}>
-                <Text style={{ color: "#f0f0f0", fontWeight: "bold" }}>
-                  {" "}
-                  |{" "}
-                </Text>
+                <Text style={{ color: "#f0f0f0", fontWeight: "bold" }}>|</Text>
               </View>
 
               <View style={{ flex: 2, alignItems: "flex-start" }}>
@@ -126,6 +121,20 @@ export default class LoginScreen extends Component {
                     }}
                   >
                     회원가입
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View style={LoginStyle.login_btn_style}>
+                <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      color: "#ffffff",
+                      fontSize: 18,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    SNS로그인으로 돌아가기
                   </Text>
                 </TouchableOpacity>
               </View>

@@ -29,7 +29,10 @@ const kakao_login_uri = login_base_url + "/api/kakao/login";
 import * as Device from "expo-device";
 import { bbsStore, userStore } from "store";
 export default class Login extends React.Component {
-  state = { googleUser: null, isWeb: false };
+  state = {
+    googleUser: null,
+    isWeb: false,
+  };
 
   componentDidMount() {
     // "Windows", "Android" etc
@@ -146,8 +149,7 @@ export default class Login extends React.Component {
                     >
                       {this.state.isWeb
                         ? "웹은 SNS를 지원하지 않습니다. 일반 로그인을 사용해주세요."
-                        : "개발중"}
-                      {/* 네이버 로그인 */}
+                        : "네이버 로그인"}
                     </Text>
                   </View>
                 </View>
@@ -192,7 +194,7 @@ export default class Login extends React.Component {
                     >
                       {this.state.isWeb
                         ? "웹은 SNS를 지원하지 않습니다. 일반 로그인을 사용해주세요."
-                        : "개발중"}
+                        : "구글 현재 미지원"}
                       {/* 구글 로그인 */}
                     </Text>
                   </View>
@@ -230,8 +232,7 @@ export default class Login extends React.Component {
                     >
                       {this.state.isWeb
                         ? "웹은 SNS를 지원하지 않습니다. 일반 로그인을 사용해주세요."
-                        : "개발중"}
-                      {/* 페이스북 로그인 */}
+                        : "페이스북 로그인"}
                     </Text>
                   </View>
                 </View>
@@ -290,8 +291,10 @@ export default class Login extends React.Component {
       const { type, user } = await GoogleSignIn.signInAsync();
 
       if (type === "success") {
-        //alert(`token: ${user.auth.accessToken}`);
+        this.props.navigation.navigate("loading");
+        alert(`token: ${user.auth.accessToken}`);
         this._syncUserWithStateAsync();
+        // alert(user.auth);
         userStore.getUser(user.auth.accessToken).then((isUser) => {
           if (isUser == null) {
             alert("회원가입으로 넘어갑니다.");
@@ -299,9 +302,7 @@ export default class Login extends React.Component {
               token: user.auth.accessToken,
             });
           } else {
-            userStore
-              .loginToken(user.auth.accessToken)
-              .then(() => this.props.navigation.navigate("home"));
+            userStore.loginToken(user.auth.accessToken);
           }
         });
       }
@@ -325,23 +326,27 @@ export default class Login extends React.Component {
       });
 
       if (type === "success") {
+        this.props.navigation.navigate("loading");
         // Get the user's name using Facebook's Graph API
-        const response = await fetch(
-          `https://graph.facebook.com/me?access_token=${token}`
-        );
-        console.log(JSON.stringify(response));
-        // userStore.getUser(token).then((isUser) => {
-        //   if (isUser == null) {
-        //     alert("회원가입으로 넘어갑니다.");
-        //     this.props.navigation.navigate("이용동의", {
-        //       token: token,
-        //     });
-        //   } else {
-        //     userStore
-        //       .loginToken(token)
-        //       .then(() => this.props.navigation.navigate("home"));
-        //   }
-        // });
+        const url = `https://graph.facebook.com/me?access_token=${token}`;
+        fetch(url)
+          .then((r) => {
+            return r.text(); //비동기 처리방식
+          })
+          .then((text) => {
+            // 파라미터 text : 변환된 String 데이터
+            const id = JSON.parse(text).id;
+            userStore.getUser(id).then((isUser) => {
+              if (isUser == null) {
+                alert("회원가입으로 넘어갑니다.");
+                this.props.navigation.navigate("이용동의", {
+                  token: id,
+                });
+              } else {
+                userStore.loginToken(id);
+              }
+            });
+          });
       } else {
         // type === 'cancel'
       }
@@ -357,7 +362,7 @@ export default class Login extends React.Component {
   loginFailed = () => {};
 
   naverLogin = () => {
-    this.props.navigation.push("WebLogin", {
+    this.props.navigation.navigate("WebLogin", {
       uri: naver_login_uri,
       api: "naver",
       login: this.loginSuccess,
@@ -366,12 +371,17 @@ export default class Login extends React.Component {
   };
 
   kakaoLogin = () => {
-    this.props.navigation.push("WebLogin", {
-      uri: kakao_login_uri,
-      api: "kakao",
-      login: this.loginSuccess,
-      loginFail: this.loginFailed,
-    });
+    this.props.navigation.navigate(
+      "WebLogin",
+      JSON.parse(
+        JSON.stringify({
+          uri: kakao_login_uri,
+          api: "kakao",
+          login: this.loginSuccess,
+          loginFail: this.loginFailed,
+        })
+      )
+    );
   };
 }
 
@@ -419,7 +429,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   google_btn: {
-    backgroundColor: "#CC3731",
+    // backgroundColor: "#CC3731",
+    backgroundColor: "gray",
     borderRadius: 30,
   },
   facebook_btn: {
@@ -442,7 +453,7 @@ const styles = StyleSheet.create({
   },
   content_text: {
     flex: 6,
-    marginLeft: 40,
+    marginLeft: 20,
     alignSelf: "center",
     justifyContent: "center",
   },

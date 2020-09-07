@@ -22,7 +22,7 @@ import ski from "image/ski.png";
 import ocean from "image/ocean.png";
 
 import { bbsStore, userStore } from "store";
-
+import { Observer } from "mobx-react";
 class HomeScreen extends Component {
   constructor(props) {
     super(props);
@@ -70,10 +70,14 @@ class HomeScreen extends Component {
               <View style={campusStyle.View.row}>
                 <Text style={campusStyle.Text.middleSize}> CAMPUS TAXI</Text>
               </View>
-              <Text style={campusStyle.Text.mainUnivText}>
-                {userStore.user.l}
-                <Text style={campusStyle.Text.smallSize}>[서울]</Text>
-              </Text>
+              <Observer>
+                {() => (
+                  <Text style={campusStyle.Text.mainUnivText}>
+                    {userStore.user.l}
+                  </Text>
+                )}
+              </Observer>
+              {/* <Text style={campusStyle.Text.smallSize}>[서울]</Text> */}
               <Image style={campusStyle.Image.mainImage} source={ad} />
             </View>
           </View>

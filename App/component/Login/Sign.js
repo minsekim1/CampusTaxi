@@ -264,6 +264,8 @@ export class Sign2 extends React.Component {
       studentcardBtn: "학생증 사진 선택",
       name: "",
       univ: "",
+      univSearch: [],
+      univSelected: null,
       error: "아무런 값이 입력되지 않았습니다.",
       policy: this.props.route.params.policy, //마케팅 정보 등 동의 사실 전달[true, true...]
       token: this.props.route.params.token,
@@ -449,7 +451,7 @@ export class Sign2 extends React.Component {
   checkStudentCard() {
     if (
       this.state.name != "" &&
-      this.state.univ != "" &&
+      this.state.univSelected != null &&
       this.state.image != ""
     ) {
       this.setState({
@@ -468,7 +470,30 @@ export class Sign2 extends React.Component {
   async onChangeduniv(univ) {
     await this.setState({ univ: univ });
     this.checkStudentCard();
+    if (univ != "") {
+      const search = await fetch(
+        "http://www.career.go.kr/cnet/openapi/getOpenApi?apiKey=56a2aaa716bd3c70b1fe15b035a44e6c&svcType=api&svcCode=SCHOOL&contentType=json&gubun=univ_list&sch1=100323&searchSchulNm=" +
+          univ
+      )
+        .then((r) => {
+          return r.text();
+        })
+        .then((data) => {
+          const content = JSON.parse(data).dataSearch.content;
+          content != ""
+            ? this.setState({ univSearch: content })
+            : this.setState({ univSearch: [] });
+        });
+    } else {
+      this.setState({ univSearch: [] });
+    }
   }
+  onChangedUnivSelected = async (val) => {
+    await this.setState({
+      univSelected: val.toString(),
+    });
+    this.checkStudentCard();
+  };
   checkSign() {
     if (
       this.state.nickname.length > 3 &&
@@ -818,10 +843,35 @@ export class Sign2 extends React.Component {
               <TextInput
                 value={this.state.univ}
                 onChangeText={(val) => this.onChangeduniv(val)}
-                maxLength={40}
-                placeholder="삼육대학교"
+                maxLength={20}
+                placeholder="대학교이름을 입력해주세요."
               />
             </View>
+            <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
+              대학교 검색결과
+            </Text>
+            {this.state.univSearch != ""
+              ? this.state.univSearch.map((item, i) => {
+                  const schoolName = item.schoolName;
+                  return (
+                    <TouchableOpacity
+                      key={i.toString()}
+                      style={{
+                        borderBottomWidth: 1,
+                        borderBottomColor: "gray",
+                      }}
+                      onPress={() => this.onChangedUnivSelected(schoolName)}
+                    >
+                      <Text style={{ margin: 10, padding: 10 }}>
+                        {schoolName}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })
+              : null}
+            <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
+              선택한 대학교: {this.state.univSelected}
+            </Text>
           </View>
         </View>
 
@@ -847,7 +897,7 @@ export class Sign2 extends React.Component {
                     this.state.nickname,
                     this.state.countryNum + this.state.phoneNumber,
                     this.state.image,
-                    this.state.univ,
+                    this.state.univSelected.toString(),
                     this.state.policy
                   );
                 } else {
@@ -859,7 +909,7 @@ export class Sign2 extends React.Component {
                     this.state.nickname,
                     this.state.countryNum + this.state.phoneNumber,
                     this.state.image,
-                    this.state.univ,
+                    this.state.univSelected.toString(),
                     this.state.policy,
                     this.state.token
                   );
@@ -957,14 +1007,11 @@ export class Sign3 extends Component {
             <View style={button_style.next_button}>
               <TouchableOpacity
                 onPress={() => {
+                  navigation.navigate("loading");
                   if (this.state.token != null) {
-                    userStore
-                      .loginToken(this.state.token)
-                      .then(() => navigation.navigate("home"));
+                    userStore.loginToken(this.state.token);
                   } else {
-                    userStore
-                      .login(this.state.id, this.state.pw)
-                      .then(() => navigation.navigate("home"));
+                    userStore.login(this.state.id, this.state.pw);
                   }
                 }}
                 color="#162A64"

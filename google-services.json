@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1054249413075-46rcvpedn6tu8ceu3dibevk5tqhighsv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.campustaxi",
+            "certificate_hash": "0c64cd1a18ec7372d3d378d2ef4b3643e5e103fb"
+          }
+        },
+        {
           "client_id": "1054249413075-6uishkks1v0a8p9ighpcj7nt2426tubt.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

@@ -1,8 +1,9 @@
 //#region imports
 import React, { Component } from "react";
 //시작 루트 컴포넌트
-import { SafeAreaView } from "react-native";
+import { SafeAreaView, View } from "react-native";
 import LoginNav from "./App/component/Login/LoginNav";
+import Navigation from "./App/component/Navigation";
 //최적화 설정
 import { enableScreens } from "react-native-screens";
 enableScreens();
@@ -33,6 +34,8 @@ console.warn = (message) => {
     _console.warn(message);
   }
 };
+import { bbsStore, userStore } from "store";
+import { Observer } from "mobx-react";
 // <Navigation />
 //에러제어
 //#endregion
@@ -43,7 +46,9 @@ export default class App extends Component {
         <PaperProvider>
           <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1 }}>
-              <LoginNav />
+              <Observer>
+                {() => (!userStore.isKey() ? <LoginNav /> : <Navigation />)}
+              </Observer>
             </SafeAreaView>
           </SafeAreaProvider>
         </PaperProvider>

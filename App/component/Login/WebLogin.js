@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { View, Text, Platform, StyleSheet, Button } from "react-native";
+import {
+  View,
+  Text,
+  Platform,
+  StyleSheet,
+  Button,
+  BackHandler,
+} from "react-native";
 import WebView from "react-native-webview";
 import { bbsStore, userStore } from "store";
 
@@ -17,7 +24,7 @@ export default class WebLogin extends Component {
   }
 
   webViewEnd = async (event, props) => {
-    console.log(this.props.route.params.uri);
+    //console.log(this.props.route.params.uri);
     const result = JSON.parse(event.nativeEvent.data);
     if (result.status === "success") {
       // 성공적 네이버 로그인 완료
@@ -38,9 +45,8 @@ export default class WebLogin extends Component {
               token: data.response.id,
             });
           } else {
-            userStore
-              .loginToken(data.response.id)
-              .then(() => this.props.navigation.navigate("home"));
+            this.props.navigation.navigate("loading");
+            userStore.loginToken(data.response.id);
           }
         });
       } else if (this.state.api == "kakao") {
@@ -60,9 +66,8 @@ export default class WebLogin extends Component {
               token: data.id,
             });
           } else {
-            userStore
-              .loginToken(data.id)
-              .then(() => this.props.navigation.navigate("home"));
+            this.props.navigation.navigate("loading");
+            userStore.loginToken(data.id);
           }
         });
       }
@@ -72,15 +77,13 @@ export default class WebLogin extends Component {
   };
 
   render() {
-    const props = this.props;
-    const { navigation } = this.props;
     return (
       <View style={styles.container}>
         <WebView
           ref={(ref) => (this.webview = ref)}
           source={{ uri: this.state.url }}
           useWebKit={true}
-          onMessage={(event) => this.webViewEnd(event, props)}
+          onMessage={(event) => this.webViewEnd(event, this.props)}
         />
       </View>
     );
