@@ -1,8 +1,14 @@
 //채팅목록 화면
 export default function chatScreen({ route, navigation }) {
+  const [filtingonoff, setfiltingonoff] = useState(1);
+  var bbsJSON;
   //#region Hooks & functions
   const userkey = userStore.user.f;
-  bbsStore.asyncAllBbs();
+  if(filtingonoff) {
+    bbsStore.asyncAllBbs();
+    bbsJSON = bbsStore.bbs;
+  }
+  
   useEffect(() => {
     placeUpdate();
   }, [userkey]);
@@ -27,47 +33,6 @@ export default function chatScreen({ route, navigation }) {
   const [filterMeetingTimeEnd, setFilterMeetingTimeEnd] = useState("전부");
   const [filterPersonMin, setFilterPersonMin] = useState("1");
   const [filterPersonMax, setFilterPersonMax] = useState("4");
-  // -- Filter function start
-  function search(user) {
-    return Object.keys(this).every((key) => user[key] === this[key]);
-  }
-  function getFiltferBbs() {
-    let result;
-
-    result = bbsStore.bbs;
-
-    let query = {
-      c: filterCategory,
-    };
-    query.h = Number(filterPersonMin);
-    query.k = Number(filterPersonMax);
-    if (!(filterStartplace == "무관")) {
-    }
-    if (!(filterEndplace == "무관")) {
-      query.g = filterEndplace;
-    }
-    if (!(filterMeetingTimeStart == "전부")) {
-      let filterMeetingTimeStart_time = TimeAPI.timetoint(
-        filterMeetingTimeStart
-      );
-      result = result.filter(
-        (result) =>
-          TimeAPI.hourandminute(result.f) > filterMeetingTimeStart_time
-      );
-    }
-    if (!(filterMeetingTimeEnd == "전부")) {
-      let filterMeetingTimeEnd_time = TimeAPI.timetoint(filterMeetingTimeEnd);
-      result = result.filter(
-        (result) => TimeAPI.hourandminute(result.f) < filterMeetingTimeEnd_time
-      );
-    }
-
-    result = result.filter(search, query);
-
-    bbsStore.setbbs(result);
-    //setRoomList(result);
-  }
-  // -- Filter function end
 
   const [isSearchVisible, setSearchVisible] = useState(false);
   const [isCreateRoomVisible, setCreateRoomVisible] = useState(false);
@@ -217,6 +182,50 @@ export default function chatScreen({ route, navigation }) {
     "23:30",
   ];
   //#endregion Hooks & functions
+
+  // -- Filter function start
+  function search(user) {
+    return Object.keys(this).every((key) => user[key] === this[key]);
+  }
+  function getFiltferBbs() {
+    //bbsStore.asyncAllBbs();
+    setfiltingonoff(1);
+    let result = bbsJSON;
+
+    let query = {
+      c: filterCategory,
+    };
+    query.h = Number(filterPersonMin);
+    query.k = Number(filterPersonMax);
+    if (!(filterStartplace == "무관")) {
+      query.n = filterStartplace;
+    }
+    if (!(filterEndplace == "무관")) {
+      query.g = filterEndplace;
+    }
+    if (!(filterMeetingTimeStart == "전부")) {
+      let filterMeetingTimeStart_time = TimeAPI.timetoint(filterMeetingTimeStart);
+      result = result.filter(
+        (result) =>
+          TimeAPI.hourandminute(result.f) > filterMeetingTimeStart_time
+      );
+    }
+    if (!(filterMeetingTimeEnd == "전부")) {
+      let filterMeetingTimeEnd_time = TimeAPI.timetoint(filterMeetingTimeEnd);
+      result = result.filter(
+        (result) => TimeAPI.hourandminute(result.f) < filterMeetingTimeEnd_time
+      );
+    }
+    console.log(bbsJSON);
+
+    bbsStore.bbs = result.filter(search, query);
+
+    setfiltingonoff(0);
+    //console.log(bbsStore.bbs);
+    //setRoomList(result);
+  }
+  // -- Filter function end
+  
   return (
     <>
       <Header
