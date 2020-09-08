@@ -6,7 +6,7 @@
     "start웹": "expo web",
     "gitUpload": "git add . && git commit -m \" 제한 성별 완료, 카테고리별 1명만 진입가능, 채팅방안 성별 색상 변경 적용, 카테고리 클릭시 모든 채팅방 목록 필터적용 완료\" && git push ",
     "gitPull": "git pull",
-    "안드로이드빌드": "expo build:android",
+    "안드로이드빌드": "expo build:android -t app:bundle",
     "git강제로덮어쓰기": "git checkout master &&  git branch NewBranch && git fetch --all  && git reset --hard origin/master"
   },
   "dependencies": {
