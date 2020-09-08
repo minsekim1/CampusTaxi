@@ -17,6 +17,9 @@ export default class BbsStore {
       this.val(snap).then((r) => (this.bbs = r))
     );
   }
+  asyncBbsnow(bbskey) {
+    this.bbsDB(bbskey + "/l").on("child_changed", () => this.setbbsnow(bbskey));
+  }
 
   addBbs(c, g, h, i, j, k, n, userkey) {
     //시간 가져오기
@@ -82,21 +85,29 @@ export default class BbsStore {
   }
 
   async setbbsnow(bbskey) {
-    this.bbsDB(bbskey).once("value", (snap) => (this.bbsnow = snap.val()));
+    await this.bbsDB(bbskey).once(
+      "value",
+      (snap) => (this.bbsnow = snap.val())
+    );
+    this.setbbsuser(this.bbsnow.l);
   }
 
-  async setbbsuser(userlist) {
+  setbbsuser(userlist) {
     let temp = [];
-    await Object.keys(userlist).map(
-      async (key) =>
-        await this.userDB(key)
+    let count = false;
+    for (const [key, value] of Object.entries(userlist)) {
+      if (value == 1) {
+        this.userDB(key)
           .once("value", (snap) => {
-            temp.push(snap);
+            if (snap !== undefined) temp.push(snap);
+            count = true;
           })
           .then(() => {
             this.bbsuser = temp;
-          })
-    );
+          });
+      }
+      // console.log(`${key}: ${value}`);
+    }
   }
 
   print(value) {

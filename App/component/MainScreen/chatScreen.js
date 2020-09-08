@@ -261,7 +261,8 @@ export default function chatScreen({ route, navigation }) {
       <Observer>
         {() => (
           <FlatList
-            keyExtractor={(item) => item.b}
+            key={(item, i) => String(i)}
+            keyExtractor={(item, index) => String(index)}
             data={bbsStore.bbs}
             renderItem={({ item, index }) => {
               return (

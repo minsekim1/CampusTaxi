@@ -168,7 +168,7 @@ export default class chatroomScreen extends Component {
                         ! 위험! 경고!
                         */
                         if (result[i]["dd"] == "테스트") {
-                          console.log(result[i]["dd"]);
+                          // console.log(result[i]["dd"]);
                           // TODO [APPLY text background highlight style code]
                           // `` 예를들어 '``'를 입력한다면 노란색 주석이 탄생합니다! 참고로 이 노란색은 커스텀 태그로 적용된 상태입니다.
                         }

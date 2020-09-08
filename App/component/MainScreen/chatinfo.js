@@ -1,85 +1,66 @@
-//#region imports
-import React, { useState, useRef, Component, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  Image,
-  StatusBar,
-} from "react-native";
-import { Header, Icon, Button } from "react-native-elements";
-import campusStyle from "style";
-import { TextInput } from "react-native-gesture-handler";
-import crown from "image/crown.png";
-const firebase = require("firebase");
-import { bbsStore, userStore } from "store";
-import { Observer } from "mobx-react";
-import Svg, { G, Circle, Path } from "react-native-svg";
 //채팅방의 유저 목록
-export default function chatinfo({ route, navigation }) {
-  let bbskey = route.params.bbskey;
-  //멤버 배열, 대화상대(현재, 최대)
-  //#region 변수들
-  bbsStore.setbbsnow(bbskey).then(() => {
-    bbsStore.setbbsuser(bbsStore.bbsnow.l).then(() => {
-      navigation.setOptions({
-        title: "대화상대(" + bbsStore.bbsnow.m + "/" + bbsStore.bbsnow.k + ")",
-      });
+export default class chatinfo extends Component {
+  render() {
+    let bbskey = this.props.route.params.bbskey;
+    //멤버 배열, 대화상대(현재, 최대)
+    //#region 변수들
+    bbsStore.setbbsnow(bbskey);
+    bbsStore.asyncBbsnow(bbskey);
+    this.props.navigation.setOptions({
+      title: "대화상대(" + bbsStore.bbsnow.m + "/" + bbsStore.bbsnow.k + ")",
     });
-  });
-  async function updateChatinfo(bbskey) {}
-  //#endregion
-  return (
-    <>
-      <Observer>
-        {() => (
-          <FlatList
-            data={bbsStore.bbsuser}
-            extraData={bbsStore.bbsuser}
-            keyExtractor={(item, i) => String(i)}
-            renderItem={({ item }) => {
-              const image =
-                bbsStore.bbsnow.i == userStore.user.i
-                  ? userStore.user.d == 0
-                    ? manCrownSVG
-                    : womanCrownSVG
-                  : userStore.user.d == 0
-                  ? manSVG
-                  : womanSVG;
-              item = JSON.parse(JSON.stringify(item));
-              return (
-                <View style={{ flexDirection: "row", padding: 10 }}>
-                  <View style={{ flex: 1 }}>
-                    <Text>{image}</Text>
+    return (
+      <>
+        <Observer>
+          {() => (
+            <FlatList
+              data={bbsStore.bbsuser}
+              extraData={bbsStore.bbsuser}
+              key={(item, i) => String(i)}
+              keyExtractor={(item, i) => String(i)}
+              renderItem={({ item }) => {
+                item = JSON.parse(JSON.stringify(item));
+                const image =
+                  bbsStore.bbsnow.i == item.i
+                    ? item.d == 0
+                      ? manCrownSVG
+                      : womanCrownSVG
+                    : item.d == 0
+                    ? manSVG
+                    : womanSVG;
+                return (
+                  <View style={{ flexDirection: "row", padding: 10 }}>
+                    <View style={{ flex: 1 }}>
+                      <Text>{image}</Text>
+                    </View>
+                    <View style={{ flex: 5 }}>
+                      <Text>{item.i}</Text>
+                      <Text>{item.l}</Text>
+                    </View>
                   </View>
-                  <View style={{ flex: 5 }}>
-                    <Text>{item.i}</Text>
-                    <Text>{item.l}</Text>
-                  </View>
-                </View>
-              );
-            }}
-          />
-        )}
-      </Observer>
+                );
+              }}
+            />
+          )}
+        </Observer>
 
-      <View
-        stlye={{
-          position: "absolute",
-          bottom: 0,
-        }}
-      >
-        <Button
-          onPress={async () => {
-            await bbsStore.outBbs(userStore.userkey, bbskey);
-            navigation.pop(2);
+        <View
+          stlye={{
+            position: "absolute",
+            bottom: 0,
           }}
-          title="방나가기"
-        />
-      </View>
-    </>
-  );
+        >
+          <Button
+            onPress={async () => {
+              await bbsStore.outBbs(userStore.userkey, bbskey);
+              this.props.navigation.pop(2);
+            }}
+            title="방나가기"
+          />
+        </View>
+      </>
+    );
+  }
 }
 
 const womanCrownSVG = (
@@ -187,3 +168,21 @@ const womanSVG = (
     />
   </Svg>
 );
+//#region imports
+import React, { useState, useRef, Component, useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  StatusBar,
+} from "react-native";
+import { Header, Icon, Button } from "react-native-elements";
+import campusStyle from "style";
+import { TextInput } from "react-native-gesture-handler";
+import crown from "image/crown.png";
+const firebase = require("firebase");
+import { bbsStore, userStore } from "store";
+import { Observer, observer } from "mobx-react";
+import Svg, { G, Circle, Path } from "react-native-svg";
