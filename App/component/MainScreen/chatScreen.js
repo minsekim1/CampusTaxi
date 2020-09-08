@@ -13,10 +13,27 @@ export default function chatScreen({ route, navigation }) {
   const [myname, setname] = useState(userStore.user.i);
   const [mygender, setgender] = useState(userStore.user.d);
   //유저가 들어간 채팅방의 개수를 알려줍니다.
-  const [myRoomCount, setMyRoomCount] = useState(0);
-  async function checkUserEnterChatRoom() {
+  async function checkUserEnterChatRoom(bbsGender, bbskey) {
+    //bbs.h
+    if (bbsGender == 2 || userStore.user.d == bbsGender) {
+      alert("성별 제한이 걸려있습니다.");
+      return false;
+    }
+    firebase
+      .database()
+      .ref("user/data/" + userStore.userkey + "/c")
+      .once("value", (snap) => {
+        let result = false;
+        Object.entries(snap.val()).map((key, value) => {
+          console.log("key" + key);
+          console.log("value" + value);
+          console.log("bbskey" + bbskey);
+          console.log(bbskey == key);
+          if (bbskey == key && value == 1) console.log("false");
+        });
+      });
     //userStore.user.c
-    return myRoomCount;
+    //return myRoomCount;
   }
   //#endregion
   const [isFilterVisible, setFilterVisible] = useState(false);
@@ -270,6 +287,7 @@ export default function chatScreen({ route, navigation }) {
                   onPress={() => {
                     if (true) {
                       //checkUserEnterChatRoom() < 2
+                      checkUserEnterChatRoom(item.h, item.b);
                       firebase
                         .database()
                         .ref("bbs/data/" + item.b + "/l/" + userStore.userkey)
@@ -396,10 +414,14 @@ export default function chatScreen({ route, navigation }) {
                   setCreateRoomCategory(itemValue);
                 }}
               >
-                <Picker.Item color="gray" label={filter} />
+                <Picker.Item key={"gray"} color="gray" label={filter} />
                 {menuList.map((item) =>
                   item != filter ? (
-                    <Picker.Item label={item} value={item} />
+                    <Picker.Item
+                      key={(item, i) => String(i)}
+                      label={item}
+                      value={item}
+                    />
                   ) : null
                 )}
               </Picker>
@@ -410,9 +432,17 @@ export default function chatScreen({ route, navigation }) {
                   setCreateRoomstartplace(itemValue);
                 }}
               >
-                <Picker.Item value="" label="출발장소를 선택해주세요." />
+                <Picker.Item
+                  key={""}
+                  value=""
+                  label="출발장소를 선택해주세요."
+                />
                 {anotherStore.placeStart.map((item) => (
-                  <Picker.Item label={item} value={item} />
+                  <Picker.Item
+                    key={(item, i) => String(i)}
+                    label={item}
+                    value={item}
+                  />
                 ))}
               </Picker>
               <Text>도착장소</Text>
@@ -422,9 +452,17 @@ export default function chatScreen({ route, navigation }) {
                   setCreateRoomendplace(itemValue);
                 }}
               >
-                <Picker.Item value="" label="도착장소를 선택해주세요." />
+                <Picker.Item
+                  key={""}
+                  value=""
+                  label="도착장소를 선택해주세요."
+                />
                 {anotherStore.placeEnd.map((item) => (
-                  <Picker.Item label={item} value={item} />
+                  <Picker.Item
+                    key={(item, i) => String(i)}
+                    label={item}
+                    value={item}
+                  />
                 ))}
               </Picker>
               <Text>탑승 시간</Text>
