@@ -141,10 +141,6 @@ export default class UserStore {
     alert(JSON.stringify(this.user));
   }
   async findUserByAttributes(attributes, value) {
-    //   onPress={() => {
-    //     userStore
-    //       .findUserByAttributes("a", "서울 노원구")
-    //       .then((result) => alert(result));
     const ref = firebase
       .database()
       .ref("user/data")

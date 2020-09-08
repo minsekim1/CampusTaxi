@@ -2,36 +2,51 @@
 export default function chatScreen({ route, navigation }) {
   //#region Hooks & functions
   const userkey = userStore.user.f;
-  bbsStore.asyncAllBbs();
+  const filter = route.params.filter;
+
   useEffect(() => {
+    userStore.asyncUser();
+    userStore.asyncuserbbs();
+    //bbsStore.asyncAllBbs();
+    bbsStore.asyncTypeBbs(filter);
     placeUpdate();
   }, [userkey]);
-  const filter = route.params.filter;
-  //const [roomList, setRoomList] = useState(bbsStore.bbs);
-
   //#region 유저정보 업데이트
-  const [myname, setname] = useState(userStore.user.i);
-  const [mygender, setgender] = useState(userStore.user.d);
-  //유저가 들어간 채팅방의 개수를 알려줍니다.
-  async function checkUserEnterChatRoom(bbsGender, bbskey) {
+  const myname = userStore.user.i;
+  const mygender = userStore.user.d;
+  async function checkUserEnterChatRoom(bbsGender, bbskey, filter) {
     //bbs.h
-    if (bbsGender == 2 || userStore.user.d == bbsGender) {
+    if (bbsGender != 2 && userStore.user.d != bbsGender) {
+      //2: 모든 성별도아니고 or 게시판과 같은 성별도 아닐경우
       alert("성별 제한이 걸려있습니다.");
       return false;
-    }
-    firebase
-      .database()
-      .ref("user/data/" + userStore.userkey + "/c")
-      .once("value", (snap) => {
-        let result = false;
-        Object.entries(snap.val()).map((key, value) => {
-          console.log("key" + key);
-          console.log("value" + value);
-          console.log("bbskey" + bbskey);
-          console.log(bbskey == key);
-          if (bbskey == key && value == 1) console.log("false");
+    } else {
+      let reulst = true;
+      await firebase
+        .database()
+        .ref("user/data/" + userStore.userkey + "/c")
+        .once("value", (snap) => {
+          for (const [key, value] of Object.entries(snap.val())) {
+            if (value == 1 && bbskey != key) {
+              //console.log(value + "  " + key);
+              // 접속한 방 중에서 다른 방을 조사
+              firebase
+                .database()
+                .ref("bbs/data/" + key + "/c")
+                .once("value", (snap2) => {
+                  //다른방이 같은 filter 일경우 못들어감
+                  if (snap2.val() == filter) {
+                    reulst = false;
+                    alert(
+                      "채팅방은 최대 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭 에서 채팅방 나가기를 해주세요."
+                    );
+                  }
+                });
+            }
+          }
         });
-      });
+      return reulst;
+    }
     //userStore.user.c
     //return myRoomCount;
   }
@@ -51,7 +66,7 @@ export default function chatScreen({ route, navigation }) {
   function getFiltferBbs() {
     let result;
 
-    result = bbsStore.bbs;
+    result = bbsStore.typebbs;
 
     let query = {
       c: filterCategory,
@@ -280,22 +295,17 @@ export default function chatScreen({ route, navigation }) {
           <FlatList
             key={(item, i) => String(i)}
             keyExtractor={(item, index) => String(index)}
-            data={bbsStore.bbs}
+            data={bbsStore.typebbs}
             renderItem={({ item, index }) => {
               return (
                 <TouchableOpacity
-                  onPress={() => {
-                    if (true) {
-                      //checkUserEnterChatRoom() < 2
-                      checkUserEnterChatRoom(item.h, item.b);
-                      firebase
-                        .database()
-                        .ref("bbs/data/" + item.b + "/l/" + userStore.userkey)
-                        .set(1);
-                      firebase
-                        .database()
-                        .ref("user/data/" + userStore.userkey + "/c/" + item.b)
-                        .set(1);
+                  onPress={async () => {
+                    let isEnter = await checkUserEnterChatRoom(
+                      item.h,
+                      item.b,
+                      filter
+                    );
+                    if (isEnter) {
                       navigation.navigate("채팅방", {
                         bbskey: item.b,
                         gender: item.h,
@@ -308,10 +318,14 @@ export default function chatScreen({ route, navigation }) {
                         personmember: item.i,
                         personmax: item.k,
                       });
-                    } else {
-                      alert(
-                        "채팅방은 최대 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭 에서 채팅방 나가기를 해주세요."
-                      );
+                      firebase
+                        .database()
+                        .ref("bbs/data/" + item.b + "/l/" + userStore.userkey)
+                        .set(1);
+                      firebase
+                        .database()
+                        .ref("user/data/" + userStore.userkey + "/c/" + item.b)
+                        .set(1);
                     }
                   }}
                   style={{ backgroundColor: "white", padding: 10 }}

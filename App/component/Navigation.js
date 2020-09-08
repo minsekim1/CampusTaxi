@@ -1,4 +1,3 @@
-import { bbsStore, userStore } from "store";
 import * as React from "react";
 import { Component, useState } from "react";
 import { Button, View, Text, TouchableOpacity, TextInput } from "react-native";
@@ -20,6 +19,7 @@ import MapScreen from "component/MapScreen/MapScreen";
 import MychatScreen from "MychatScreen";
 import campusStyle from "style";
 const Tab = createBottomTabNavigator();
+import { bbsStore, userStore, anotherStore } from "store";
 //import { observer, inject } from "mobx-react";
 export default class Navigation extends Component {
   constructor(props) {

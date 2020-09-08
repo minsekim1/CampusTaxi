@@ -4,9 +4,9 @@
     "start집": "adb connect 192.168.200.136:5555 && expo start --android",
     "start학교": "adb connect 192.168.175.73:5555 && expo start --android",
     "start웹": "expo web",
-    "gitUpload": "git add . && git commit -m \" 제한 성별 수정중 \" && git push ",
+    "gitUpload": "git add . && git commit -m \" 제한 성별 완료, 카테고리별 1명만 진입가능, 채팅방안 성별 색상 변경 적용, 카테고리 클릭시 모든 채팅방 목록 필터적용 완료\" && git push ",
     "gitPull": "git pull",
-    "안드로이드빌드": "expo build:android -t apk",
+    "안드로이드빌드": "expo build:android",
     "git강제로덮어쓰기": "git checkout master &&  git branch NewBranch && git fetch --all  && git reset --hard origin/master"
   },
   "dependencies": {

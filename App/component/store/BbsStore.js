@@ -7,11 +7,18 @@ export default class BbsStore {
   @observable bbsnow = []; //현재 접속중인 bbs의 정보
   @observable bbsuser = []; //접속중인 bbs안에 있는 유저들의 정보
   @observable selectedbbs = [];
+  @observable typebbs = [];
   @observable test = []; //테스트
 
   bbsDB = (name) => firebase.database().ref("bbs/data/" + name);
   userDB = (name) => firebase.database().ref("user/data/" + name);
   //async로 시작하는 함수는 bbsDB와 on으로 실시간연동이 되어있는 것을 뜻합니다.
+  async asyncTypeBbs(filter) {
+    await this.bbsDB("")
+      .orderByChild("c")
+      .equalTo(filter)
+      .on("value", (snap) => this.val(snap).then((r) => (this.typebbs = r)));
+  }
   asyncAllBbs() {
     this.bbsDB("").on("value", (snap) =>
       this.val(snap).then((r) => (this.bbs = r))

@@ -90,9 +90,9 @@ export default class chatroomScreen extends Component {
                 alignItems: "stretch",
               }}
               backgroundColor={
-                this.state.gender == "all"
+                this.state.gender == 2
                   ? "#3A3A3A"
-                  : this.state.gender == "woman"
+                  : this.state.gender == 1
                   ? "#DE22A3"
                   : "#55A1EE"
               }
