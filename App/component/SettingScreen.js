@@ -311,7 +311,7 @@ function clientChangePage({ navigation: { goBack } }) {
             {userStore.user.n == 1 ? "완료" : "인증처리중"}
           </Text>
         </View>
-        <View style={{ flex: 1 }}>
+        {/* <View style={{ flex: 1 }}>
           <Button
             containerStyle={{ borderRadius: 100 }}
             titleStyle={{ fontSize: 10, fontWeight: "100" }}
@@ -321,8 +321,8 @@ function clientChangePage({ navigation: { goBack } }) {
             }}
             title="학생증 재인증"
           ></Button>
-          {/* <Input type="file" name="file" onChange={null}/> */}
-        </View>
+          <Input type="file" name="file" onChange={null}/>
+        </View> */}
       </View>
       <Divider
         style={{ marginTop: 20, marginBottom: 20, backgroundColor: "#D2D2D2" }}
