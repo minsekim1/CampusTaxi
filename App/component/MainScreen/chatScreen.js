@@ -3,24 +3,55 @@ export default function chatScreen({ route, navigation }) {
   const [filtingonoff, setfiltingonoff] = useState(1); // 필터작동 스위치
   //#region Hooks & functions
   const userkey = userStore.user.f;
+  const filter = route.params.filter;
   if(filtingonoff) {
-    bbsStore.asyncAllBbs();
+    bbsStore.asyncTypeBbs(filter);
   }
-  
   useEffect(() => {
+    userStore.asyncUser();
+    userStore.asyncuserbbs();
+    //bbsStore.asyncAllBbs();
+    
     placeUpdate();
   }, [userkey]);
-  const filter = route.params.filter;
-  //const [roomList, setRoomList] = useState(bbsStore.bbs);
-
   //#region 유저정보 업데이트
-  const [myname, setname] = useState(userStore.user.i);
-  const [mygender, setgender] = useState(userStore.user.d);
-  //유저가 들어간 채팅방의 개수를 알려줍니다.
-  const [myRoomCount, setMyRoomCount] = useState(0);
-  async function checkUserEnterChatRoom() {
+  const myname = userStore.user.i;
+  const mygender = userStore.user.d;
+  async function checkUserEnterChatRoom(bbsGender, bbskey, filter) {
+    //bbs.h
+    if (bbsGender != 2 && userStore.user.d != bbsGender) {
+      //2: 모든 성별도아니고 or 게시판과 같은 성별도 아닐경우
+      alert("성별 제한이 걸려있습니다.");
+      return false;
+    } else {
+      let reulst = true;
+      await firebase
+        .database()
+        .ref("user/data/" + userStore.userkey + "/c")
+        .once("value", (snap) => {
+          for (const [key, value] of Object.entries(snap.val())) {
+            if (value == 1 && bbskey != key) {
+              //console.log(value + "  " + key);
+              // 접속한 방 중에서 다른 방을 조사
+              firebase
+                .database()
+                .ref("bbs/data/" + key + "/c")
+                .once("value", (snap2) => {
+                  //다른방이 같은 filter 일경우 못들어감
+                  if (snap2.val() == filter) {
+                    reulst = false;
+                    alert(
+                      "채팅방은 최대 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭 에서 채팅방 나가기를 해주세요."
+                    );
+                  }
+                });
+            }
+          }
+        });
+      return reulst;
+    }
     //userStore.user.c
-    return myRoomCount;
+    //return myRoomCount;
   }
   //#endregion
   const [isFilterVisible, setFilterVisible] = useState(false);
@@ -31,6 +62,49 @@ export default function chatScreen({ route, navigation }) {
   const [filterMeetingTimeEnd, setFilterMeetingTimeEnd] = useState("전부");
   const [filterPersonMin, setFilterPersonMin] = useState("1");
   const [filterPersonMax, setFilterPersonMax] = useState("4");
+
+  // -- Filter function start
+  function search(user) {
+    return Object.keys(this).every((key) => user[key] === this[key]);
+  }
+  function getFiltferBbs() {
+    setfiltingonoff(1);
+    // bbsStore.asyncTypeBbs(filter);
+    let result;
+    result = bbsStore.typebbs;
+
+    let query = { // 필터 아이템
+      c: filterCategory,
+    };
+    query.h = Number(filterPersonMin);
+    query.k = Number(filterPersonMax);
+    if (!(filterStartplace == "무관")) {
+    }
+    if (!(filterEndplace == "무관")) {
+      query.g = filterEndplace;
+    }
+    if (!(filterMeetingTimeStart == "전부")) {
+      let filterMeetingTimeStart_time = TimeAPI.timetoint(
+        filterMeetingTimeStart
+      );
+      result = result.filter(
+        (result) =>
+          TimeAPI.hourandminute(result.f) > filterMeetingTimeStart_time
+      );
+    }
+    if (!(filterMeetingTimeEnd == "전부")) {
+      let filterMeetingTimeEnd_time = TimeAPI.timetoint(filterMeetingTimeEnd);
+      result = result.filter(
+        (result) => TimeAPI.hourandminute(result.f) < filterMeetingTimeEnd_time
+      );
+    }
+
+    bbsStore.typebbs = result.filter(search, query); // 필터 시작
+
+    // bbsStore.setbbs(result); // 재 갱신
+    //setRoomList(result);
+  }
+  // -- Filter function end
 
   const [isSearchVisible, setSearchVisible] = useState(false);
   const [isCreateRoomVisible, setCreateRoomVisible] = useState(false);
@@ -180,47 +254,6 @@ export default function chatScreen({ route, navigation }) {
     "23:30",
   ];
   //#endregion Hooks & functions
-
-  // -- Filter function start
-  function search(user) {
-    return Object.keys(this).every((key) => user[key] === this[key]);
-  }
-  function getFiltferBbs() {
-    setfiltingonoff(1);
-    //bbsStore.asyncAllBbs();
-    let result = bbsStore.bbs;
-    //let temp = bbsStore.bbs;
-
-    let query = {
-      c: filterCategory,
-    };
-    query.h = Number(filterPersonMin);
-    query.k = Number(filterPersonMax);
-    if (!(filterStartplace == "무관")) {
-      query.n = filterStartplace;
-    }
-    if (!(filterEndplace == "무관")) {
-      query.g = filterEndplace;
-    }
-    if (!(filterMeetingTimeStart == "전부")) {
-      let filterMeetingTimeStart_time = TimeAPI.timetoint(filterMeetingTimeStart);
-      result = result.filter(
-        (result) =>
-          TimeAPI.hourandminute(result.f) > filterMeetingTimeStart_time
-      );
-    }
-    if (!(filterMeetingTimeEnd == "전부")) {
-      let filterMeetingTimeEnd_time = TimeAPI.timetoint(filterMeetingTimeEnd);
-      result = result.filter(
-        (result) => TimeAPI.hourandminute(result.f) < filterMeetingTimeEnd_time
-      );
-    }
-
-    bbsStore.bbs = result.filter(search, query);
-    //console.log(bbsStore.bbs);
-    //setRoomList(result);
-  }
-  // -- Filter function end
   
   return (
     <>
@@ -266,22 +299,19 @@ export default function chatScreen({ route, navigation }) {
       <Observer>
         {() => (
           <FlatList
-            keyExtractor={(item) => item.b}
-            data={bbsStore.bbs}
+            key={(item, i) => String(i)}
+            keyExtractor={(item, index) => String(index)}
+            data={bbsStore.typebbs}
             renderItem={({ item, index }) => {
               return (
                 <TouchableOpacity
-                  onPress={() => {
-                    if (true) {
-                      //checkUserEnterChatRoom() < 2
-                      firebase
-                        .database()
-                        .ref("bbs/data/" + item.b + "/l/" + userStore.userkey)
-                        .set(1);
-                      firebase
-                        .database()
-                        .ref("user/data/" + userStore.userkey + "/c/" + item.b)
-                        .set(1);
+                  onPress={async () => {
+                    let isEnter = await checkUserEnterChatRoom(
+                      item.h,
+                      item.b,
+                      filter
+                    );
+                    if (isEnter) {
                       navigation.navigate("채팅방", {
                         bbskey: item.b,
                         gender: item.h,
@@ -294,10 +324,14 @@ export default function chatScreen({ route, navigation }) {
                         personmember: item.i,
                         personmax: item.k,
                       });
-                    } else {
-                      alert(
-                        "채팅방은 최대 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭 에서 채팅방 나가기를 해주세요."
-                      );
+                      firebase
+                        .database()
+                        .ref("bbs/data/" + item.b + "/l/" + userStore.userkey)
+                        .set(1);
+                      firebase
+                        .database()
+                        .ref("user/data/" + userStore.userkey + "/c/" + item.b)
+                        .set(1);
                     }
                   }}
                   style={{ backgroundColor: "white", padding: 10 }}
@@ -400,10 +434,14 @@ export default function chatScreen({ route, navigation }) {
                   setCreateRoomCategory(itemValue);
                 }}
               >
-                <Picker.Item color="gray" label={filter} />
+                <Picker.Item key={"gray"} color="gray" label={filter} />
                 {menuList.map((item) =>
                   item != filter ? (
-                    <Picker.Item label={item} value={item} />
+                    <Picker.Item
+                      key={(item, i) => String(i)}
+                      label={item}
+                      value={item}
+                    />
                   ) : null
                 )}
               </Picker>
@@ -414,9 +452,17 @@ export default function chatScreen({ route, navigation }) {
                   setCreateRoomstartplace(itemValue);
                 }}
               >
-                <Picker.Item value="" label="출발장소를 선택해주세요." />
+                <Picker.Item
+                  key={""}
+                  value=""
+                  label="출발장소를 선택해주세요."
+                />
                 {anotherStore.placeStart.map((item) => (
-                  <Picker.Item label={item} value={item} />
+                  <Picker.Item
+                    key={(item, i) => String(i)}
+                    label={item}
+                    value={item}
+                  />
                 ))}
               </Picker>
               <Text>도착장소</Text>
@@ -426,9 +472,17 @@ export default function chatScreen({ route, navigation }) {
                   setCreateRoomendplace(itemValue);
                 }}
               >
-                <Picker.Item value="" label="도착장소를 선택해주세요." />
+                <Picker.Item
+                  key={""}
+                  value=""
+                  label="도착장소를 선택해주세요."
+                />
                 {anotherStore.placeEnd.map((item) => (
-                  <Picker.Item label={item} value={item} />
+                  <Picker.Item
+                    key={(item, i) => String(i)}
+                    label={item}
+                    value={item}
+                  />
                 ))}
               </Picker>
               <Text>탑승 시간</Text>

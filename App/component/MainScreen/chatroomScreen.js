@@ -90,9 +90,9 @@ export default class chatroomScreen extends Component {
                 alignItems: "stretch",
               }}
               backgroundColor={
-                this.state.gender == "all"
+                this.state.gender == 2
                   ? "#3A3A3A"
-                  : this.state.gender == "woman"
+                  : this.state.gender == 1
                   ? "#DE22A3"
                   : "#55A1EE"
               }
@@ -166,7 +166,7 @@ export default class chatroomScreen extends Component {
                         TODO INPUT을 통해 값을 저장(let filterstring = this.state.filterstring)해서 모든 JSON 문자를 비교하도록 함.
                         */
                         if (result[i]["dd"] == "테스트") {
-                          console.log(result[i]["dd"]);
+                          // console.log(result[i]["dd"]);
                           // TODO [APPLY text background highlight style code]
                           this.flatListRef.scrollToIndex({
                             animated: true,

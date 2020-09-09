@@ -2,7 +2,7 @@
   "expo": {
     "name": "campustaxi",
     "slug": "campustaxi",
-    "version": "3.0.3",
+    "version": "3.0.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -16,7 +16,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "com.campustaxi.campustaxi",
-      "buildNumber": "3.0.3"
+      "buildNumber": "3.0.4"
 
     },
     "web": {
@@ -24,7 +24,7 @@
     },
     "android": {
       "package": "com.campustaxi.campustaxi",
-      "versionCode": 6,
+      "versionCode": 7,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyBVIfNVsdQk6J56bD4CwZSPDyYlxF_XBe0"
