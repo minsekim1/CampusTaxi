@@ -963,32 +963,38 @@ export class Sign3 extends Component {
   render() {
     const { navigation } = this.props;
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#ffffff",}}>
         {/* logo && title */}
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
           <Image source={require("image/icon.png")} />
         </View>
-
-        {/* 환영 인사 */}
-        <View style={{ flex: 2 }}>
+        <Text style={{fontSize: 18}}> CAMPUS TAXI </Text>
+        <View style={{marginVertical: 30,}}>
           <Text style={{ fontSize: 21, textAlign: "center", color: "#6060DC" }}>
             환영합니다!
           </Text>
-          <Text style={{ fontSize: 18, textAlign: "center" }}>
-            해당 어플은 삼육대학교 창업동아리 '캠퍼스택시'가 제작하고 운영하는
-            어플입니다.
-          </Text>
-          <Text style={{ fontSize: 18, textAlign: "center" }}>
-            현재에는 채팅과 방만들기 기능만을 제공하고 있습니다.
-          </Text>
-          <Text style={{ fontSize: 18, textAlign: "center" }}>
-            N분의 1 계산은 <Text style={{ color: "#0000ff" }}> TOSS앱 </Text>,
-            택시 호출은 <Text style={{ color: "#ffd700" }}> 카카오 택시 </Text>
-            를 이용해 주세요!
-          </Text>
-          <View style={{ position: "absolute", bottom: 0, width: "100%" }}>
+        </View>
+
+        {/* 환영 인사 */}
+        <View style={{ flex: 2, }}>
+          <View style={{width: "80%"}}>
+            <Text style={{ fontSize: 18, textAlign: "center", marginBottom: 30, }}>
+              해당 어플은 삼육대학교 창업동아리 '캠퍼스택시'가 제작하고 운영하는
+              어플입니다.
+            </Text>
+            <Text style={{ fontSize: 18, textAlign: "center", marginBottom: 30,  }}>
+              현재에는 채팅과 방만들기 기능만을 제공하고 있습니다.
+            </Text>
+            <Text style={{ fontSize: 18, textAlign: "center" }}>
+              N분의 1 계산은 <Text style={{ color: "#0000ff" }}> TOSS앱 </Text>,
+              택시 호출은 <Text style={{ color: "#ffd700" }}> 카카오 택시 </Text>
+              를 이용해 주세요!
+            </Text>
+          </View>
+          
+          <View style={{ position: "absolute", bottom: 0, width: "100%", alignSelf: "center" }}>
             <View
               style={[button_style.next_button, { backgroundColor: "#CBCED7" }]}
             >
