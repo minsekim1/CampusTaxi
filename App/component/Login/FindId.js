@@ -232,10 +232,6 @@ export class FindId3 extends Component {
 
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> d10feda78c13c34183f2a9a7e49d6b255ccf39bc
 const find_style = StyleSheet.create({
   phoneauth_select_container: {
     marginTop: 20,
