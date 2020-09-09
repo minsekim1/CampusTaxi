@@ -548,7 +548,7 @@ export class Sign2 extends React.Component {
     const { navigation } = this.props;
     return (
       <ScrollView>
-        <View style={{ flex: 1, margin: 20, marginLeft: 30, marginRight: 30 }}>
+        <View style={{ flex: 1, margin: 20, marginLeft: 30, marginRight: 30,  }}>
           {/* 휴대폰 인증 start*/}
           <View style={{ marginBottom: 70 }}>
             <View style={SignIn.complete_alert_checkbox}>
@@ -625,6 +625,7 @@ export class Sign2 extends React.Component {
                 </TouchableOpacity>
               </View>
             </View>
+           
 
             <View style={{ alignSelf: "center", width: "50%" }}>
               <View style={[SignIn.input, { marginBottom: 20 }]}>
@@ -777,6 +778,7 @@ export class Sign2 extends React.Component {
               </TouchableOpacity>
             </View>
           </View>
+
 
           <View style={{ marginBottom: 20, marginTop: 30 }}>
             <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>

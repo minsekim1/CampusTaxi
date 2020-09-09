@@ -221,6 +221,10 @@ export class FindPw3 extends Component {
         </TouchableOpacity>
         </View>
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> d10feda78c13c34183f2a9a7e49d6b255ccf39bc
       </View>
     );
   }
@@ -328,6 +332,10 @@ export class FindPw5 extends Component {
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> d10feda78c13c34183f2a9a7e49d6b255ccf39bc
 const find_style = StyleSheet.create({
   confirm_btn: {
     borderRadius: 19,
