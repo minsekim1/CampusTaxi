@@ -508,9 +508,9 @@ class clientpage extends React.Component {
           <Button
             style={{ borderRadius: 100 }}
             containerStyle={{ borderRadius: 100 }}
-            buttonStyle={{ backgroundColor: "#172864", width: 189 }}
-            title="회원정보 수정"
-            onPress={() => navigation.navigate("회원정보 수정")}
+            buttonStyle={{ backgroundColor: "gray", width: 189 }} //172864
+            title="회원정보 수정(현재 미지원)"
+            onPress={() => {}} //navigation.navigate("회원정보 수정")
           />
         </View>
       </ScrollView>
