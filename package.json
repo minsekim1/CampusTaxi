@@ -4,7 +4,7 @@
     "start집": "adb connect 192.168.200.136:5555 && expo start --android",
     "start학교": "adb connect 192.168.175.73:5555 && expo start --android",
     "start웹": "expo web",
-    "gitUpload": "git add . && git commit -m \" 방만들기 수정 완료(카테고리별 방 1개만 만들기)\" && git push ",
+    "gitUpload": "git add . && git commit -m \" 학생증 재인증버튼 주석처리\" && git push ",
     "gitPull": "git pull",
     "안드로이드빌드": "expo build:android -t app:bundle",
     "git강제로덮어쓰기": "git checkout master &&  git branch NewBranch && git fetch --all  && git reset --hard origin/master"
