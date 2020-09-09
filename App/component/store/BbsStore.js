@@ -28,9 +28,10 @@ export default class BbsStore {
     this.bbsDB(bbskey + "/l").on("child_changed", () => this.setbbsnow(bbskey));
   }
 
-  addBbs(c, g, h, i, j, k, n, userkey) {
+  async addBbs(c, g, h, i, j, k, n, userkey) {
     //시간 가져오기
-    fetch("http://worldtimeapi.org/api/timezone/Asia/Seoul")
+    let newkey = null;
+    await fetch("http://worldtimeapi.org/api/timezone/Asia/Seoul")
       .then((res) => res.json())
       .then((result) => {
         //밀리초제거
@@ -57,13 +58,14 @@ export default class BbsStore {
           m: 1,
           n: n,
         };
-        let newkey = this.bbsDB("").push(newBbs).key;
+        newkey = this.bbsDB("").push(newBbs).key;
         this.bbsDB(newkey + "/b").set(newkey);
         // 채팅데이터에 유저키 추가
         this.bbsDB(newkey + "/l/" + userkey).set(1);
         // 유저 데이터에 새로운 방 추가
         this.userDB(userkey + "/c/" + newkey).set(1);
       });
+    return newkey;
   }
   //#endregion
   // Hide bbs : 클라이언트에게 숨기기만함

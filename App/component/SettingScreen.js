@@ -101,6 +101,7 @@ function HomeScreen({ navigation }) {
 }
 //내 정보: 회원정보 수정페이지
 function clientChangePage({ navigation: { goBack } }) {
+  userStore.asyncUser();
   const originName = userStore.user.h; //원래이름
   const [clientName, onChangeName] = useState(originName);
   const originNickName = userStore.user.i; //원래닉네임
@@ -443,7 +444,7 @@ class clientpage extends React.Component {
             </Text>
             <Observer>
               {() => (
-                <Text style={{ marginBottom: 10 }}>{userStore.user.f}</Text>
+                <Text style={{ marginBottom: 10 }}>{userStore.userkey}</Text>
               )}
             </Observer>
           </View>
@@ -466,17 +467,40 @@ class clientpage extends React.Component {
           학생증인증
         </Text>
         <Observer>
-          {() => (
-            <Text
-              style={
-                userStore.user.n == 1
-                  ? { marginBottom: 10, color: "#27BE5E" }
-                  : { marginBottom: 10, color: "#F83C3C" }
-              }
-            >
-              {userStore.user.n == 1 ? "완료" : "인증처리중"}
-            </Text>
-          )}
+          {() => {
+            let status = userStore.user.n;
+            switch (status) {
+              case 0:
+                return (
+                  <Text style={{ marginBottom: 10, color: "#F83C3C" }}>
+                    미인증
+                  </Text>
+                );
+                break;
+              case 1:
+                return (
+                  <Text style={{ marginBottom: 10, color: "#27BE5E" }}>
+                    인증완료
+                  </Text>
+                );
+                break;
+              case 2:
+                return (
+                  <Text style={{ marginBottom: 10, color: "#F83C3C" }}>
+                    인증거부-문의필요
+                  </Text>
+                );
+                break;
+              default:
+                return (
+                  <Text style={{ marginBottom: 10, color: "#F83C3C" }}>
+                    {status}까지 정지
+                  </Text>
+                );
+
+                break;
+            }
+          }}
         </Observer>
 
         <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />

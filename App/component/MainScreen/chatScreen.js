@@ -21,7 +21,7 @@ export default function chatScreen({ route, navigation }) {
       alert("성별 제한이 걸려있습니다.");
       return false;
     } else {
-      let reulst = true;
+      let result = true;
       await firebase
         .database()
         .ref("user/data/" + userStore.userkey + "/c")
@@ -36,16 +36,16 @@ export default function chatScreen({ route, navigation }) {
                 .once("value", (snap2) => {
                   //다른방이 같은 filter 일경우 못들어감
                   if (snap2.val() == filter) {
-                    reulst = false;
+                    result = false;
                     alert(
-                      "채팅방은 최대 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭 에서 채팅방 나가기를 해주세요."
+                      "채팅방은 카테고리별로 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요."
                     );
                   }
                 });
             }
           }
         });
-      return reulst;
+      return result;
     }
     //userStore.user.c
     //return myRoomCount;
@@ -265,7 +265,7 @@ export default function chatScreen({ route, navigation }) {
           ></Button>
         }
         centerComponent={{
-          text: "모든 채팅방 목록",
+          text: filter + " 채팅방 목록",
           style: campusStyle.Text.middleBold,
         }}
         rightComponent={
@@ -547,17 +547,54 @@ export default function chatScreen({ route, navigation }) {
                   ) {
                     alert("출발지 또는 도착지를 선택해주세요.");
                   } else {
-                    bbsStore.addBbs(
-                      createRoomCategory,
-                      createRoomendplace,
-                      createSelectGender,
-                      userStore.user.i,
-                      date,
-                      createRoompersonmax,
-                      createRoomstartplace,
-                      userStore.userkey
-                    );
-                    setCreateRoomVisible(!isCreateRoomVisible);
+                    navigation.navigate("loading");
+                    let result = true;
+                    firebase
+                      .database()
+                      .ref("user/data/" + userStore.userkey + "/c")
+                      .once("value", async (snap) => {
+                        if (snap != null)
+                          for (const [key, value] of Object.entries(
+                            snap.val()
+                          )) {
+                            if (value == 1) {
+                              // 접속한 방 중에서 다른 방을 조사
+                              await firebase
+                                .database()
+                                .ref("bbs/data/" + key + "/c")
+                                .once("value", (snap2) => {
+                                  //다른방이 같은 filter 일경우 만듬
+                                  if (snap2.val() == filter) {
+                                    result = false;
+                                  }
+                                });
+                            }
+                          }
+                      });
+                    if (result) {
+                      bbsStore
+                        .addBbs(
+                          createRoomCategory,
+                          createRoomendplace,
+                          createSelectGender,
+                          userStore.user.i,
+                          date,
+                          createRoompersonmax,
+                          createRoomstartplace,
+                          userStore.userkey
+                        )
+                        .then((bbskey) => {
+                          navigation.goBack();
+                          alert(
+                            "방이 생성되었습니다. 내 채팅에서 확인해주세요."
+                          );
+                        });
+                    } else {
+                      navigation.goBack();
+                      alert(
+                        "채팅방은 카테고리별로 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요."
+                      );
+                    }
                   }
                 }}
               />
