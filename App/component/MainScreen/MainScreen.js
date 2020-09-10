@@ -21,7 +21,7 @@ import club from "image/club.png";
 import ski from "image/ski.png";
 import ocean from "image/ocean.png";
 
-import { bbsStore, userStore } from "store";
+import { bbsStore, userStore, anotherStore } from "store";
 import { Observer } from "mobx-react";
 class HomeScreen extends Component {
   constructor(props) {
@@ -31,6 +31,7 @@ class HomeScreen extends Component {
 
   componentDidMount() {
     BackHandler.addEventListener("hardwareBackPress", this.handleBackButton);
+    userStore.asyncUser();
   }
   componentWillUnmount() {
     BackHandler.removeEventListener("hardwareBackPress", this.handleBackButton);
@@ -49,11 +50,35 @@ class HomeScreen extends Component {
           style={campusStyle.View.mainItemTouchItem}
           activeOpacity={0.5}
           underlayColor="#DDDDDD"
-          onPress={() =>
-            navigation.navigate("모든 채팅방 목록", {
-              filter: filter,
-            })
-          }
+          onPress={async () => {
+            let status = userStore.user.n;
+            if (status == 1) {
+              navigation.navigate("모든 채팅방 목록", {
+                filter: filter,
+              });
+            } else if (status == 0) {
+              //미인증 0인경우
+              alert(
+                "현재 학생증 인증대기중입니다.\n 1~2일이 지나도 변함이 없을경우\n 설정->문의하기를 통해 알려주세요."
+              );
+            } else if (status == 2) {
+              alert(
+                "학생증 인증이 거부되었습니다.\n 학생증 재인증은 설정->문의하기를 통해 사진을 전송해주세요."
+              );
+            } else {
+              // 정지상태인경우
+              let servertime = await anotherStore.servertime();
+              if (new Date(servertime) > new Date(status)) {
+                alert("정지가 풀렸습니다.");
+                userStore.blockEnd();
+                navigation.navigate("모든 채팅방 목록", {
+                  filter: filter,
+                });
+              }
+              if (new Date(servertime) < new Date(status))
+                alert(status + "일까지 정지입니다.");
+            }
+          }}
         >
           <View style={campusStyle.View.default}>
             <Image source={imageURL} style={campusStyle.Image.middleSizemb10} />

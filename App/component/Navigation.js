@@ -20,6 +20,8 @@ import MychatScreen from "MychatScreen";
 import campusStyle from "style";
 const Tab = createBottomTabNavigator();
 import { bbsStore, userStore, anotherStore } from "store";
+import LoadingScreen from "./Login/LoadingScreen";
+
 //import { observer, inject } from "mobx-react";
 export default class Navigation extends Component {
   constructor(props) {
@@ -30,6 +32,26 @@ export default class Navigation extends Component {
     };
   }
   render() {
+    const modalOptions = {
+      headerShown: false,
+      cardStyle: { backgroundColor: "transparent" },
+      cardOverlayEnabled: true,
+      cardStyleInterpolator: ({ current: { progress } }) => ({
+        cardStyle: {
+          opacity: progress.interpolate({
+            inputRange: [0, 0.5, 0.9, 1],
+            outputRange: [0, 0.1, 0.3, 0.7],
+          }),
+        },
+        overlayStyle: {
+          opacity: progress.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, 0.6],
+            extrapolate: "clamp",
+          }),
+        },
+      }),
+    };
     if (!userStore.isKey()) {
       alert("로그아웃되었습니다.");
       this.props.navigation.navigate("Login");
@@ -89,6 +111,11 @@ export default class Navigation extends Component {
               name="채팅방정보"
               options={showNavOption}
               component={chatinfo}
+            />
+            <HomeStack.Screen
+              options={modalOptions}
+              name="loading"
+              component={LoadingScreen}
             />
           </HomeStack.Navigator>
         );

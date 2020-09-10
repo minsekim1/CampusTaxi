@@ -101,6 +101,7 @@ function HomeScreen({ navigation }) {
 }
 //내 정보: 회원정보 수정페이지
 function clientChangePage({ navigation: { goBack } }) {
+  userStore.asyncUser();
   const originName = userStore.user.h; //원래이름
   const [clientName, onChangeName] = useState(originName);
   const originNickName = userStore.user.i; //원래닉네임
@@ -310,7 +311,7 @@ function clientChangePage({ navigation: { goBack } }) {
             {userStore.user.n == 1 ? "완료" : "인증처리중"}
           </Text>
         </View>
-        <View style={{ flex: 1 }}>
+        {/* <View style={{ flex: 1 }}>
           <Button
             containerStyle={{ borderRadius: 100 }}
             titleStyle={{ fontSize: 10, fontWeight: "100" }}
@@ -320,8 +321,8 @@ function clientChangePage({ navigation: { goBack } }) {
             }}
             title="학생증 재인증"
           ></Button>
-          {/* <Input type="file" name="file" onChange={null}/> */}
-        </View>
+          <Input type="file" name="file" onChange={null}/>
+        </View> */}
       </View>
       <Divider
         style={{ marginTop: 20, marginBottom: 20, backgroundColor: "#D2D2D2" }}
@@ -443,7 +444,7 @@ class clientpage extends React.Component {
             </Text>
             <Observer>
               {() => (
-                <Text style={{ marginBottom: 10 }}>{userStore.user.f}</Text>
+                <Text style={{ marginBottom: 10 }}>{userStore.userkey}</Text>
               )}
             </Observer>
           </View>
@@ -466,17 +467,40 @@ class clientpage extends React.Component {
           학생증인증
         </Text>
         <Observer>
-          {() => (
-            <Text
-              style={
-                userStore.user.n == 1
-                  ? { marginBottom: 10, color: "#27BE5E" }
-                  : { marginBottom: 10, color: "#F83C3C" }
-              }
-            >
-              {userStore.user.n == 1 ? "완료" : "인증처리중"}
-            </Text>
-          )}
+          {() => {
+            let status = userStore.user.n;
+            switch (status) {
+              case 0:
+                return (
+                  <Text style={{ marginBottom: 10, color: "#F83C3C" }}>
+                    미인증
+                  </Text>
+                );
+                break;
+              case 1:
+                return (
+                  <Text style={{ marginBottom: 10, color: "#27BE5E" }}>
+                    인증완료
+                  </Text>
+                );
+                break;
+              case 2:
+                return (
+                  <Text style={{ marginBottom: 10, color: "#F83C3C" }}>
+                    인증거부-문의필요
+                  </Text>
+                );
+                break;
+              default:
+                return (
+                  <Text style={{ marginBottom: 10, color: "#F83C3C" }}>
+                    {status}까지 정지
+                  </Text>
+                );
+
+                break;
+            }
+          }}
         </Observer>
 
         <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
@@ -484,9 +508,9 @@ class clientpage extends React.Component {
           <Button
             style={{ borderRadius: 100 }}
             containerStyle={{ borderRadius: 100 }}
-            buttonStyle={{ backgroundColor: "#172864", width: 189 }}
-            title="회원정보 수정"
-            onPress={() => navigation.navigate("회원정보 수정")}
+            buttonStyle={{ backgroundColor: "gray", width: 189 }} //172864
+            title="회원정보 수정(현재 미지원)"
+            onPress={() => {}} //navigation.navigate("회원정보 수정")
           />
         </View>
       </ScrollView>
