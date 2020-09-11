@@ -12,11 +12,6 @@ export default class UserStore {
   //setKey: 유저키를 아이디/토큰으로 설정
   bbsDB = (name) => firebase.database().ref("bbs/data/" + name);
   userDB = (name) => firebase.database().ref("user/data/" + name);
-  blockEnd() {
-    if (this.userkey != null) {
-      this.userDB(this.userkey + "/n").set(1);
-    }
-  }
   asyncUser() {
     if (this.userkey != null) {
       this.userDB(this.userkey).on("value", (snap) => {
@@ -146,6 +141,10 @@ export default class UserStore {
     alert(JSON.stringify(this.user));
   }
   async findUserByAttributes(attributes, value) {
+    //   onPress={() => {
+    //     userStore
+    //       .findUserByAttributes("a", "서울 노원구")
+    //       .then((result) => alert(result));
     const ref = firebase
       .database()
       .ref("user/data")
