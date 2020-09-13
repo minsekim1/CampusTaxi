@@ -276,32 +276,51 @@ export class FindPw4 extends Component {
   render() {
     const { navigation } = this.props;
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>새로 사용할 비밀번호를 입력해 주세요.</Text>
-        <Text>영문, 숫자, 특수문자를 섞어 사용하면 더욱 안전합니다.</Text>
-        <TextInput
-          value={this.state.newPw}
-          onChangeText={(val) => this.onChangednewPw(val)}
-          maxLength={20}
-          placeholder="비밀번호"
-        />
-        <TextInput
-          value={this.state.newPwCheck}
-          onChangeText={(val) => this.onChangednewPwCheck(val)}
-          maxLength={20}
-          placeholder="비밀번호확인"
-        />
-        <Button
-          title="비밀번호 재설정하기"
-          onPress={() =>
-            this.pwChange(
-              this.state.id,
-              this.state.newPw,
-              this.state.newPwCheck,
-              navigation
-            )
-          }
-        />
+      <View style={{ flex: 1, alignItems: "center", marginTop: 20, }}>
+        <View style={{flex: 1,}}> 
+          <Text style={{fontSize: 18, fontWeight: "bold"}}> 새로 사용할 비밀번호를 입력해 주세요.</Text>
+          <Text style={[find_style.detail_explain_text, {textAlign: "center"}]}> 영문, 숫자, 특수문자를 섞어 사용하면 더욱 안전합니다. </Text>
+          
+          <View style={{marginTop: 50,}}>
+            <View>
+            <TextInput
+              value={this.state.newPw}
+              onChangeText={(val) => this.onChangednewPw(val)}
+              maxLength={20}
+              placeholder="새 비밀번호"
+              style={[find_style.input_text, {textAlign: "center"}]}
+              secureTextEntry={true}
+            />
+            </View>
+            <View style={{marginTop: 10,}}>
+            <TextInput
+              value={this.state.newPwCheck}
+              onChangeText={(val) => this.onChangednewPwCheck(val)}
+              maxLength={20}
+              placeholder="새 비밀번호확인"
+              placeholderStyle={{alignSelf: "center",}}
+              style={[find_style.input_text, {textAlign: "center"}]}
+              secureTextEntry={true}
+            />
+            </View>
+          </View>
+        </View>
+        <View style={{flex: 1,}}>
+          <View style={find_style.confirm_btn}>
+          <TouchableOpacity
+            onPress={() =>
+              this.pwChange(
+                this.state.id,
+                this.state.newPw,
+                this.state.newPwCheck,
+                navigation
+              )
+            }
+          >
+          <Text style={find_style.confirm_text}> 비밀번호 재설정 </Text>
+          </TouchableOpacity>
+          </View>
+        </View>
       </View>
     );
   }
@@ -315,12 +334,19 @@ export class FindPw5 extends Component {
   render() {
     const { navigation } = this.props;
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>비밀번호 재설정이 완료 됐습니다.</Text>
-        <Button
-          title="로그인 하러 가기"
-          onPress={() => navigation.navigate("로그인")}
-        />
+      <View style={{ flex: 1, alignItems: "center" }}>
+        <View style={{flex: 1, justifyContent: "center"}}>
+          <Text style={{fontSize: 18, fontWeight: "bold"}}>비밀번호 재설정이 완료 됐습니다.</Text>
+        </View>
+        <View style={{flex: 1,}}>
+          <View style={find_style.confirm_btn}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("로그인")}
+          >
+            <Text style={find_style.confirm_text}> 로그인 하러 가기 </Text>
+          </TouchableOpacity>
+          </View>
+        </View>
       </View>
     );
   }

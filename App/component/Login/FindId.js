@@ -213,18 +213,33 @@ export class FindId3 extends Component {
 
     //
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>회원님의 아이디는 </Text>
-        <Text>{this.state.id}</Text>
-        <Text>입니다.</Text>
-        <Button
-          title="로그인 하러 가기"
-          onPress={() => navigation.navigate("로그인")}
-        />
-        <Button
-          title="비밀번호찾기"
-          onPress={() => navigation.navigate("비밀번호 찾기")}
-        />
+      <View style={{ flex: 1, alignItems: "center" }}>
+        <View style={{flex: 1, justifyContent: "center", width: "80%",}}>
+          <View style={{marginBottom: 10,}}>
+            <Text style={{fontSize: 18, textAlign: "center"}}>회원님의 아이디는 </Text>
+          </View>
+          <View style={{marginBottom: 10,}}>
+            <Text style={[find_style.input_text, {textAlign: "center"}]}>{this.state.id}</Text>
+          </View>
+          <Text style={{fontSize: 18, textAlign: "center"}}>입니다.</Text>
+        </View>
+        
+        <View style={{flex: 1,}}>
+          <View style={[find_style.confirm_btn,{marginBottom: 20,}]}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("로그인")}
+          >
+            <Text style={find_style.confirm_text}> 로그인 하러가기 </Text>
+          </TouchableOpacity>
+          </View>
+          <View style={find_style.confirm_btn}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("비밀번호 찾기")}
+          >
+            <Text style={find_style.confirm_text}> 비밀번호 찾기 </Text>
+          </TouchableOpacity>
+          </View>
+        </View>
       </View>
     );
   }
