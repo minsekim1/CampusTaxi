@@ -22,7 +22,19 @@ export default class WebLogin extends Component {
       api: this.props.route.params.api, //"kakao", "naver",
     };
   }
-
+  //region 뒤로가기막기
+  componentDidMount() {
+    BackHandler.addEventListener("hardwareBackPress", this.handleBackButton);
+    userStore.asyncUser();
+  }
+  componentWillUnmount() {
+    BackHandler.removeEventListener("hardwareBackPress", this.handleBackButton);
+  }
+  handleBackButton() {
+    //ToastAndroid.show("Back button is pressed", ToastAndroid.SHORT);
+    return true;
+  }
+  //endregion 뒤로가기막기
   webViewEnd = async (event, props) => {
     //console.log(this.props.route.params.uri);
     const result = JSON.parse(event.nativeEvent.data);

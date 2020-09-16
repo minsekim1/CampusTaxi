@@ -18,6 +18,8 @@ export default class chatroomScreen extends Component {
       chattingData: [],
       refreshing: false,
       time: new Date(),
+      textSearch: "",
+      isVision: false
     };
   }
 
@@ -66,6 +68,12 @@ export default class chatroomScreen extends Component {
       this.setState({ textInput: "" }); //Input의 채팅 내용을 지웁니다.
       this.flatListRef.scrollToEnd({ animated: false }); // 채팅을 가장 아래로 내립니다.
     }
+  }
+  
+  setVision(Bool) {
+    this.setState({
+      isVision: Bool
+    });
   }
 
   //#endregion
@@ -159,25 +167,46 @@ export default class chatroomScreen extends Component {
                     title=""
                     icon={<Icon name="search" size={24} color="white" />}
                     onPress={() => {
-                      let result = this.state.chattingData;
-                      for (let i = 0; i < result.length; i++) {
-                        /* 
-                        '테스트'라는 메세지가 있을 경우, 그 메세지만 출력하도록 함.
-                        TODO INPUT을 통해 값을 저장(let filterstring = this.state.filterstring)해서 모든 JSON 문자를 비교하도록 함.
-                        */
-                        if (result[i]["dd"] == "테스트") {
-                          // console.log(result[i]["dd"]);
-                          // TODO [APPLY text background highlight style code]
-                          this.flatListRef.scrollToIndex({
-                            animated: true,
-                            index: i
-                          });
-                        }
-                      }
-                      console.log("테스트로 이동 완료 되었습니다.");
-                      // setFilterVisible(true);
+                      this.setVision(!this.state.isVision);
+                      console.log(this.state.isVision + "입니다.");
                     }}
                   />
+                  {this.state.isVision ? (
+                  <Modal
+                    isVisible={this.state.isVision}
+                    style={campusStyle.Modal.modalStyle}
+                  >
+                    <View style={campusStyle.Modal.view}>
+                      <Header
+                        containerStyle={campusStyle.Modal.container}
+                        centerComponent={{
+                          text: "검색",
+                          style: campusStyle.Modal.component,
+                        }}
+                      />
+                      <Input type="text" name="TextSearch" onChange={(text) => {
+                        this.setState({
+                          textSearch: text
+                        })
+                      }} autoFocus />
+                      <Button
+                        title="검색하기"
+                        onPress={() => {
+                          let result = this.state.chattingData;
+                          for (let i = 0; i < result.length; i++) {
+                            if (result[i]["dd"] == this.state.textSearch) {
+                              this.flatListRef.scrollToIndex({
+                                animated: true,
+                                index: i
+                              });
+                            }
+                          }
+                        }}
+                      />
+                    </View>
+                  </Modal>
+                  ) : null
+                  }
                   <Button
                     type="clear"
                     title=""
@@ -382,9 +411,11 @@ import {
   Image,
   StatusBar,
 } from "react-native";
-import { Header, Icon, Button } from "react-native-elements";
+import { Header, Icon, Button, Input } from "react-native-elements";
 import campusStyle from "style";
 import { TextInput } from "react-native-gesture-handler";
 import crown from "image/crown.png";
 const firebase = require("firebase");
-import { bbsStore, userStore, anotherStore } from "store";
+import { bbsStore, userStore, anotherStore } from "store";import { set } from "mobx";
+import { Modal } from "react-native-paper";
+

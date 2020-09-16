@@ -200,7 +200,7 @@ export default class Navigation extends Component {
           <Tab.Screen
             name="지도"
             component={MapScreen}
-            initialParams={{ url: "https://m.map.naver.com/" }}
+            initialParams={{ url: "https://map.kakao.com/" }}
           />
           {/* <Tab.Screen name="알림" component={AlramScreen} /> */}
           <Tab.Screen name="설정" component={SettingScreen} />

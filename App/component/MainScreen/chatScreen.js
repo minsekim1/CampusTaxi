@@ -29,23 +29,28 @@ export default function chatScreen({ route, navigation }) {
         .database()
         .ref("user/data/" + userStore.userkey + "/c")
         .once("value", (snap) => {
-          for (const [key, value] of Object.entries(snap.val())) {
-            if (value == 1 && bbskey != key) {
-              //console.log(value + "  " + key);
-              // 접속한 방 중에서 다른 방을 조사
-              firebase
-                .database()
-                .ref("bbs/data/" + key + "/c")
-                .once("value", (snap2) => {
-                  //다른방이 같은 filter 일경우 못들어감
-                  if (snap2.val() == filter) {
-                    result = false;
-                    alert(
-                      "채팅방은 카테고리별로 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요."
-                    );
-                  }
-                });
+          if (snap.val() != null)
+            for (const [key, value] of Object.entries(snap.val())) {
+              if (value == 1 && bbskey != key) {
+                //console.log(value + "  " + key);
+                // 접속한 방 중에서 다른 방을 조사
+                firebase
+                  .database()
+                  .ref("bbs/data/" + key + "/c")
+                  .once("value", (snap2) => {
+                    //다른방이 같은 filter 일경우 못들어감
+                    if (snap2.val() == filter) {
+                      result = false;
+                      alert(
+                        "채팅방은 카테고리별로 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요."
+                      );
+                    }
+                  });
+              }
             }
+          else {
+            alert("삭제된 방입니다.");
+            return false;
           }
         });
       return result;
@@ -254,522 +259,546 @@ export default function chatScreen({ route, navigation }) {
     "23:30",
   ];
   //#endregion Hooks & functions
-  
+  const [loading, setLoadingModal] = useState(false);
   return (
     <>
-      <Header
-        containerStyle={{
-          height: 64,
-        }}
-        backgroundColor="#0D3664"
-        leftComponent={
-          <Button
-            type="clear"
-            title=""
-            icon={<Icon name="arrow-back" size={24} color="white" />}
-            onPress={() => navigation.goBack()}
-          ></Button>
-        }
-        centerComponent={{
-          text: filter + " 채팅방 목록",
-          style: campusStyle.Text.middleBold,
-        }}
-        rightComponent={
-          <View style={campusStyle.View.row}>
-            <Button
-              type="clear"
-              title=""
-              icon={<Icon name="filter-list" size={24} color="white" />}
-              onPress={() => {
-                setFilterVisible(true);
-              }}
-            />
-            <Button
-              type="clear"
-              title=""
-              icon={<Icon name="search" size={24} color="white" />}
-              onPress={() => {
-                setSearchVisible(true);
-              }}
-            />
-          </View>
-        }
-      />
-      {/* 채팅목록 출력부분 */}
-      <Observer>
-        {() => (
-          <FlatList
-            key={(item, i) => String(i)}
-            keyExtractor={(item, index) => String(index)}
-            data={bbsStore.typebbs}
-            renderItem={({ item, index }) => {
-              return (
-                <TouchableOpacity
-                  onPress={async () => {
-                    let isEnter = await checkUserEnterChatRoom(
-                      item.h,
-                      item.b,
-                      filter
-                    );
-                    if (isEnter) {
-                      navigation.navigate("채팅방", {
-                        bbskey: item.b,
-                        gender: item.h,
-                        leadername: item.i,
-                        startplace: item.n,
-                        endplace: item.g,
-                        mygender: mygender,
-                        myname: myname,
-                        meetingdate: item.j,
-                        personmember: item.i,
-                        personmax: item.k,
-                      });
-                      firebase
-                        .database()
-                        .ref("bbs/data/" + item.b + "/l/" + userStore.userkey)
-                        .set(1);
-                      firebase
-                        .database()
-                        .ref("user/data/" + userStore.userkey + "/c/" + item.b)
-                        .set(1);
-                    }
+      {loading == false ? (
+        <>
+          <Header
+            containerStyle={{
+              height: 64,
+            }}
+            backgroundColor="#0D3664"
+            leftComponent={
+              <Button
+                type="clear"
+                title=""
+                icon={<Icon name="arrow-back" size={24} color="white" />}
+                onPress={() => navigation.goBack()}
+              ></Button>
+            }
+            centerComponent={{
+              text: filter + " 채팅방 목록",
+              style: campusStyle.Text.middleBold,
+            }}
+            rightComponent={
+              <View style={campusStyle.View.row}>
+                <Button
+                  type="clear"
+                  title=""
+                  icon={<Icon name="filter-list" size={24} color="white" />}
+                  onPress={() => {
+                    setFilterVisible(true);
                   }}
-                  style={{ backgroundColor: "white", padding: 10 }}
-                >
-                  <View style={campusStyle.View.row}>
-                    <View
-                      style={{
-                        borderRadius: 100,
-                        width: 62,
-                        height: 62,
-                        backgroundColor:
-                          item.h == 0
-                            ? "#579FEE"
-                            : item.h == 1
-                            ? "#C278DE"
-                            : "#3A3A3A",
-                        justifyContent: "center",
-                        alignItems: "center",
+                />
+                <Button
+                  type="clear"
+                  title=""
+                  icon={<Icon name="search" size={24} color="white" />}
+                  onPress={() => {
+                    setSearchVisible(true);
+                  }}
+                />
+              </View>
+            }
+          />
+          {/* 채팅목록 출력부분 */}
+          <Observer>
+            {() => (
+              <FlatList
+                key={(item, i) => String(i)}
+                keyExtractor={(item, index) => String(index)}
+                data={bbsStore.typebbs}
+                renderItem={({ item, index }) => {
+                  return (
+                    <TouchableOpacity
+                      onPress={async () => {
+                        let isEnter = await checkUserEnterChatRoom(
+                          item.h,
+                          item.b,
+                          filter
+                        );
+                        if (isEnter) {
+                          navigation.navigate("채팅방", {
+                            bbskey: item.b,
+                            gender: item.h,
+                            leadername: item.i,
+                            startplace: item.n,
+                            endplace: item.g,
+                            mygender: mygender,
+                            myname: myname,
+                            meetingdate: item.j,
+                            personmember: item.i,
+                            personmax: item.k,
+                          });
+                          firebase
+                            .database()
+                            .ref(
+                              "bbs/data/" + item.b + "/l/" + userStore.userkey
+                            )
+                            .set(1);
+                          firebase
+                            .database()
+                            .ref(
+                              "user/data/" + userStore.userkey + "/c/" + item.b
+                            )
+                            .set(1);
+                        }
                       }}
+                      style={{ backgroundColor: "white", padding: 10 }}
                     >
-                      <Text style={campusStyle.Text.middleBold}>{index}</Text>
-                      <Text style={campusStyle.Text.middleBold}>
-                        {item.h == 0 ? "남자" : item.h == 1 ? "여자" : "모두"}
-                      </Text>
-                    </View>
-                    <View style={{ flex: 6 }}>
                       <View style={campusStyle.View.row}>
-                        <Image
-                          style={{ width: 23, height: 15, marginLeft: 10 }}
-                          source={crown}
-                        />
-                        <Text>{item.i}</Text>
+                        <View
+                          style={{
+                            borderRadius: 100,
+                            width: 62,
+                            height: 62,
+                            backgroundColor:
+                              item.h == 0
+                                ? "#579FEE"
+                                : item.h == 1
+                                ? "#C278DE"
+                                : "#3A3A3A",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Text style={campusStyle.Text.middleBold}>
+                            {index}
+                          </Text>
+                          <Text style={campusStyle.Text.middleBold}>
+                            {item.h == 0
+                              ? "남자"
+                              : item.h == 1
+                              ? "여자"
+                              : "모두"}
+                          </Text>
+                        </View>
+                        <View style={{ flex: 6 }}>
+                          <View style={campusStyle.View.row}>
+                            <Image
+                              style={{ width: 23, height: 15, marginLeft: 10 }}
+                              source={crown}
+                            />
+                            <Text>{item.i}</Text>
+                          </View>
+                          <Text style={{ marginLeft: 10 }}>
+                            출발지:{item.n}
+                          </Text>
+                          <Text style={{ marginLeft: 10 }}>
+                            도착지:{item.g}
+                          </Text>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          {(() => {
+                            if (item.k === item.m)
+                              return (
+                                <Text style={campusStyle.Text.red}>
+                                  {item.m}/{item.k}
+                                </Text>
+                              );
+                            else
+                              return (
+                                <Text>
+                                  {item.m}/{item.k}
+                                </Text>
+                              );
+                          })()}
+                        </View>
+                        <View style={{ flex: 3, alignItems: "center" }}>
+                          <Text style={campusStyle.Text.grayDDark}>
+                            탑승시간▼
+                          </Text>
+                          <Text style={campusStyle.Text.grayDDark}>
+                            {anotherStore.toLocal(item.f)}
+                          </Text>
+                        </View>
                       </View>
-                      <Text style={{ marginLeft: 10 }}>출발지:{item.n}</Text>
-                      <Text style={{ marginLeft: 10 }}>도착지:{item.g}</Text>
+                    </TouchableOpacity>
+                  );
+                }}
+              />
+            )}
+          </Observer>
+
+          {/* 방만들기 버튼부분 */}
+          <View style={campusStyle.View.createRoomView}>
+            <TouchableOpacity
+              style={campusStyle.Button.createRoomBtn}
+              onPress={() => {
+                setCreateRoomVisible(!isCreateRoomVisible);
+              }}
+            >
+              <Icon name="add" size={32} color="white" />
+              <Text style={campusStyle.Text.smallSize}>방만들기</Text>
+            </TouchableOpacity>
+          </View>
+          {/* 모달창 */}
+          {/* 방만들기모달창 */}
+          {isCreateRoomVisible ? (
+            <Modal
+              backdropColor="rgba(0,0,0,0)"
+              isVisible={isCreateRoomVisible}
+              style={campusStyle.Modal.modalStyle}
+            >
+              <View style={campusStyle.Modal.view}>
+                <Header
+                  containerStyle={campusStyle.Modal.container}
+                  centerComponent={{
+                    text: "방만들기",
+                    style: campusStyle.Modal.component,
+                  }}
+                />
+                <View style={{ padding: 10 }}>
+                  <Text>카테고리</Text>
+                  <Picker
+                    selectedValue={createRoomCategory}
+                    onValueChange={(itemValue) => {
+                      setCreateRoomCategory(itemValue);
+                    }}
+                  >
+                    <Picker.Item key={"gray"} color="gray" label={filter} />
+                    {menuList.map((item) =>
+                      item != filter ? (
+                        <Picker.Item
+                          key={(item, i) => String(i)}
+                          label={item}
+                          value={item}
+                        />
+                      ) : null
+                    )}
+                  </Picker>
+                  <Text>출발장소</Text>
+                  <Picker
+                    selectedValue={createRoomstartplace}
+                    onValueChange={(itemValue) => {
+                      setCreateRoomstartplace(itemValue);
+                    }}
+                  >
+                    <Picker.Item
+                      key={""}
+                      value=""
+                      label="출발장소를 선택해주세요."
+                    />
+                    {anotherStore.placeStart.map((item) => (
+                      <Picker.Item
+                        key={(item, i) => String(i)}
+                        label={item}
+                        value={item}
+                      />
+                    ))}
+                  </Picker>
+                  <Text>도착장소</Text>
+                  <Picker
+                    selectedValue={createRoomendplace}
+                    onValueChange={(itemValue) => {
+                      setCreateRoomendplace(itemValue);
+                    }}
+                  >
+                    <Picker.Item
+                      key={""}
+                      value=""
+                      label="도착장소를 선택해주세요."
+                    />
+                    {anotherStore.placeEnd.map((item) => (
+                      <Picker.Item
+                        key={(item, i) => String(i)}
+                        label={item}
+                        value={item}
+                      />
+                    ))}
+                  </Picker>
+                  <Text>탑승 시간</Text>
+                  <Text style={campusStyle.Text.center}>
+                    {anotherStore.toLocal(date)}
+                  </Text>
+                  <View style={campusStyle.View.row}>
+                    <View style={campusStyle.View.flex}>
+                      <Button
+                        buttonStyle={campusStyle.Button.marginTopAndBottom5}
+                        onPress={showDatepicker}
+                        title="날짜 선택"
+                      />
                     </View>
-                    <View style={{ flex: 1 }}>
-                      {(() => {
-                        if (item.k === item.m)
-                          return (
-                            <Text style={campusStyle.Text.red}>
-                              {item.m}/{item.k}
-                            </Text>
-                          );
-                        else
-                          return (
-                            <Text>
-                              {item.m}/{item.k}
-                            </Text>
-                          );
-                      })()}
-                    </View>
-                    <View style={{ flex: 3, alignItems: "center" }}>
-                      <Text style={campusStyle.Text.grayDDark}>탑승시간▼</Text>
-                      <Text style={campusStyle.Text.grayDDark}>
-                        {anotherStore.toLocal(item.f)}
-                      </Text>
+                    <View style={campusStyle.View.flex}>
+                      <Button
+                        buttonStyle={campusStyle.Button.marginTopAndBottom5}
+                        onPress={showTimepicker}
+                        title="시간 선택"
+                      />
                     </View>
                   </View>
-                </TouchableOpacity>
-              );
-            }}
-          />
-        )}
-      </Observer>
-
-      {/* 방만들기 버튼부분 */}
-      <View style={campusStyle.View.createRoomView}>
-        <TouchableOpacity
-          style={campusStyle.Button.createRoomBtn}
-          onPress={() => {
-            setCreateRoomVisible(!isCreateRoomVisible);
-          }}
-        >
-          <Icon name="add" size={32} color="white" />
-          <Text style={campusStyle.Text.smallSize}>방만들기</Text>
-        </TouchableOpacity>
-      </View>
-      {/* 모달창 */}
-      {/* 방만들기모달창 */}
-      {isCreateRoomVisible ? (
-        <Modal
-          backdropColor="rgba(0,0,0,0)"
-          isVisible={isCreateRoomVisible}
-          style={campusStyle.Modal.modalStyle}
-        >
-          <View style={campusStyle.Modal.view}>
-            <Header
-              containerStyle={campusStyle.Modal.container}
-              centerComponent={{
-                text: "방만들기",
-                style: campusStyle.Modal.component,
-              }}
-            />
-            <View style={{ padding: 10 }}>
-              <Text>카테고리</Text>
-              <Picker
-                selectedValue={createRoomCategory}
-                onValueChange={(itemValue) => {
-                  setCreateRoomCategory(itemValue);
-                }}
-              >
-                <Picker.Item key={"gray"} color="gray" label={filter} />
-                {menuList.map((item) =>
-                  item != filter ? (
-                    <Picker.Item
-                      key={(item, i) => String(i)}
-                      label={item}
-                      value={item}
+                  {/* 날짜선택 Picker창 */}
+                  {show && (
+                    <DateTimePicker
+                      testID="dateTimePicker"
+                      value={date}
+                      mode={mode}
+                      is24Hour={true}
+                      display="default"
+                      onChange={onChange}
                     />
-                  ) : null
-                )}
-              </Picker>
-              <Text>출발장소</Text>
-              <Picker
-                selectedValue={createRoomstartplace}
-                onValueChange={(itemValue) => {
-                  setCreateRoomstartplace(itemValue);
-                }}
-              >
-                <Picker.Item
-                  key={""}
-                  value=""
-                  label="출발장소를 선택해주세요."
-                />
-                {anotherStore.placeStart.map((item) => (
-                  <Picker.Item
-                    key={(item, i) => String(i)}
-                    label={item}
-                    value={item}
-                  />
-                ))}
-              </Picker>
-              <Text>도착장소</Text>
-              <Picker
-                selectedValue={createRoomendplace}
-                onValueChange={(itemValue) => {
-                  setCreateRoomendplace(itemValue);
-                }}
-              >
-                <Picker.Item
-                  key={""}
-                  value=""
-                  label="도착장소를 선택해주세요."
-                />
-                {anotherStore.placeEnd.map((item) => (
-                  <Picker.Item
-                    key={(item, i) => String(i)}
-                    label={item}
-                    value={item}
-                  />
-                ))}
-              </Picker>
-              <Text>탑승 시간</Text>
-              <Text style={campusStyle.Text.center}>
-                {anotherStore.toLocal(date)}
-              </Text>
-              <View style={campusStyle.View.row}>
-                <View style={campusStyle.View.flex}>
-                  <Button
-                    buttonStyle={campusStyle.Button.marginTopAndBottom5}
-                    onPress={showDatepicker}
-                    title="날짜 선택"
-                  />
+                  )}
+                  <Text>탑승 인원</Text>
+                  <ButtonGroup
+                    selectedButtonStyle={{ backgroundColor: "#F8BD3C" }}
+                    textStyle={{ fontSize: 20 }}
+                    selectedIndex={createRoompersonmax - 2}
+                    onPress={(index) => setCreateRoompersonmax(index + 2)}
+                    buttons={["2", "3", "4"]}
+                  ></ButtonGroup>
+                  <Text>입장 제한 성별</Text>
+                  <ButtonGroup
+                    selectedButtonStyle={{ backgroundColor: "#F8BD3C" }}
+                    textStyle={{ fontSize: 16 }}
+                    selectedIndex={createRoomGender}
+                    onPress={(index) => {
+                      if (index == 0) {
+                        setCreateRoomGender(0);
+                        setCreateSelectGender(Number(userStore.user.d));
+                      } else {
+                        setCreateRoomGender(1);
+                        setCreateSelectGender(2);
+                      }
+                    }}
+                    buttons={["동성만", "남녀모두"]}
+                  ></ButtonGroup>
                 </View>
-                <View style={campusStyle.View.flex}>
+                <View style={campusStyle.View.rowflexBtnGroup}>
                   <Button
-                    buttonStyle={campusStyle.Button.marginTopAndBottom5}
-                    onPress={showTimepicker}
-                    title="시간 선택"
-                  />
-                </View>
-              </View>
-              {/* 날짜선택 Picker창 */}
-              {show && (
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={date}
-                  mode={mode}
-                  is24Hour={true}
-                  display="default"
-                  onChange={onChange}
-                />
-              )}
-              <Text>탑승 인원</Text>
-              <ButtonGroup
-                selectedButtonStyle={{ backgroundColor: "#F8BD3C" }}
-                textStyle={{ fontSize: 20 }}
-                selectedIndex={createRoompersonmax - 2}
-                onPress={(index) => setCreateRoompersonmax(index + 2)}
-                buttons={["2", "3", "4"]}
-              ></ButtonGroup>
-              <Text>입장 제한 성별</Text>
-              <ButtonGroup
-                selectedButtonStyle={{ backgroundColor: "#F8BD3C" }}
-                textStyle={{ fontSize: 16 }}
-                selectedIndex={createRoomGender}
-                onPress={(index) => {
-                  if (index == 0) {
-                    setCreateRoomGender(0);
-                    setCreateSelectGender(Number(userStore.user.d));
-                  } else {
-                    setCreateRoomGender(1);
-                    setCreateSelectGender(2);
-                  }
-                }}
-                buttons={["동성만", "남녀모두"]}
-              ></ButtonGroup>
-            </View>
-            <View style={campusStyle.View.rowflexBtnGroup}>
-              <Button
-                name="myButtonName"
-                buttonStyle={campusStyle.Button.groupActive}
-                title="방 생성"
-                onPress={() => {
-                  if (
-                    createRoomendplace == null ||
-                    createRoomstartplace == null
-                  ) {
-                    alert("출발지 또는 도착지를 선택해주세요.");
-                  } else {
-                    navigation.navigate("loading");
-                    let result = true;
-                    firebase
-                      .database()
-                      .ref("user/data/" + userStore.userkey + "/c")
-                      .once("value", async (snap) => {
-                        if (snap != null)
-                          for (const [key, value] of Object.entries(
-                            snap.val()
-                          )) {
-                            if (value == 1) {
-                              // 접속한 방 중에서 다른 방을 조사
-                              await firebase
-                                .database()
-                                .ref("bbs/data/" + key + "/c")
-                                .once("value", (snap2) => {
-                                  //다른방이 같은 filter 일경우 만듬
-                                  if (snap2.val() == filter) {
-                                    result = false;
-                                  }
-                                });
-                            }
-                          }
-                      });
-                    if (result) {
-                      bbsStore
-                        .addBbs(
-                          createRoomCategory,
-                          createRoomendplace,
-                          createSelectGender,
-                          userStore.user.i,
-                          date,
-                          createRoompersonmax,
-                          createRoomstartplace,
-                          userStore.userkey
-                        )
-                        .then((bbskey) => {
-                          navigation.goBack();
+                    name="myButtonName"
+                    buttonStyle={campusStyle.Button.groupActive}
+                    title="방 생성"
+                    onPress={() => {
+                      setLoadingModal(true);
+                      if (
+                        createRoomendplace == null ||
+                        createRoomstartplace == null
+                      ) {
+                        alert("출발지 또는 도착지를 선택해주세요.");
+                      } else {
+                        let result = true;
+                        firebase
+                          .database()
+                          .ref("user/data/" + userStore.userkey + "/c")
+                          .once("value", async (snap) => {
+                            if (snap != null)
+                              for (const [key, value] of Object.entries(
+                                snap.val()
+                              )) {
+                                if (value == 1) {
+                                  // 접속한 방 중에서 다른 방을 조사
+                                  await firebase
+                                    .database()
+                                    .ref("bbs/data/" + key + "/c")
+                                    .once("value", (snap2) => {
+                                      //다른방이 같은 filter 일경우 만듬
+                                      if (snap2.val() == filter) {
+                                        result = false;
+                                      }
+                                    });
+                                }
+                              }
+                          });
+                        if (result) {
+                          bbsStore
+                            .addBbs(
+                              createRoomCategory,
+                              createRoomendplace,
+                              createSelectGender,
+                              userStore.user.i,
+                              date,
+                              createRoompersonmax,
+                              createRoomstartplace,
+                              userStore.userkey
+                            )
+                            .then((bbskey) => {
+                              alert(
+                                "방이 생성되었습니다. 내 채팅에서 확인해주세요."
+                              );
+                              setCreateRoomVisible(false);
+                              setLoadingModal(false);
+                            });
+                        } else {
                           alert(
-                            "방이 생성되었습니다. 내 채팅에서 확인해주세요."
+                            "채팅방은 카테고리별로 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요."
                           );
-                        });
-                    } else {
-                      navigation.goBack();
-                      alert(
-                        "채팅방은 카테고리별로 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요."
-                      );
-                    }
-                  }
-                }}
-              />
-              <Button
-                name="myButtonName"
-                buttonStyle={campusStyle.Button.groupCancel}
-                title="취소"
-                onPress={() => setCreateRoomVisible(!isCreateRoomVisible)}
-              />
-            </View>
-          </View>
-        </Modal>
-      ) : null}
+                          setCreateRoomVisible(false);
+                          setLoadingModal(false);
+                        }
+                      }
+                    }}
+                  />
+                  <Button
+                    name="myButtonName"
+                    buttonStyle={campusStyle.Button.groupCancel}
+                    title="취소"
+                    onPress={() => setCreateRoomVisible(!isCreateRoomVisible)}
+                  />
+                </View>
+              </View>
+            </Modal>
+          ) : null}
 
-      {/* 검색모달창 */}
-      {isSearchVisible ? (
-        <Modal
-          backdropColor="rgba(0,0,0,0)"
-          isVisible={isSearchVisible}
-          style={campusStyle.Modal.modalStyle}
-        >
-          <View style={campusStyle.Modal.view}>
-            <Header
-              containerStyle={campusStyle.Modal.container}
-              centerComponent={{
-                text: "검색",
-                style: campusStyle.Modal.component,
-              }}
-            />
-            <Input type="text" name="Search" autoFocus />
-            <Button
-              title="Hide modal"
-              onPress={() => {
-                setSearchVisible(!setSearchVisible);
-              }}
-            />
-          </View>
-        </Modal>
-      ) : null}
-      {/* 필터모달창 */}
-      {isFilterVisible ? (
-        <Modal
-          backdropColor="rgba(0,0,0,0)"
-          isVisible={isFilterVisible}
-          style={campusStyle.Modal.modalStyle}
-        >
-          <View style={campusStyle.Modal.view}>
-            <Header
-              containerStyle={campusStyle.Modal.container}
-              centerComponent={{
-                text: "필터",
-                style: campusStyle.Modal.component,
-              }}
-            />
-            <View style={{ padding: 10 }}>
-              <Text>카테고리</Text>
-              <Picker
-                selectedValue={filterCategory}
-                style={{ height: 50 }}
-                onValueChange={(itemValue) => {
-                  setFilterCategory(itemValue);
-                }}
-              >
-                <Picker.Item label="등교" value="등교" />
-                <Picker.Item label="하교" value="하교" />
-                <Picker.Item label="야작" value="야작" />
-                <Picker.Item label="독서실" value="독서실" />
-                <Picker.Item label="PC방" value="PC방" />
-                <Picker.Item label="놀이동산" value="놀이동산" />
-                <Picker.Item label="클럽" value="클럽" />
-                <Picker.Item label="스키장" value="스키장" />
-                <Picker.Item label="오션월드" value="오션월드" />
-              </Picker>
-              <Text>출발장소</Text>
-              <Picker
-                selectedValue={filterStartplace}
-                style={{ height: 50 }}
-                onValueChange={(itemValue) => {
-                  setFilterStartplace(itemValue);
-                }}
-              >
-                <Picker.Item label="무관" value="무관" />
-                {startplace.map((item) => (
-                  <Picker.Item label={item} value={item} />
-                ))}
-              </Picker>
-              <Text>도착장소</Text>
-              <Picker
-                selectedValue={filterEndplace}
-                style={{ height: 50 }}
-                onValueChange={(itemValue) => {
-                  setFilterEndplace(itemValue);
-                }}
-              >
-                <Picker.Item label="무관" value="무관" />
-                {endplace.map((item) => (
-                  <Picker.Item label={item} value={item} />
-                ))}
-              </Picker>
-              <Text>탑승시간</Text>
-              <View style={campusStyle.View.row}>
-                <View style={campusStyle.View.flex}>
+          {/* 검색모달창 */}
+          {isSearchVisible ? (
+            <Modal
+              backdropColor="rgba(0,0,0,0)"
+              isVisible={isSearchVisible}
+              style={campusStyle.Modal.modalStyle}
+            >
+              <View style={campusStyle.Modal.view}>
+                <Header
+                  containerStyle={campusStyle.Modal.container}
+                  centerComponent={{
+                    text: "검색",
+                    style: campusStyle.Modal.component,
+                  }}
+                />
+                <Input type="text" name="Search" autoFocus />
+                <Button
+                  title="Hide modal"
+                  onPress={() => {
+                    setSearchVisible(!setSearchVisible);
+                  }}
+                />
+              </View>
+            </Modal>
+          ) : null}
+          {/* 필터모달창 */}
+          {isFilterVisible ? (
+            <Modal
+              backdropColor="rgba(0,0,0,0)"
+              isVisible={isFilterVisible}
+              style={campusStyle.Modal.modalStyle}
+            >
+              <View style={campusStyle.Modal.view}>
+                <Header
+                  containerStyle={campusStyle.Modal.container}
+                  centerComponent={{
+                    text: "필터",
+                    style: campusStyle.Modal.component,
+                  }}
+                />
+                <View style={{ padding: 10 }}>
+                  <Text>카테고리</Text>
                   <Picker
-                    selectedValue={filterMeetingTimeStart}
+                    selectedValue={filterCategory}
+                    style={{ height: 50 }}
                     onValueChange={(itemValue) => {
-                      setFilterMeetingTimeStart(itemValue);
+                      setFilterCategory(itemValue);
                     }}
                   >
-                    <Picker.Item label="전부" value="전부" />
-                    {timeLineStart.map((item) => (
+                    <Picker.Item label="등교" value="등교" />
+                    <Picker.Item label="하교" value="하교" />
+                    <Picker.Item label="야작" value="야작" />
+                    <Picker.Item label="독서실" value="독서실" />
+                    <Picker.Item label="PC방" value="PC방" />
+                    <Picker.Item label="놀이동산" value="놀이동산" />
+                    <Picker.Item label="클럽" value="클럽" />
+                    <Picker.Item label="스키장" value="스키장" />
+                    <Picker.Item label="오션월드" value="오션월드" />
+                  </Picker>
+                  <Text>출발장소</Text>
+                  <Picker
+                    selectedValue={filterStartplace}
+                    style={{ height: 50 }}
+                    onValueChange={(itemValue) => {
+                      setFilterStartplace(itemValue);
+                    }}
+                  >
+                    <Picker.Item label="무관" value="무관" />
+                    {startplace.map((item) => (
                       <Picker.Item label={item} value={item} />
                     ))}
                   </Picker>
-                </View>
-                <View style={campusStyle.View.flex}>
+                  <Text>도착장소</Text>
                   <Picker
-                    selectedValue={filterMeetingTimeEnd}
+                    selectedValue={filterEndplace}
+                    style={{ height: 50 }}
                     onValueChange={(itemValue) => {
-                      setFilterMeetingTimeEnd(itemValue);
+                      setFilterEndplace(itemValue);
                     }}
                   >
-                    <Picker.Item label="전부" value="전부" />
-                    {timeLineEnd.map((item) => (
+                    <Picker.Item label="무관" value="무관" />
+                    {endplace.map((item) => (
                       <Picker.Item label={item} value={item} />
                     ))}
                   </Picker>
+                  <Text>탑승시간</Text>
+                  <View style={campusStyle.View.row}>
+                    <View style={campusStyle.View.flex}>
+                      <Picker
+                        selectedValue={filterMeetingTimeStart}
+                        onValueChange={(itemValue) => {
+                          setFilterMeetingTimeStart(itemValue);
+                        }}
+                      >
+                        <Picker.Item label="전부" value="전부" />
+                        {timeLineStart.map((item) => (
+                          <Picker.Item label={item} value={item} />
+                        ))}
+                      </Picker>
+                    </View>
+                    <View style={campusStyle.View.flex}>
+                      <Picker
+                        selectedValue={filterMeetingTimeEnd}
+                        onValueChange={(itemValue) => {
+                          setFilterMeetingTimeEnd(itemValue);
+                        }}
+                      >
+                        <Picker.Item label="전부" value="전부" />
+                        {timeLineEnd.map((item) => (
+                          <Picker.Item label={item} value={item} />
+                        ))}
+                      </Picker>
+                    </View>
+                  </View>
+                  <Text>탑승인원</Text>
+                  <View style={campusStyle.View.row}>
+                    <View style={campusStyle.View.flex}>
+                      <Picker
+                        selectedValue={filterPersonMin}
+                        onValueChange={(itemValue) => {
+                          setFilterPersonMin(itemValue);
+                        }}
+                      >
+                        <Picker.Item label="1" value="1" />
+                        <Picker.Item label="2" value="2" />
+                        <Picker.Item label="3" value="3" />
+                        <Picker.Item label="4" value="4" />
+                      </Picker>
+                    </View>
+                    <View style={campusStyle.View.flex}>
+                      <Picker
+                        selectedValue={filterPersonMax}
+                        onValueChange={(itemValue) => {
+                          setFilterPersonMax(itemValue);
+                        }}
+                      >
+                        <Picker.Item label="1" value="1" />
+                        <Picker.Item label="2" value="2" />
+                        <Picker.Item label="3" value="3" />
+                        <Picker.Item label="4" value="4" />
+                      </Picker>
+                    </View>
+                  </View>
                 </View>
+                <Button
+                  title="Hide modal"
+                  onPress={() => {
+                    setFilterVisible(!isFilterVisible);
+                    setfiltingonoff(0);
+                  }}
+                />
+                <Button title="Check" onPress={getFiltferBbs} />
               </View>
-              <Text>탑승인원</Text>
-              <View style={campusStyle.View.row}>
-                <View style={campusStyle.View.flex}>
-                  <Picker
-                    selectedValue={filterPersonMin}
-                    onValueChange={(itemValue) => {
-                      setFilterPersonMin(itemValue);
-                    }}
-                  >
-                    <Picker.Item label="1" value="1" />
-                    <Picker.Item label="2" value="2" />
-                    <Picker.Item label="3" value="3" />
-                    <Picker.Item label="4" value="4" />
-                  </Picker>
-                </View>
-                <View style={campusStyle.View.flex}>
-                  <Picker
-                    selectedValue={filterPersonMax}
-                    onValueChange={(itemValue) => {
-                      setFilterPersonMax(itemValue);
-                    }}
-                  >
-                    <Picker.Item label="1" value="1" />
-                    <Picker.Item label="2" value="2" />
-                    <Picker.Item label="3" value="3" />
-                    <Picker.Item label="4" value="4" />
-                  </Picker>
-                </View>
-              </View>
-            </View>
-            <Button
-              title="Hide modal"
-              onPress={() => {
-                setFilterVisible(!isFilterVisible);
-                setfiltingonoff(0);
-              }}
-            />
-            <Button title="Check" onPress={getFiltferBbs} />
-          </View>
-        </Modal>
-      ) : null}
+            </Modal>
+          ) : null}
+        </>
+      ) : (
+        <LoadingComponent />
+      )}
     </>
   );
 }
@@ -796,4 +825,5 @@ import crown from "image/crown.png";
 const firebase = require("firebase");
 import { bbsStore, userStore, anotherStore } from "store";
 import { Observer } from "mobx-react";
+import LoadingComponent from "../Login/LoadingComponent";
 //#endregion
