@@ -3,7 +3,14 @@ import axios from "axios";
 import campusStyle from "style";
 import crown from "image/crown.png";
 import { Button } from "react-native-elements";
-import { StyleSheet, Text, View, Dimensions, TextInput } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import { Searchbar } from "react-native-paper";
 import MapView, {
   Polyline,
@@ -13,28 +20,7 @@ import MapView, {
   Marker,
 } from "react-native-maps";
 import * as Location from "expo-location";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
-const GooglePlacesInput = () => {
-  return (
-    <GooglePlacesAutocomplete
-      placeholder="Search"
-      onPress={(data, details = null) => {
-        // 'details' is provided when fetchDetails = true
-        console.log(data, details);
-      }}
-      onSubmitEditing={(r) => {
-        axios(
-          "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%EC%8A%A4%ED%83%80&key=AIzaSyBVIfNVsdQk6J56bD4CwZSPDyYlxF_XBe0&location=37.532600,127.024612&radius=2000&types=establishment"
-        ).then((res) => console.log(res));
-      }}
-      query={{
-        key: "AIzaSyB8izLhjVNePmGIEeSRnohWsoMMOThhOQ4",
-        language: "ko",
-      }}
-    />
-  );
-};
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -89,7 +75,31 @@ function MapScreen(props) {
       })();
     }
   }, []);
-  function placeSearch(keyword) {}
+  const [place, setPlace] = useState(null);
+  async function placeSearch(keyword) {
+    keyword = keyword.nativeEvent.text;
+    let location = await Location.getCurrentPositionAsync({});
+    let url =
+      "https://dapi.kakao.com/v2/local/search/keyword.json?page=1&size=15&query=" +
+      keyword +
+      "&x=" +
+      location.coords.longitude +
+      "&y=" +
+      location.coords.latitude +
+      "&radius=20000";
+    //두번째api:"https://dapi.kakao.com/v2/local/geo/coord2address.json?input_coord=WGS84&x=127.106604&y=37.64116";
+    let result = await fetch(url, {
+      method: "post",
+      headers: new Headers({
+        Authorization: "KakaoAK 2ffd2e667110415efb87f207cb33b8be",
+      }),
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        setPlace(responseData);
+      })
+      .done();
+  }
   function search() {
     if (startMarker != null && endMarker != null) {
       //https://api.mapbox.com/directions/v5/mapbox/walking/${출발지 longitude},${출발지latitude};${목적지 longitude},${목적지 latitude}?geometries=geojson&access_token=${Your_mapbox_Access_Token}
@@ -119,7 +129,6 @@ function MapScreen(props) {
   }
   return (
     <>
-      <GooglePlacesInput />
       <View style={{ alignItems: "center" }}>
         <Searchbar
           style={{
@@ -130,8 +139,22 @@ function MapScreen(props) {
           placeholder="Search"
           onChangeText={(query) => setFirstQuery(query)}
           value={firstQuery}
-          //onSubmitEditing={() => ()}
+          onSubmitEditing={(r) => placeSearch(r)}
         />
+        <View
+          style={{
+            width: "80%",
+            padding: 3,
+            position: "absolute",
+            top: 80,
+            zIndex: 1,
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
+          }}
+        >
+          <TouchableOpacity>
+            <View style={{}}></View>
+          </TouchableOpacity>
+        </View>
         <View
           style={{
             marginTop: 10,
