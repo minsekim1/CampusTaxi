@@ -1,10 +1,12 @@
 import React, { Component, useState, useEffect } from "react";
+import axios from "axios";
 import campusStyle from "style";
 import crown from "image/crown.png";
 import { Button } from "react-native-elements";
 import { StyleSheet, Text, View, Dimensions, TextInput } from "react-native";
 import { Searchbar } from "react-native-paper";
 import MapView, {
+  Polyline,
   Overlay,
   AnimatedRegion,
   Animated,
@@ -26,11 +28,11 @@ const styles = StyleSheet.create({
 
 import Constants from "expo-constants";
 function MapScreen(props) {
-  const [location, setLocation] = useState(null);
   const [startMarker, setSMarket] = useState(null);
   const [endMarker, setEMarket] = useState(null);
   const [firstQuery, setFirstQuery] = useState("");
   const [isStart, setStart] = useState(true);
+  const [path, setPath] = useState(null);
   const [region, setRegion] = useState({
     latitude: 37.64116,
     longitude: 127.106604,
@@ -59,7 +61,32 @@ function MapScreen(props) {
       })();
     }
   }, []);
-
+  function placeSearch(keyword) {
+    
+  }
+  function search() {
+    if (startMarker != null && endMarker != null) {
+      //https://api.mapbox.com/directions/v5/mapbox/walking/${출발지 longitude},${출발지latitude};${목적지 longitude},${목적지 latitude}?geometries=geojson&access_token=${Your_mapbox_Access_Token}
+      axios(
+        "https://api.mapbox.com/directions/v5/mapbox/walking/" +
+          startMarker.longitude +
+          "," +
+          startMarker.latitude +
+          ";" +
+          endMarker.longitude +
+          "," +
+          endMarker.latitude +
+          "?geometries=geojson&access_token=pk.eyJ1IjoibWluczk3IiwiYSI6ImNrZjljZnR2OTA2bGQyeHBleWQ3dnI4NzQifQ.JRKbjTvJM8a7wjqevYDReg"
+      ).then((res) => {
+        let coords = res.data.routes[0].geometry.coordinates.map((item) => {
+          return { latitude: item[1], longitude: item[0] };
+        });
+        setPath(coords);
+      });
+    } else {
+      alert("출발지 혹은 도착지 버튼을 누르고 지도 상에 위치를 클릭해주세요.");
+    }
+  }
   return (
     <>
       <View style={{ alignItems: "center" }}>
@@ -72,6 +99,7 @@ function MapScreen(props) {
           placeholder="Search"
           onChangeText={(query) => setFirstQuery(query)}
           value={firstQuery}
+          //onSubmitEditing={() => ()}
         />
         <View
           style={{
@@ -102,6 +130,13 @@ function MapScreen(props) {
             }
             title="도착지"
             onPress={() => setStart(false)}
+          />
+          <Button
+            containerStyle={{ width: "30%" }}
+            type={!isStart ? "outline" : "clear"}
+            buttonStyle={{ backgroundColor: "rgba(255, 255, 255, 0.8)" }}
+            title="경로탐색"
+            onPress={() => search()}
           />
         </View>
       </View>
@@ -143,6 +178,14 @@ function MapScreen(props) {
             coordinate={endMarker}
             title={"도착점"}
             description={""}
+          />
+        ) : null}
+        {path != null ? (
+          <Polyline
+            coordinates={path} // 연결될 선들의 좌표
+            strokeColor="red"
+            fillColor="rgba(255,0,0,0.5)"
+            strokeWidth={4}
           />
         ) : null}
         <Text
