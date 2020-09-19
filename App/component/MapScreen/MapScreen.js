@@ -13,6 +13,28 @@ import MapView, {
   Marker,
 } from "react-native-maps";
 import * as Location from "expo-location";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+
+const GooglePlacesInput = () => {
+  return (
+    <GooglePlacesAutocomplete
+      placeholder="Search"
+      onPress={(data, details = null) => {
+        // 'details' is provided when fetchDetails = true
+        console.log(data, details);
+      }}
+      onSubmitEditing={(r) => {
+        axios(
+          "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%EC%8A%A4%ED%83%80&key=AIzaSyBVIfNVsdQk6J56bD4CwZSPDyYlxF_XBe0&location=37.532600,127.024612&radius=2000&types=establishment"
+        ).then((res) => console.log(res));
+      }}
+      query={{
+        key: "AIzaSyB8izLhjVNePmGIEeSRnohWsoMMOThhOQ4",
+        language: "ko",
+      }}
+    />
+  );
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -30,6 +52,9 @@ import Constants from "expo-constants";
 function MapScreen(props) {
   const [startMarker, setSMarket] = useState(null);
   const [endMarker, setEMarket] = useState(null);
+  const [realStartMarker, setRSMarket] = useState(null);
+  const [realEndMarker, setREMarket] = useState(null);
+
   const [firstQuery, setFirstQuery] = useState("");
   const [isStart, setStart] = useState(true);
   const [path, setPath] = useState(null);
@@ -39,7 +64,10 @@ function MapScreen(props) {
     latitudeDelta: 0.01,
     longitudeDelta: 0.01,
   });
+  // red, tomato, orange, yellow, green, gold, wheat, linen, tan, blue, aqua, teal, violet, purple, indigo, turquoise, navy and plum 만 가능
   const pinColor = "blue";
+  const pinColorRS = "orange";
+  const pinColorRE = "turquoise";
   useEffect(() => {
     if (Platform.OS === "android" && !Constants.isDevice) {
       setErrorMsg(
@@ -61,9 +89,7 @@ function MapScreen(props) {
       })();
     }
   }, []);
-  function placeSearch(keyword) {
-    
-  }
+  function placeSearch(keyword) {}
   function search() {
     if (startMarker != null && endMarker != null) {
       //https://api.mapbox.com/directions/v5/mapbox/walking/${출발지 longitude},${출발지latitude};${목적지 longitude},${목적지 latitude}?geometries=geojson&access_token=${Your_mapbox_Access_Token}
@@ -78,9 +104,13 @@ function MapScreen(props) {
           endMarker.latitude +
           "?geometries=geojson&access_token=pk.eyJ1IjoibWluczk3IiwiYSI6ImNrZjljZnR2OTA2bGQyeHBleWQ3dnI4NzQifQ.JRKbjTvJM8a7wjqevYDReg"
       ).then((res) => {
-        let coords = res.data.routes[0].geometry.coordinates.map((item) => {
+        let coords = res.data.routes[0].geometry.coordinates.map((item, i) => {
           return { latitude: item[1], longitude: item[0] };
         });
+        let start = coords[0];
+        let end = coords[coords.length - 1];
+        setRSMarket(start);
+        setREMarket(end);
         setPath(coords);
       });
     } else {
@@ -89,6 +119,7 @@ function MapScreen(props) {
   }
   return (
     <>
+      <GooglePlacesInput />
       <View style={{ alignItems: "center" }}>
         <Searchbar
           style={{
@@ -111,9 +142,9 @@ function MapScreen(props) {
         >
           <Button
             containerStyle={{ width: "30%" }}
-            type={isStart ? "outline" : "clear"}
+            type={!isStart ? "outline" : "clear"}
             buttonStyle={
-              isStart
+              !isStart
                 ? { backgroundColor: "rgba(255, 255, 255, 0.8)" }
                 : { backgroundColor: "rgba(100, 100, 100, 0.5)" }
             }
@@ -122,9 +153,9 @@ function MapScreen(props) {
           />
           <Button
             containerStyle={{ width: "30%" }}
-            type={!isStart ? "outline" : "clear"}
+            type={isStart ? "outline" : "clear"}
             buttonStyle={
-              !isStart
+              isStart
                 ? { backgroundColor: "rgba(255, 255, 255, 0.8)" }
                 : { backgroundColor: "rgba(100, 100, 100, 0.5)" }
             }
@@ -178,6 +209,22 @@ function MapScreen(props) {
             coordinate={endMarker}
             title={"도착점"}
             description={""}
+          />
+        ) : null}
+        {realStartMarker != null ? (
+          <Marker
+            pinColor={pinColorRS}
+            coordinate={realStartMarker}
+            title={"실제출발점"}
+            description={"방 생성시 들어가는 실제 출발점입니다."}
+          />
+        ) : null}
+        {realEndMarker != null ? (
+          <Marker
+            pinColor={pinColorRE}
+            coordinate={realEndMarker}
+            title={"실제도착점"}
+            description={"방 생성시 들어가는 실제 도착점입니다."}
           />
         ) : null}
         {path != null ? (
