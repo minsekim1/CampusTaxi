@@ -4,7 +4,7 @@
     "start집": "adb connect 192.168.200.136:5555 && expo start --android",
     "start학교": "adb connect 192.168.175.73:5555 && expo start --android",
     "start웹": "expo web",
-    "gitUpload": "git add . && git commit -m \" SKT 시작\" && git push ",
+    "gitUpload": "git add . && git commit -m \" 지도 수정중 \" && git push ",
     "gitPull": "git pull",
     "안드로이드빌드": "expo build:android -t app-bundle",
     "git강제로덮어쓰기": "git checkout master &&  git branch NewBranch && git fetch --all  && git reset --hard origin/master"
@@ -40,7 +40,7 @@
     "react-native-dialog": "^5.6.0",
     "react-native-elements": "^2.0.1",
     "react-native-gesture-handler": "^1.6.1",
-    "react-native-maps": "https://github.com/expo/react-native-maps.git",
+    "react-native-maps": "0.27.1",
     "react-native-modal": "^11.5.6",
     "react-native-nmap": "0.0.51",
     "react-native-paper": "^3.10.1",

@@ -15,6 +15,7 @@ import MainScreen from "MainScreen";
 import chatScreen from "chatScreen";
 import chatroomScreen from "chatroomScreen";
 import chatinfo from "component/MainScreen/chatinfo";
+import createRoom from "component/MainScreen/createRoom";
 import MapScreen from "component/MapScreen/MapScreen";
 import MychatScreen from "MychatScreen";
 import campusStyle from "style";
@@ -96,6 +97,11 @@ export default class Navigation extends Component {
               options={defaultNavOption}
               name="홈"
               component={MainScreen}
+            />
+            <HomeStack.Screen
+              options={showNavOption}
+              name="방 만들기"
+              component={createRoom}
             />
             <HomeStack.Screen
               name="모든 채팅방 목록"
