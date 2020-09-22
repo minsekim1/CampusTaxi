@@ -8,7 +8,8 @@
     "gitPull": "git pull",
     "안드로이드빌드": "expo build:android -t app-bundle",
     "기본실행": "expo start",
-    "git강제로덮어쓰기": "git checkout master &&  git branch NewBranch && git fetch --all  && git reset --hard origin/master"
+    "git강제로덮어쓰기": "git checkout master &&  git branch NewBranch && git fetch --all  && git reset --hard origin/master",
+    "asdasd": "asdasd"
   },
   "dependencies": {
     "@expo/vector-icons": "^10.0.0",
