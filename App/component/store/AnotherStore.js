@@ -17,16 +17,12 @@ export default class AnotherStore {
   //let servertime = await anotherStore.servertime();
   //new Date(servertime)
   //2020-09-09T10:47:32.000Z
-  getPlaceOnce() {
-    this.placeDB("endplace").once("value", (snap) => {
-      this.key(snap).then((r) => (this.placeEnd = r));
-    });
-
-    this.placeDB("startplace").once("value", (snap) => {
-      this.key(snap).then((r) => (this.placeStart = r));
-    });
+  setPlacestart(val) {
+    this.placeStart = val;
   }
-
+  setPlaceend(val) {
+    this.placeEnd = val;
+  }
   print(value) {
     if (value == "place") alert(JSON.stringify(this.place));
     else if (value == "test") alert(JSON.stringify(this.test));

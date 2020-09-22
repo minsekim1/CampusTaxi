@@ -1,7 +1,7 @@
 import React, { Component, useState, useEffect } from "react";
 import axios from "axios";
 import campusStyle from "style";
-import crown from "image/crown.png";
+import { bbsStore, userStore, anotherStore } from "store";
 import { Button } from "react-native-elements";
 import {
   StyleSheet,
@@ -35,7 +35,8 @@ const styles = StyleSheet.create({
 });
 
 import Constants from "expo-constants";
-function MapScreen(props) {
+function MapScreen(props, { navigation }) {
+  console.log(navigation);
   const [startMarker, setSMarket] = useState(null);
   const [endMarker, setEMarket] = useState(null);
   const [realStartMarker, setRSMarket] = useState(null);
@@ -77,15 +78,14 @@ function MapScreen(props) {
   }, []);
   const [place, setPlace] = useState(null);
   async function placeSearch(keyword) {
-    keyword = keyword.nativeEvent.text;
-    let location = await Location.getCurrentPositionAsync({});
+    if (typeof keyword != "string") keyword = keyword.nativeEvent.text;
     let url =
-      "https://dapi.kakao.com/v2/local/search/keyword.json?page=1&size=15&query=" +
+      "https://dapi.kakao.com/v2/local/search/keyword.json?page=1&size=4&query=" +
       keyword +
       "&x=" +
-      location.coords.longitude +
+      region.longitude +
       "&y=" +
-      location.coords.latitude +
+      region.latitude +
       "&radius=20000";
     //두번째api:"https://dapi.kakao.com/v2/local/geo/coord2address.json?input_coord=WGS84&x=127.106604&y=37.64116";
     let result = await fetch(url, {
@@ -96,10 +96,50 @@ function MapScreen(props) {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        setPlace(responseData);
+        if (responseData.documents == "") {
+          setPlace(null);
+        } else {
+          setPlace(responseData.documents);
+        }
       })
       .done();
   }
+  function placeSelect(data) {
+    setFirstQuery(data.place_name);
+    setPlace(null);
+    setRegion({
+      latitude: Number(data.y),
+      longitude: Number(data.x),
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
+    });
+    if (isStart) {
+      setSMarket({
+        latitude: Number(data.y),
+        longitude: Number(data.x),
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      });
+      if (startMarker != null && endMarker != null) search();
+    } else {
+      setEMarket({
+        latitude: Number(data.y),
+        longitude: Number(data.x),
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      });
+      if (startMarker != null && endMarker != null) search();
+    }
+  }
+  function changeText(query) {
+    setFirstQuery(query);
+    if (query != "") {
+      placeSearch(query);
+    } else {
+      setPlace(null);
+    }
+  }
+
   function search() {
     if (startMarker != null && endMarker != null) {
       //https://api.mapbox.com/directions/v5/mapbox/walking/${출발지 longitude},${출발지latitude};${목적지 longitude},${목적지 latitude}?geometries=geojson&access_token=${Your_mapbox_Access_Token}
@@ -127,6 +167,9 @@ function MapScreen(props) {
       alert("출발지 혹은 도착지 버튼을 누르고 지도 상에 위치를 클릭해주세요.");
     }
   }
+  //택시 거리, 예상 금액, 장소선택 창보여줌
+  const [isDisplay, setDisplay] = useState(true);
+
   return (
     <>
       <View style={{ alignItems: "center" }}>
@@ -136,25 +179,65 @@ function MapScreen(props) {
             width: "80%",
             backgroundColor: "rgba(255, 255, 255, 0.7)",
           }}
-          placeholder="Search"
-          onChangeText={(query) => setFirstQuery(query)}
+          onCancel={() => alert("asd")}
+          placeholder="출발지 혹은 도착지를 누른후 검색해주세요."
+          onChangeText={(query) => changeText(query)}
           value={firstQuery}
           onSubmitEditing={(r) => placeSearch(r)}
         />
-        <View
-          style={{
-            width: "80%",
-            padding: 3,
-            position: "absolute",
-            top: 80,
-            zIndex: 1,
-            backgroundColor: "rgba(255, 255, 255, 0.8)",
-          }}
-        >
-          <TouchableOpacity>
-            <View style={{}}></View>
-          </TouchableOpacity>
-        </View>
+        {place != null ? (
+          <View
+            style={{
+              width: "80%",
+              padding: 3,
+              position: "absolute",
+              top: 80,
+              zIndex: 1,
+              backgroundColor: "rgba(255, 255, 255, 0.8)",
+            }}
+          >
+            {place != null
+              ? place.map((data, i) => (
+                  <TouchableOpacity key={i} onPress={() => placeSelect(data)}>
+                    <View style={{ padding: 10 }}>
+                      <View style={{ flexDirection: "row" }} numberOfLines={1}>
+                        <Text style={{ fontWeight: "bold" }}>
+                          {data.place_name}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 10,
+                            color: "gray",
+                            marginLeft: 5,
+                            textAlignVertical: "center",
+                          }}
+                        >
+                          {data.category_name}
+                        </Text>
+                      </View>
+                      <Text style={{ color: "#555555" }}>
+                        {data.road_address_name}
+                      </Text>
+                      <View
+                        style={{
+                          flex: 1,
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Text style={{ color: "rgb(0,162,232)" }}>
+                          {data.phone}
+                        </Text>
+                        <Text style={{ color: "#555555" }}>
+                          {data.distance}m
+                        </Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                ))
+              : null}
+          </View>
+        ) : null}
         <View
           style={{
             marginTop: 10,
@@ -194,7 +277,43 @@ function MapScreen(props) {
           />
         </View>
       </View>
-
+      <View
+        style={{
+          width: "100%",
+          position: "absolute",
+          bottom: 0,
+          alignItems: "center",
+          padding: 10,
+        }}
+      >
+        <View
+          style={{
+            width: "80%",
+            padding: 3,
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            alignItems: "center",
+            borderRadius: 40,
+            width: "80%",
+          }}
+        >
+          <Text style={{ fontWeight: "bold" }}>카카오T택시 기준</Text>
+          <Text>예상요금: 약 x 원</Text>
+          <Text>거리: 약 x km</Text>
+          <Text>택시이미지</Text>
+          <Button
+            containerStyle={{ width: "30%" }}
+            type="outline"
+            buttonStyle={{ backgroundColor: "rgba(255, 255, 255, 0.0)" }}
+            title="장소 선택하기"
+            onPress={() => {
+              anotherStore.setPlacestart(realStartMarker);
+              anotherStore.setPlaceend(realEndMarker);
+              console.log(navigation);
+              //this.navigation.goBack();
+            }}
+          />
+        </View>
+      </View>
       <MapView
         style={{
           flex: 1,
@@ -258,17 +377,6 @@ function MapScreen(props) {
             strokeWidth={4}
           />
         ) : null}
-        <Text
-          style={{
-            flex: 1,
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            zIndex: 2,
-          }}
-        >
-          asd
-        </Text>
       </MapView>
     </>
   );

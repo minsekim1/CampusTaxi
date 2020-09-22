@@ -7,6 +7,7 @@
     "gitUpload": "git add . && git commit -m \" 지도 수정중 \" && git push ",
     "gitPull": "git pull",
     "안드로이드빌드": "expo build:android -t app-bundle",
+    "기본실행": "expo start",
     "git강제로덮어쓰기": "git checkout master &&  git branch NewBranch && git fetch --all  && git reset --hard origin/master"
   },
   "dependencies": {

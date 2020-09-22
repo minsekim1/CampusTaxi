@@ -9,7 +9,6 @@ export default function chatScreen({ route, navigation }) {
     userStore.asyncuserbbs();
     //bbsStore.asyncAllBbs();
     bbsStore.asyncTypeBbs(filter);
-    placeUpdate();
   }, [userkey]);
   //#region 유저정보 업데이트
   const myname = userStore.user.i;
@@ -106,15 +105,6 @@ export default function chatScreen({ route, navigation }) {
   }
   // -- Filter function end
   const [isSearchVisible, setSearchVisible] = useState(false);
-  const [startplace, setStartplace] = useState([]);
-  const [endplace, setEndplace] = useState([]);
-  //endplace와 startplace를 서버데이터로 업데이트합니다.
-  function placeUpdate() {
-    anotherStore.getPlaceOnce();
-    setStartplace(anotherStore.placeStart);
-    setEndplace(anotherStore.placeEnd);
-  }
-
   const timeLineStart = [
     "00:00",
     "00:30",
@@ -453,31 +443,9 @@ export default function chatScreen({ route, navigation }) {
                     <Picker.Item label="오션월드" value="오션월드" />
                   </Picker>
                   <Text>출발장소</Text>
-                  <Picker
-                    selectedValue={filterStartplace}
-                    style={{ height: 50 }}
-                    onValueChange={(itemValue) => {
-                      setFilterStartplace(itemValue);
-                    }}
-                  >
-                    <Picker.Item label="무관" value="무관" />
-                    {startplace.map((item) => (
-                      <Picker.Item label={item} value={item} />
-                    ))}
-                  </Picker>
+
                   <Text>도착장소</Text>
-                  <Picker
-                    selectedValue={filterEndplace}
-                    style={{ height: 50 }}
-                    onValueChange={(itemValue) => {
-                      setFilterEndplace(itemValue);
-                    }}
-                  >
-                    <Picker.Item label="무관" value="무관" />
-                    {endplace.map((item) => (
-                      <Picker.Item label={item} value={item} />
-                    ))}
-                  </Picker>
+
                   <Text>탑승시간</Text>
                   <View style={campusStyle.View.row}>
                     <View style={campusStyle.View.flex}>
