@@ -3,7 +3,14 @@ import axios from "axios";
 import campusStyle from "style";
 import crown from "image/crown.png";
 import { Button } from "react-native-elements";
-import { StyleSheet, Text, View, Dimensions, TextInput } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import { Searchbar } from "react-native-paper";
 import MapView, {
   Polyline,
@@ -13,6 +20,7 @@ import MapView, {
   Marker,
 } from "react-native-maps";
 import * as Location from "expo-location";
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -30,6 +38,9 @@ import Constants from "expo-constants";
 function MapScreen(props) {
   const [startMarker, setSMarket] = useState(null);
   const [endMarker, setEMarket] = useState(null);
+  const [realStartMarker, setRSMarket] = useState(null);
+  const [realEndMarker, setREMarket] = useState(null);
+
   const [firstQuery, setFirstQuery] = useState("");
   const [isStart, setStart] = useState(true);
   const [path, setPath] = useState(null);
@@ -39,7 +50,10 @@ function MapScreen(props) {
     latitudeDelta: 0.01,
     longitudeDelta: 0.01,
   });
+  // red, tomato, orange, yellow, green, gold, wheat, linen, tan, blue, aqua, teal, violet, purple, indigo, turquoise, navy and plum 만 가능
   const pinColor = "blue";
+  const pinColorRS = "orange";
+  const pinColorRE = "turquoise";
   useEffect(() => {
     if (Platform.OS === "android" && !Constants.isDevice) {
       setErrorMsg(
@@ -61,8 +75,30 @@ function MapScreen(props) {
       })();
     }
   }, []);
-  function placeSearch(keyword) {
-    
+  const [place, setPlace] = useState(null);
+  async function placeSearch(keyword) {
+    keyword = keyword.nativeEvent.text;
+    let location = await Location.getCurrentPositionAsync({});
+    let url =
+      "https://dapi.kakao.com/v2/local/search/keyword.json?page=1&size=15&query=" +
+      keyword +
+      "&x=" +
+      location.coords.longitude +
+      "&y=" +
+      location.coords.latitude +
+      "&radius=20000";
+    //두번째api:"https://dapi.kakao.com/v2/local/geo/coord2address.json?input_coord=WGS84&x=127.106604&y=37.64116";
+    let result = await fetch(url, {
+      method: "post",
+      headers: new Headers({
+        Authorization: "KakaoAK 2ffd2e667110415efb87f207cb33b8be",
+      }),
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        setPlace(responseData);
+      })
+      .done();
   }
   function search() {
     if (startMarker != null && endMarker != null) {
@@ -78,9 +114,13 @@ function MapScreen(props) {
           endMarker.latitude +
           "?geometries=geojson&access_token=pk.eyJ1IjoibWluczk3IiwiYSI6ImNrZjljZnR2OTA2bGQyeHBleWQ3dnI4NzQifQ.JRKbjTvJM8a7wjqevYDReg"
       ).then((res) => {
-        let coords = res.data.routes[0].geometry.coordinates.map((item) => {
+        let coords = res.data.routes[0].geometry.coordinates.map((item, i) => {
           return { latitude: item[1], longitude: item[0] };
         });
+        let start = coords[0];
+        let end = coords[coords.length - 1];
+        setRSMarket(start);
+        setREMarket(end);
         setPath(coords);
       });
     } else {
@@ -99,8 +139,22 @@ function MapScreen(props) {
           placeholder="Search"
           onChangeText={(query) => setFirstQuery(query)}
           value={firstQuery}
-          //onSubmitEditing={() => ()}
+          onSubmitEditing={(r) => placeSearch(r)}
         />
+        <View
+          style={{
+            width: "80%",
+            padding: 3,
+            position: "absolute",
+            top: 80,
+            zIndex: 1,
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
+          }}
+        >
+          <TouchableOpacity>
+            <View style={{}}></View>
+          </TouchableOpacity>
+        </View>
         <View
           style={{
             marginTop: 10,
@@ -111,9 +165,9 @@ function MapScreen(props) {
         >
           <Button
             containerStyle={{ width: "30%" }}
-            type={isStart ? "outline" : "clear"}
+            type={!isStart ? "outline" : "clear"}
             buttonStyle={
-              isStart
+              !isStart
                 ? { backgroundColor: "rgba(255, 255, 255, 0.8)" }
                 : { backgroundColor: "rgba(100, 100, 100, 0.5)" }
             }
@@ -122,9 +176,9 @@ function MapScreen(props) {
           />
           <Button
             containerStyle={{ width: "30%" }}
-            type={!isStart ? "outline" : "clear"}
+            type={isStart ? "outline" : "clear"}
             buttonStyle={
-              !isStart
+              isStart
                 ? { backgroundColor: "rgba(255, 255, 255, 0.8)" }
                 : { backgroundColor: "rgba(100, 100, 100, 0.5)" }
             }
@@ -178,6 +232,22 @@ function MapScreen(props) {
             coordinate={endMarker}
             title={"도착점"}
             description={""}
+          />
+        ) : null}
+        {realStartMarker != null ? (
+          <Marker
+            pinColor={pinColorRS}
+            coordinate={realStartMarker}
+            title={"실제출발점"}
+            description={"방 생성시 들어가는 실제 출발점입니다."}
+          />
+        ) : null}
+        {realEndMarker != null ? (
+          <Marker
+            pinColor={pinColorRE}
+            coordinate={realEndMarker}
+            title={"실제도착점"}
+            description={"방 생성시 들어가는 실제 도착점입니다."}
           />
         ) : null}
         {path != null ? (
