@@ -21,6 +21,8 @@ export default class chatroomScreen extends Component {
       textSearch: "",
       isVision: false
     };
+
+    this.setTextSearch = this.setTextSearch.bind(this);
   }
 
   componentDidMount() {
@@ -73,6 +75,11 @@ export default class chatroomScreen extends Component {
   setVision(Bool) {
     this.setState({
       isVision: Bool
+    });
+  }
+  setTextSearch(text) {
+    this.setState({
+      textSearch: text
     });
   }
 
@@ -168,9 +175,9 @@ export default class chatroomScreen extends Component {
                     icon={<Icon name="search" size={24} color="white" />}
                     onPress={() => {
                       this.setVision(!this.state.isVision);
-                      console.log(this.state.isVision + "입니다.");
                     }}
                   />
+                  
                   {this.state.isVision ? (
                   <Modal
                     isVisible={this.state.isVision}
@@ -184,10 +191,8 @@ export default class chatroomScreen extends Component {
                           style: campusStyle.Modal.component,
                         }}
                       />
-                      <Input type="text" name="TextSearch" onChange={(text) => {
-                        this.setState({
-                          textSearch: text
-                        })
+                      <Input type="text" name="TextSearch" onChange={(event) => {
+                        this.setTextSearch(event.nativeEvent["text"]);
                       }} autoFocus />
                       <Button
                         title="검색하기"
@@ -201,6 +206,14 @@ export default class chatroomScreen extends Component {
                               });
                             }
                           }
+                          console.log(this.state.textSearch);
+                          this.setVision(!this.state.isVision);
+                        }}
+                      />
+                      <Button
+                        title="닫기"
+                        onPress={() => {
+                          this.setVision(!this.state.isVision);
                         }}
                       />
                     </View>
@@ -417,5 +430,5 @@ import { TextInput } from "react-native-gesture-handler";
 import crown from "image/crown.png";
 const firebase = require("firebase");
 import { bbsStore, userStore, anotherStore } from "store";import { set } from "mobx";
-import { Modal } from "react-native-paper";
+import Modal from "react-native-modal";
 
