@@ -143,18 +143,10 @@ function MapScreen(props, { navigation }) {
   function search() {
     if (startMarker != null && endMarker != null) {
       //https://api.mapbox.com/directions/v5/mapbox/walking/${출발지 longitude},${출발지latitude};${목적지 longitude},${목적지 latitude}?geometries=geojson&access_token=${Your_mapbox_Access_Token}
-      axios(
-        "https://api.mapbox.com/directions/v5/mapbox/walking/" +
-          startMarker.longitude +
-          "," +
-          startMarker.latitude +
-          ";" +
-          endMarker.longitude +
-          "," +
-          endMarker.latitude +
-          "?geometries=geojson&access_token=pk.eyJ1IjoibWluczk3IiwiYSI6ImNrZjljZnR2OTA2bGQyeHBleWQ3dnI4NzQifQ.JRKbjTvJM8a7wjqevYDReg"
-      ).then((res) => {
-        let coords = res.data.routes[0].geometry.coordinates.map((item, i) => {
+
+      anotherStore.fetchKakaomap(startMarker, endMarker).then(async (r) => {
+        setDisplayData([r.distance, r.duration, r.taxiFare]);
+        let coords = await r.path.map((item, i) => {
           return { latitude: item[1], longitude: item[0] };
         });
         let start = coords[0];
@@ -162,15 +154,6 @@ function MapScreen(props, { navigation }) {
         setRSMarket(start);
         setREMarket(end);
         setPath(coords);
-        setDisplayData([
-          res.data.routes[0].distance,
-          res.data.routes[0].duration,
-          anotherStore.taxiCost(
-            res.data.routes[0].duration,
-            res.data.routes[0].duration
-          ),
-        ]);
-        anotherStore.fetchKakaomap();
       });
     } else {
       alert("출발지 혹은 도착지 버튼을 누르고 지도 상에 위치를 클릭해주세요.");
@@ -286,6 +269,7 @@ function MapScreen(props, { navigation }) {
           />
         </View>
       </View>
+
       <View
         style={{
           width: "100%",
@@ -305,10 +289,15 @@ function MapScreen(props, { navigation }) {
             width: "80%",
           }}
         >
-          <Text style={{ fontWeight: "bold" }}>카카오T택시 기준</Text>
-
-          <Text>거리: 약 {diplayData != null ? diplayData[1] : null} m</Text>
-          <Text>시간: 약 {diplayData != null ? diplayData[0] : null} 초</Text>
+          <Text style={{ fontWeight: "bold" }}>네이버맵 기준</Text>
+          <Text>
+            거리: 약{" "}
+            {diplayData != null ? (diplayData[0] / 1000).toFixed(1) : null} km
+          </Text>
+          <Text>
+            시간: 약{" "}
+            {diplayData != null ? (diplayData[1] / 60000).toFixed(1) : null} 분
+          </Text>
           <Text>* 시간은 교통량에 따라 달라질 수 있습니다.</Text>
           <Text>
             예상요금: 약 {diplayData != null ? diplayData[2] : null} 원
