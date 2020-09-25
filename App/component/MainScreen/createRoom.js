@@ -16,16 +16,10 @@ import { Picker } from "@react-native-community/picker";
 import campusStyle from "style";
 import { bbsStore, userStore, anotherStore } from "store";
 export default function createRoom({ route, navigation }) {
-  const [startplace, setStart] = React.useState("");
-  const [endplace, setEnd] = React.useState("");
   const [isCreateRoomVisible, setCreateRoomVisible] = useState(false);
   const filter = route.params.filter;
   const [createRoomCategory, setCreateRoomCategory] = useState(null);
   const [createRoompersonmax, setCreateRoompersonmax] = useState(4);
-  const [createRoomstartplace, setCreateRoomstartplace] = useState(
-    anotherStore.placeStart
-  );
-  const [createRoomendplace, setCreateRoomendplace] = useState();
   const [createRoomGender, setCreateRoomGender] = useState(1);
   const [createSelectGender, setCreateSelectGender] = useState(2);
   //채팅방만들기시간선택
@@ -75,10 +69,10 @@ export default function createRoom({ route, navigation }) {
             ) : null
           )}
         </Picker>
-        {createRoomstartplace != null && createRoomendplace != null ? (
+        {anotherStore.placeStart != null && anotherStore.placeEnd != null ? (
           <>
-            <Text>출발지:{createRoomstartplace}</Text>
-            <Text>도착지:{createRoomendplace}</Text>
+            <Text>출발지:{anotherStore.placeStart}</Text>
+            <Text>도착지:{anotherStore.placeEnd}</Text>
           </>
         ) : (
           <Text>출발지 / 도착지</Text>
@@ -87,7 +81,7 @@ export default function createRoom({ route, navigation }) {
         <Button
           style={campusStyle.Button.default}
           title={
-            createRoomstartplace == null || createRoomendplace == null
+            anotherStore.placeStart == null || anotherStore.placeEnd == null
               ? "이곳에서 출발지/도착지를 선택해주세요."
               : "출발지/도착지 재입력하기"
           }
@@ -158,7 +152,10 @@ export default function createRoom({ route, navigation }) {
           buttonStyle={campusStyle.Button.groupActive}
           title="방 생성"
           onPress={() => {
-            if (createRoomendplace == null || createRoomstartplace == null) {
+            if (
+              anotherStore.placeEnd == null ||
+              anotherStore.placeStart == null
+            ) {
               alert("출발지 또는 도착지를 선택해주세요.");
             } else {
               let result = true;
@@ -186,12 +183,12 @@ export default function createRoom({ route, navigation }) {
                 bbsStore
                   .addBbs(
                     createRoomCategory,
-                    createRoomendplace,
+                    anotherStore.placeEnd,
                     createSelectGender,
                     userStore.user.i,
                     date,
                     createRoompersonmax,
-                    createRoomstartplace,
+                    anotherStore.placeStart,
                     userStore.userkey
                   )
                   .then((bbskey) => {

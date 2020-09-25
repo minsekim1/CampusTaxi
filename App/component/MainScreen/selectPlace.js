@@ -1,7 +1,7 @@
 import React, { Component, useState, useEffect } from "react";
 import axios from "axios";
 import campusStyle from "style";
-import crown from "image/crown.png";
+import { bbsStore, userStore, anotherStore } from "store";
 import { Button } from "react-native-elements";
 import {
   StyleSheet,
@@ -35,7 +35,8 @@ const styles = StyleSheet.create({
 });
 
 import Constants from "expo-constants";
-function selectPlace(props) {
+export default function selectPlace(props, { navigation }) {
+  //#region 변수&함수
   const [startMarker, setSMarket] = useState(null);
   const [endMarker, setEMarket] = useState(null);
   const [realStartMarker, setRSMarket] = useState(null);
@@ -142,18 +143,10 @@ function selectPlace(props) {
   function search() {
     if (startMarker != null && endMarker != null) {
       //https://api.mapbox.com/directions/v5/mapbox/walking/${출발지 longitude},${출발지latitude};${목적지 longitude},${목적지 latitude}?geometries=geojson&access_token=${Your_mapbox_Access_Token}
-      axios(
-        "https://api.mapbox.com/directions/v5/mapbox/walking/" +
-          startMarker.longitude +
-          "," +
-          startMarker.latitude +
-          ";" +
-          endMarker.longitude +
-          "," +
-          endMarker.latitude +
-          "?geometries=geojson&access_token=pk.eyJ1IjoibWluczk3IiwiYSI6ImNrZjljZnR2OTA2bGQyeHBleWQ3dnI4NzQifQ.JRKbjTvJM8a7wjqevYDReg"
-      ).then((res) => {
-        let coords = res.data.routes[0].geometry.coordinates.map((item, i) => {
+
+      anotherStore.fetchKakaomap(startMarker, endMarker).then(async (r) => {
+        setDisplayData([r.distance, r.duration, r.taxiFare]);
+        let coords = await r.path.map((item, i) => {
           return { latitude: item[1], longitude: item[0] };
         });
         let start = coords[0];
@@ -167,8 +160,8 @@ function selectPlace(props) {
     }
   }
   //택시 거리, 예상 금액, 장소선택 창보여줌
-  const [isDisplay, setDisplay] = useState(true);
-
+  const [diplayData, setDisplayData] = useState(null);
+  //#endregion
   return (
     <>
       <View style={{ alignItems: "center" }}>
@@ -275,11 +268,60 @@ function selectPlace(props) {
             onPress={() => search()}
           />
         </View>
-        <View style={{ position: "absolute", bottom: 0 }}>
-          <Text>asd</Text>
-        </View>
       </View>
 
+      <View
+        style={{
+          width: "100%",
+          position: "absolute",
+          bottom: 0,
+          alignItems: "center",
+          padding: 10,
+        }}
+      >
+        <View
+          style={{
+            width: "80%",
+            padding: 3,
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            alignItems: "center",
+            borderRadius: 40,
+            width: "80%",
+          }}
+        >
+          <Text style={{ fontWeight: "bold" }}>네이버맵 기준</Text>
+          <Text>
+            거리: 약
+            {diplayData != null ? (diplayData[0] / 1000).toFixed(1) : null} km
+          </Text>
+          <Text>
+            시간: 약
+            {diplayData != null ? (diplayData[1] / 60000).toFixed(1) : null} 분
+          </Text>
+          <Text>* 시간은 교통량에 따라 달라질 수 있습니다.</Text>
+          <Text>
+            예상요금: 약 {diplayData != null ? diplayData[2] : null} 원
+          </Text>
+          <Text>택시이미지</Text>
+          <Button
+            containerStyle={{ width: "30%" }}
+            type="outline"
+            buttonStyle={{ backgroundColor: "rgba(255, 255, 255, 0.0)" }}
+            title="장소 선택하기"
+            onPress={() => {
+              if (realStartMarker != null && realEndMarker != null) {
+                anotherStore.setPlacestart(realStartMarker);
+                anotherStore.setPlaceend(realEndMarker);
+                props.navigation.goBack();
+              } else {
+                alert(
+                  "출발지 혹은 도착지를 눌러 지도에서 선택하고 경로탐색 버튼을 눌러 경로를 찾아주세요."
+                );
+              }
+            }}
+          />
+        </View>
+      </View>
       <MapView
         style={{
           flex: 1,
@@ -347,5 +389,3 @@ function selectPlace(props) {
     </>
   );
 }
-
-export default selectPlace;
