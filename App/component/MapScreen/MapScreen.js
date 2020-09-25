@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
 
 import Constants from "expo-constants";
 function MapScreen(props, { navigation }) {
-  console.log(navigation);
+  //console.log(navigation);
   const [startMarker, setSMarket] = useState(null);
   const [endMarker, setEMarket] = useState(null);
   const [realStartMarker, setRSMarket] = useState(null);
@@ -162,13 +162,22 @@ function MapScreen(props, { navigation }) {
         setRSMarket(start);
         setREMarket(end);
         setPath(coords);
+        setDisplayData([
+          res.data.routes[0].distance,
+          res.data.routes[0].duration,
+          anotherStore.taxiCost(
+            res.data.routes[0].duration,
+            res.data.routes[0].duration
+          ),
+        ]);
+        anotherStore.fetchKakaomap();
       });
     } else {
       alert("출발지 혹은 도착지 버튼을 누르고 지도 상에 위치를 클릭해주세요.");
     }
   }
   //택시 거리, 예상 금액, 장소선택 창보여줌
-  const [isDisplay, setDisplay] = useState(true);
+  const [diplayData, setDisplayData] = useState(null);
 
   return (
     <>
@@ -297,8 +306,13 @@ function MapScreen(props, { navigation }) {
           }}
         >
           <Text style={{ fontWeight: "bold" }}>카카오T택시 기준</Text>
-          <Text>예상요금: 약 x 원</Text>
-          <Text>거리: 약 x km</Text>
+
+          <Text>거리: 약 {diplayData != null ? diplayData[1] : null} m</Text>
+          <Text>시간: 약 {diplayData != null ? diplayData[0] : null} 초</Text>
+          <Text>* 시간은 교통량에 따라 달라질 수 있습니다.</Text>
+          <Text>
+            예상요금: 약 {diplayData != null ? diplayData[2] : null} 원
+          </Text>
           <Text>택시이미지</Text>
           <Button
             containerStyle={{ width: "30%" }}
@@ -308,7 +322,7 @@ function MapScreen(props, { navigation }) {
             onPress={() => {
               anotherStore.setPlacestart(realStartMarker);
               anotherStore.setPlaceend(realEndMarker);
-              console.log(navigation);
+              //console.log(navigation);
               //this.navigation.goBack();
             }}
           />
