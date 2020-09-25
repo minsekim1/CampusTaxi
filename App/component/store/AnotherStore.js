@@ -69,8 +69,8 @@ export default class AnotherStore {
   }
   //#endregion store공통함수
 
-  //카카오 택시요금/거리/시간/경로
-  async fetchKakaomap(start, end) {
+  //네이버 택시요금/거리/시간/경로
+  async fetchNaverDirect5(start, end) {
     let result = null;
     let url =
       "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=" +
@@ -97,6 +97,29 @@ export default class AnotherStore {
           taxiFare: re.taxiFare,
           path: json.route.traoptimal[0].path,
         };
+      });
+    return result;
+  }
+  //네이버  좌표중심 주소변환
+  async fetchNaverReverseGeocode(pos) {
+    let result = null;
+
+    let url =
+      "https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?coords=" +
+      pos.longitude +
+      "," +
+      pos.latitude +
+      "&/sourcecrs=epsg:4326&output=json&orders=roadaddr,legalcode,admcode,addr";
+    await fetch(url, {
+      headers: {
+        "X-Ncp-Apigw-Api-Key": "rjPLuetFr7RwrIltZFNwfJHFrVeDK7jM1qDUXxOx",
+        "X-Ncp-Apigw-Api-Key-Id": "6a3i8h7n6z",
+      },
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        let re = json.results[0].region;
+        result = re.area1.name + re.area2.name + re.area3.name + re.area4.name;
       });
     return result;
   }

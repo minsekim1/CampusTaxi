@@ -1,5 +1,6 @@
 import React, { Component, useState } from "react";
 import { TextInput, View } from "react-native";
+const firebase = require("firebase");
 import {
   Header,
   ListItem,
@@ -11,10 +12,11 @@ import {
   Input,
 } from "react-native-elements";
 import DateTimePicker from "@react-native-community/datetimepicker"; //방생성시간picker
-import { FlatList, Image, TouchableOpacity } from "react-native";
 import { Picker } from "@react-native-community/picker";
 import campusStyle from "style";
 import { bbsStore, userStore, anotherStore } from "store";
+import { Observer } from "mobx-react";
+
 export default function createRoom({ route, navigation }) {
   const [isCreateRoomVisible, setCreateRoomVisible] = useState(false);
   const filter = route.params.filter;
@@ -69,10 +71,15 @@ export default function createRoom({ route, navigation }) {
             ) : null
           )}
         </Picker>
+
         {anotherStore.placeStart != null && anotherStore.placeEnd != null ? (
           <>
-            <Text>출발지:{anotherStore.placeStart}</Text>
-            <Text>도착지:{anotherStore.placeEnd}</Text>
+            <Observer>
+              {() => <Text>출발지:{anotherStore.placeStart[1]}</Text>}
+            </Observer>
+            <Observer>
+              {() => <Text>도착지:{anotherStore.placeEnd[1]}</Text>}
+            </Observer>
           </>
         ) : (
           <Text>출발지 / 도착지</Text>
@@ -191,17 +198,17 @@ export default function createRoom({ route, navigation }) {
                     anotherStore.placeStart,
                     userStore.userkey
                   )
-                  .then((bbskey) => {
+                  .then(() => {
                     alert("방이 생성되었습니다. 내 채팅에서 확인해주세요.");
                     setCreateRoomVisible(false);
-                    setLoadingModal(false);
+                    // setLoadingModal(false);
                   });
               } else {
                 alert(
                   "채팅방은 카테고리별로 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요."
                 );
                 setCreateRoomVisible(false);
-                setLoadingModal(false);
+                //setLoadingModal(false);
               }
             }
           }}

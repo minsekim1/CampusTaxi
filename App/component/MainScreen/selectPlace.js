@@ -144,7 +144,7 @@ export default function selectPlace(props, { navigation }) {
     if (startMarker != null && endMarker != null) {
       //https://api.mapbox.com/directions/v5/mapbox/walking/${출발지 longitude},${출발지latitude};${목적지 longitude},${목적지 latitude}?geometries=geojson&access_token=${Your_mapbox_Access_Token}
 
-      anotherStore.fetchKakaomap(startMarker, endMarker).then(async (r) => {
+      anotherStore.fetchNaverDirect5(startMarker, endMarker).then(async (r) => {
         setDisplayData([r.distance, r.duration, r.taxiFare]);
         let coords = await r.path.map((item, i) => {
           return { latitude: item[1], longitude: item[0] };
@@ -310,8 +310,15 @@ export default function selectPlace(props, { navigation }) {
             title="장소 선택하기"
             onPress={() => {
               if (realStartMarker != null && realEndMarker != null) {
-                anotherStore.setPlacestart(realStartMarker);
-                anotherStore.setPlaceend(realEndMarker);
+                anotherStore
+                  .fetchNaverReverseGeocode(realStartMarker)
+                  .then((r) =>
+                    anotherStore.setPlacestart([realStartMarker, r])
+                  );
+                anotherStore
+                  .fetchNaverReverseGeocode(realEndMarker)
+                  .then((r) => anotherStore.setPlaceend([realEndMarker, r]));
+
                 props.navigation.goBack();
               } else {
                 alert(
