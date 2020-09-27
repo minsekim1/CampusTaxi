@@ -19,7 +19,6 @@ import MapView, {
   Animated,
   Marker,
 } from "react-native-maps";
-import * as Location from "expo-location";
 
 const styles = StyleSheet.create({
   container: {
@@ -45,12 +44,7 @@ export default function selectPlace(props, { navigation }) {
   const [firstQuery, setFirstQuery] = useState("");
   const [isStart, setStart] = useState(true);
   const [path, setPath] = useState(null);
-  const [region, setRegion] = useState({
-    latitude: 37.64116,
-    longitude: 127.106604,
-    latitudeDelta: 0.01,
-    longitudeDelta: 0.01,
-  });
+  const [region, setRegion] = useState();
   // red, tomato, orange, yellow, green, gold, wheat, linen, tan, blue, aqua, teal, violet, purple, indigo, turquoise, navy and plum 만 가능
   const pinColor = "blue";
   const pinColorRS = "orange";
@@ -62,17 +56,36 @@ export default function selectPlace(props, { navigation }) {
       );
     } else {
       (async () => {
-        let { status } = await Location.requestPermissionsAsync();
-        if (status !== "granted") {
-          setErrorMsg("Permission to access location was denied");
-        }
-        let location = await Location.getCurrentPositionAsync({});
+        //let { status } = await Location.requestPermissionsAsync();
+        //if (status !== "granted") {
         setRegion({
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
+          //삼육대 좌표
+          latitude: 37.64116,
+          longitude: 127.106604,
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         });
+        //setErrorMsg("Permission to access location was denied");
+        //}
+        let myplace = anotherStore.myplace;
+        if (myplace != null) {
+          setRegion({
+            latitude: myplace.latitude,
+            longitude: myplace.longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
+          });
+        } else {
+          anotherStore.getMyPlace().then(async () => {
+            myplace = anotherStore.myplace;
+            setRegion({
+              latitude: myplace.latitude,
+              longitude: myplace.longitude,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
+            });
+          });
+        }
       })();
     }
   }, []);
@@ -107,12 +120,6 @@ export default function selectPlace(props, { navigation }) {
   function placeSelect(data) {
     setFirstQuery(data.place_name);
     setPlace(null);
-    setRegion({
-      latitude: Number(data.y),
-      longitude: Number(data.x),
-      latitudeDelta: 0.01,
-      longitudeDelta: 0.01,
-    });
     if (isStart) {
       setSMarket({
         latitude: Number(data.y),
@@ -142,8 +149,6 @@ export default function selectPlace(props, { navigation }) {
 
   function search() {
     if (startMarker != null && endMarker != null) {
-      //https://api.mapbox.com/directions/v5/mapbox/walking/${출발지 longitude},${출발지latitude};${목적지 longitude},${목적지 latitude}?geometries=geojson&access_token=${Your_mapbox_Access_Token}
-
       anotherStore.fetchNaverDirect5(startMarker, endMarker).then(async (r) => {
         setDisplayData([r.distance, r.duration, r.taxiFare]);
         let coords = await r.path.map((item, i) => {
@@ -310,6 +315,7 @@ export default function selectPlace(props, { navigation }) {
             title="장소 선택하기"
             onPress={() => {
               if (realStartMarker != null && realEndMarker != null) {
+                console.log(realStartMarker);
                 anotherStore
                   .fetchNaverReverseGeocode(realStartMarker)
                   .then((r) =>
@@ -338,34 +344,61 @@ export default function selectPlace(props, { navigation }) {
           zIndex: -1,
         }}
         region={region}
-        onRegionChangeComplete={(region) => setRegion(region)}
+        onRegionChange={(r) => setRegion(r)}
         onPress={(a) => {
+          let pos = a.nativeEvent.coordinate;
           if (isStart) {
-            setSMarket({
-              latitude: a.nativeEvent.coordinate.latitude,
-              longitude: a.nativeEvent.coordinate.longitude,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            });
+            anotherStore.fetchNaverReverseGeocode(pos).then((r) =>
+              setSMarket({
+                latitude: pos.latitude,
+                longitude: pos.longitude,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+                name: r,
+              })
+            );
           } else {
-            setEMarket({
-              latitude: a.nativeEvent.coordinate.latitude,
-              longitude: a.nativeEvent.coordinate.longitude,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            });
+            anotherStore.fetchNaverReverseGeocode(pos).then((r) =>
+              setEMarket({
+                latitude: pos.latitude,
+                longitude: pos.longitude,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+                name: r,
+              })
+            );
           }
         }}
       >
         {startMarker != null ? (
-          <Marker coordinate={startMarker} title={"출발점"} description={""} />
+          <Marker
+            coordinate={startMarker}
+            title={"출발점"}
+            description={
+              "장소이름:" +
+              startMarker.name +
+              "장소위치:[" +
+              startMarker.latitude.toFixed(3) +
+              "," +
+              startMarker.longitude.toFixed(3) +
+              "]"
+            }
+          />
         ) : null}
         {endMarker != null ? (
           <Marker
             pinColor={pinColor}
             coordinate={endMarker}
             title={"도착점"}
-            description={""}
+            description={
+              "장소이름:" +
+              endMarker.name +
+              "장소위치:[" +
+              endMarker.latitude.toFixed(3) +
+              "," +
+              endMarker.longitude.toFixed(3) +
+              "]"
+            }
           />
         ) : null}
         {realStartMarker != null ? (
@@ -373,7 +406,16 @@ export default function selectPlace(props, { navigation }) {
             pinColor={pinColorRS}
             coordinate={realStartMarker}
             title={"실제출발점"}
-            description={"방 생성시 들어가는 실제 출발점입니다."}
+            description={
+              "방 생성시 들어가는 실제 출발점입니다." +
+              "장소이름:" +
+              realStartMarker.name +
+              "장소위치:[" +
+              realStartMarker.latitude.toFixed(3) +
+              "," +
+              realStartMarker.longitude.toFixed(3) +
+              "]"
+            }
           />
         ) : null}
         {realEndMarker != null ? (
@@ -381,7 +423,16 @@ export default function selectPlace(props, { navigation }) {
             pinColor={pinColorRE}
             coordinate={realEndMarker}
             title={"실제도착점"}
-            description={"방 생성시 들어가는 실제 도착점입니다."}
+            description={
+              "방 생성시 들어가는 실제 도착점입니다." +
+              "장소이름:" +
+              realEndMarker.name +
+              "장소위치:[" +
+              realEndMarker.latitude.toFixed(3) +
+              "," +
+              realEndMarker.longitude.toFixed(3) +
+              "]"
+            }
           />
         ) : null}
         {path != null ? (

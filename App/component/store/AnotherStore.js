@@ -2,10 +2,18 @@
 export default class AnotherStore {
   @observable placeStart = null;
   @observable placeEnd = null;
-  @observable test = null;
+  @observable myplace = null;
   placeDB = (name) => firebase.database().ref("place/data/" + name);
-  test$DB = (name) => firebase.database().ref("test/data/" + name);
 
+  async getMyPlace() {
+    let location = await Location.getCurrentPositionAsync({});
+    this.myplace = {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
+    };
+  }
   async servertime() {
     let time = null;
     await fetch("http://worldtimeapi.org/api/timezone/Asia/Seoul")
@@ -25,7 +33,6 @@ export default class AnotherStore {
   }
   print(value) {
     if (value == "place") alert(JSON.stringify(this.place));
-    else if (value == "test") alert(JSON.stringify(this.test));
   }
 
   //#region store공통함수
@@ -129,3 +136,4 @@ import AsyncStorage from "@react-native-community/async-storage";
 import { observable } from "mobx";
 import "mobx-react-lite/batchingForReactDom";
 const firebase = require("firebase");
+import * as Location from "expo-location";
