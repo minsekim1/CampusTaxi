@@ -5,6 +5,10 @@ export default class AnotherStore {
   @observable myplace = null;
   placeDB = (name) => firebase.database().ref("place/data/" + name);
 
+  placeInit() {
+    this.placeStart = null;
+    this.placeEnd = null;
+  }
   async getMyPlace() {
     let location = await Location.getCurrentPositionAsync({});
     this.myplace = {

@@ -18,9 +18,9 @@ import { bbsStore, userStore, anotherStore } from "store";
 import { Observer } from "mobx-react";
 
 export default function createRoom({ route, navigation }) {
-  const [isCreateRoomVisible, setCreateRoomVisible] = useState(false);
+  //const [isCreateRoomVisible, setCreateRoomVisible] = useState(false);
   const filter = route.params.filter;
-  const [createRoomCategory, setCreateRoomCategory] = useState(null);
+  const [createRoomCategory, setCreateRoomCategory] = useState(filter);
   const [createRoompersonmax, setCreateRoompersonmax] = useState(4);
   const [createRoomGender, setCreateRoomGender] = useState(1);
   const [createSelectGender, setCreateSelectGender] = useState(2);
@@ -72,18 +72,18 @@ export default function createRoom({ route, navigation }) {
           )}
         </Picker>
 
-        {anotherStore.placeStart != null && anotherStore.placeEnd != null ? (
-          <>
-            <Observer>
-              {() => <Text>출발지:{anotherStore.placeStart[1]}</Text>}
-            </Observer>
-            <Observer>
-              {() => <Text>도착지:{anotherStore.placeEnd[1]}</Text>}
-            </Observer>
-          </>
-        ) : (
-          <Text>출발지 / 도착지</Text>
-        )}
+        <Observer>
+          {() =>
+            anotherStore.placeStart != null && anotherStore.placeEnd != null ? (
+              <>
+                <Text>출발지:{anotherStore.placeStart.name}</Text>
+                <Text>도착지:{anotherStore.placeEnd.name}</Text>
+              </>
+            ) : (
+              <Text>출발지 / 도착지</Text>
+            )
+          }
+        </Observer>
 
         <Button
           style={campusStyle.Button.default}
@@ -199,15 +199,19 @@ export default function createRoom({ route, navigation }) {
                     userStore.userkey
                   )
                   .then(() => {
+                    anotherStore.placeInit();
+                    navigation.goBack();
                     alert("방이 생성되었습니다. 내 채팅에서 확인해주세요.");
-                    setCreateRoomVisible(false);
+                    //setCreateRoomVisible(false);
                     // setLoadingModal(false);
                   });
               } else {
+                anotherStore.placeInit();
+                navigation.goBack();
                 alert(
                   "채팅방은 카테고리별로 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요."
                 );
-                setCreateRoomVisible(false);
+                //setCreateRoomVisible(false);
                 //setLoadingModal(false);
               }
             }
@@ -217,7 +221,10 @@ export default function createRoom({ route, navigation }) {
           name="myButtonName"
           buttonStyle={campusStyle.Button.groupCancel}
           title="취소"
-          onPress={() => setCreateRoomVisible(!isCreateRoomVisible)}
+          onPress={() => {
+            anotherStore.placeInit();
+            navigation.goBack();
+          }}
         />
       </View>
     </>

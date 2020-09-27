@@ -330,10 +330,10 @@ export default function chatScreen({ route, navigation }) {
                             <Text>{item.i}</Text>
                           </View>
                           <Text style={{ marginLeft: 10 }}>
-                            출발지:{item.n}
+                            출발지:{item.n.name}
                           </Text>
                           <Text style={{ marginLeft: 10 }}>
-                            도착지:{item.g}
+                            도착지:{item.g.name}
                           </Text>
                         </View>
                         <View style={{ flex: 1 }}>

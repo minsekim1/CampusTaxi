@@ -128,10 +128,10 @@ export default class chatroomScreen extends Component {
                       </View>
 
                       <Text style={campusStyle.Text.whiteInput}>
-                        출발지: {this.state.startplace}
+                        출발지: {this.state.startplace.name}
                       </Text>
                       <Text style={campusStyle.Text.whiteInput}>
-                        도착지: {this.state.endplace}
+                        도착지: {this.state.endplace.name}
                       </Text>
 
                       <Text style={campusStyle.Text.smallCenter}>

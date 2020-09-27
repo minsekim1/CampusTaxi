@@ -126,6 +126,7 @@ export default function selectPlace(props, { navigation }) {
         longitude: Number(data.x),
         latitudeDelta: 0.01,
         longitudeDelta: 0.01,
+        name: data.place_name,
       });
       if (startMarker != null && endMarker != null) search();
     } else {
@@ -134,6 +135,7 @@ export default function selectPlace(props, { navigation }) {
         longitude: Number(data.x),
         latitudeDelta: 0.01,
         longitudeDelta: 0.01,
+        name: data.place_name,
       });
       if (startMarker != null && endMarker != null) search();
     }
@@ -156,8 +158,20 @@ export default function selectPlace(props, { navigation }) {
         });
         let start = coords[0];
         let end = coords[coords.length - 1];
-        setRSMarket(start);
-        setREMarket(end);
+        setRSMarket({
+          latitude: start.latitude,
+          longitude: start.longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+          name: startMarker.name,
+        });
+        setREMarket({
+          latitude: end.latitude,
+          longitude: end.longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+          name: endMarker.name,
+        });
         setPath(coords);
       });
     } else {
@@ -315,16 +329,8 @@ export default function selectPlace(props, { navigation }) {
             title="장소 선택하기"
             onPress={() => {
               if (realStartMarker != null && realEndMarker != null) {
-                console.log(realStartMarker);
-                anotherStore
-                  .fetchNaverReverseGeocode(realStartMarker)
-                  .then((r) =>
-                    anotherStore.setPlacestart([realStartMarker, r])
-                  );
-                anotherStore
-                  .fetchNaverReverseGeocode(realEndMarker)
-                  .then((r) => anotherStore.setPlaceend([realEndMarker, r]));
-
+                anotherStore.setPlacestart(realStartMarker);
+                anotherStore.setPlaceend(realEndMarker);
                 props.navigation.goBack();
               } else {
                 alert(
@@ -344,7 +350,7 @@ export default function selectPlace(props, { navigation }) {
           zIndex: -1,
         }}
         region={region}
-        onRegionChange={(r) => setRegion(r)}
+        onRegionChangeComplete={(region) => setRegion(region)}
         onPress={(a) => {
           let pos = a.nativeEvent.coordinate;
           if (isStart) {
