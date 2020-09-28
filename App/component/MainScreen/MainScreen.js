@@ -30,6 +30,7 @@ class HomeScreen extends Component {
   }
 
   componentDidMount() {
+    anotherStore.getMyPlace();
     BackHandler.addEventListener("hardwareBackPress", this.handleBackButton);
     userStore.asyncUser();
   }

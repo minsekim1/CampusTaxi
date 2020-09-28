@@ -2,10 +2,22 @@
 export default class AnotherStore {
   @observable placeStart = null;
   @observable placeEnd = null;
-  @observable test = null;
+  @observable myplace = null;
   placeDB = (name) => firebase.database().ref("place/data/" + name);
-  test$DB = (name) => firebase.database().ref("test/data/" + name);
 
+  placeInit() {
+    this.placeStart = null;
+    this.placeEnd = null;
+  }
+  async getMyPlace() {
+    let location = await Location.getCurrentPositionAsync({});
+    this.myplace = {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
+    };
+  }
   async servertime() {
     let time = null;
     await fetch("http://worldtimeapi.org/api/timezone/Asia/Seoul")
@@ -17,19 +29,14 @@ export default class AnotherStore {
   //let servertime = await anotherStore.servertime();
   //new Date(servertime)
   //2020-09-09T10:47:32.000Z
-  getPlaceOnce() {
-    this.placeDB("endplace").once("value", (snap) => {
-      this.key(snap).then((r) => (this.placeEnd = r));
-    });
-
-    this.placeDB("startplace").once("value", (snap) => {
-      this.key(snap).then((r) => (this.placeStart = r));
-    });
+  setPlacestart(val) {
+    this.placeStart = val;
   }
-
+  setPlaceend(val) {
+    this.placeEnd = val;
+  }
   print(value) {
     if (value == "place") alert(JSON.stringify(this.place));
-    else if (value == "test") alert(JSON.stringify(this.test));
   }
 
   //#region store공통함수
@@ -72,9 +79,65 @@ export default class AnotherStore {
     return result;
   }
   //#endregion store공통함수
-}
 
+  //네이버 택시요금/거리/시간/경로
+  async fetchNaverDirect5(start, end) {
+    let result = null;
+    let url =
+      "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=" +
+      start.longitude +
+      "," +
+      start.latitude +
+      "&goal=" +
+      end.longitude +
+      "," +
+      end.latitude +
+      "&option=1";
+    await fetch(url, {
+      headers: {
+        "X-Ncp-Apigw-Api-Key": "rjPLuetFr7RwrIltZFNwfJHFrVeDK7jM1qDUXxOx",
+        "X-Ncp-Apigw-Api-Key-Id": "6a3i8h7n6z",
+      },
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        let re = json.route.traoptimal[0].summary;
+        result = {
+          distance: re.distance,
+          duration: re.duration,
+          taxiFare: re.taxiFare,
+          path: json.route.traoptimal[0].path,
+        };
+      });
+    return result;
+  }
+  //네이버  좌표중심 주소변환
+  async fetchNaverReverseGeocode(pos) {
+    let result = null;
+
+    let url =
+      "https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?coords=" +
+      pos.longitude +
+      "," +
+      pos.latitude +
+      "&/sourcecrs=epsg:4326&output=json&orders=roadaddr,legalcode,admcode,addr";
+    await fetch(url, {
+      headers: {
+        "X-Ncp-Apigw-Api-Key": "rjPLuetFr7RwrIltZFNwfJHFrVeDK7jM1qDUXxOx",
+        "X-Ncp-Apigw-Api-Key-Id": "6a3i8h7n6z",
+      },
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        let re = json.results[0].region;
+        result = re.area1.name + re.area2.name + re.area3.name + re.area4.name;
+      });
+    return result;
+  }
+}
+import axios from "axios";
 import AsyncStorage from "@react-native-community/async-storage";
 import { observable } from "mobx";
 import "mobx-react-lite/batchingForReactDom";
 const firebase = require("firebase");
+import * as Location from "expo-location";

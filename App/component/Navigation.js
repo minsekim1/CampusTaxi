@@ -15,6 +15,7 @@ import MainScreen from "MainScreen";
 import chatScreen from "chatScreen";
 import chatroomScreen from "chatroomScreen";
 import chatinfo from "component/MainScreen/chatinfo";
+import selectPlace from "component/MainScreen/selectPlace";
 import createRoom from "component/MainScreen/createRoom";
 import MapScreen from "component/MapScreen/MapScreen";
 import MychatScreen from "MychatScreen";
@@ -86,46 +87,46 @@ export default class Navigation extends Component {
     const AlramStack = createStackNavigator();
     const SettingStack = createStackNavigator();
 
-    class HomeStackScreen extends Component {
-      constructor(props) {
-        super(props);
-      }
-      render() {
-        return (
-          <HomeStack.Navigator initialRouteName="홈">
-            <HomeStack.Screen
-              options={defaultNavOption}
-              name="홈"
-              component={MainScreen}
-            />
-            <HomeStack.Screen
-              options={showNavOption}
-              name="방 만들기"
-              component={createRoom}
-            />
-            <HomeStack.Screen
-              name="모든 채팅방 목록"
-              options={defaultNavOption}
-              component={chatScreen}
-            />
-            <HomeStack.Screen
-              name="채팅방"
-              options={defaultNavOption}
-              component={chatroomScreen}
-            />
-            <HomeStack.Screen
-              name="채팅방정보"
-              options={showNavOption}
-              component={chatinfo}
-            />
-            <HomeStack.Screen
-              options={modalOptions}
-              name="loading"
-              component={LoadingScreen}
-            />
-          </HomeStack.Navigator>
-        );
-      }
+    function HomeStackScreen() {
+      return (
+        <HomeStack.Navigator initialRouteName="홈">
+          <HomeStack.Screen
+            options={defaultNavOption}
+            name="홈"
+            component={MainScreen}
+          />
+          <HomeStack.Screen
+            options={showNavOption}
+            name="방 만들기"
+            component={createRoom}
+          />
+          <HomeStack.Screen
+            name="모든 채팅방 목록"
+            options={defaultNavOption}
+            component={chatScreen}
+          />
+          <HomeStack.Screen
+            name="채팅방"
+            options={defaultNavOption}
+            component={chatroomScreen}
+          />
+          <HomeStack.Screen
+            name="지도검색"
+            options={defaultNavOption}
+            component={selectPlace}
+          />
+          <HomeStack.Screen
+            name="채팅방정보"
+            options={showNavOption}
+            component={chatinfo}
+          />
+          <HomeStack.Screen
+            options={modalOptions}
+            name="loading"
+            component={LoadingScreen}
+          />
+        </HomeStack.Navigator>
+      );
     }
 
     function MychatStackScreen() {
