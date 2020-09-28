@@ -31,6 +31,21 @@ export default class BbsStore {
   async addBbs(c, g, h, i, j, k, n, userkey) {
     //시간 가져오기
     let newkey = null;
+    let jdate = j.getFullYear() + "-";
+
+    if (j.getMonth() + 1 < 10) jdate += "0" + (j.getMonth() + 1);
+    else jdate += j.getMonth() + 1;
+    if (j.getDate() < 10) jdate += "-0" + j.getDate();
+    else jdate += "-" + j.getDate();
+    if (j.getHours() < 10) jdate += "T0" + j.getHours();
+    else jdate += "T" + j.getHours();
+    if (j.getMinutes() < 10) jdate += ":0" + j.getMinutes();
+    else jdate += ":" + j.getMinutes();
+    if (j.getSeconds() < 10) jdate += ":0" + j.getSeconds();
+    else jdate += ":" + j.getSeconds();
+    jdate += "+09:00";
+
+    console.log("j" + j);
     await fetch("http://worldtimeapi.org/api/timezone/Asia/Seoul")
       .then((res) => res.json())
       .then((result) => {
@@ -53,7 +68,7 @@ export default class BbsStore {
           g: g,
           h: h,
           i: i,
-          j: j,
+          j: jdate,
           k: k,
           m: 1,
           n: n,
@@ -69,6 +84,16 @@ export default class BbsStore {
   }
   //#endregion
   // Hide bbs : 클라이언트에게 숨기기만함
+  findBbs(attributes, value) {
+    // this.bbsDB(attributes)
+    //   .orderByChild(attributes)
+    //   .equalTo(value)
+    //   .once("value", (snap) => {
+    //     snap.forEach((childSnapshot) => {
+    //       console.log(childSnapshot.key);
+    //     });
+    //   });
+  }
   hideBbs(bbskey) {
     this.bbsDB(bbskey + "/a").set(0);
   }

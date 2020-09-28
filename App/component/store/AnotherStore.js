@@ -3,6 +3,7 @@ export default class AnotherStore {
   @observable placeStart = null;
   @observable placeEnd = null;
   @observable myplace = null;
+
   placeDB = (name) => firebase.database().ref("place/data/" + name);
 
   placeInit() {
@@ -76,10 +77,36 @@ export default class AnotherStore {
       "시" +
       localDate.getMinutes() +
       "분";
+
     return result;
   }
   //#endregion store공통함수
+  toRoomTime(date) {
+    const koreaTime = this.getKoreaTime();
+    const dyear = date.slice(0, 4);
+    const dmonth = date.slice(5, 7);
+    const ddate = date.slice(8, 10);
+    const dhour = date.slice(11, 13);
+    const dmin = date.slice(14, 16);
 
+    const week = ["일", "월", "화", "수", "목", "금", "토"];
+    const dayOfWeek = week[date.getDay()];
+    let result = "";
+    // if (date.getFullYear() != date.getFullYear())
+    //   result += date.getFullYear() + "년";
+    // result += date.getMonth() + 1 + "월";
+    // result += date.getDate() + "일";
+    // result += dayOfWeek + "요일";
+    // result += date.getHours() + "시";
+    // result += date.getMinutes() + "분";
+    return "y" + dyear + "m" + dmonth + "d" + ddate + "h" + dhour + "m" + dmin;
+  }
+  getKoreaTime() {
+    let d = new Date();
+    d.setHours(d.getHours() + 8);
+    d.setMinutes(d.getMinutes() + 30);
+    return d;
+  }
   //네이버 택시요금/거리/시간/경로
   async fetchNaverDirect5(start, end) {
     let result = null;

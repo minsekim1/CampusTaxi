@@ -57,7 +57,7 @@ export default class UserStore {
             k: k,
             l: l,
             m: newkey,
-            n: 0,
+            n: 1,
             o: o,
           };
           this.userDB(f).set(newUser);
@@ -164,7 +164,8 @@ export default class UserStore {
   }
   // removeUser : 사용자 데이터를 완전히 지움
   removeUser(userkey) {
-    this.userDB(userkey).set({});
+    //this.bbsDB("").orderByChild(userkey)
+    //this.userDB(userkey).set({});
   }
   changeUser(userkey, props, value) {
     this.userDB(userkey + "/" + props).set(value);
@@ -213,7 +214,7 @@ export default class UserStore {
         Object.entries(snap.val()).map((r) => {
           if (r[1] == 1) {
             this.bbsDB(r[0]).on("value", (snap2) => {
-              if (snap2 != null)
+              if (snap2.val() != null)
                 result.push(JSON.parse(JSON.stringify(snap2.val())));
             });
           }
