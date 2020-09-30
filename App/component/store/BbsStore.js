@@ -43,8 +43,6 @@ export default class BbsStore {
     if (j.getSeconds() < 10) jdate += ":0" + j.getSeconds();
     else jdate += ":" + j.getSeconds();
     jdate += "+09:00";
-
-    console.log("j" + j);
     await fetch("http://worldtimeapi.org/api/timezone/Asia/Seoul")
       .then((res) => res.json())
       .then((result) => {
@@ -69,7 +67,7 @@ export default class BbsStore {
           i: i,
           j: jdate,
           k: k,
-          m: 1,
+          m: 0,
           n: n,
         };
         newkey = this.bbsDB("").push(newBbs).key;
@@ -100,11 +98,31 @@ export default class BbsStore {
   removeBbs(bbskey) {
     this.bbsDB(bbskey).set({});
   }
+  async countMember(memberList) {
+    // 방목록사람리스트를 받아 몇명이 들어와 있는지 세아려줌
+    let count = 0;
+    for (const [key, value] of Object.entries(memberList))
+      if (value == 1) count++;
+
+    console.log(count);
+    return count;
+  }
   outBbs(userkey, bbskey) {
     //클라이언트가 해당 방을 나감, 또는 추방.
     this.bbsDB(bbskey + "/l/" + userkey).set(0);
     //bbs 데이터에서 고객명 지우기.
     this.userDB(userkey + "/c/" + bbskey).set(0);
+  }
+  enterBbs(userkey, bbskey) {
+    //유저가 들어간 것을 서버에 업데이트
+    firebase
+      .database()
+      .ref("bbs/data/" + bbskey + "/l/" + userkey)
+      .set(1);
+    firebase
+      .database()
+      .ref("user/data/" + userkey + "/c/" + bbskey)
+      .set(1);
   }
   changeBbsValue(bbskey, props, value) {
     this.bbsDB(bbskey + "/" + props).set(value);

@@ -70,7 +70,6 @@ export default class chatroomScreen extends Component {
     const { navigation } = this.props;
     return (
       <>
-        {/* 헤더부분 */}
         <View style={{ height: "20%", marginBottom: 15 }}>
           <View
             style={{
@@ -118,20 +117,29 @@ export default class chatroomScreen extends Component {
                             source={crown}
                             style={{ width: 23, height: 15, marginTop: 3 }}
                           />
-                          <Text style={campusStyle.Text.middleBold}>
-                            {bbsStore.bbsnow.i}
-                          </Text>
+                          <Observer>
+                            {() => (
+                              <Text style={campusStyle.Text.middleBold}>
+                                {bbsStore.bbsnow.i}
+                              </Text>
+                            )}
+                          </Observer>
                         </View>
                       </View>
 
                       <Text style={campusStyle.Text.whiteInput}>
                         출발지:
-                        {bbsStore.bbsnow != null
+                        {/* {bbsStore.bbsnow != ""
                           ? bbsStore.bbsnow.n.name
-                          : this.props.route.params.startplace}
+                          : this.props.route.params.startplace.name} */}
+                        {this.props.route.params.startplace.name}
                       </Text>
                       <Text style={campusStyle.Text.whiteInput}>
-                        {/* 도착지: {bbsStore.bbsnow.g.name} */}
+                        도착지:
+                        {/* {bbsStore.bbsnow != ""
+                          ? bbsStore.bbsnow.g.name
+                          : this.props.route.params.endplace.name} */}
+                        {this.props.route.params.endplace.name}
                       </Text>
 
                       <Text style={campusStyle.Text.smallCenter}>
@@ -154,19 +162,19 @@ export default class chatroomScreen extends Component {
                       });
                     }}
                   />
-                  <Button
+                  {/* <Button
                     type="clear"
                     title=""
                     icon={<Icon name="search" size={24} color="white" />}
                     onPress={() => {
                       let result = this.state.chattingData;
                       for (let i = 0; i < result.length; i++) {
-                        /* 
+                        
                         '테스트'라는 메세지가 있을 경우, 그 메세지만 출력하도록 함.
                         TODO INPUT을 통해 값을 저장(let filterstring = this.state.filterstring)해서 모든 JSON 문자를 비교하도록 함.
                         ? 헤헤흐히
                         ! 위험! 경고!
-                        */
+                        
                         if (result[i]["dd"] == "테스트") {
                           // console.log(result[i]["dd"]);
                           // TODO [APPLY text background highlight style code]
@@ -176,7 +184,7 @@ export default class chatroomScreen extends Component {
 
                       // setFilterVisible(true);
                     }}
-                  />
+                  /> */}
                   <Button
                     type="clear"
                     title=""
@@ -393,3 +401,4 @@ import { TextInput } from "react-native-gesture-handler";
 import crown from "image/crown.png";
 const firebase = require("firebase");
 import { bbsStore, userStore, anotherStore } from "store";
+import { Observer } from "mobx-react";

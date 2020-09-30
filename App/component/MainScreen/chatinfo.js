@@ -227,7 +227,7 @@ import campusStyle from "style";
 import { TextInput } from "react-native-gesture-handler";
 import crown from "image/crown.png";
 const firebase = require("firebase");
-import { Observer, observer } from "mobx-react";
+import { Observer } from "mobx-react";
 import Svg, { G, Circle, Path } from "react-native-svg";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { bbsStore, userStore, anotherStore } from "store";

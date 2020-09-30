@@ -228,26 +228,26 @@ export default function chatScreen({ route, navigation }) {
               text: filter + " 채팅방 목록",
               style: campusStyle.Text.middleBold,
             }}
-            rightComponent={
-              <View style={campusStyle.View.row}>
-                <Button
-                  type="clear"
-                  title=""
-                  icon={<Icon name="filter-list" size={24} color="white" />}
-                  onPress={() => {
-                    setFilterVisible(true);
-                  }}
-                />
-                <Button
-                  type="clear"
-                  title=""
-                  icon={<Icon name="search" size={24} color="white" />}
-                  onPress={() => {
-                    setSearchVisible(true);
-                  }}
-                />
-              </View>
-            }
+            // rightComponent={
+            //   <View style={campusStyle.View.row}>
+            //     <Button
+            //       type="clear"
+            //       title=""
+            //       icon={<Icon name="filter-list" size={24} color="white" />}
+            //       onPress={() => {
+            //         setFilterVisible(true);
+            //       }}
+            //     />
+            //     <Button
+            //       type="clear"
+            //       title=""
+            //       icon={<Icon name="search" size={24} color="white" />}
+            //       onPress={() => {
+            //         setSearchVisible(true);
+            //       }}
+            //     />
+            //   </View>
+            // }
           />
           {/* 채팅목록 출력부분 */}
           <Observer>
@@ -266,6 +266,8 @@ export default function chatScreen({ route, navigation }) {
                           filter
                         );
                         if (isEnter) {
+                          bbsStore.enterBbs(userStore.userkey, item.b);
+
                           navigation.navigate("채팅방", {
                             bbskey: item.b,
                             gender: item.h,
@@ -275,21 +277,8 @@ export default function chatScreen({ route, navigation }) {
                             mygender: mygender,
                             myname: myname,
                             meetingdate: item.j,
-                            personmember: item.i,
                             personmax: item.k,
                           });
-                          firebase
-                            .database()
-                            .ref(
-                              "bbs/data/" + item.b + "/l/" + userStore.userkey
-                            )
-                            .set(1);
-                          firebase
-                            .database()
-                            .ref(
-                              "user/data/" + userStore.userkey + "/c/" + item.b
-                            )
-                            .set(1);
                         }
                       }}
                       style={{
@@ -340,17 +329,21 @@ export default function chatScreen({ route, navigation }) {
                           </Text>
                         </View>
                         <View style={{ flex: 1 }}>
-                          {(() => {
-                            if (item.k === item.m)
+                          {(async () => {
+                            let presentMemberCount = 0;
+                            await bbsStore
+                              .countMember(item.l)
+                              .then((r) => (presentMemberCount = r));
+                            if (item.k === presentMemberCount)
                               return (
                                 <Text style={campusStyle.Text.red}>
-                                  {item.m}/{item.k}
+                                  {presentMemberCount}/{item.k}
                                 </Text>
                               );
                             else
                               return (
                                 <Text>
-                                  {item.m}/{item.k}
+                                  {presentMemberCount}/{item.k}
                                 </Text>
                               );
                           })()}
@@ -385,8 +378,8 @@ export default function chatScreen({ route, navigation }) {
               <Text style={campusStyle.Text.smallSize}>방만들기</Text>
             </TouchableOpacity>
           </View>
-          {/* 모달창 */}
-          {/* 검색모달창 */}
+          {/* 모달창
+          검색모달창
           {isSearchVisible ? (
             <Modal
               backdropColor="rgba(0,0,0,0)"
@@ -411,7 +404,7 @@ export default function chatScreen({ route, navigation }) {
               </View>
             </Modal>
           ) : null}
-          {/* 필터모달창 */}
+          필터모달창
           {isFilterVisible ? (
             <Modal
               backdropColor="rgba(0,0,0,0)"
@@ -517,7 +510,7 @@ export default function chatScreen({ route, navigation }) {
                 <Button title="Check" onPress={getFiltferBbs} />
               </View>
             </Modal>
-          ) : null}
+          ) : null} */}
         </>
       ) : (
         <LoadingComponent />
