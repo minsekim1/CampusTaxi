@@ -1,16 +1,13 @@
 //실제 유저들이 채팅하는 화면
 export default class chatroomScreen extends Component {
   //#region 변수들
+
   constructor(props) {
     super(props);
+
     this.state = {
-      textInput: "",
       bbskey: this.props.route.params.bbskey,
-      gender: this.props.route.params.gender,
-      startplace: this.props.route.params.startplace,
-      endplace: this.props.route.params.endplace,
-      leadername: this.props.route.params.leadername,
-      myname: this.props.route.params.myname,
+      myname: userStore.user.i,
       mygender: this.props.route.params.mygender,
       personmember: this.props.route.params.personmember,
       personmax: this.props.route.params.personmax,
@@ -18,15 +15,15 @@ export default class chatroomScreen extends Component {
       chattingData: [],
       refreshing: false,
       time: new Date(),
+      textInput: "",
     };
   }
 
   componentDidMount() {
     this.updateChattingDate();
+    bbsStore.setbbsnow(this.props.route.params.bbskey);
+    bbsStore.asyncBbsnow(this.props.route.params.bbskey);
   }
-  // scrollToItem() {
-  //   this.flatListRef.scrollToEnd({ animated: true });
-  // }
   async updateChattingDate() {
     await firebase
       .database()
@@ -58,13 +55,13 @@ export default class chatroomScreen extends Component {
         .database()
         .ref("bbs/data/" + this.state.bbskey + "/d")
         .push({
-          db: this.state.myname,
+          db: this.state.bbsStore.bbsnow.h,
           dc: String(this.state.time),
           dd: this.state.textInput,
         });
       await this.updateChattingDate();
       this.setState({ textInput: "" }); //Input의 채팅 내용을 지웁니다.
-      this.flatListRef.scrollToEnd({ animated: false }); // 채팅을 가장 아래로 내립니다.
+      this.flatListRef.scrollToEnd({ animated: true }); // 채팅을 가장 아래로 내립니다.
     }
   }
 
@@ -90,9 +87,9 @@ export default class chatroomScreen extends Component {
                 alignItems: "stretch",
               }}
               backgroundColor={
-                this.state.gender == 2
+                bbsStore.bbsnow.h == 2
                   ? "#3A3A3A"
-                  : this.state.gender == 1
+                  : bbsStore.bbsnow.h == 1
                   ? "#DE22A3"
                   : "#55A1EE"
               }
@@ -122,20 +119,23 @@ export default class chatroomScreen extends Component {
                             style={{ width: 23, height: 15, marginTop: 3 }}
                           />
                           <Text style={campusStyle.Text.middleBold}>
-                            {this.state.leadername}
+                            {bbsStore.bbsnow.i}
                           </Text>
                         </View>
                       </View>
 
                       <Text style={campusStyle.Text.whiteInput}>
-                        출발지: {this.state.startplace.name}
+                        출발지:
+                        {bbsStore.bbsnow != null
+                          ? bbsStore.bbsnow.n.name
+                          : this.props.route.params.startplace}
                       </Text>
                       <Text style={campusStyle.Text.whiteInput}>
-                        도착지: {this.state.endplace.name}
+                        {/* 도착지: {bbsStore.bbsnow.g.name} */}
                       </Text>
 
                       <Text style={campusStyle.Text.smallCenter}>
-                        {this.props.route.params.meetingdate} 출발예정
+                        {bbsStore.bbsnow.j} 출발예정
                       </Text>
                     </View>
                   </>

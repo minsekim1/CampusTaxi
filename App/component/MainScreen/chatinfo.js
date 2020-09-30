@@ -9,10 +9,6 @@ export default class chatinfo extends Component {
 
     return (
       <>
-        <Button
-          title="test"
-          onPress={() => console.log(bbsStore.bbsuser.length)}
-        />
         <Observer>
           {() => {
             this.props.navigation.setOptions({
