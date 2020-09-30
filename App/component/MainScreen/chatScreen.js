@@ -292,7 +292,10 @@ export default function chatScreen({ route, navigation }) {
                             .set(1);
                         }
                       }}
-                      style={{ backgroundColor: "white", padding: 10 }}
+                      style={{
+                        backgroundColor: "white",
+                        padding: 10,
+                      }}
                     >
                       <View style={campusStyle.View.row}>
                         <View
@@ -357,7 +360,7 @@ export default function chatScreen({ route, navigation }) {
                             탑승시간▼
                           </Text>
                           <Text style={campusStyle.Text.grayDDark}>
-                            {anotherStore.toLocal(item.f)}
+                            {anotherStore.toRoomTime(item.j)}
                           </Text>
                         </View>
                       </View>

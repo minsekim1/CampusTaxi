@@ -25,9 +25,8 @@ export default class BbsStore {
     );
   }
   asyncBbsnow(bbskey) {
-    this.bbsDB(bbskey + "/l").on("child_changed", () => this.setbbsnow(bbskey));
+    this.bbsDB(bbskey).on("value", () => this.setbbsnow(bbskey));
   }
-
   async addBbs(c, g, h, i, j, k, n, userkey) {
     //시간 가져오기
     let newkey = null;
