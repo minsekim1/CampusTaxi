@@ -80,31 +80,56 @@ export default class AnotherStore {
 
     return result;
   }
-  //#endregion store공통함수
+  //방목록:탑승시간함수
   toRoomTime(date) {
-    const koreaTime = this.getKoreaTime();
+    const koreaTime = this.getKoreaTime(); //현재 한국시간
     const dyear = date.slice(0, 4);
     const dmonth = date.slice(5, 7);
-    const ddate = date.slice(8, 10);
+    const dday = date.slice(8, 10);
     const dhour = date.slice(11, 13);
     const dmin = date.slice(14, 16);
-
+    const ddate = dyear + "-" + dmonth + "-" + dday;
     const week = ["일", "월", "화", "수", "목", "금", "토"];
-    const dayOfWeek = week[date.getDay()];
+    const dayOfWeek = week[new Date(ddate).getDay()];
     let result = "";
-    // if (date.getFullYear() != date.getFullYear())
-    //   result += date.getFullYear() + "년";
-    // result += date.getMonth() + 1 + "월";
-    // result += date.getDate() + "일";
-    // result += dayOfWeek + "요일";
-    // result += date.getHours() + "시";
-    // result += date.getMinutes() + "분";
-    return "y" + dyear + "m" + dmonth + "d" + ddate + "h" + dhour + "m" + dmin;
+    const koreaGap = koreaTime.getHours() * 60 + koreaTime.getMinutes();
+    const dateGap = parseInt(dhour) * 60 + parseInt(dmin);
+    const gap = koreaGap - dateGap;
+    const AMPM = dhour < 12 ? "오전" : "오후";
+    //년월일이 같을 경우 년월일을 뻅니다.
+    //년월일이 같고 1시간 이내인 경우 얼만큼 남았는지를 표시합니다.
+    if (
+      !(
+        dyear == koreaTime.getFullYear() &&
+        parseInt(dmonth) == parseInt(koreaTime.getMonth()) + 1 &&
+        dday == koreaTime.getDate()
+      )
+    ) {
+      result += dyear + "/";
+      result += dmonth + "/";
+      result += dday + " ";
+      result += "(" + dayOfWeek + ")";
+      result += dhour + ":";
+      result += dmin + "";
+    } else if (gap > 60 || gap < -60) {
+      result += "오늘 ";
+      result += AMPM;
+      result += dhour + ":";
+      result += dmin + "";
+    } else if (gap > 0) {
+      result += gap;
+      result += "분 전";
+    } else if (gap < 0) {
+      result += gap;
+      result += "분 후";
+    }
+
+    return result;
   }
   getKoreaTime() {
     let d = new Date();
-    d.setHours(d.getHours() + 8);
-    d.setMinutes(d.getMinutes() + 30);
+    //d.setHours(d.getHours() + 8);
+    //d.setMinutes(d.getMinutes() + 30);
     return d;
   }
   //네이버 택시요금/거리/시간/경로
