@@ -364,11 +364,17 @@ const ItemStyle = StyleSheet.create({
   },
   itemSystem_Message: {
     flexDirection: "row",
-    marginBottom: 10,
+    marginTop: 10,
+    marginBottom: 5,
+    marginLeft: 20,
+    marginRight: 20,
     justifyContent: "center",
+    alignSelf: "center",
     fontSize: 15,
     padding: 10,
     fontWeight: "400",
+    backgroundColor: "rgba(0, 0, 0, 0.05)",
+    borderRadius: 10,
   },
 });
 
