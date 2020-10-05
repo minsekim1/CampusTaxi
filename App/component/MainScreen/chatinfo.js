@@ -78,8 +78,8 @@ export default class chatinfo extends Component {
 
         <View>
           <Button
-            onPress={async () => {
-              await bbsStore.outBbs(userStore.userkey, bbskey);
+            onPress={() => {
+              bbsStore.outBbs(userStore.userkey, bbskey);
               this.props.navigation.pop(2);
             }}
             title="방나가기"

@@ -9,7 +9,8 @@ export default function chatScreen({ route, navigation }) {
     userStore.asyncuserbbs();
     //bbsStore.asyncAllBbs();
     bbsStore.asyncTypeBbs(filter);
-  }, [userkey]);
+    bbsStore.asyncAllBbs();
+  }, []);
   //#region 유저정보 업데이트
   const myname = userStore.user.i;
   const mygender = userStore.user.d;
@@ -21,34 +22,23 @@ export default function chatScreen({ route, navigation }) {
       return false;
     } else {
       let result = true;
-      await firebase
-        .database()
-        .ref("user/data/" + userStore.userkey + "/c")
-        .once("value", (snap) => {
-          if (snap.val() != null)
-            for (const [key, value] of Object.entries(snap.val())) {
-              if (value == 1 && bbskey != key) {
-                //console.log(value + "  " + key);
-                // 접속한 방 중에서 다른 방을 조사
-                firebase
-                  .database()
-                  .ref("bbs/data/" + key + "/c")
-                  .once("value", (snap2) => {
-                    //다른방이 같은 filter 일경우 못들어감
-                    if (snap2.val() == filter) {
-                      result = false;
-                      alert(
-                        "채팅방은 카테고리별로 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요."
-                      );
-                    }
-                  });
-              }
+      if (userStore.user.c != "undefined") {
+        for (const [key, value] of Object.entries(userStore.user.c)) {
+          if (value == 1 && bbskey != key) {
+            // 접속한 방 중에서 다른 방을 조사
+            for (const [bkey, bvalue] of Object.entries(bbsStore.bbs[0])) {
+              if (bkey == "c") result = false;
             }
-          else {
-            alert("삭제된 방입니다.");
-            return false;
           }
-        });
+        }
+        if (!result)
+          alert(
+            "채팅방은 카테고리별로 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요."
+          );
+      } else {
+        alert("삭제된 방입니다.");
+        return false;
+      }
       return result;
     }
     //userStore.user.c
@@ -267,7 +257,6 @@ export default function chatScreen({ route, navigation }) {
                         );
                         if (isEnter) {
                           bbsStore.enterBbs(userStore.userkey, item.b);
-
                           navigation.navigate("채팅방", {
                             bbskey: item.b,
                             gender: item.h,
@@ -329,12 +318,11 @@ export default function chatScreen({ route, navigation }) {
                           </Text>
                         </View>
                         <View style={{ flex: 1 }}>
-                          {(async () => {
-                            let presentMemberCount = 0;
-                            await bbsStore
-                              .countMember(item.l)
-                              .then((r) => (presentMemberCount = r));
-                            if (item.k === presentMemberCount)
+                          {(() => {
+                            let presentMemberCount = bbsStore.countMember(
+                              item.l
+                            );
+                            if (item.k <= presentMemberCount)
                               return (
                                 <Text style={campusStyle.Text.red}>
                                   {presentMemberCount}/{item.k}

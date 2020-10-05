@@ -98,13 +98,12 @@ export default class BbsStore {
   removeBbs(bbskey) {
     this.bbsDB(bbskey).set({});
   }
-  async countMember(memberList) {
+  countMember(memberList) {
     // 방목록사람리스트를 받아 몇명이 들어와 있는지 세아려줌
     let count = 0;
     for (const [key, value] of Object.entries(memberList))
       if (value == 1) count++;
 
-    console.log(count);
     return count;
   }
   outBbs(userkey, bbskey) {
