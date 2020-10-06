@@ -218,8 +218,8 @@ export default function selectPlace(props, { navigation }) {
     <>
       <View style={{ alignItems: "center" }}>
         {/* sssssssssssssssssss */}
-        <Button title="테스트버튼" onPress={testFunc} />
-        <Button title="토스연동버튼" onPress={() => console.log(test)} />
+        {/* <Button title="테스트버튼" onPress={testFunc} />
+        <Button title="토스연동버튼" onPress={() => console.log(test)} /> */}
         {/* sssssssssssssssssss */}
         <Searchbar
           style={{
