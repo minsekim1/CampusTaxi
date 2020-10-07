@@ -19,6 +19,7 @@ try {
 } catch (error) {}
 //{userStore.develop == true ? "설정" : "홈"}
 //#endregion
+import * as Location from "expo-location";
 //#region 경고창 무시: Setting a timer for a long period of time, i.e. multiple minute
 import { YellowBox } from "react-native";
 import _ from "lodash";
@@ -41,6 +42,7 @@ import { Observer } from "mobx-react";
 //#endregion
 export default class App extends Component {
   render() {
+    Location.requestPermissionsAsync();
     return (
       <Provider>
         <PaperProvider>

@@ -1,10 +1,8 @@
 //실제 유저들이 채팅하는 화면
 export default class chatroomScreen extends Component {
   //#region 변수들
-
   constructor(props) {
     super(props);
-
     this.state = {
       bbskey: this.props.route.params.bbskey,
       myname: userStore.user.i,
@@ -18,7 +16,6 @@ export default class chatroomScreen extends Component {
       textInput: "",
     };
   }
-
   componentDidMount() {
     this.updateChattingDate();
     bbsStore.setbbsnow(this.props.route.params.bbskey);
@@ -248,11 +245,6 @@ class ChattingItem extends React.PureComponent {
     const name = this.props.name;
     const time = this.props.time;
     const isMychat = this.props.isMychat;
-
-    let month = new Date(time).getMonth() + 1;
-    let date = new Date(time).getDate();
-
-    // 오후 오전 나누기
     const now = new Date(time);
     let hour = now.getHours().toString();
     let min = now.getMinutes().toString();
@@ -268,12 +260,7 @@ class ChattingItem extends React.PureComponent {
     if (isLeader) {
       image = <Image source={crown} />;
     }
-
-    // 스타일 지정 및 내채팅 (Reverse) 구현
-
     let containerItem; //내 채팅일 경우 좌우반전
-
-    // {now.getFullYear().toString()}
     //getMonth +1 월
     //getDate 일
     //getDay 요일(0:일, 1:월 ...)

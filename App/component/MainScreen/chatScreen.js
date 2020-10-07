@@ -10,13 +10,6 @@ export default function chatScreen({ route, navigation }) {
       userStore.asyncuserbbs();
       bbsStore.asyncTypeBbs(filter);
       bbsStore.asyncAllBbs();
-
-      console.log("a");
-      console.log(userStore.user.c == "");
-      console.log("b");
-      console.log(bbsStore.bbs[0] == "");
-      console.log("c");
-      console.log(bbsStore.typebbs == "");
     });
 
     return unsubscribe;
@@ -26,7 +19,7 @@ export default function chatScreen({ route, navigation }) {
   const myname = userStore.user.i;
   const mygender = userStore.user.d;
   async function checkUserEnterChatRoom(bbsGender, bbskey, filter) {
-    //bbs.h
+    console.log(bvalue);
     if (bbsGender != 2 && userStore.user.d != bbsGender) {
       //2: 모든 성별도아니고 or 게시판과 같은 성별도 아닐경우
       alert("성별 제한이 걸려있습니다.");
