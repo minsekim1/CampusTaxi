@@ -114,6 +114,7 @@ export default class BbsStore {
   }
   enterBbs(userkey, bbskey) {
     //유저가 들어간 것을 서버에 업데이트
+    console.log(bbskey);
     firebase
       .database()
       .ref("bbs/data/" + bbskey + "/l/" + userkey)

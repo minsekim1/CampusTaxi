@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "캠퍼스택시",
-    "slug": "캠퍼스택시",
+    "slug": "campustaxi",
     "version": "3.1.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
