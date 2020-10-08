@@ -63,7 +63,7 @@ export default function LoginNav() {
             headerLeft: () => (
               <Button
                 title="뒤로가기"
-                onPress={() => navigation.navigate("로그인")}
+                onPress={() => navigation.navigate("Login")}
               />
             ),
           })}
