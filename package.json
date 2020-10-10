@@ -4,7 +4,7 @@
     "start집": "adb connect 192.168.200.136:5555 && expo start --android",
     "start학교": "adb connect 192.168.175.73:5555 && expo start --android",
     "start기본실행": "expo start --no-dev --minify",
-    "gitUpload": "git add . && git commit -m \" 앱첫로딩화면 업스케일링 \" && git push ",
+    "gitUpload": "git add . && git commit -m \" 화면이동 애니메이션 개선 \" && git push ",
     "gitPull": "git pull",
     "안드로이드빌드": "expo build:android -t app-bundle",
     "기본실행": "expo start",

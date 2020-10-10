@@ -22,7 +22,7 @@ export default class WebLogin extends Component {
       api: this.props.route.params.api, //"kakao", "naver",
     };
   }
-  //region 뒤로가기막기
+  // region 뒤로가기막기
   componentDidMount() {
     BackHandler.addEventListener("hardwareBackPress", this.handleBackButton);
     userStore.asyncUser();

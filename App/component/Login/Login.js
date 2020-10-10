@@ -8,8 +8,10 @@ import {
   Image,
   Text,
   TouchableOpacity,
+  SafeAreaView,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
+import LogoWhite from "../../../assets/logoWhite.js";
 import * as GoogleSignIn from "expo-google-sign-in";
 import * as Facebook from "expo-facebook";
 import Svg, {
@@ -25,7 +27,6 @@ const facebook_app_id = "350528495956316";
 const login_base_url = "http://campustaxi-b0e6c.web.app"; // 'http://192.168.2.112:3500' //
 const naver_login_uri = login_base_url + "/api/naver/login";
 const kakao_login_uri = login_base_url + "/api/kakao/login";
-
 import * as Device from "expo-device";
 import { bbsStore, userStore } from "store";
 export default class Login extends React.Component {
@@ -55,10 +56,7 @@ export default class Login extends React.Component {
         >
           {/* header */}
           <View style={styles.header}>
-            <Image
-              style={styles.logo}
-              source={require("../../image/logo.png")}
-            />
+            <LogoWhite />
             <View style={{ marginTop: 10 }}>
               <Text style={{ color: "#ffffff", fontSize: 18 }}>
                 CAMPUS TAXI
@@ -264,10 +262,6 @@ export default class Login extends React.Component {
         </ImageBackground>
       </View>
     );
-
-    moveToLoginScreen = () => {
-      navigation.navigate("로그인");
-    };
   }
 
   initAsync = async () => {
@@ -399,10 +393,6 @@ const styles = StyleSheet.create({
     maxWidth: 400,
     marginBottom: 30,
     height: 50,
-  },
-  logo: {
-    width: 92,
-    height: 83,
   },
   background: {
     width: "100%",

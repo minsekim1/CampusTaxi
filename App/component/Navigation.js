@@ -89,7 +89,32 @@ export default class Navigation extends Component {
 
     function HomeStackScreen() {
       return (
-        <HomeStack.Navigator initialRouteName="홈">
+        <HomeStack.Navigator
+          initialRouteName="홈"
+          initialRouteName="Login"
+          screenOptions={{
+            backgroundColor: "white",
+            headerShown: true,
+            cardStyle: { backgroundColor: "white" },
+            cardOverlayEnabled: true,
+            cardStyleInterpolator: ({ current: { progress } }) => ({
+              cardStyle: {
+                opacity: progress.interpolate({
+                  inputRange: [0, 0.5, 0.9, 1],
+                  outputRange: [0, 0.25, 0.7, 1],
+                }),
+              },
+              overlayStyle: {
+                opacity: progress.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, 0.5],
+                  extrapolate: "clamp",
+                }),
+              },
+            }),
+          }}
+          mode="modal"
+        >
           <HomeStack.Screen
             options={defaultNavOption}
             name="홈"
@@ -131,7 +156,32 @@ export default class Navigation extends Component {
 
     function MychatStackScreen() {
       return (
-        <MychatStack.Navigator initialRouteName="내 채팅">
+        <MychatStack.Navigator
+          initialRouteName="내 채팅"
+          initialRouteName="Login"
+          screenOptions={{
+            backgroundColor: "white",
+            headerShown: true,
+            cardStyle: { backgroundColor: "white" },
+            cardOverlayEnabled: true,
+            cardStyleInterpolator: ({ current: { progress } }) => ({
+              cardStyle: {
+                opacity: progress.interpolate({
+                  inputRange: [0, 0.5, 0.9, 1],
+                  outputRange: [0, 0.25, 0.7, 1],
+                }),
+              },
+              overlayStyle: {
+                opacity: progress.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, 0.5],
+                  extrapolate: "clamp",
+                }),
+              },
+            }),
+          }}
+          mode="modal"
+        >
           <MychatStack.Screen
             options={{
               headerLeft: null,

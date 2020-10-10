@@ -2,7 +2,7 @@
   "expo": {
     "name": "캠퍼스택시",
     "slug": "campustaxi",
-    "version": "3.1.3",
+    "version": "3.1.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -16,14 +16,14 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "com.campustaxi.campustaxi",
-      "buildNumber": "3.1.3"
+      "buildNumber": "3.1.4"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "android": {
       "package": "com.campustaxi.campustaxi",
-      "versionCode": 15,
+      "versionCode": 16,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyBVIfNVsdQk6J56bD4CwZSPDyYlxF_XBe0"
