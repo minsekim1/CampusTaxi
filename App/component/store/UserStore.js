@@ -1,5 +1,5 @@
 // #사용법
-// 1. import { bbsStore, userStore } from "store";
+// 1. import { bbsStore, userStore, anotherStore } from "store";
 // 2. onPress={() => userStore.addUser(1, 2, 3, 4, 5, 6, 7, 8,9,10)}
 
 export default class UserStore {
@@ -12,6 +12,22 @@ export default class UserStore {
   //setKey: 유저키를 아이디/토큰으로 설정
   bbsDB = (name) => firebase.database().ref("bbs/data/" + name);
   userDB = (name) => firebase.database().ref("user/data/" + name);
+
+  //chatInfo.js : 방장위임
+  hostPass(hostNickName, toUserNickname, bbskey) {
+    this.bbsDB(bbskey + "/i").set(toUserNickname);
+    this.bbsDB(bbskey + "/d").push({
+      da: "",
+      db: "SYSTEM",
+      dc: new Date(),
+      dd:
+        "방장이 " +
+        hostNickName +
+        " 님에서 " +
+        toUserNickname +
+        " 님으로 위임되었습니다.",
+    });
+  }
   asyncUser() {
     if (this.userkey != null) {
       this.userDB(this.userkey).on("value", (snap) => {
@@ -57,7 +73,7 @@ export default class UserStore {
             k: k,
             l: l,
             m: newkey,
-            n: 0,
+            n: 1,
             o: o,
           };
           this.userDB(f).set(newUser);
@@ -164,7 +180,8 @@ export default class UserStore {
   }
   // removeUser : 사용자 데이터를 완전히 지움
   removeUser(userkey) {
-    this.userDB(userkey).set({});
+    //this.bbsDB("").orderByChild(userkey)
+    //this.userDB(userkey).set({});
   }
   changeUser(userkey, props, value) {
     this.userDB(userkey + "/" + props).set(value);
@@ -213,7 +230,7 @@ export default class UserStore {
         Object.entries(snap.val()).map((r) => {
           if (r[1] == 1) {
             this.bbsDB(r[0]).on("value", (snap2) => {
-              if (snap2 != null)
+              if (snap2.val() != null)
                 result.push(JSON.parse(JSON.stringify(snap2.val())));
             });
           }

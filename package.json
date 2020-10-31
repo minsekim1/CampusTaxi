@@ -3,8 +3,8 @@
   "scripts": {
     "start집": "adb connect 192.168.200.136:5555 && expo start --android",
     "start학교": "adb connect 192.168.175.73:5555 && expo start --android",
-    "start웹": "expo web",
-    "gitUpload": "git add . && git commit -m \" 출/도 선택 완성 \" && git push ",
+    "start기본실행": "expo start --no-dev --minify",
+    "gitUpload": "git add . && git commit -m \" package에 product Mode 실행추가 \" && git push ",
     "gitPull": "git pull",
     "안드로이드빌드": "expo build:android -t app-bundle",
     "기본실행": "expo start",

@@ -49,6 +49,13 @@ export default function selectPlace(props, { navigation }) {
   const pinColor = "blue";
   const pinColorRS = "orange";
   const pinColorRE = "turquoise";
+  {
+    /* sssssssssssssssssss */
+  }
+  const [test, setTest] = useState("asd");
+  {
+    /* sssssssssssssssssss */
+  }
   useEffect(() => {
     if (Platform.OS === "android" && !Constants.isDevice) {
       setErrorMsg(
@@ -90,6 +97,32 @@ export default function selectPlace(props, { navigation }) {
     }
   }, []);
   const [place, setPlace] = useState(null);
+  const testFunc = () => {
+    var request = new XMLHttpRequest();
+
+    request.open("POST", "https://toss.im/transfer-web/linkgen-api/link");
+
+    request.setRequestHeader("Content-Type", "application/json");
+
+    request.onreadystatechange = function () {
+      if (this.readyState === 4) {
+        // console.log("Status:", this.status);
+        //console.log("Headers:", this.getAllResponseHeaders());
+        //console.log("Body:", this.responseText);
+        setTest(JSON.parse(this.responseText).success.link);
+      }
+    };
+
+    var body = {
+      apiKey: "dcf102a946024eafb1c3d61cbdba3c47",
+      bankName: "신한",
+      bankAccountNo: "1100452752310",
+      amount: 15000,
+      message: "토스입금버튼",
+    };
+
+    request.send(JSON.stringify(body));
+  };
   async function placeSearch(keyword) {
     if (typeof keyword != "string") keyword = keyword.nativeEvent.text;
     let url =
@@ -184,6 +217,10 @@ export default function selectPlace(props, { navigation }) {
   return (
     <>
       <View style={{ alignItems: "center" }}>
+        {/* sssssssssssssssssss */}
+        {/* <Button title="테스트버튼" onPress={testFunc} />
+        <Button title="토스연동버튼" onPress={() => console.log(test)} /> */}
+        {/* sssssssssssssssssss */}
         <Searchbar
           style={{
             marginTop: 30,

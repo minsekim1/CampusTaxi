@@ -4,13 +4,8 @@ export default class chatroomScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      textInput: "",
       bbskey: this.props.route.params.bbskey,
-      gender: this.props.route.params.gender,
-      startplace: this.props.route.params.startplace,
-      endplace: this.props.route.params.endplace,
-      leadername: this.props.route.params.leadername,
-      myname: this.props.route.params.myname,
+      myname: userStore.user.i,
       mygender: this.props.route.params.mygender,
       personmember: this.props.route.params.personmember,
       personmax: this.props.route.params.personmax,
@@ -19,18 +14,17 @@ export default class chatroomScreen extends Component {
       refreshing: false,
       time: new Date(),
       textSearch: "",
-      isVision: false
+      isVision: false,
+      textInput: "",
     };
 
     this.setTextSearch = this.setTextSearch.bind(this);
   }
-
   componentDidMount() {
     this.updateChattingDate();
+    bbsStore.setbbsnow(this.props.route.params.bbskey);
+    bbsStore.asyncBbsnow(this.props.route.params.bbskey);
   }
-  // scrollToItem() {
-  //   this.flatListRef.scrollToEnd({ animated: true });
-  // }
   async updateChattingDate() {
     await firebase
       .database()
@@ -62,13 +56,13 @@ export default class chatroomScreen extends Component {
         .database()
         .ref("bbs/data/" + this.state.bbskey + "/d")
         .push({
-          db: this.state.myname,
+          db: this.state.bbsStore.bbsnow.h,
           dc: String(this.state.time),
           dd: this.state.textInput,
         });
       await this.updateChattingDate();
       this.setState({ textInput: "" }); //Input의 채팅 내용을 지웁니다.
-      this.flatListRef.scrollToEnd({ animated: false }); // 채팅을 가장 아래로 내립니다.
+      this.flatListRef.scrollToEnd({ animated: true }); // 채팅을 가장 아래로 내립니다.
     }
   }
   
@@ -88,7 +82,6 @@ export default class chatroomScreen extends Component {
     const { navigation } = this.props;
     return (
       <>
-        {/* 헤더부분 */}
         <View style={{ height: "20%", marginBottom: 15 }}>
           <View
             style={{
@@ -105,9 +98,9 @@ export default class chatroomScreen extends Component {
                 alignItems: "stretch",
               }}
               backgroundColor={
-                this.state.gender == 2
+                bbsStore.bbsnow.h == 2
                   ? "#3A3A3A"
-                  : this.state.gender == 1
+                  : bbsStore.bbsnow.h == 1
                   ? "#DE22A3"
                   : "#55A1EE"
               }
@@ -136,21 +129,33 @@ export default class chatroomScreen extends Component {
                             source={crown}
                             style={{ width: 23, height: 15, marginTop: 3 }}
                           />
-                          <Text style={campusStyle.Text.middleBold}>
-                            {this.state.leadername}
-                          </Text>
+                          <Observer>
+                            {() => (
+                              <Text style={campusStyle.Text.middleBold}>
+                                {bbsStore.bbsnow.i}
+                              </Text>
+                            )}
+                          </Observer>
                         </View>
                       </View>
 
                       <Text style={campusStyle.Text.whiteInput}>
-                        출발지: {this.state.startplace.name}
+                        출발지:
+                        {/* {bbsStore.bbsnow != ""
+                          ? bbsStore.bbsnow.n.name
+                          : this.props.route.params.startplace.name} */}
+                        {this.props.route.params.startplace.name}
                       </Text>
                       <Text style={campusStyle.Text.whiteInput}>
-                        도착지: {this.state.endplace.name}
+                        도착지:
+                        {/* {bbsStore.bbsnow != ""
+                          ? bbsStore.bbsnow.g.name
+                          : this.props.route.params.endplace.name} */}
+                        {this.props.route.params.endplace.name}
                       </Text>
 
                       <Text style={campusStyle.Text.smallCenter}>
-                        {this.props.route.params.meetingdate} 출발예정
+                        {bbsStore.bbsnow.j} 출발예정
                       </Text>
                     </View>
                   </>
@@ -234,7 +239,7 @@ export default class chatroomScreen extends Component {
               }
             />
           </View>
-        </View>P
+        </View>
 
         {/* 채팅 내용부분 */}
         <FlatList
@@ -283,11 +288,6 @@ class ChattingItem extends React.PureComponent {
     const name = this.props.name;
     const time = this.props.time;
     const isMychat = this.props.isMychat;
-
-    let month = new Date(time).getMonth() + 1;
-    let date = new Date(time).getDate();
-
-    // 오후 오전 나누기
     const now = new Date(time);
     let hour = now.getHours().toString();
     let min = now.getMinutes().toString();
@@ -303,12 +303,7 @@ class ChattingItem extends React.PureComponent {
     if (isLeader) {
       image = <Image source={crown} />;
     }
-
-    // 스타일 지정 및 내채팅 (Reverse) 구현
-
     let containerItem; //내 채팅일 경우 좌우반전
-
-    // {now.getFullYear().toString()}
     //getMonth +1 월
     //getDate 일
     //getDay 요일(0:일, 1:월 ...)
@@ -407,11 +402,17 @@ const ItemStyle = StyleSheet.create({
   },
   itemSystem_Message: {
     flexDirection: "row",
-    marginBottom: 10,
+    marginTop: 10,
+    marginBottom: 5,
+    marginLeft: 20,
+    marginRight: 20,
     justifyContent: "center",
+    alignSelf: "center",
     fontSize: 15,
     padding: 10,
     fontWeight: "400",
+    backgroundColor: "rgba(0, 0, 0, 0.05)",
+    borderRadius: 10,
   },
 });
 
@@ -429,6 +430,6 @@ import campusStyle from "style";
 import { TextInput } from "react-native-gesture-handler";
 import crown from "image/crown.png";
 const firebase = require("firebase");
-import { bbsStore, userStore, anotherStore } from "store";import { set } from "mobx";
+import { bbsStore, userStore, anotherStore } from "store";
+import { Observer } from "mobx-react";
 import Modal from "react-native-modal";
-

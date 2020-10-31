@@ -6,53 +6,80 @@ export default class chatinfo extends Component {
     //#region 변수들
     bbsStore.setbbsnow(bbskey);
     bbsStore.asyncBbsnow(bbskey);
-    this.props.navigation.setOptions({
-      title: "대화상대(" + bbsStore.bbsnow.m + "/" + bbsStore.bbsnow.k + ")",
-    });
+
     return (
       <>
         <Observer>
-          {() => (
-            <FlatList
-              data={bbsStore.bbsuser}
-              extraData={bbsStore.bbsuser}
-              key={(item, i) => String(i)}
-              keyExtractor={(item, i) => String(i)}
-              renderItem={({ item }) => {
-                item = JSON.parse(JSON.stringify(item));
-                const image =
-                  bbsStore.bbsnow.i == item.i
-                    ? item.d == 0
-                      ? manCrownSVG
-                      : womanCrownSVG
-                    : item.d == 0
-                    ? manSVG
-                    : womanSVG;
-                return (
-                  <View style={{ flexDirection: "row", padding: 10 }}>
-                    <View style={{ flex: 1 }}>
-                      <Text>{image}</Text>
+          {() => {
+            this.props.navigation.setOptions({
+              title:
+                "대화상대(" +
+                bbsStore.bbsuser.length +
+                "/" +
+                bbsStore.bbsnow.k +
+                ")",
+            });
+            return (
+              <FlatList
+                data={bbsStore.bbsuser}
+                extraData={bbsStore.bbsuser}
+                key={(item, i) => String(i)}
+                keyExtractor={(item, i) => String(i)}
+                renderItem={({ item }) => {
+                  item = JSON.parse(JSON.stringify(item));
+                  const image =
+                    bbsStore.bbsnow.i == item.i
+                      ? item.d == 0
+                        ? manCrownSVG
+                        : womanCrownSVG
+                      : item.d == 0
+                      ? manSVG
+                      : womanSVG;
+                  const hostIcon = hostSVG;
+                  return (
+                    <View style={{ flexDirection: "row", padding: 10 }}>
+                      <View style={{ flex: 1 }}>
+                        <Text>{image}</Text>
+                      </View>
+                      <View style={{ flex: 5 }}>
+                        <Text>{item.i}</Text>
+                        <Text>{item.l}</Text>
+                      </View>
+
+                      {bbsStore.bbsnow.i == userStore.user.i &&
+                      bbsStore.bbsnow.i != item.i ? (
+                        <TouchableHighlight
+                          underlayColor={"rgba(0,0,0,0.15)"}
+                          onPress={() =>
+                            userStore.hostPass(
+                              bbsStore.bbsnow.i,
+                              item.i,
+                              bbskey
+                            )
+                          }
+                        >
+                          <View style={{ flex: 2, alignItems: "center" }}>
+                            <FontAwesome5
+                              name="vote-yea"
+                              size={24}
+                              color="black"
+                            />
+                            <Text style={{ fontSize: 10 }}>방장권한위임</Text>
+                          </View>
+                        </TouchableHighlight>
+                      ) : null}
                     </View>
-                    <View style={{ flex: 5 }}>
-                      <Text>{item.i}</Text>
-                      <Text>{item.l}</Text>
-                    </View>
-                  </View>
-                );
-              }}
-            />
-          )}
+                  );
+                }}
+              />
+            );
+          }}
         </Observer>
 
-        <View
-          stlye={{
-            position: "absolute",
-            bottom: 0,
-          }}
-        >
+        <View>
           <Button
-            onPress={async () => {
-              await bbsStore.outBbs(userStore.userkey, bbskey);
+            onPress={() => {
+              bbsStore.outBbs(userStore.userkey, bbskey);
               this.props.navigation.pop(2);
             }}
             title="방나가기"
@@ -168,6 +195,22 @@ const womanSVG = (
     />
   </Svg>
 );
+const hostSVG = ( //방장권한양도아이콘
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    ariaHidden="true"
+    className="svg-inline--fa fa-vote-yea fa-w-20"
+    data-icon="vote-yea"
+    data-prefix="fas"
+    viewBox="0 0 640 512"
+  >
+    <Path
+      fill="currentColor"
+      d="M608 320h-64v64h22.4c5.3 0 9.6 3.6 9.6 8v16c0 4.4-4.3 8-9.6 8H73.6c-5.3 0-9.6-3.6-9.6-8v-16c0-4.4 4.3-8 9.6-8H96v-64H32c-17.7 0-32 14.3-32 32v96c0 17.7 14.3 32 32 32h576c17.7 0 32-14.3 32-32v-96c0-17.7-14.3-32-32-32zm-96 64V64.3c0-17.9-14.5-32.3-32.3-32.3H160.4C142.5 32 128 46.5 128 64.3V384h384zM211.2 202l25.5-25.3c4.2-4.2 11-4.2 15.2.1l41.3 41.6 95.2-94.4c4.2-4.2 11-4.2 15.2.1l25.3 25.5c4.2 4.2 4.2 11-.1 15.2L300.5 292c-4.2 4.2-11 4.2-15.2-.1l-74.1-74.7c-4.3-4.2-4.2-11 0-15.2z"
+    ></Path>
+  </Svg>
+);
+
 //#region imports
 import React, { useState, useRef, Component, useEffect } from "react";
 import {
@@ -177,12 +220,14 @@ import {
   FlatList,
   Image,
   StatusBar,
+  TouchableHighlight,
 } from "react-native";
-import { Header, Icon, Button } from "react-native-elements";
+import { Header, Button } from "react-native-elements";
 import campusStyle from "style";
 import { TextInput } from "react-native-gesture-handler";
 import crown from "image/crown.png";
 const firebase = require("firebase");
-import { bbsStore, userStore } from "store";
-import { Observer, observer } from "mobx-react";
+import { Observer } from "mobx-react";
 import Svg, { G, Circle, Path } from "react-native-svg";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { bbsStore, userStore, anotherStore } from "store";

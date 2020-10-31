@@ -4,54 +4,47 @@ export default function chatScreen({ route, navigation }) {
   //#region Hooks & functions
   const userkey = userStore.user.f;
   const filter = route.params.filter;
-  if(filtingonoff) {
-    bbsStore.asyncTypeBbs(filter);
-  }
-  useEffect(() => {
-    userStore.asyncUser();
-    userStore.asyncuserbbs();
-    //bbsStore.asyncAllBbs();
-    bbsStore.asyncTypeBbs(filter);
-  }, [userkey]);
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      userStore.asyncUser();
+      userStore.asyncuserbbs();
+      bbsStore.asyncTypeBbs(filter);
+      //bbsStore.asyncAllBbs();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
   //#region 유저정보 업데이트
   const myname = userStore.user.i;
   const mygender = userStore.user.d;
   async function checkUserEnterChatRoom(bbsGender, bbskey, filter) {
-    //bbs.h
+    console.log(bvalue);
     if (bbsGender != 2 && userStore.user.d != bbsGender) {
       //2: 모든 성별도아니고 or 게시판과 같은 성별도 아닐경우
       alert("성별 제한이 걸려있습니다.");
       return false;
     } else {
       let result = true;
-      await firebase
-        .database()
-        .ref("user/data/" + userStore.userkey + "/c")
-        .once("value", (snap) => {
-          if (snap.val() != null)
-            for (const [key, value] of Object.entries(snap.val())) {
-              if (value == 1 && bbskey != key) {
-                //console.log(value + "  " + key);
-                // 접속한 방 중에서 다른 방을 조사
-                firebase
-                  .database()
-                  .ref("bbs/data/" + key + "/c")
-                  .once("value", (snap2) => {
-                    //다른방이 같은 filter 일경우 못들어감
-                    if (snap2.val() == filter) {
-                      result = false;
-                      alert(
-                        "채팅방은 카테고리별로 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요."
-                      );
-                    }
-                  });
-              }
+
+      if (userStore.user.c != "undefined") {
+        for (const [key, value] of Object.entries(userStore.user.c)) {
+          if (value == 1 && bbskey != key) {
+            //접속한 방 중에서 다른 방을 조사
+            for (const [bkey, bvalue] of Object.entries(bbsStore.bbs[0])) {
+              if (bkey == "c") result = false;
             }
-          else {
-            alert("삭제된 방입니다.");
-            return false;
           }
-        });
+        }
+        if (!result)
+          alert(
+            "채팅방은 카테고리별로 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요."
+          );
+      } else {
+        alert("삭제된 방입니다.");
+        return false;
+      }
       return result;
     }
     //userStore.user.c
@@ -233,144 +226,146 @@ export default function chatScreen({ route, navigation }) {
               text: filter + " 채팅방 목록",
               style: campusStyle.Text.middleBold,
             }}
-            rightComponent={
-              <View style={campusStyle.View.row}>
-                <Button
-                  type="clear"
-                  title=""
-                  icon={<Icon name="filter-list" size={24} color="white" />}
-                  onPress={() => {
-                    setFilterVisible(true);
-                  }}
-                />
-                <Button
-                  type="clear"
-                  title=""
-                  icon={<Icon name="search" size={24} color="white" />}
-                  onPress={() => {
-                    setSearchVisible(true);
-                  }}
-                />
-              </View>
-            }
+            // rightComponent={
+            //   <View style={campusStyle.View.row}>
+            //     <Button
+            //       type="clear"
+            //       title=""
+            //       icon={<Icon name="filter-list" size={24} color="white" />}
+            //       onPress={() => {
+            //         setFilterVisible(true);
+            //       }}
+            //     />
+            //     <Button
+            //       type="clear"
+            //       title=""
+            //       icon={<Icon name="search" size={24} color="white" />}
+            //       onPress={() => {
+            //         setSearchVisible(true);
+            //       }}
+            //     />
+            //   </View>
+            // }
           />
           {/* 채팅목록 출력부분 */}
           <Observer>
-            {() => (
-              <FlatList
-                key={(item, i) => String(i)}
-                keyExtractor={(item, index) => String(index)}
-                data={bbsStore.typebbs}
-                renderItem={({ item, index }) => {
-                  return (
-                    <TouchableOpacity
-                      onPress={async () => {
-                        let isEnter = await checkUserEnterChatRoom(
-                          item.h,
-                          item.b,
-                          filter
-                        );
-                        if (isEnter) {
-                          navigation.navigate("채팅방", {
-                            bbskey: item.b,
-                            gender: item.h,
-                            leadername: item.i,
-                            startplace: item.n,
-                            endplace: item.g,
-                            mygender: mygender,
-                            myname: myname,
-                            meetingdate: item.j,
-                            personmember: item.i,
-                            personmax: item.k,
-                          });
-                          firebase
-                            .database()
-                            .ref(
-                              "bbs/data/" + item.b + "/l/" + userStore.userkey
-                            )
-                            .set(1);
-                          firebase
-                            .database()
-                            .ref(
-                              "user/data/" + userStore.userkey + "/c/" + item.b
-                            )
-                            .set(1);
-                        }
-                      }}
-                      style={{ backgroundColor: "white", padding: 10 }}
-                    >
-                      <View style={campusStyle.View.row}>
-                        <View
-                          style={{
-                            borderRadius: 100,
-                            width: 62,
-                            height: 62,
-                            backgroundColor:
-                              item.h == 0
-                                ? "#579FEE"
+            {() =>
+              bbsStore.typebbs != "" ? (
+                <FlatList
+                  key={(item, i) => String(i)}
+                  keyExtractor={(item, index) => String(index)}
+                  data={bbsStore.typebbs}
+                  renderItem={({ item, index }) => {
+                    return (
+                      <TouchableOpacity
+                        onPress={async () => {
+                          let isEnter = await checkUserEnterChatRoom(
+                            item.h,
+                            item.b,
+                            filter
+                          );
+                          if (isEnter) {
+                            bbsStore.enterBbs(userStore.userkey, item.b);
+                            navigation.navigate("채팅방", {
+                              bbskey: item.b,
+                              gender: item.h,
+                              leadername: item.i,
+                              startplace: item.n,
+                              endplace: item.g,
+                              mygender: mygender,
+                              myname: myname,
+                              meetingdate: item.j,
+                              personmax: item.k,
+                            });
+                          }
+                        }}
+                        style={{
+                          backgroundColor: "white",
+                          padding: 10,
+                        }}
+                      >
+                        <View style={campusStyle.View.row}>
+                          <View
+                            style={{
+                              borderRadius: 100,
+                              width: 62,
+                              height: 62,
+                              backgroundColor:
+                                item.h == 0
+                                  ? "#579FEE"
+                                  : item.h == 1
+                                  ? "#C278DE"
+                                  : "#3A3A3A",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Text style={campusStyle.Text.middleBold}>
+                              {index}
+                            </Text>
+                            <Text style={campusStyle.Text.middleBold}>
+                              {item.h == 0
+                                ? "남자"
                                 : item.h == 1
-                                ? "#C278DE"
-                                : "#3A3A3A",
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Text style={campusStyle.Text.middleBold}>
-                            {index}
-                          </Text>
-                          <Text style={campusStyle.Text.middleBold}>
-                            {item.h == 0
-                              ? "남자"
-                              : item.h == 1
-                              ? "여자"
-                              : "모두"}
-                          </Text>
-                        </View>
-                        <View style={{ flex: 6 }}>
-                          <View style={campusStyle.View.row}>
-                            <Image
-                              style={{ width: 23, height: 15, marginLeft: 10 }}
-                              source={crown}
-                            />
-                            <Text>{item.i}</Text>
+                                ? "여자"
+                                : "모두"}
+                            </Text>
                           </View>
-                          <Text style={{ marginLeft: 10 }}>
-                            출발지:{item.n.name}
-                          </Text>
-                          <Text style={{ marginLeft: 10 }}>
-                            도착지:{item.g.name}
-                          </Text>
-                        </View>
-                        <View style={{ flex: 1 }}>
-                          {(() => {
-                            if (item.k === item.m)
-                              return (
-                                <Text style={campusStyle.Text.red}>
-                                  {item.m}/{item.k}
-                                </Text>
+                          <View style={{ flex: 6 }}>
+                            <View style={campusStyle.View.row}>
+                              <Image
+                                style={{
+                                  width: 23,
+                                  height: 15,
+                                  marginLeft: 10,
+                                }}
+                                source={crown}
+                              />
+                              <Text>{item.i}</Text>
+                            </View>
+                            <Text style={{ marginLeft: 10 }}>
+                              출발지:{item.n.name}
+                            </Text>
+                            <Text style={{ marginLeft: 10 }}>
+                              도착지:{item.g.name}
+                            </Text>
+                          </View>
+                          <View style={{ flex: 1 }}>
+                            {(() => {
+                              let presentMemberCount = bbsStore.countMember(
+                                item.l
                               );
-                            else
-                              return (
-                                <Text>
-                                  {item.m}/{item.k}
-                                </Text>
-                              );
-                          })()}
+                              if (item.k <= presentMemberCount)
+                                return (
+                                  <Text style={campusStyle.Text.red}>
+                                    {presentMemberCount}/{item.k}
+                                  </Text>
+                                );
+                              else
+                                return (
+                                  <Text>
+                                    {presentMemberCount}/{item.k}
+                                  </Text>
+                                );
+                            })()}
+                          </View>
+                          <View style={{ flex: 3, alignItems: "center" }}>
+                            <Text style={campusStyle.Text.grayDDark}>
+                              탑승시간▼
+                            </Text>
+                            <Text style={campusStyle.Text.grayDDark}>
+                              {anotherStore.toRoomTime(item.j)}
+                            </Text>
+                          </View>
                         </View>
-                        <View style={{ flex: 3, alignItems: "center" }}>
-                          <Text style={campusStyle.Text.grayDDark}>
-                            탑승시간▼
-                          </Text>
-                          <Text style={campusStyle.Text.grayDDark}>
-                            {anotherStore.toLocal(item.f)}
-                          </Text>
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-                  );
-                }}
-              />
-            )}
+                      </TouchableOpacity>
+                    );
+                  }}
+                />
+              ) : (
+                <></>
+              )
+            }
           </Observer>
 
           {/* 방만들기 버튼부분 */}
@@ -387,8 +382,8 @@ export default function chatScreen({ route, navigation }) {
               <Text style={campusStyle.Text.smallSize}>방만들기</Text>
             </TouchableOpacity>
           </View>
-          {/* 모달창 */}
-          {/* 검색모달창 */}
+          {/* 모달창
+          검색모달창
           {isSearchVisible ? (
             <Modal
               backdropColor="rgba(0,0,0,0)"
@@ -413,7 +408,7 @@ export default function chatScreen({ route, navigation }) {
               </View>
             </Modal>
           ) : null}
-          {/* 필터모달창 */}
+          필터모달창
           {isFilterVisible ? (
             <Modal
               backdropColor="rgba(0,0,0,0)"
@@ -520,7 +515,7 @@ export default function chatScreen({ route, navigation }) {
                 <Button title="Check" onPress={getFiltferBbs} />
               </View>
             </Modal>
-          ) : null}
+          ) : null} */}
         </>
       ) : (
         <LoadingComponent />

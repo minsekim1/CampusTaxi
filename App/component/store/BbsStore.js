@@ -25,12 +25,24 @@ export default class BbsStore {
     );
   }
   asyncBbsnow(bbskey) {
-    this.bbsDB(bbskey + "/l").on("child_changed", () => this.setbbsnow(bbskey));
+    this.bbsDB(bbskey).on("value", () => this.setbbsnow(bbskey));
   }
-
   async addBbs(c, g, h, i, j, k, n, userkey) {
     //시간 가져오기
     let newkey = null;
+    let jdate = j.getFullYear() + "-";
+
+    if (j.getMonth() + 1 < 10) jdate += "0" + (j.getMonth() + 1);
+    else jdate += j.getMonth() + 1;
+    if (j.getDate() < 10) jdate += "-0" + j.getDate();
+    else jdate += "-" + j.getDate();
+    if (j.getHours() < 10) jdate += "T0" + j.getHours();
+    else jdate += "T" + j.getHours();
+    if (j.getMinutes() < 10) jdate += ":0" + j.getMinutes();
+    else jdate += ":" + j.getMinutes();
+    if (j.getSeconds() < 10) jdate += ":0" + j.getSeconds();
+    else jdate += ":" + j.getSeconds();
+    jdate += "+09:00";
     await fetch("http://worldtimeapi.org/api/timezone/Asia/Seoul")
       .then((res) => res.json())
       .then((result) => {
@@ -53,9 +65,9 @@ export default class BbsStore {
           g: g,
           h: h,
           i: i,
-          j: j,
+          j: jdate,
           k: k,
-          m: 1,
+          m: 0,
           n: n,
         };
         newkey = this.bbsDB("").push(newBbs).key;
@@ -69,6 +81,16 @@ export default class BbsStore {
   }
   //#endregion
   // Hide bbs : 클라이언트에게 숨기기만함
+  findBbs(attributes, value) {
+    // this.bbsDB(attributes)
+    //   .orderByChild(attributes)
+    //   .equalTo(value)
+    //   .once("value", (snap) => {
+    //     snap.forEach((childSnapshot) => {
+    //       console.log(childSnapshot.key);
+    //     });
+    //   });
+  }
   hideBbs(bbskey) {
     this.bbsDB(bbskey + "/a").set(0);
   }
@@ -76,11 +98,30 @@ export default class BbsStore {
   removeBbs(bbskey) {
     this.bbsDB(bbskey).set({});
   }
+  countMember(memberList) {
+    // 방목록사람리스트를 받아 몇명이 들어와 있는지 세아려줌
+    let count = 0;
+    for (const [key, value] of Object.entries(memberList))
+      if (value == 1) count++;
+
+    return count;
+  }
   outBbs(userkey, bbskey) {
     //클라이언트가 해당 방을 나감, 또는 추방.
     this.bbsDB(bbskey + "/l/" + userkey).set(0);
     //bbs 데이터에서 고객명 지우기.
     this.userDB(userkey + "/c/" + bbskey).set(0);
+  }
+  enterBbs(userkey, bbskey) {
+    //유저가 들어간 것을 서버에 업데이트
+    firebase
+      .database()
+      .ref("bbs/data/" + bbskey + "/l/" + userkey)
+      .set(1);
+    firebase
+      .database()
+      .ref("user/data/" + userkey + "/c/" + bbskey)
+      .set(1);
   }
   changeBbsValue(bbskey, props, value) {
     this.bbsDB(bbskey + "/" + props).set(value);

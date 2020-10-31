@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Component, useState } from "react";
+import { Component, useState, setState } from "react";
 import {
   StyleSheet,
   Button,
@@ -16,9 +16,9 @@ export default class LoginScreen extends Component {
   constructor(props) {
     super(props);
     if (userStore.develop) {
-      this.state = { id: "slsl7862", pw: "tkarnr" };
+      this.state = { id: "slsl7862", pw: "tkarnr", tosslink: "asd" };
     } else {
-      this.state = { id: "", pw: "" };
+      this.state = { id: "", pw: "", tosslink: "asd" };
     }
   }
   render() {
@@ -28,6 +28,7 @@ export default class LoginScreen extends Component {
         if (result) navigation.navigate("loading");
       });
     }
+
     return (
       <View style={LoginStyle.container}>
         <ImageBackground
@@ -40,6 +41,7 @@ export default class LoginScreen extends Component {
               style={LoginStyle.logo}
               source={require("../../image/logo.png")}
             />
+
             <View style={{ marginTop: 10 }}>
               <Text style={{ color: "#ffffff", fontSize: 18 }}>
                 CAMPUS TAXI

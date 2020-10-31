@@ -1,4 +1,5 @@
 export default function MychatScreen({ route, navigation }) {
+  userStore.asyncUser();
   userStore.asyncuserbbs();
   return (
     <Observer>
@@ -81,7 +82,7 @@ export default function MychatScreen({ route, navigation }) {
                   <View style={{ flex: 3, alignItems: "center" }}>
                     <Text style={campusStyle.Text.grayDDark}>탑승시간▼</Text>
                     <Text style={campusStyle.Text.grayDDark}>
-                      {anotherStore.toLocal(item.f)}
+                      {anotherStore.toRoomTime(item.j)}
                     </Text>
                   </View>
                 </View>
