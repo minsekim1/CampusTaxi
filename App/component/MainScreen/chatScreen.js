@@ -1,6 +1,5 @@
 //채팅목록 화면
 export default function chatScreen({ route, navigation }) {
-  const [filtingonoff, setfiltingonoff] = useState(1); // 필터작동 스위치
   //#region Hooks & functions
   const userkey = userStore.user.f;
   const filter = route.params.filter;
@@ -10,33 +9,33 @@ export default function chatScreen({ route, navigation }) {
       userStore.asyncUser();
       userStore.asyncuserbbs();
       bbsStore.asyncTypeBbs(filter);
-      //bbsStore.asyncAllBbs();
+      bbsStore.asyncAllBbs();
     });
 
     return unsubscribe;
-  }, [navigation]);
+  }, []);
 
   //#region 유저정보 업데이트
   const myname = userStore.user.i;
   const mygender = userStore.user.d;
   async function checkUserEnterChatRoom(bbsGender, bbskey, filter) {
-    console.log(bvalue);
     if (bbsGender != 2 && userStore.user.d != bbsGender) {
       //2: 모든 성별도아니고 or 게시판과 같은 성별도 아닐경우
       alert("성별 제한이 걸려있습니다.");
       return false;
     } else {
       let result = true;
-
       if (userStore.user.c != "undefined") {
         for (const [key, value] of Object.entries(userStore.user.c)) {
           if (value == 1 && bbskey != key) {
             //접속한 방 중에서 다른 방을 조사
             for (const [bkey, bvalue] of Object.entries(bbsStore.bbs[0])) {
-              if (bkey == "c") result = false;
+              if (bkey == "c" && bvalue == filter) {
+                result = false;
+              }
             }
           }
-        }
+        } //
         if (!result)
           alert(
             "채팅방은 카테고리별로 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요."
@@ -59,18 +58,16 @@ export default function chatScreen({ route, navigation }) {
   const [filterMeetingTimeEnd, setFilterMeetingTimeEnd] = useState("전부");
   const [filterPersonMin, setFilterPersonMin] = useState("1");
   const [filterPersonMax, setFilterPersonMax] = useState("4");
-
   // -- Filter function start
   function search(user) {
     return Object.keys(this).every((key) => user[key] === this[key]);
   }
   function getFiltferBbs() {
-    setfiltingonoff(1);
-    // bbsStore.asyncTypeBbs(filter);
     let result;
+
     result = bbsStore.typebbs;
 
-    let query = { // 필터 아이템
+    let query = {
       c: filterCategory,
     };
     query.h = Number(filterPersonMin);
@@ -96,9 +93,9 @@ export default function chatScreen({ route, navigation }) {
       );
     }
 
-    bbsStore.typebbs = result.filter(search, query); // 필터 시작
+    result = result.filter(search, query);
 
-    // bbsStore.setbbs(result); // 재 갱신
+    bbsStore.setbbs(result);
     //setRoomList(result);
   }
   // -- Filter function end
@@ -249,89 +246,87 @@ export default function chatScreen({ route, navigation }) {
           />
           {/* 채팅목록 출력부분 */}
           <Observer>
-            {() =>
-              bbsStore.typebbs != "" ? (
-                <FlatList
-                  key={(item, i) => String(i)}
-                  keyExtractor={(item, index) => String(index)}
-                  data={bbsStore.typebbs}
-                  renderItem={({ item, index }) => {
-                    return (
-                      <TouchableOpacity
-                        onPress={async () => {
-                          let isEnter = await checkUserEnterChatRoom(
-                            item.h,
-                            item.b,
-                            filter
-                          );
-                          if (isEnter) {
-                            bbsStore.enterBbs(userStore.userkey, item.b);
-                            navigation.navigate("채팅방", {
-                              bbskey: item.b,
-                              gender: item.h,
-                              leadername: item.i,
-                              startplace: item.n,
-                              endplace: item.g,
-                              mygender: mygender,
-                              myname: myname,
-                              meetingdate: item.j,
-                              personmax: item.k,
-                            });
-                          }
-                        }}
-                        style={{
-                          backgroundColor: "white",
-                          padding: 10,
-                        }}
-                      >
-                        <View style={campusStyle.View.row}>
-                          <View
-                            style={{
-                              borderRadius: 100,
-                              width: 62,
-                              height: 62,
-                              backgroundColor:
-                                item.h == 0
-                                  ? "#579FEE"
-                                  : item.h == 1
-                                  ? "#C278DE"
-                                  : "#3A3A3A",
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Text style={campusStyle.Text.middleBold}>
-                              {index}
-                            </Text>
-                            <Text style={campusStyle.Text.middleBold}>
-                              {item.h == 0
-                                ? "남자"
+            {() => {
+              return (
+                <ScrollView>
+                  {bbsStore.typebbs.map((item, TouchableOpacityKey) => (
+                    <TouchableOpacity
+                      key={TouchableOpacityKey}
+                      onPress={async () => {
+                        let isEnter = await checkUserEnterChatRoom(
+                          item.h,
+                          item.b,
+                          filter
+                        );
+                        if (isEnter) {
+                          bbsStore.enterBbs(userStore.userkey, item.b);
+                          navigation.navigate("채팅방", {
+                            bbskey: item.b,
+                            gender: item.h,
+                            leadername: item.i,
+                            startplace: item.n,
+                            endplace: item.g,
+                            mygender: mygender,
+                            myname: myname,
+                            meetingdate: item.j,
+                            personmax: item.k,
+                          });
+                        }
+                      }}
+                      style={{
+                        backgroundColor: "white",
+                        padding: 10,
+                      }}
+                    >
+                      <View style={campusStyle.View.row}>
+                        <View
+                          style={{
+                            borderRadius: 100,
+                            width: 62,
+                            height: 62,
+                            backgroundColor:
+                              item.h == 0
+                                ? "#579FEE"
                                 : item.h == 1
-                                ? "여자"
-                                : "모두"}
-                            </Text>
+                                ? "#C278DE"
+                                : "#3A3A3A",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Text style={campusStyle.Text.middleBold}>
+                            {TouchableOpacityKey}
+                          </Text>
+                          <Text style={campusStyle.Text.middleBold}>
+                            {item.h == 0
+                              ? "남자"
+                              : item.h == 1
+                              ? "여자"
+                              : "모두"}
+                          </Text>
+                        </View>
+                        <View style={{ flex: 6 }}>
+                          <View style={campusStyle.View.row}>
+                            <Image
+                              style={{
+                                width: 23,
+                                height: 15,
+                                marginLeft: 10,
+                              }}
+                              source={crown}
+                            />
+                            <Text>{(String(item.i).length > 9) ? String(item.i).substring(0, 9) + "..." : item.i}</Text>
                           </View>
-                          <View style={{ flex: 6 }}>
-                            <View style={campusStyle.View.row}>
-                              <Image
-                                style={{
-                                  width: 23,
-                                  height: 15,
-                                  marginLeft: 10,
-                                }}
-                                source={crown}
-                              />
-                              <Text>{item.i}</Text>
-                            </View>
-                            <Text style={{ marginLeft: 10 }}>
-                              출발지:{item.n.name}
-                            </Text>
-                            <Text style={{ marginLeft: 10 }}>
-                              도착지:{item.g.name}
-                            </Text>
-                          </View>
-                          <View style={{ flex: 1 }}>
-                            {(() => {
+                          <Text style={{ marginLeft: 10 }}>
+                            출발지:{item.n.name}
+                          </Text>
+                          <Text style={{ marginLeft: 10 }}>
+                            도착지:{item.g.name}
+                          </Text>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          {(() => {
+                            if (item.l != null) {
                               let presentMemberCount = bbsStore.countMember(
                                 item.l
                               );
@@ -347,25 +342,23 @@ export default function chatScreen({ route, navigation }) {
                                     {presentMemberCount}/{item.k}
                                   </Text>
                                 );
-                            })()}
-                          </View>
-                          <View style={{ flex: 3, alignItems: "center" }}>
-                            <Text style={campusStyle.Text.grayDDark}>
-                              탑승시간▼
-                            </Text>
-                            <Text style={campusStyle.Text.grayDDark}>
-                              {anotherStore.toRoomTime(item.j)}
-                            </Text>
-                          </View>
+                            }
+                          })()}
                         </View>
-                      </TouchableOpacity>
-                    );
-                  }}
-                />
-              ) : (
-                <></>
-              )
-            }
+                        <View style={{ flex: 3, alignItems: "center" }}>
+                          <Text style={campusStyle.Text.grayDDark}>
+                            탑승시간▼
+                          </Text>
+                          <Text style={campusStyle.Text.grayDDark}>
+                            {anotherStore.toRoomTime(item.j)}
+                          </Text>
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              );
+            }}
           </Observer>
 
           {/* 방만들기 버튼부분 */}
@@ -509,7 +502,6 @@ export default function chatScreen({ route, navigation }) {
                   title="Hide modal"
                   onPress={() => {
                     setFilterVisible(!isFilterVisible);
-                    setfiltingonoff(0);
                   }}
                 />
                 <Button title="Check" onPress={getFiltferBbs} />
@@ -526,7 +518,13 @@ export default function chatScreen({ route, navigation }) {
 
 //#region imports
 import React, { useState, useEffect } from "react";
-import { View, FlatList, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { Picker } from "@react-native-community/picker";
 import Modal from "react-native-modal";
 import * as TimeAPI from "../Email/globalTimeAPI.js";

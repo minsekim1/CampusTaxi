@@ -12,11 +12,12 @@ import {
   Linking,
   StyleSheet,
   Button,
+  TouchableOpacity,
 } from "react-native";
 //외주 부분
 import Login from "./Login";
 import WebLogin from "./WebLogin";
-
+import { AntDesign } from "@expo/vector-icons";
 import {
   clientpagePolicy1,
   clientpagePolicy2,
@@ -49,7 +50,31 @@ export default function LoginNav() {
   };
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator
+        initialRouteName="Login"
+        screenOptions={{
+          backgroundColor: "white",
+          headerShown: true,
+          cardStyle: { backgroundColor: "white" },
+          cardOverlayEnabled: true,
+          cardStyleInterpolator: ({ current: { progress } }) => ({
+            cardStyle: {
+              opacity: progress.interpolate({
+                inputRange: [0, 0.5, 0.9, 1],
+                outputRange: [0, 0.25, 0.7, 1],
+              }),
+            },
+            overlayStyle: {
+              opacity: progress.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 0.5],
+                extrapolate: "clamp",
+              }),
+            },
+          }),
+        }}
+        mode="modal"
+      >
         <Stack.Screen
           name="Login"
           component={Login}
@@ -59,21 +84,25 @@ export default function LoginNav() {
           name="WebLogin"
           component={WebLogin}
           options={({ navigation, route }) => ({
-            headerTitle: () => <Text>SNS 소셜 로그인</Text>,
+            headerTitle: () => (
+              <Text style={{ fontSize: 20 }}>SNS 소셜 로그인</Text>
+            ),
             headerLeft: () => (
-              <Button
-                title="뒤로가기"
+              <TouchableOpacity
+                style={{ padding: 10 }}
+                activeOpacity={0.5}
                 onPress={() => navigation.navigate("로그인")}
-              />
+              >
+                <AntDesign name="arrowleft" size={24} color="black" />
+              </TouchableOpacity>
             ),
           })}
-          //{{ back title: "SNS 소셜 로그인" }}
         />
 
         <Stack.Screen
           name="로그인"
           component={LoginScreen}
-          options={{ headerShown: false }}
+          options={{ headerShown: false, safeAreaInsets: "top" }}
         />
 
         <Stack.Screen name="이용동의" component={Sign1} />

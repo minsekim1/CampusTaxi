@@ -11,7 +11,7 @@ import {
   Image,
 } from "react-native";
 import { bbsStore, userStore } from "store";
-
+import LogoWhite from "../../../assets/logoWhite.js";
 export default class LoginScreen extends Component {
   constructor(props) {
     super(props);
@@ -37,10 +37,7 @@ export default class LoginScreen extends Component {
         >
           {/* header */}
           <View style={LoginStyle.header}>
-            <Image
-              style={LoginStyle.logo}
-              source={require("../../image/logo.png")}
-            />
+            <LogoWhite />
 
             <View style={{ marginTop: 10 }}>
               <Text style={{ color: "#ffffff", fontSize: 18 }}>
@@ -167,10 +164,6 @@ const LoginStyle = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  logo: {
-    width: 91,
-    height: 82,
   },
   //로그인 body container
   body: {
