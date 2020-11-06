@@ -348,7 +348,7 @@ export class Sign2 extends React.Component {
       try {
         this.checkStudentCard();
       } catch (error) {
-        console.log("onChooseImagePress error:" + error); // error
+        //console.log("onChooseImagePress error:" + error); // error
       }
     }
   };

@@ -350,7 +350,7 @@ export default class Login extends React.Component {
   };
 
   loginSuccess = (token) => {
-    console.log(token);
+    //console.log(token);
   };
 
   loginFailed = () => {};

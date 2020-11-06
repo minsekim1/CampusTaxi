@@ -21,7 +21,9 @@ export default class BbsStore {
   }
   asyncAllBbs() {
     this.bbsDB("").on("value", (snap) =>
-      this.val(snap).then((r) => (this.bbs = r))
+      this.val(snap).then((r) => {
+        this.bbs = r;
+      })
     );
   }
   asyncBbsnow(bbskey) {
@@ -114,7 +116,7 @@ export default class BbsStore {
   }
   enterBbs(userkey, bbskey) {
     //유저가 들어간 것을 서버에 업데이트
-    console.log(bbskey);
+    //console.log(bbskey);
     firebase
       .database()
       .ref("bbs/data/" + bbskey + "/l/" + userkey)
@@ -136,7 +138,7 @@ export default class BbsStore {
   }
 
   async setbbsnow(bbskey) {
-    await this.bbsDB(bbskey).once(
+    await this.bbsDB(bbskey).on(
       "value",
       (snap) => (this.bbsnow = snap.val())
     );

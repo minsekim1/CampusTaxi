@@ -1,7 +1,6 @@
 //채팅목록 화면
 export default function chatScreen({ route, navigation }) {
   //#region Hooks & functions
-  const userkey = userStore.user.f;
   const filter = route.params.filter;
 
   React.useEffect(() => {

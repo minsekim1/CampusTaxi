@@ -6,7 +6,7 @@ export default class UserStore {
   @observable user = null; //현재 로그인된 유저
   @observable userbbs = []; //현재 로그인된 유저 안에 있는 bbs의 정보
   @observable userkey = null; //현재 로그인된 유저 아이디 or SNS로그인일 경우 토큰
-  @observable develop = true; //개발전용모드
+  @observable develop = false; //개발전용모드
   //{userStore.develop == true ? "설정" : "홈"}
 
   //setKey: 유저키를 아이디/토큰으로 설정
@@ -46,9 +46,11 @@ export default class UserStore {
     this.userkey = key;
   }
   isKey() {
-    //로그인되어있음
-    if (this.userkey == null) return false;
-    else return true; //로그인 안되어있음
+    if (this.userkey == null) {
+      return false;
+    } else {
+      return true;
+    }
   }
   //addUser: 회원가입 / 사용자 추가
   addUser(a, b, d, f, g, h, i, j, k, l, o) {
