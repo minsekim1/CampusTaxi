@@ -609,7 +609,7 @@ export function clientpagePolicy4() {
 import SendEmail from "./Email/EmailComposer";
 import { useState } from "react";
 
-function clientpageQuestion() {
+function clientpageQuestion({ navigation: { goBack } }) {
   const [email_title, setemail_title] = useState(
     "제목: 아이디/닉네임/문의사항요약"
   );
@@ -618,14 +618,10 @@ function clientpageQuestion() {
   );
 
   function GO_SendFunction() {
-    //let email_body = document.getElementsByName("body").value;
-    //let email_title = document.getElementsByName("title").value;
-
     SendEmail(email_title, email_body);
   }
-
   return (
-    <View
+      <View
       style={{
         flex: 1,
         alignItems: "center",
@@ -633,7 +629,8 @@ function clientpageQuestion() {
       }}
     >
       <View>
-        <Button title="문의 하기" onPress={GO_SendFunction} />
+        {GO_SendFunction()}
+        {goBack()}
       </View>
     </View>
   );
