@@ -45,7 +45,6 @@ export default class chatroomScreen extends Component {
 			});
 	}
 	async sendMessage() {
-		//alert(this.state.bbsStore.bbs.bbskey.h);
 		if (this.state.textInput != "") {
 			await this.getServerTime(); //현재 시간을 가져옵니다.
 			await firebase //파이어베이스 push
