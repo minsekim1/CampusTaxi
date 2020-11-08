@@ -8,7 +8,6 @@ import Navigation from "./App/component/Navigation";
 import { enableScreens } from "react-native-screens";
 enableScreens();
 //UI 설정
-import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as PaperProvider } from "react-native-paper";
 import { Provider } from "mobx-react";
 //firebase 설정
@@ -46,13 +45,11 @@ export default class App extends Component {
     return (
       <Provider>
         <PaperProvider>
-          <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1 }}>
               <Observer>
                 {() => (!userStore.isKey() ? <LoginNav /> : <Navigation />)}
               </Observer>
             </SafeAreaView>
-          </SafeAreaProvider>
         </PaperProvider>
       </Provider>
     );

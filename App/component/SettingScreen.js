@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { View, Text, ScrollView, Linking, StyleSheet } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 import { createStackNavigator } from "@react-navigation/stack";
 const Stack = createStackNavigator();
 //UI
