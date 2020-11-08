@@ -9,6 +9,7 @@ enableScreens();
 //UI 설정
 import { Provider as PaperProvider } from "react-native-paper";
 import { Provider } from "mobx-react";
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 //firebase 설정
 import { firebaseConfig } from "firebaseConfig";
 const firebase = require("firebase");
