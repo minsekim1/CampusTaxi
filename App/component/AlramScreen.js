@@ -4,7 +4,6 @@ import "react-native-gesture-handler";
 import { bbsStore, userStore } from "store";
 import crown from "image/crown.png";
 import {
-  SafeAreaView,
   StyleSheet,
   ScrollView,
   View,

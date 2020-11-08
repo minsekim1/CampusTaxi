@@ -8,7 +8,6 @@ import {
   Image,
   Text,
   TouchableOpacity,
-  SafeAreaView,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import LogoWhite from "../../../assets/logoWhite.js";
