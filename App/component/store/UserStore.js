@@ -6,7 +6,7 @@ export default class UserStore {
   @observable user = null; //현재 로그인된 유저
   @observable userbbs = []; //현재 로그인된 유저 안에 있는 bbs의 정보
   @observable userkey = null; //현재 로그인된 유저 아이디 or SNS로그인일 경우 토큰
-  @observable develop = false; //개발전용모드
+  @observable develop = true; //개발전용모드
   //{userStore.develop == true ? "설정" : "홈"}
 
   //setKey: 유저키를 아이디/토큰으로 설정
