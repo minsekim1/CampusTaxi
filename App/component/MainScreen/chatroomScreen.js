@@ -1,6 +1,3 @@
-// import { Header } from "react-native/Libraries/NewAppScreen";
-// import campusStyle from "../../themes/campusStyle";
-
 //실제 유저들이 채팅하는 화면
 export default class chatroomScreen extends Component {
 	//#region 변수들
@@ -182,21 +179,10 @@ export default class chatroomScreen extends Component {
 										icon={<Icon name="search" size={24} color="white" />}
 										onPress={() => {
 											this.setVision(!this.state.isVision);
-											/* let result = this.state.chattingData;
-											for (let i = 0; i < result.length; i++) {
-												
-												if (result[i]["dd"] == "테스트") {
-													// console.log(result[i]["dd"]);
-													// TODO [APPLY text background highlight style code]
-													// `` 예를들어 '``'를 입력한다면 노란색 주석이 탄생합니다! 참고로 이 노란색은 커스텀 태그로 적용된 상태입니다.
-												}
-											}
-
-											// setFilterVisible(true); */
 										}}
 									/>
 									
-									{this.state.isVision ? (
+									{this.state.isVision ? ( // Modal search
 										<Modal
 											isVisible={this.state.isVision}
 											style={campusStyle.Modal.modalStyle}
@@ -215,23 +201,23 @@ export default class chatroomScreen extends Component {
 												<Button
 													title="검색하기"
 													onPress={() => { 
-														let result = this.state.chattingData;
+														let result = this.state.chattingData; // 채팅 내용 가져옴
 														for(let i = 0; i < result.length; i++) {
-															if (result[i]["dd"] == this.state.textSearch) {
+															if (result[i]["dd"] == this.state.textSearch) { // "dd" -> 채팅 내용배열
 																this.flatListRef.scrollToIndex({
-																	animated: true,
-																	index: i
+																	animated: true, // 애니메이션
+																	index: i // index 위치로 이동
 																});
 															}
 														}
-														console.log(this.state.textSearch);
-														this.setVision(!this.state.isVision);
+														// console.log(this.state.textSearch); // test
+														this.setVision(!this.state.isVision); // off
 													}}
 												/>
 												<Button
 													title="닫기"
 													onPress={() => {
-														this.setVision(!this.state.isVision);
+														this.setVision(!this.state.isVision); // off function
 													}}
 												/>
 											</View>
