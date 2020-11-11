@@ -1,3 +1,6 @@
+// import { Header } from "react-native/Libraries/NewAppScreen";
+// import campusStyle from "../../themes/campusStyle";
+
 //실제 유저들이 채팅하는 화면
 export default class chatroomScreen extends Component {
 	//#region 변수들
@@ -14,7 +17,11 @@ export default class chatroomScreen extends Component {
 			refreshing: false,
 			time: new Date(),
 			textInput: "",
+			isVision: false,
+			textSearch: "",
 		};
+
+		this.setTextSearch = this.setTextSearch.bind(this);
 	}
 	componentDidMount() {
 		this.updateChattingDate();
@@ -60,7 +67,18 @@ export default class chatroomScreen extends Component {
 			this.flatListRef.scrollToEnd({ animated: true }); // 채팅을 가장 아래로 내립니다.
 		}
 	}
-
+	//Start Search Text
+	setVision(Bool) {
+		this.setState({
+			isVision: Bool
+		});
+	}
+	setTextSearch(text) {
+		this.setState({
+			textSearch: text
+		})
+	}
+	//End Search Text
 	//#endregion
 	render() {
 		const { navigation } = this.props;
@@ -158,18 +176,14 @@ export default class chatroomScreen extends Component {
 											});
 										}}
 									/>
-									{/* <Button
+									<Button
 										type="clear"
 										title=""
 										icon={<Icon name="search" size={24} color="white" />}
 										onPress={() => {
-											let result = this.state.chattingData;
+											this.setVision(!this.state.isVision);
+											/* let result = this.state.chattingData;
 											for (let i = 0; i < result.length; i++) {
-												
-												'테스트'라는 메세지가 있을 경우, 그 메세지만 출력하도록 함.
-												TODO INPUT을 통해 값을 저장(let filterstring = this.state.filterstring)해서 모든 JSON 문자를 비교하도록 함.
-												? 헤헤흐히
-												! 위험! 경고!
 												
 												if (result[i]["dd"] == "테스트") {
 													// console.log(result[i]["dd"]);
@@ -178,9 +192,53 @@ export default class chatroomScreen extends Component {
 												}
 											}
 
-											// setFilterVisible(true);
+											// setFilterVisible(true); */
 										}}
-									/> */}
+									/>
+									
+									{this.state.isVision ? (
+										<Modal
+											isVisible={this.state.isVision}
+											style={campusStyle.Modal.modalStyle}
+										>
+											<View style={campusStyle.Modal.view}>
+												<Header
+													containerStyle={campusStyle.Modal.container}
+													centerComponent={{
+														text: "검색",
+														style: campusStyle.Modal.component,
+													}}
+												/>
+												<Input type="text" name="TextSearch" onChange={(event) => {
+													this.setTextSearch(event.nativeEvent["text"]);
+												}} autoFocus />
+												<Button
+													title="검색하기"
+													onPress={() => { 
+														let result = this.state.chattingData;
+														for(let i = 0; i < result.length; i++) {
+															if (result[i]["dd"] == this.state.textSearch) {
+																this.flatListRef.scrollToIndex({
+																	animated: true,
+																	index: i
+																});
+															}
+														}
+														console.log(this.state.textSearch);
+														this.setVision(!this.state.isVision);
+													}}
+												/>
+												<Button
+													title="닫기"
+													onPress={() => {
+														this.setVision(!this.state.isVision);
+													}}
+												/>
+											</View>
+										</Modal>
+									): null
+									}
+
 									<Button
 										type="clear"
 										title=""
@@ -379,12 +437,13 @@ import {
 	StyleSheet,
 	FlatList,
 	Image,
-	StatusBar,
+	StatusBar
 } from "react-native";
-import { Header, Icon, Button } from "react-native-elements";
+import { Header, Icon, Button, Input } from "react-native-elements";
 import campusStyle from "style";
 import { TextInput } from "react-native-gesture-handler";
 import crown from "image/crown.png";
 const firebase = require("firebase");
 import { bbsStore, userStore, anotherStore } from "store";
 import { Observer } from "mobx-react";
+import Modal from "react-native-modal";
