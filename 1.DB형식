@@ -1,0 +1,109 @@
+-- //////////////////////////////////////////////////////////////////////////////
+CREATE TABLE user
+(
+    `id`             INT             NOT NULL    AUTO_INCREMENT COMMENT '데이터번호', 
+    `loginid`        VARCHAR(40)     NOT NULL    COMMENT '유저아이디', 
+    `loginpassword`  VARCHAR(40)     NULL        COMMENT '유저비번', 
+    `gender`         INT             NULL        COMMENT '유저성별', 
+    `email`          VARCHAR(50)     NULL        COMMENT '유저이메일', 
+    `nickname`       VARCHAR(30)     NULL        COMMENT '유저닉네임', 
+    `phone`          VARCHAR(20)     NULL        COMMENT '개인폰번호', 
+    `userStatus`     INT             NOT NULL    COMMENT '인증여부(0:미인증/1:인증완료/2:인증거부/2020-09-09T11:47:32-해당날짜까지정지', 
+    `joindate`       TIMESTAMP       NOT NULL    COMMENT '회원가입일자', 
+    `safePhone`      VARCHAR(20)     NULL        COMMENT '안전번호', 
+    `userPoint`      INT             NULL        COMMENT '유저포인트', 
+    `name`           VARCHAR(30)     NULL        COMMENT '유저실명', 
+    `address`        VARCHAR(100)    NULL        COMMENT '유저집주소', 
+    `studentCard`    VARCHAR(300)    NULL        COMMENT '학생증', 
+    `univ`           VARCHAR(100)    NULL        COMMENT '대학이름', 
+    `policy`         VARCHAR(10)     NULL        COMMENT '정책동의', 
+    PRIMARY KEY (id)
+);
+
+ALTER TABLE user COMMENT '회원 정보';
+
+-- //////////////////////////////////////////////////////////////////////////////
+CREATE TABLE bbs
+(
+    `bbsid`          INT             NOT NULL    AUTO_INCREMENT COMMENT '게시물고유번호', 
+    `available`      INT             NOT NULL    COMMENT '방삭제여부', 
+    `bbstype`        INT             NULL        COMMENT '등교/하교/.. /.. 타입', 
+    `leadername`     INT             NOT NULL    COMMENT '작성자', 
+    `bbsDate`        TIMESTAMP       NOT NULL    COMMENT '생성날짜', 
+    `meetingdate`    TIMESTAMP       NOT NULL    COMMENT '출발날짜', 
+    `gender`         INT             NOT NULL    COMMENT '제한성별0:男1:女2:無', 
+    `personmax`      INT             NOT NULL    COMMENT '최대인원', 
+    `personpresent`  INT             NOT NULL    COMMENT '현재인원', 
+    `personmember`   VARCHAR(100)    NULL        COMMENT '모인회원명단', 
+    `startplace`     VARCHAR(45)     NULL        COMMENT '출발지', 
+    `endplace`       VARCHAR(45)     NULL        COMMENT '도착지', 
+    `cost`           INT             NULL        COMMENT '비용', 
+    `chats`          JSON            NULL        COMMENT '채팅', 
+    PRIMARY KEY (bbsid)
+);
+
+ALTER TABLE bbs COMMENT '게시물 정보';
+
+ALTER TABLE bbs
+    ADD CONSTRAINT FK_bbs_leadername_user_id FOREIGN KEY (leadername)
+        REFERENCES user (id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+-- //////////////////////////////////////////////////////////////////////////////
+-- 테스트 데이터
+
+-- user 데이터
+INSERT INTO user (loginid, loginpassword, gender, email, nickname, phone, userStatus, joindate, safePhone, userPoint, name, address, studentCard, univ, policy) VALUES ('loginid 1', 'loginpassword 1', 1, 'email 1', 'nickname 1', 'phone 1', 1, NOW(), 'safePhone 1', 1, 'minsekim', 'address 1', 'studentCard 1', 'univ 1', 'policy 1');
+INSERT INTO user (loginid, loginpassword, gender, email, nickname, phone, userStatus, joindate, safePhone, userPoint, name, address, studentCard, univ, policy) VALUES ('loginid 2', 'loginpassword 2', 2, 'email 2', 'nickname 2', 'phone 2', 2, NOW(), 'safePhone 2', 2, 'ohju', 'address 2', 'studentCard 2', 'univ 2', 'policy 2');
+INSERT INTO user (loginid, loginpassword, gender, email, nickname, phone, userStatus, joindate, safePhone, userPoint, name, address, studentCard, univ, policy) VALUES ('loginid 3', 'loginpassword 3', 3, 'email 3', 'nickname 3', 'phone 3', 3, NOW(), 'safePhone 3', 3, 'name 3', 'address 3', 'studentCard 3', 'univ 3', 'policy 3');
+
+-- bbs 데이터
+INSERT INTO bbs (available, bbstype, leadername, bbsDate, meetingdate, gender, personmax, personpresent, personmember, startplace, endplace, cost, chats) VALUES (1, 1, 1, NOW(), NOW(), 1, 1, 1, 'personmember 1', 'startplace 1', 'endplace 1', 1, '{}');
+INSERT INTO bbs (available, bbstype, leadername, bbsDate, meetingdate, gender, personmax, personpresent, personmember, startplace, endplace, cost, chats) VALUES (1, 1, 2, NOW(), NOW(), 2, 2, 2, 'personmember 2', 'startplace 2', 'endplace 2', 2, '{}');
+INSERT INTO bbs (available, bbstype, leadername, bbsDate, meetingdate, gender, personmax, personpresent, personmember, startplace, endplace, cost, chats) VALUES (1, 1, 3, NOW(), NOW(), 3, 3, 3, 'personmember 3', 'startplace 3', 'endplace 3', 3, '{}');
+
+-- 1번방 채팅
+UPDATE 
+    bbs
+SET chats = '[
+{"nickname":"minsekim", "say":"님이 입장하셨습니다.", "time":"2020-11-14 22:22:06", "isSys":2},
+{"nickname":"NULL", "say":"테스트 공지사항입니다.", "time":"2020-11-14 22:22:06", "isSys":1},
+{"nickname":"minsekim", "say":"안녕하세요?", "time":"2020-11-14 22:22:06", "isSys":0}
+]'
+WHERE bbsid=1;
+
+-- 2번방 채팅
+UPDATE 
+    bbs
+SET chats = '[
+{"nickname":"minsekim", "say":"님이 입장하셨습니다.", "time":"2020-11-14 22:22:06", "isSys":2},
+{"nickname":"NULL", "say":"테스트 공지사항입니다.", "time":"2020-11-14 22:22:06", "isSys":1},
+{"nickname":"minsekim", "say":"안녕하세요?", "time":"2020-11-14 22:22:06", "isSys":0},
+{"nickname":"minsekim", "say":"님이 나가셨습니다.", "time":"2020-11-14 22:22:06", "isSys":2},
+{"nickname":"minsekim", "say":"님이 입장하셨습니다.", "time":"2020-11-14 22:22:06", "isSys":2},
+{"nickname":"minsekim", "say":"안녕하세요. 실수로 나가졌네요.", "time":"2020-11-14 22:22:06", "isSys":0}
+]'
+WHERE bbsid=2;
+
+-- 3번방 채팅
+UPDATE 
+    bbs
+SET chats = '[
+{"nickname":"minsekim", "say":"님이 입장하셨습니다.", "time":"2020-11-14 22:22:06", "isSys":2},
+{"nickname":"NULL", "say":"테스트 공지사항입니다.", "time":"2020-11-14 22:22:06", "isSys":1},
+{"nickname":"minsekim", "say":"안녕하세요?", "time":"2020-11-14 22:22:06", "isSys":0},
+{"nickname":"minsekim", "say":"님이 나가셨습니다.", "time":"2020-11-14 22:22:06", "isSys":2},
+{"nickname":"minsekim", "say":"님이 입장하셨습니다.", "time":"2020-11-14 22:22:06", "isSys":2},
+{"nickname":"ohju", "say":"님이 입장하셨습니다.", "time":"2020-11-14 22:22:06", "isSys":2},
+{"nickname":"minsekim", "say":"안녕하세요. 실수로 나가졌네요.", "time":"2020-11-14 22:22:06", "isSys":0},
+{"nickname":"ohju", "say":"네. 안녕하세요.", "time":"2020-11-14 22:22:06", "isSys":0}
+]'
+WHERE bbsid=3;
+
+-- //////////////////////////////////////////////////////////////////////////////
+-- 채팅 데이터 확인
+select bbsid, chats from bbs; 
+
+-- select * from bbs;
+-- select * from user;
+-- drop table bbs;
+-- drop table user;
