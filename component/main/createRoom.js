@@ -1,33 +1,39 @@
-import React, { Component, useState } from "react";
-import { TextInput, View } from "react-native";
-const firebase = require("firebase");
-import {
-  Header,
-  ListItem,
-  Icon,
-  Text,
-  Card,
-  Button,
-  ButtonGroup,
-  Input,
-} from "react-native-elements";
-import DateTimePicker from "@react-native-community/datetimepicker"; //방생성시간picker
+import React, { useState } from "react";
+import { View } from "react-native";
+import { Text, Button, ButtonGroup } from "react-native-elements";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-community/picker";
-import campusStyle from "style";
-import { bbsStore, userStore, anotherStore } from "store";
-import { Observer } from "mobx-react";
+import campusStyle from "./campusStyle";
+import { userStore } from "store";
 
 export default function createRoom({ route, navigation }) {
-  //const [isCreateRoomVisible, setCreateRoomVisible] = useState(false);
-  const filter = route.params.filter;
-  const [createRoomCategory, setCreateRoomCategory] = useState(filter);
+  const bbstype = route.params.bbstype;
+  const [createRoomCategory, setCreateRoomCategory] = useState(bbstype);
   const [createRoompersonmax, setCreateRoompersonmax] = useState(4);
   const [createRoomGender, setCreateRoomGender] = useState(1);
   const [createSelectGender, setCreateSelectGender] = useState(2);
+  const [placeStart, setPlaceStart] = useState(null);
+  const [placeEnd, setPlaceEnd] = useState(null);
   //채팅방만들기시간선택
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
+  React.useEffect(() => {
+    if (route.params.start != null)
+      setPlaceStart(route.params.start);
+    if (route.params.end != null)
+      setPlaceEnd(route.params.end);
+    if (route.params.createRoomCategory != null)
+      setCreateRoomCategory(route.params.createRoomCategory);
+    if (route.params.createRoompersonmax != null)
+      setCreateRoompersonmax(route.params.createRoompersonmax);
+    if (route.params.createRoomGender != null)
+      setCreateRoomGender(route.params.createRoomGender);
+    if (route.params.date != null)
+      setDate(new Date(route.params.date));
+  }, []);
+
+
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShow(Platform.OS === "ios");
@@ -52,7 +58,7 @@ export default function createRoom({ route, navigation }) {
   const showTimepicker = () => showMode("time");
   return (
     <>
-      <View style={{ padding: 20 }}>
+      <View style={{ padding: 20, paddingTop: 50 }}>
         <Text>카테고리</Text>
         <Picker
           selectedValue={createRoomCategory}
@@ -60,9 +66,9 @@ export default function createRoom({ route, navigation }) {
             setCreateRoomCategory(itemValue);
           }}
         >
-          <Picker.Item key={"gray"} color="gray" label={filter} />
+          <Picker.Item key={"gray"} color="gray" label={bbstype} />
           {menuList.map((item) =>
-            item != filter ? (
+            item != bbstype ? (
               <Picker.Item
                 key={(item, i) => String(i)}
                 label={item}
@@ -72,34 +78,33 @@ export default function createRoom({ route, navigation }) {
           )}
         </Picker>
 
-        <Observer>
-          {() =>
-            anotherStore.placeStart != null && anotherStore.placeEnd != null ? (
-              <>
-                <Text>출발지:{anotherStore.placeStart.name}</Text>
-                <Text>도착지:{anotherStore.placeEnd.name}</Text>
-              </>
-            ) : (
-                <Text>출발지 / 도착지</Text>
-              )
-          }
-        </Observer>
+        {placeStart != null && placeEnd != null ? (
+          <>
+            <Text>출발지:{placeStart.name}</Text>
+            <Text>도착지:{placeEnd.name}</Text>
+          </>
+        ) : (
+            <Text>출발지 / 도착지를 선택해주세요.</Text>
+          )
+        }
 
         <Button
           style={campusStyle.Button.default}
           title={
-            anotherStore.placeStart == null || anotherStore.placeEnd == null
+            placeStart == null || placeEnd == null
               ? "이곳에서 출발지/도착지를 선택해주세요."
               : "출발지/도착지 재입력하기"
           }
           onPress={() => {
-            //anotherStore
-            navigation.navigate("지도검색");
+            navigation.navigate("지도검색", {
+              bbstype: bbstype, createRoomCategory: createRoomCategory,
+              createRoompersonmax: createRoompersonmax, createRoomGender: createRoomGender, date: String(date)
+            });
           }}
         />
         <Text>탑승 시간</Text>
         <Text style={campusStyle.Text.center}>
-          {anotherStore.toLocal(date)}
+          {userStore.tokoreanTime(date)}
         </Text>
         <View style={campusStyle.View.row}>
           <View style={campusStyle.View.flex}>
@@ -144,7 +149,7 @@ export default function createRoom({ route, navigation }) {
           onPress={(index) => {
             if (index == 0) {
               setCreateRoomGender(0);
-              setCreateSelectGender(Number(userStore.user.d));
+              setCreateSelectGender(Number(userStore.user.gender));
             } else {
               setCreateRoomGender(1);
               setCreateSelectGender(2);
@@ -160,60 +165,40 @@ export default function createRoom({ route, navigation }) {
           title="방 생성"
           onPress={() => {
             if (
-              anotherStore.placeEnd == null ||
-              anotherStore.placeStart == null
+              placeEnd == null ||
+              placeStart == null
             ) {
               alert("출발지 또는 도착지를 선택해주세요.");
             } else {
-              let result = true;
-              firebase
-                .database()
-                .ref("user/data/" + userStore.userkey + "/c")
-                .once("value", async (snap) => {
-                  if (snap != null)
-                    for (const [key, value] of Object.entries(snap.val())) {
-                      if (value == 1) {
-                        // 접속한 방 중에서 다른 방을 조사
-                        await firebase
-                          .database()
-                          .ref("bbs/data/" + key + "/c")
-                          .once("value", (snap2) => {
-                            //다른방이 같은 filter 일경우 만듬
-                            if (snap2.val() == filter) {
-                              result = false;
-                            }
-                          });
-                      }
-                    }
-                });
-              if (result) {
-                bbsStore
-                  .addBbs(
-                    createRoomCategory,
-                    anotherStore.placeEnd,
-                    createSelectGender,
-                    userStore.user.i,
-                    date,
-                    createRoompersonmax,
-                    anotherStore.placeStart,
-                    userStore.userkey
-                  )
-                  .then(() => {
-                    anotherStore.placeInit();
-                    navigation.goBack();
+              userStore.isCreate(bbstype)
+                .then(r => {
+                  if (r) {
+                    //REST API 3 - 2. createRoom.js isCreate
+                    //fetch(<EC2:url>/bbs/iscreate/userid/2/bbstype/1 => return true/false)
+                    // * if조건: isEnter과 비슷하게 카테고리(bbsytype)별로 1개씩만 만들 수 있음
                     alert("방이 생성되었습니다. 내 채팅에서 확인해주세요.");
-                    //setCreateRoomVisible(false);
-                    // setLoadingModal(false);
-                  });
-              } else {
-                anotherStore.placeInit();
-                navigation.goBack();
-                alert(
-                  "채팅방은 카테고리별로 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요."
-                );
-                //setCreateRoomVisible(false);
-                //setLoadingModal(false);
-              }
+                    // bbsStore
+                    //   .addBbs(
+                    //     createRoomCategory,
+                    //     anotherStore.placeEnd,
+                    //     createSelectGender,
+                    //     userStore.user.i,
+                    //     date,
+                    //     createRoompersonmax,
+                    //     anotherStore.placeStart,
+                    //     userStore.userkey
+                    //   )
+                    //   .then(() => {
+                    //   });
+                  } else {
+                    alert(
+                      "채팅방은 카테고리별로 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요."
+                    );
+                  }
+                  setPlaceEnd(null);
+                  setPlaceStart(null);
+                  navigation.navigate('모든 채팅방 목록');
+                });
             }
           }}
         />
@@ -222,8 +207,9 @@ export default function createRoom({ route, navigation }) {
           buttonStyle={campusStyle.Button.groupCancel}
           title="취소"
           onPress={() => {
-            anotherStore.placeInit();
-            navigation.goBack();
+            setPlaceEnd(null);
+            setPlaceStart(null);
+            navigation.navigate('모든 채팅방 목록');
           }}
         />
       </View>

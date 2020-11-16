@@ -1,11 +1,10 @@
 //#region imports
-import React, { Component, useState, useEffect } from "react";
+import React, { Component } from "react";
 import {
   View,
   Text,
   Image,
   TouchableHighlight,
-  Button,
   BackHandler,
 } from "react-native";
 import campusStyle from "./campusStyle";
@@ -23,7 +22,7 @@ import { userStore } from "../store/store";
 class HomeScreen extends Component {
 
   componentDidMount() {
-    userStore.getUser("loginid 1", "loginpassword 1");
+    userStore.login("loginid 1", "loginpassword 1");
     BackHandler.addEventListener("hardwareBackPress", this.handleBackButton)
   }
   componentWillUnmount() {

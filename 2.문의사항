@@ -49,8 +49,8 @@ FROM bbs WHERE bbstype="등교";
 => 배열로 반환해야함.(미해결)
 [{"..."},{"..."}]
 
-REST API 3. chatScreen.js isEnter 
-fetch (/DB:url/gender/1/bbskey/SAD123/bbstype/1 => return true/false)
+REST API 3-1. chatScreen.js isEnter 
+fetch (/DB:url/bbs/isenter/gender/1/bbskey/SAD123/bbstype/1 => return true/false)
 
   async function isEnter(bbsGender, bbskey, bbstype) {
     // RESTAPI 통해서 fetch return false/true 
@@ -69,7 +69,36 @@ fetch (/DB:url/gender/1/bbskey/SAD123/bbstype/1 => return true/false)
     return true;
   }
 
+REST API 3 - 2. createRoom.js isCreate
+fetch(<EC2:url>/bbs/iscreate/userid/2/bbstype/1
+반환 true / false
+ * if조건: isEnter과 비슷하게 카테고리(bbsytype)별로 1개씩만 만들 수 있음
+isEnter과는 다르게 bbs의 값을 올리지 않음.
+
+<원래 소스>
+firebase
+.database()
+.ref("user/data/" + userStore.user.id + "/c")
+.once("value", async (snap) => {
+  if (snap != null)
+    for (const [key, value] of Object.entries(snap.val())) {
+      if (value == 1) {
+        // 접속한 방 중에서 다른 방을 조사
+        await firebase
+          .database()
+          .ref("bbs/data/" + key + "/c")
+          .once("value", (snap2) => {
+            //다른방이 같은 filter 일경우 만듬
+            if (snap2.val() == filter) {
+              result = false;
+            }
+          });
+      }
+    }
+});
+
 REST API 4. bbs에 chat (JSON형식) CRUD + append 만들어주기
+fetch (/DB:url/gender/1/bbskey/SAD123/bbstype/1 => return true/false)
 
 REST API 5. store/store getUser (login) 만들어주기
 SELECT 

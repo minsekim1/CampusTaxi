@@ -11,7 +11,7 @@ export default class chatroomScreen extends Component {
     };
   }
   componentDidMount() {
-    userStore.getUser("loginid 1", "loginpassword 1");
+    userStore.login("loginid 1", "loginpassword 1");
     userStore.getBbs(this.props.route.params.bbs.bbsid).then(r => this.setState({ bbs: r }));
   }
   async sendMessage(bbs) {

@@ -9,7 +9,8 @@ export default function chatScreen({ route, navigation }) {
   );
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      userStore.getUser("loginid 1", "loginpassword 1");
+      userStore.login("loginid 1", "loginpassword 1");
+      // REST API 방 목록 가져오기 filter따라
     });
 
     return unsubscribe;
@@ -46,7 +47,7 @@ export default function chatScreen({ route, navigation }) {
   };
   async function enter(bbs) {
     // let isEnter = fetch?
-    let isEnter = await userStore.getIsEnter(bbs);
+    let isEnter = await userStore.isEnter(bbs);
     if (isEnter) {
       navigation.navigate("채팅방", {
         bbs: bbs,

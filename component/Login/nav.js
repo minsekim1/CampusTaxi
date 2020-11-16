@@ -2,13 +2,13 @@ import React from 'react';
 import { Text, View, Button } from 'react-native';
 import 'react-native-gesture-handler';
 import { createStackNavigator } from '@react-navigation/stack';
-
+import { userStore } from '../store/store';
 function p1({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Home Screen</Text><Button
         title="Go to Screen0"
-        onPress={() => navigation.navigate('p1')}
+        onPress={() => userStore.user = "asd"}
       /><Button
         title="Go to Screen1"
         onPress={() => navigation.navigate('p2')}
