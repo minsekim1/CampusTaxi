@@ -3166,7 +3166,11 @@ interpret@^1.0.0:
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.4.0.tgz#665ab8bc4da27a774a40584e812e3e0fa45b1a1e"
   integrity sha512-agE4QfB2Lkp9uICn7BAqoscw4SZP9kTE2hxiFI3jBPmXJfdqiahTbUuKGsMoN2GtqL9AxhYioAcVvgsb1HvRbA==
 
+<<<<<<< HEAD
 invariant@2.2.4, invariant@^2.2.2, invariant@^2.2.4:
+=======
+invariant@^2.2.2, invariant@^2.2.4:
+>>>>>>> 344c7f6d7ee8297c8eb373d417178188d2eb4766
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
   integrity sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==
@@ -4870,6 +4874,7 @@ react-native-web@~0.13.12:
     prop-types "^15.6.0"
     react-timer-mixin "^0.13.4"
 
+<<<<<<< HEAD
 react-native-webview@^10.10.2:
   version "10.10.2"
   resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-10.10.2.tgz#13208aef17c9ccfd28355363688f4cbe2143f10a"
@@ -4878,6 +4883,8 @@ react-native-webview@^10.10.2:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
 
+=======
+>>>>>>> 344c7f6d7ee8297c8eb373d417178188d2eb4766
 react-native-windows@^0.62.0-0:
   version "0.62.15"
   resolved "https://registry.yarnpkg.com/react-native-windows/-/react-native-windows-0.62.15.tgz#046ce9c7bbf95bd075432587129cae2c097d4d9b"
