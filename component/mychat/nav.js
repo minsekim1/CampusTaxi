@@ -2,8 +2,25 @@ import React from 'react';
 import { Text, View, Button } from 'react-native';
 import 'react-native-gesture-handler';
 import { createStackNavigator } from '@react-navigation/stack';
+const Parse = require('parse/react-native.js');
+const AsyncStorage = require('react-native').AsyncStorage;
+Parse.setAsyncStorage(AsyncStorage);
 
 function p1({ navigation }) {
+  //   function restapi1() {
+  //     import requests
+
+  // headers = {
+  //       'X-Parse-Application-Id': 'QIxx0z05s7WTf8IDw3vejf6IBS2Zi6n29e8UOUtE',
+  //         'X-Parse-REST-API-Key': 'x9B5zmNSw9n3rBlODMptjBK7sZ4Jna9VL9x9wIqv',
+  //           'Content-Type': 'application/json',
+  // }
+
+  //     data = '{ "loginid":"slsl7862","loginpassword":"tkarnr","gender":1,"email":"tkarnrwl78627862@gmail.com","nickname":"minsekim","phone":"01000000000","userStatus":1,"safePhone":"01000000000","userPoint":0,"name":"\uAE40\uBBFC\uBBFC","address":"\uC11C\uC6B8","studentCard":{ "__type": "File", "name": "resume.txt" },"univ":"\uC0BC\uC721\uB300\uD559\uAD50","policy":[ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ] }'
+
+  //     response = requests.post('https://parseapi.back4app.com/classes/user', headers = headers, data = data)
+
+  //   }
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Home Screen</Text><Button
