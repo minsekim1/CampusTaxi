@@ -2,7 +2,6 @@
 // 1. import Userstore from "store";
 // 2. onPress={() => userStore.addUser(1, 2, 3, 4, 5, 6, 7, 8,9,10)}
 import { observable, reaction, computed, autorun } from 'mobx';
-
 export default class UserStore {
   @observable user = null;
 
@@ -99,11 +98,10 @@ export default class UserStore {
       });
     });
   }
+
   verifyingEmail(email) {
     const https = require('https');
-
     const params = '{"email": ' + email + '}';
-
     const options = {
       hostname: 'https://parseapi.back4app.com',
       path: '/verificationEmailRequest',
