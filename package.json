@@ -6,7 +6,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "upload": "git add . && git commit -m asd && git push"
+    "upload": "git add . && git commit -m asd && git push",
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.12.1",
