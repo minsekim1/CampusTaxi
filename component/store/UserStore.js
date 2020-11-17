@@ -12,8 +12,8 @@ export default class UserStore {
   // User테이블
   // createUser
   // fetch(<EC2:url>/user/create/loginid/.../loginpassword/...) 모든값
-  // getUser
-  // fetch(<EC2:url>/user/get/userid/userid값)
+  // readUser
+  // fetch(<EC2:url>/user/read/userid/userid값)
   // updateUser
   // fetch(<EC2:url>/user/update/userid/userid값/loginid/수정할값)특정값 1개
   // updateUserAll
@@ -21,22 +21,121 @@ export default class UserStore {
   // deleteUser
   // fetch(<EC2:url>/user/delete/userid/userid값)
 
-  // Bbs테이블: createBbs/getBbs/updateBbs/updateBbsAll/deleteBbs
+  // Bbs테이블: createBbs/readBbs/updateBbs/updateBbsAll/deleteBbs
   // user와 마찬가지
   // *단 채팅 내용을 가져올 경우 userid값을 usernickname으로 바꾸어주어야함
 
-  // 채팅: bbs.chats(JSON) appendChat/getChat/deleteChat
+  // 채팅: bbs.chats(JSON) appendChat/readChat/deleteChat
   // appendChat
   // fetch(<EC2:url>/bbs/chat/append/bbsid/bbsid값/userid/userid값/say/말한내용/time/시간/isSys/isSys값)
-  // fetch(<EC2:url>/bbs/chat/get/bbsid/...)
+  // fetch(<EC2:url>/bbs/chat/read/bbsid/...)
   // fetch(<EC2:url>/bbs/chat/delete/bbsid/.../chatid/chatid배열인덱스값)
 
-  // 그외: login / getBbsType / getBbs / isEnter / isCreate
+  // 그외: login / readBbsType / readBbs / isEnter / isCreate
+createUser(loginid,loginpassword,email,nickname,phone,name,address,studentCard,univ,gender,policy){
+  const user = Parse.Object.extend('user');
+  const myNewObject = new user();
+  myNewObject.set('loginid', loginid);//string
+  myNewObject.set('loginpassword', loginpassword);//string
+  myNewObject.set('email', email);//string
+  myNewObject.set('nickname', nickname);//string
+  myNewObject.set('phone', phone);//string
+  myNewObject.set('safePhone', '0100000000');//string
+  myNewObject.set('userPoint', 1);//string
+  myNewObject.set('name', name);//string
+  myNewObject.set('address', address);//string
+  myNewObject.set('studentCard', studentCard);//new Parse.File("resume.txt", { base64: btoa("My file content") })
+  myNewObject.set('univ', univ);//univ
+  myNewObject.set('gender', gender);//1
+  myNewObject.set('userStatus', userStatus);//1
+  myNewObject.set('policy', policy);//policy
+  myNewObject.save().then(
+    (result) => {
+      if (typeof document !== 'undefined') document.write(`user created: ${JSON.stringify(result)}`);
+      console.log('user created', result);
+    },    (error) => {
+      if (typeof document !== 'undefined') document.write(`Error while creating user: ${JSON.stringify(error)}`);
+      console.error('Error while creating user: ', error);
+    }
+  );
+}
+readUser_id(loginid){
+  const user = Parse.Object.extend('user');
+  const query = new Parse.Query(user);
+  query.equalTo("loginid", loginid);
+  query.find().then((results) => {
+    if (typeof document !== 'undefined') document.write(`user found: ${JSON.stringify(results)}`);
+    console.log('user found', results);
+  }, (error) => {
+    if (typeof document !== 'undefined') document.write(`Error while fetching user: ${JSON.stringify(error)}`);
+    console.error('Error while fetching user', error);
+  });
+}
+updateUser(objKey, row, value){
+  const user = Parse.Object.extend('user');
+  const query = new Parse.Query(user);
+  // here you put the objectId that you want to update
+  query.get(objKey).then((object) => {
+    object.set(row, value);
+    object.save().then((response) => {
+      // You can use the "get" method to get the value of an attribute
+      // Ex: response.get("<ATTRIBUTE_NAME>")
+      if (typeof document !== 'undefined') document.write(`Updated user: ${JSON.stringify(response)}`);
+      console.log('Updated user', response);
+    }, (error) => {
+      if (typeof document !== 'undefined') document.write(`Error while updating user: ${JSON.stringify(error)}`);
+      console.error('Error while updating user', error);
+    });
+  });
+}
+deleteUser(objKey){
+  const user = Parse.Object.extend('user');
+  const query = new Parse.Query(user);
+  // here you put the objectId that you want to delete
+  query.get(objKey).then((object) => {
+    object.destroy().then((response) => {
+      if (typeof document !== 'undefined') document.write(`Deleted user: ${JSON.stringify(response)}`);
+      console.log('Deleted user', response);
+    }, (error) => {
+      if (typeof document !== 'undefined') document.write(`Error while deleting user: ${JSON.stringify(error)}`);
+      console.error('Error while deleting user', error);
+    });
+  });
+}
+createBbs(){
+  const bbs = Parse.Object.extend('bbs');
+const myNewObject = new bbs();
 
+myNewObject.set('available', 1);
+myNewObject.set('bbstype', 1);
+myNewObject.set('leadername', new Parse.Object("user"));
+myNewObject.set('bbsDate', 'A string');
+myNewObject.set('mettingdate', 'A string');
+myNewObject.set('gender', 'A string');
+myNewObject.set('personmax', 1);
+myNewObject.set('personpresent', 1);
+myNewObject.set('personmember', new Parse.Object("user"));
+myNewObject.set('startplace', 'A string');
+myNewObject.set('endplace', 'A string');
+myNewObject.set('cost', 1);
+myNewObject.set('chats', 'A string');
+
+myNewObject.save().then(
+  (result) => {
+    if (typeof document !== 'undefined') document.write(`bbs created: ${JSON.stringify(result)}`);
+    console.log('bbs created', result);
+  },
+  (error) => {
+    if (typeof document !== 'undefined') document.write(`Error while creating bbs: ${JSON.stringify(error)}`);
+    console.error('Error while creating bbs: ', error);
+  }
+);
+}
   async login(id, passsword) {
     // REST API. login
     // fetch(<EC2:url>/user/login/loginid/아이디/password/비밀번호)
     // return null 또는 user 1명의 JSON형식
+    
     this.user = { "id": 1, "name": "minsekim", "univ": "univ 1", "email": "email 1", "phone": "phone 1", "gender": 1, "policy": "policy 1", "address": "address 1", "loginid": "loginid 1", "joindate": "2020-11-15 00:09:46.000000", "nickname": "minsekim", "safePhone": "safePhone 1", "userPoint": 1, "userStatus": 1, "studentCard": "studentCard 1", "loginpassword": "loginpassword 1" };
     return (this.user);
   }
@@ -154,3 +253,12 @@ export default class UserStore {
 {/* <Button title="테스트버튼" onPress={testFunc} />
         <Button title="토스연동버튼" onPress={() => console.log(test)} /> */}
 {/* sssssssssssssssssss */ }
+const { AsyncStorage } = require('react-native');
+const Parse = require('parse/react-native');
+Parse.setAsyncStorage(AsyncStorage);
+Parse.serverURL = 'https://parseapi.back4app.com'; // This is your Server URL
+Parse.initialize(
+  'QIxx0z05s7WTf8IDw3vejf6IBS2Zi6n29e8UOUtE', // This is your Application ID
+  'tlWTYuPFV70yWFnSGPni91d1zL1etwwCIwYqDh3m' // This is your Javascript key
+);
+import {decode as atob, encode as btoa} from 'base-64'
