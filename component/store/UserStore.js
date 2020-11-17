@@ -32,121 +32,197 @@ export default class UserStore {
   // fetch(<EC2:url>/bbs/chat/delete/bbsid/.../chatid/chatid배열인덱스값)
 
   // 그외: login / readBbsType / readBbs / isEnter / isCreate
-createUser(loginid,loginpassword,email,nickname,phone,name,address,studentCard,univ,gender,policy){
-  const user = Parse.Object.extend('user');
-  const myNewObject = new user();
-  myNewObject.set('loginid', loginid);//string
-  myNewObject.set('loginpassword', loginpassword);//string
-  myNewObject.set('email', email);//string
-  myNewObject.set('nickname', nickname);//string
-  myNewObject.set('phone', phone);//string
-  myNewObject.set('safePhone', '0100000000');//string
-  myNewObject.set('userPoint', 1);//string
-  myNewObject.set('name', name);//string
-  myNewObject.set('address', address);//string
-  myNewObject.set('studentCard', studentCard);//new Parse.File("resume.txt", { base64: btoa("My file content") })
-  myNewObject.set('univ', univ);//univ
-  myNewObject.set('gender', gender);//1
-  myNewObject.set('userStatus', userStatus);//1
-  myNewObject.set('policy', policy);//policy
-  myNewObject.save().then(
-    (result) => {
-      if (typeof document !== 'undefined') document.write(`user created: ${JSON.stringify(result)}`);
-      console.log('user created', result);
-    },    (error) => {
-      if (typeof document !== 'undefined') document.write(`Error while creating user: ${JSON.stringify(error)}`);
-      console.error('Error while creating user: ', error);
+
+  //#region USER
+  createUser(loginid, loginpassword, email, nickname, phone, name, address, studentCard, univ, gender, policy) {
+    const user = Parse.Object.extend('user');
+    const obj = new user();
+    obj.set('loginid', loginid);//string
+    obj.set('loginpassword', loginpassword);//string
+    obj.set('email', email);//string
+    obj.set('nickname', nickname);//string
+    obj.set('phone', phone);//string
+    obj.set('safePhone', '0100000000');//string
+    obj.set('userPoint', 1);//string
+    obj.set('name', name);//string
+    obj.set('address', address);//string
+    obj.set('studentCard', studentCard);//new Parse.File("resume.txt", { base64: btoa("My file content") })
+    obj.set('univ', univ);//univ
+    obj.set('gender', gender);//1
+    obj.set('userStatus', userStatus);//1
+    obj.set('policy', policy);//policy
+    obj.save().then(
+      (result) => {
+        if (typeof document !== 'undefined') document.write(`user created: ${JSON.stringify(result)}`);
+        console.log('user created', result);
+      }, (error) => {
+        if (typeof document !== 'undefined') document.write(`Error while creating user: ${JSON.stringify(error)}`);
+        console.error('Error while creating user: ', error);
+      }
+    );
+  }
+  async readUser_objid(objid) {
+    const user = Parse.Object.extend('user');
+    const query = new Parse.Query(user);
+    return await query.get(objid);
+  }
+  async readUser_filter(rows, val) {
+    const user = Parse.Object.extend('user');
+    let query = new Parse.Query(user);
+    query.equalTo(rows, val);
+    return await query.find();
+  }
+  updateUser(objKey, row, value) {
+    const user = Parse.Object.extend('user');
+    const query = new Parse.Query(user);
+    query.get(objKey).then((object) => {
+      object.set(row, value);
+      object.save().then((response) => {
+        if (typeof document !== 'undefined') document.write(`Updated user: ${JSON.stringify(response)}`);
+        console.log('Updated user', response);
+      }, (error) => {
+        if (typeof document !== 'undefined') document.write(`Error while updating user: ${JSON.stringify(error)}`);
+        console.error('Error while updating user', error);
+      });
+    });
+  }
+  deleteUser(objKey) {
+    const user = Parse.Object.extend('user');
+    const query = new Parse.Query(user);
+    query.get(objKey).then((object) => {
+      object.destroy().then((response) => {
+        if (typeof document !== 'undefined') document.write(`Deleted user: ${JSON.stringify(response)}`);
+        console.log('Deleted user', response);
+      }, (error) => {
+        if (typeof document !== 'undefined') document.write(`Error while deleting user: ${JSON.stringify(error)}`);
+        console.error('Error while deleting user', error);
+      });
+    });
+  }
+  verifyingEmail(email) {
+    const https = require('https');
+
+    const params = '{"email": ' + email + '}';
+
+    const options = {
+      hostname: 'https://parseapi.back4app.com',
+      path: '/verificationEmailRequest',
+      method: 'POST',
+      headers: {
+        'X-Parse-Application-Id': 'QIxx0z05s7WTf8IDw3vejf6IBS2Zi6n29e8UOUtE',
+        'X-Parse-REST-API-Key': 'x9B5zmNSw9n3rBlODMptjBK7sZ4Jna9VL9x9wIqv',
+        'Content-Type': 'application/json'
+      }
+    };
+
+    const req = https.request(options, (res) => {
+      console.log(`STATUS: ${res.statusCode}`);
+      if (typeof document !== 'undefined') document.write(`STATUS: ${res.statusCode}<br />`);
+      res.setEncoding('utf8');
+      res.on('data', (chunk) => {
+        if (typeof document !== 'undefined') document.write(`BODY: ${chunk}<br />`);
+        console.log(`BODY: ${chunk}`);
+      });
+      res.on('end', () => {
+        if (typeof document !== 'undefined') document.write('No more data in response.<br />');
+        console.log('No more data in response.');
+      });
+    });
+
+    req.on('error', (e) => {
+      if (typeof document !== 'undefined') document.write(`Problem with request: ${e.message}<br />`);
+      console.error(`Problem with request: ${e.message}`);
+    });
+
+    // write data to request body
+    req.write(params);
+    req.end();
+  }
+  sign(username, email, password) {
+    const user = new Parse.User()
+    user.set('username', username);
+    user.set('email', email);
+    user.set('password', password);
+    user.signUp().then(() => { }).catch(error => {
+      alert('회원가입에 실패했습니다. \n' + error);
+    });
+  }
+  login(username, password) {
+    Parse.User.logIn(username, password).then(() => { }).catch(error => {
+      alert('로그인에 실패했습니다. 아이디, 비밀번호를 확인해주세요.\n' + error);
+    });
+  }
+  //#endregion
+  //#region BBS
+  async createBbs(bbstype, leadername, meetingdate, gender, startplace, endplace, cost) {
+    const bbs = Parse.Object.extend('bbs');
+    const user = (await this.readUser_filter("nickname", leadername))[0];
+    const newObj = new bbs();
+    newObj.set('available', 1);
+    newObj.set('bbstype', bbstype);
+    newObj.set('leadername', user);
+    newObj.set('meetingdate', meetingdate);
+    newObj.set('gender', gender);
+    newObj.set('personmax', 1);
+    newObj.set('personpresent', 1);
+    newObj.set('personmember', [user]);
+    newObj.set('startplace', startplace);
+    newObj.set('endplace', endplace);
+    newObj.set('cost', cost);
+
+    newObj.save().then((r) => {
+      if (typeof document !== 'undefined') document.write(`bbs created: ${JSON.stringify(r)}`);
+      console.log('bbs created', r);
+    }, (e) => {
+      if (typeof document !== 'undefined') document.write(`Error while creating bbs: ${JSON.stringify(e)}`);
+      console.error('Error while creating bbs: ', e);
     }
-  );
-}
-readUser_id(loginid){
-  const user = Parse.Object.extend('user');
-  const query = new Parse.Query(user);
-  query.equalTo("loginid", loginid);
-  query.find().then((results) => {
-    if (typeof document !== 'undefined') document.write(`user found: ${JSON.stringify(results)}`);
-    console.log('user found', results);
-  }, (error) => {
-    if (typeof document !== 'undefined') document.write(`Error while fetching user: ${JSON.stringify(error)}`);
-    console.error('Error while fetching user', error);
-  });
-}
-updateUser(objKey, row, value){
-  const user = Parse.Object.extend('user');
-  const query = new Parse.Query(user);
-  // here you put the objectId that you want to update
-  query.get(objKey).then((object) => {
-    object.set(row, value);
-    object.save().then((response) => {
-      // You can use the "get" method to get the value of an attribute
-      // Ex: response.get("<ATTRIBUTE_NAME>")
-      if (typeof document !== 'undefined') document.write(`Updated user: ${JSON.stringify(response)}`);
-      console.log('Updated user', response);
-    }, (error) => {
-      if (typeof document !== 'undefined') document.write(`Error while updating user: ${JSON.stringify(error)}`);
-      console.error('Error while updating user', error);
+    );
+  }
+  async readBbs_objid(objid) {
+    const bbs = Parse.Object.extend('bbs');
+    const query = new Parse.Query(bbs);
+    return await query.get(objid);
+  }
+  async readBbs_filter(rows, val) {
+    const bbs = Parse.Object.extend('bbs');
+    let query = new Parse.Query(bbs);
+    query.equalTo(rows, val);
+    return await query.find();
+  }
+  updateBbs(objKey, row, value) {
+    const bbs = Parse.Object.extend('bbs');
+    const query = new Parse.Query(bbs);
+    query.get(objKey).then((object) => {
+      object.set(row, value);
+      object.save().then((response) => {
+        if (typeof document !== 'undefined') document.write(`Updated bbs: ${JSON.stringify(response)}`);
+        console.log('Updated bbs', response);
+      }, (error) => {
+        if (typeof document !== 'undefined') document.write(`Error while updating bbs: ${JSON.stringify(error)}`);
+        console.error('Error while updating bbs', error);
+      });
     });
-  });
-}
-deleteUser(objKey){
-  const user = Parse.Object.extend('user');
-  const query = new Parse.Query(user);
-  // here you put the objectId that you want to delete
-  query.get(objKey).then((object) => {
-    object.destroy().then((response) => {
-      if (typeof document !== 'undefined') document.write(`Deleted user: ${JSON.stringify(response)}`);
-      console.log('Deleted user', response);
-    }, (error) => {
-      if (typeof document !== 'undefined') document.write(`Error while deleting user: ${JSON.stringify(error)}`);
-      console.error('Error while deleting user', error);
+  }
+  deleteBbs(objKey) {
+    const bbs = Parse.Object.extend('bbs');
+    const query = new Parse.Query(bbs);
+    query.get(objKey).then((object) => {
+      object.destroy().then((response) => {
+        if (typeof document !== 'undefined') document.write(`Deleted bbs: ${JSON.stringify(response)}`);
+        console.log('Deleted bbs', response);
+      }, (error) => {
+        if (typeof document !== 'undefined') document.write(`Error while deleting bbs: ${JSON.stringify(error)}`);
+        console.error('Error while deleting bbs', error);
+      });
     });
-  });
-}
-createBbs(){
-  const bbs = Parse.Object.extend('bbs');
-const myNewObject = new bbs();
+  }
+  //#endregion
 
-myNewObject.set('available', 1);
-myNewObject.set('bbstype', 1);
-myNewObject.set('leadername', new Parse.Object("user"));
-myNewObject.set('bbsDate', 'A string');
-myNewObject.set('mettingdate', 'A string');
-myNewObject.set('gender', 'A string');
-myNewObject.set('personmax', 1);
-myNewObject.set('personpresent', 1);
-myNewObject.set('personmember', new Parse.Object("user"));
-myNewObject.set('startplace', 'A string');
-myNewObject.set('endplace', 'A string');
-myNewObject.set('cost', 1);
-myNewObject.set('chats', 'A string');
 
-myNewObject.save().then(
-  (result) => {
-    if (typeof document !== 'undefined') document.write(`bbs created: ${JSON.stringify(result)}`);
-    console.log('bbs created', result);
-  },
-  (error) => {
-    if (typeof document !== 'undefined') document.write(`Error while creating bbs: ${JSON.stringify(error)}`);
-    console.error('Error while creating bbs: ', error);
-  }
-);
-}
-  async login(id, passsword) {
-    // REST API. login
-    // fetch(<EC2:url>/user/login/loginid/아이디/password/비밀번호)
-    // return null 또는 user 1명의 JSON형식
-    
-    this.user = { "id": 1, "name": "minsekim", "univ": "univ 1", "email": "email 1", "phone": "phone 1", "gender": 1, "policy": "policy 1", "address": "address 1", "loginid": "loginid 1", "joindate": "2020-11-15 00:09:46.000000", "nickname": "minsekim", "safePhone": "safePhone 1", "userPoint": 1, "userStatus": 1, "studentCard": "studentCard 1", "loginpassword": "loginpassword 1" };
-    return (this.user);
-  }
-  async getBbsType(bbstype) {
-    // REST API 2. chats을 제외하고 bbstype이 같은 모든 방목록 JSON으로 받기
-    // fetch(<EC2:url>/bbs/get/bbstype/bbstype값) 1:등교, 2:하교, 3:야작...
-    // setBbslist(data);
-    // {...bbs1번, ...bbs2번}
-    return ([{ "cost": 1, "bbsid": 1, "gender": 1, "bbsDate": "2020-11-15 00:09:46.000000", "bbstype": 1, "endplace": "endplace 1", "available": 1, "personmax": 1, "leadername": "minsekim", "startplace": "startplace 1", "meetingdate": "2020-11-15 00:09:46.000000", "personmember": "personmember 1", "personpresent": 0 }
-      , { "cost": 2, "bbsid": 2, "gender": 2, "bbsDate": "2020-11-15 00:09:46.000000", "bbstype": 1, "endplace": "endplace 2", "available": 1, "personmax": 2, "leadername": "ohju", "startplace": "startplace 2", "meetingdate": "2020-11-15 00:09:46.000000", "personmember": "personmember 2", "personpresent": 1 }])
-  }
+  // return ([{ "cost": 1, "bbsid": 1, "gender": 1, "bbsDate": "2020-11-15 00:09:46.000000", "bbstype": 1, "endplace": "endplace 1", "available": 1, "personmax": 1, "leadername": "minsekim", "startplace": "startplace 1", "meetingdate": "2020-11-15 00:09:46.000000", "personmember": "personmember 1", "personpresent": 0 }
+  //   , { "cost": 2, "bbsid": 2, "gender": 2, "bbsDate": "2020-11-15 00:09:46.000000", "bbstype": 1, "endplace": "endplace 2", "available": 1, "personmax": 2, "leadername": "ohju", "startplace": "startplace 2", "meetingdate": "2020-11-15 00:09:46.000000", "personmember": "personmember 2", "personpresent": 1 }])
+
   async getBbs(bbsid) {
     // REST API 5. bbsid를 통해 특정 bbs하나만 가져오는 것.(chats포함)
     // fetch(<EC2:url>/bbs/get/bbsid/bbsid값)
@@ -261,4 +337,4 @@ Parse.initialize(
   'QIxx0z05s7WTf8IDw3vejf6IBS2Zi6n29e8UOUtE', // This is your Application ID
   'tlWTYuPFV70yWFnSGPni91d1zL1etwwCIwYqDh3m' // This is your Javascript key
 );
-import {decode as atob, encode as btoa} from 'base-64'
+import { decode as atob, encode as btoa } from 'base-64'

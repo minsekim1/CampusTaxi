@@ -8,13 +8,13 @@ function p1({ navigation }) {
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Home Screen</Text><Button
         title="Go to func1"
-        onPress={() => userStore.createBbs("phiL6LVFkN")}
+        onPress={() => userStore.sign("slsl7862", "tkarnrwl7862@naver.com", "tkarnr")}
       /><Button
         title="Go to Screen1"
-        onPress={() => navigation.navigate('p2')}
+        onPress={() => userStore.verifyingEmail("tkarnrwl7862@naver.com")}
       /><Button
         title="Go to Screen2"
-        onPress={() => navigation.navigate('p3')}
+        onPress={() => userStore.deleteBbs("Rrwd8I8Hc7")}
       />
     </View>
   );

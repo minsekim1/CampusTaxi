@@ -33,7 +33,7 @@ export default function chatScreen({ route, navigation }) {
         type="clear"
         title=""
         icon={<Icon name="refresh" size={24} color="white" />}
-        onPress={() => userStore.getBbsType(bbstype).then(r => setBbslist(r))}
+        onPress={() => userStore.readBbs_filter("bbstype", bbstype).then(r => setBbslist(r))}
       ></Button>,
     },
     container: {

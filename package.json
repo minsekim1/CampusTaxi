@@ -7,6 +7,7 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "upload": "git add . && git commit -m asd && git push",
+    "a": "git pull && npm i && expo start"
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.12.1",
@@ -24,6 +25,7 @@
     "expo-mail-composer": "^8.4.0",
     "expo-permissions": "~9.3.0",
     "expo-status-bar": "~1.0.2",
+    "https": "^1.0.0",
     "mobx": "^6.0.4",
     "mobx-react": "^7.0.5",
     "parse": "^2.18.0",
