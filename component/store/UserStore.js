@@ -2,6 +2,8 @@
 // 1. import Userstore from "store";
 // 2. onPress={() => userStore.addUser(1, 2, 3, 4, 5, 6, 7, 8,9,10)}
 import { observable, reaction, computed, autorun } from 'mobx';
+import axios from 'axios';
+
 export default class UserStore {
   @observable user = null;
 
@@ -100,42 +102,28 @@ export default class UserStore {
   }
 
   verifyingEmail(email) {
-    const https = require('https');
-    const params = '{"email": ' + email + '}';
-    const options = {
-      hostname: 'https://parseapi.back4app.com',
-      path: '/verificationEmailRequest',
-      method: 'POST',
-      headers: {
-        'X-Parse-Application-Id': 'QIxx0z05s7WTf8IDw3vejf6IBS2Zi6n29e8UOUtE',
-        'X-Parse-REST-API-Key': 'x9B5zmNSw9n3rBlODMptjBK7sZ4Jna9VL9x9wIqv',
-        'Content-Type': 'application/json'
-      }
-    };
-
-    const req = https.request(options, (res) => {
-      console.log(`STATUS: ${res.statusCode}`);
-      if (typeof document !== 'undefined') document.write(`STATUS: ${res.statusCode}<br />`);
-      res.setEncoding('utf8');
-      res.on('data', (chunk) => {
-        if (typeof document !== 'undefined') document.write(`BODY: ${chunk}<br />`);
-        console.log(`BODY: ${chunk}`);
-      });
-      res.on('end', () => {
-        if (typeof document !== 'undefined') document.write('No more data in response.<br />');
-        console.log('No more data in response.');
-      });
+    axios.post('https://parseapi.back4app.com', {email: email})
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
     });
+    // const https = require('axios');
+    // const params = '{"email": ' + email + '}';
+    // const options = {
+    //   hostname: 'https://parseapi.back4app.com',
+    //   path: '/verificationEmailRequest',
+    //   method: 'POST',
+    //   headers: {
+    //     'X-Parse-Application-Id': 'QIxx0z05s7WTf8IDw3vejf6IBS2Zi6n29e8UOUtE',
+    //     'X-Parse-REST-API-Key': 'x9B5zmNSw9n3rBlODMptjBK7sZ4Jna9VL9x9wIqv',
+    //     'Content-Type': 'application/json'
+    //   }
+    // };
 
-    req.on('error', (e) => {
-      if (typeof document !== 'undefined') document.write(`Problem with request: ${e.message}<br />`);
-      console.error(`Problem with request: ${e.message}`);
-    });
-
-    // write data to request body
-    req.write(params);
-    req.end();
   }
+
   sign(username, email, password) {
     const user = new Parse.User()
     user.set('username', username);

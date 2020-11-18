@@ -1,5 +1,4 @@
 //실제 유저들이 채팅하는 화면
-
 export default class chatroomScreen extends Component {
   //#region 초기값
   constructor(props) {
