@@ -102,6 +102,14 @@ export default class UserStore {
   }
 
   verifyingEmail(email) {
+    axios({
+      method: 'post',
+      url: '/user/12345',
+      data: {
+        firstName: 'Fred',
+        lastName: 'Flintstone'
+      }
+    });
     axios.post('https://parseapi.back4app.com', {email: email})
     .then(function (response) {
       console.log(response);
