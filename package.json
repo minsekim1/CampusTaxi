@@ -10,9 +10,8 @@
     "a": "git pull && npm i && expo start"
   },
   "dependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.12.1",
-    "@babel/plugin-proposal-decorators": "^7.12.1",
-    "@react-native-community/datetimepicker": "^3.0.0",
+    "@react-native-async-storage/async-storage": "^1.13.2",
+    "@react-native-community/datetimepicker": "^3.0.5",
     "@react-native-community/masked-view": "0.1.10",
     "@react-native-community/picker": "1.6.6",
     "@react-navigation/bottom-tabs": "^5.11.1",
@@ -23,6 +22,7 @@
     "babel-plugin-module-resolver": "^4.0.0",
     "base-64": "^1.0.0",
     "expo": "~39.0.2",
+    "expo-image-picker": "^9.1.1",
     "expo-mail-composer": "^8.4.0",
     "expo-permissions": "~9.3.0",
     "expo-status-bar": "~1.0.2",
@@ -33,6 +33,7 @@
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.4.tar.gz",
     "react-native-elements": "^3.0.0-alpha.1",
+    "react-native-fs": "^2.16.6",
     "react-native-gesture-handler": "~1.7.0",
     "react-native-maps": "^0.27.1",
     "react-native-paper": "^4.4.0",
@@ -40,9 +41,13 @@
     "react-native-responsive-screen": "^1.4.1",
     "react-native-safe-area-context": "3.1.4",
     "react-native-screens": "~2.10.1",
+    "react-native-svg": "^12.1.0",
     "react-native-web": "~0.13.12",
     "react-native-webview": "^10.7.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-proposal-decorators": "^7.12.1"
+  },
   "private": true
 }

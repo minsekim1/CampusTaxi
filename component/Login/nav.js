@@ -1,65 +1,29 @@
 import React from 'react';
-import { Text, View, Button } from 'react-native';
 import 'react-native-gesture-handler';
 import { createStackNavigator } from '@react-navigation/stack';
-import { userStore } from '../store/store';
-function p1({ navigation }) {
+import loginPage from "./loginPage"
+import sign from "./sign"
+import { addUser } from "./addUser"
+import { complete } from "./complete"
+import {
+  clientpagePolicy1,
+  clientpagePolicy2,
+  clientpagePolicy3,
+  clientpagePolicy4,
+} from "./policy";
+const s = createStackNavigator();
+const headerDisable = { headerShown: false };
+export default function LoginNav() {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home Screen</Text><Button
-        title="Go to Screen0"
-        onPress={() => userStore.user = "asd"}
-      /><Button
-        title="Go to Screen1"
-        onPress={() => navigation.navigate('p2')}
-      /><Button
-        title="Go to Screen2"
-        onPress={() => navigation.navigate('p3')}
-      />
-    </View>
-  );
-}
-
-function p2({ navigation }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home Screen1</Text><Button
-        title="Go to Screen0"
-        onPress={() => navigation.navigate('p1')}
-      /><Button
-        title="Go to Screen1"
-        onPress={() => navigation.navigate('p2')}
-      /><Button
-        title="Go to Screen2"
-        onPress={() => navigation.navigate('p3')}
-      />
-    </View>
-  );
-}
-function p3({ navigation }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home Screen2</Text><Button
-        title="Go to Screen0"
-        onPress={() => navigation.navigate('p1')}
-      /><Button
-        title="Go to Screen1"
-        onPress={() => navigation.navigate('p2')}
-      /><Button
-        title="Go to Screen2"
-        onPress={() => navigation.navigate('p3')}
-      />
-    </View>
-  );
-}
-const Stack = createStackNavigator();
-
-export default function loginNav() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="p1" component={p1} />
-      <Stack.Screen name="p2" component={p2} />
-      <Stack.Screen name="p3" component={p3} />
-    </Stack.Navigator>
+    <s.Navigator >
+      <s.Screen name="login" component={loginPage} options={headerDisable} />
+      <s.Screen name="회원가입" component={sign} />
+      <s.Screen name="서비스 이용약관" component={clientpagePolicy3} />
+      <s.Screen name="개인정보처리방침" component={clientpagePolicy1} />
+      <s.Screen name="위치정보 이용약관" component={clientpagePolicy2} />
+      <s.Screen name="마케팅 정보 수신" component={clientpagePolicy4} />
+      <s.Screen name="회원 정보 입력" component={addUser} />
+      <s.Screen name="회원 가입 완료" component={complete} />
+    </s.Navigator>
   );
 }

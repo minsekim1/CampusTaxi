@@ -1,8 +1,10 @@
 // #사용법
-// 1. import Userstore from "store";
+// 1. import { userStore } from "../store/store";
 // 2. onPress={() => userStore.addUser(1, 2, 3, 4, 5, 6, 7, 8,9,10)}
-import { observable, reaction, computed, autorun } from 'mobx';
+import { observable, action, reaction, autorun, runInAction } from 'mobx';
 import axios from 'axios';
+import React, { Component } from 'react';
+export const AuthContext = React.createContext();
 
 export default class UserStore {
   @observable user = null;
@@ -35,72 +37,105 @@ export default class UserStore {
   // 그외: login / readBbsType / readBbs / isEnter / isCreate
 
   //#region USER
+  imageUpload(file) {
+    var RNFS = require("react-native-fs");
+    const imagePath = `${RNFS.MainBundlePath}/${new Date().toISOString()}.jpg`.replace(/:/g, '-');
+    if (Platform.OS === 'ios') {
+      RNFS.copyAssetsFileIOS(file.origURL, imagePath, 0, 0)
+        .then(res => { })
+        .catch(err => {
+          console.log('ERROR: image file write failed!!!');
+          console.log(err.message, err.code);
+        });
+    } else if (Platform.OS === 'android') {
+      RNFS.copyFile(file.uri, imagePath)
+        .then(res => { })
+        .catch(err => {
+          console.log('ERROR: image file write failed!!!');
+          console.log(err.message, err.code);
+        });
+    }
+
+    // const uri = String(file.uri).replace("file:/", "");
+    // const temp = new Parse.File("thumbnail-image.jpg", uri, "image/png");
+    // temp.save();
+  }
   createUser(loginid, loginpassword, email, nickname, phone, name, address, studentCard, univ, gender, policy) {
-    const user = Parse.Object.extend('user');
-    const obj = new user();
-    obj.set('loginid', loginid);//string
-    obj.set('loginpassword', loginpassword);//string
-    obj.set('email', email);//string
-    obj.set('nickname', nickname);//string
-    obj.set('phone', phone);//string
-    obj.set('safePhone', '0100000000');//string
-    obj.set('userPoint', 1);//string
-    obj.set('name', name);//string
-    obj.set('address', address);//string
-    obj.set('studentCard', studentCard);//new Parse.File("resume.txt", { base64: btoa("My file content") })
-    obj.set('univ', univ);//univ
-    obj.set('gender', gender);//1
-    obj.set('userStatus', userStatus);//1
-    obj.set('policy', policy);//policy
+    const temp = new Parse.File(name + ".png", studentCard, "image/png");
+    temp.save();
+    console.log(temp);
+    const User = Parse.Object.extend('User');
+    const obj = new User();
+    obj.set('username', loginid);
+    obj.set('password', loginpassword);
+    obj.set('email', email);
+    obj.set('nickname', nickname);
+    obj.set('phone', phone);
+    obj.set('safePhone', '0100000000');
+    obj.set('userPoint', 1);
+    obj.set('name', name);
+    obj.set('address', address);
+    // obj.set('studentCard', file);
+    obj.set('univ', univ);
+    obj.set('gender', gender);
+    obj.set('userStatus', 1);
+    obj.set('policy', policy);
     obj.save().then(
       (result) => {
-        if (typeof document !== 'undefined') document.write(`user created: ${JSON.stringify(result)}`);
-        console.log('user created', result);
+        if (typeof document !== 'undefined') document.write(`User created: ${JSON.stringify(result)}`);
+        console.log('User created', result);
       }, (error) => {
-        if (typeof document !== 'undefined') document.write(`Error while creating user: ${JSON.stringify(error)}`);
-        console.error('Error while creating user: ', error);
+        if (typeof document !== 'undefined') document.write(`Error while creating User: ${JSON.stringify(error)}`);
+        console.error('Error while creating User: ', error);
       }
     );
   }
   async readUser_objid(objid) {
-    const user = Parse.Object.extend('user');
-    const query = new Parse.Query(user);
+    const User = Parse.Object.extend('User');
+    const query = new Parse.Query(User);
     return await query.get(objid);
   }
   async readUser_filter(rows, val) {
-    const user = Parse.Object.extend('user');
-    let query = new Parse.Query(user);
+    const User = Parse.Object.extend('User');
+    let query = new Parse.Query(User);
     query.equalTo(rows, val);
     return await query.find();
   }
   updateUser(objKey, row, value) {
-    const user = Parse.Object.extend('user');
-    const query = new Parse.Query(user);
+    const User = Parse.Object.extend('User');
+    const query = new Parse.Query(User);
     query.get(objKey).then((object) => {
       object.set(row, value);
       object.save().then((response) => {
-        if (typeof document !== 'undefined') document.write(`Updated user: ${JSON.stringify(response)}`);
-        console.log('Updated user', response);
+        if (typeof document !== 'undefined') document.write(`Updated User: ${JSON.stringify(response)}`);
+        console.log('Updated User', response);
       }, (error) => {
-        if (typeof document !== 'undefined') document.write(`Error while updating user: ${JSON.stringify(error)}`);
-        console.error('Error while updating user', error);
+        if (typeof document !== 'undefined') document.write(`Error while updating User: ${JSON.stringify(error)}`);
+        console.error('Error while updating User', error);
       });
     });
   }
   deleteUser(objKey) {
-    const user = Parse.Object.extend('user');
-    const query = new Parse.Query(user);
+    const User = Parse.Object.extend('User');
+    const query = new Parse.Query(User);
     query.get(objKey).then((object) => {
       object.destroy().then((response) => {
-        if (typeof document !== 'undefined') document.write(`Deleted user: ${JSON.stringify(response)}`);
-        console.log('Deleted user', response);
+        if (typeof document !== 'undefined') document.write(`Deleted User: ${JSON.stringify(response)}`);
+        console.log('Deleted User', response);
       }, (error) => {
-        if (typeof document !== 'undefined') document.write(`Error while deleting user: ${JSON.stringify(error)}`);
-        console.error('Error while deleting user', error);
+        if (typeof document !== 'undefined') document.write(`Error while deleting User: ${JSON.stringify(error)}`);
+        console.error('Error while deleting User', error);
       });
     });
   }
-
+  async login(username, password) {//id=user.username
+    await Parse.User.logIn(username, password).then((r) => { this.user = r }).catch(error => {
+      this.user = null;
+      alert('로그인에 실패했습니다. 아이디, 비밀번호를 확인해주세요.\n' + error);
+    });
+    return this.user;
+  }
+  logout() { Parse.User.logOut(this.user.sessionToken); this.user = null; }
   verifyingEmail(email) {
     axios({
       method: 'post',
@@ -110,13 +145,13 @@ export default class UserStore {
         lastName: 'Flintstone'
       }
     });
-    axios.post('https://parseapi.back4app.com', {email: email})
-    .then(function (response) {
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+    axios.post('https://parseapi.back4app.com', { email: email })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     // const https = require('axios');
     // const params = '{"email": ' + email + '}';
     // const options = {
@@ -132,34 +167,40 @@ export default class UserStore {
 
   }
 
-  sign(username, email, password) {
-    const user = new Parse.User()
-    user.set('username', username);
-    user.set('email', email);
-    user.set('password', password);
-    user.signUp().then(() => { }).catch(error => {
-      alert('회원가입에 실패했습니다. \n' + error);
-    });
+  //#endregion
+  //#region Student File && Univ name Find
+  async findUniv(univname) {
+    let univs = []
+    let query = new Parse.Query("univ");
+    query.contains("univ_name", univname);
+    query.limit(4);
+    let r = await query.find().catch(function (error) { console.log("Error: " + error.code + " " + error.message); })
+    if (r) {
+      univs = r.map((user) => {
+        return {
+          id: user.id,
+          univ_name: user.attributes.univ_name
+        };
+      });
+      return univs;
+    }
   }
-  login(username, password) {
-    Parse.User.logIn(username, password).then(() => { }).catch(error => {
-      alert('로그인에 실패했습니다. 아이디, 비밀번호를 확인해주세요.\n' + error);
-    });
-  }
+
+
   //#endregion
   //#region BBS
   async createBbs(bbstype, leadername, meetingdate, gender, startplace, endplace, cost) {
     const bbs = Parse.Object.extend('bbs');
-    const user = (await this.readUser_filter("nickname", leadername))[0];
+    const User = (await this.readUser_filter("nickname", leadername))[0];
     const newObj = new bbs();
     newObj.set('available', 1);
     newObj.set('bbstype', bbstype);
-    newObj.set('leadername', user);
+    newObj.set('leadername', User);
     newObj.set('meetingdate', meetingdate);
     newObj.set('gender', gender);
     newObj.set('personmax', 1);
     newObj.set('personpresent', 1);
-    newObj.set('personmember', [user]);
+    newObj.set('personmember', [User]);
     newObj.set('startplace', startplace);
     newObj.set('endplace', endplace);
     newObj.set('cost', cost);
@@ -290,8 +331,12 @@ export default class UserStore {
     date = date[3] + "년 " + date[1] + " " + date[2] + "일 " + date[4] + "(" + date[0] + ")";
     return date;
   }
-  logout() {
-    this.user = null;
+  isLogin() {
+    if (this.user == null) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }
 // const testFunc = () => {
@@ -323,6 +368,7 @@ export default class UserStore {
 {/* <Button title="테스트버튼" onPress={testFunc} />
         <Button title="토스연동버튼" onPress={() => console.log(test)} /> */}
 {/* sssssssssssssssssss */ }
+
 const { AsyncStorage } = require('react-native');
 const Parse = require('parse/react-native');
 Parse.setAsyncStorage(AsyncStorage);
@@ -331,4 +377,3 @@ Parse.initialize(
   'QIxx0z05s7WTf8IDw3vejf6IBS2Zi6n29e8UOUtE', // This is your Application ID
   'tlWTYuPFV70yWFnSGPni91d1zL1etwwCIwYqDh3m' // This is your Javascript key
 );
-import { decode as atob, encode as btoa } from 'base-64'

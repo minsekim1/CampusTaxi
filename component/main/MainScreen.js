@@ -19,10 +19,10 @@ import club from "./image/club.png";
 import ski from "./image/ski.png";
 import ocean from "./image/ocean.png";
 import { userStore } from "../store/store";
+import { Button } from "react-native-paper";
 class HomeScreen extends Component {
 
   componentDidMount() {
-    userStore.login("loginid 1", "loginpassword 1");
     BackHandler.addEventListener("hardwareBackPress", this.handleBackButton)
   }
   componentWillUnmount() {
@@ -32,7 +32,6 @@ class HomeScreen extends Component {
     //ToastAndroid.show("Back button is pressed", ToastAndroid.SHORT);
     return true;
   }
-
   render() {
     const { navigation } = this.props;
     // 메인화면 버튼 부분
@@ -80,78 +79,82 @@ class HomeScreen extends Component {
       );
     }
     return (
-      <View style={campusStyle.View.container}>
-        <View style={campusStyle.View.backgroundColorBlue}>
-          <View>
-            <View style={campusStyle.View.mainHeaderBackground}>
-              <View style={campusStyle.View.row}>
-                <Text style={campusStyle.Text.middleSize}> CAMPUS TAXI</Text>
-              </View>
-              <Text style={campusStyle.Text.mainUnivText}>
-                [서울]삼육대학교{/* {userStore.user.l} */}
-              </Text>
-              <Image style={campusStyle.Image.mainImage} source={ad} />
-            </View>
-          </View>
-        </View>
-        {/* 메인메뉴버튼부분 */}
-        <View style={campusStyle.View.mainItemView}>
-          <View style={campusStyle.View.rowflex}>
-            <View style={campusStyle.View.container}>
-              <MenuItem
-                bbstype="등교"
-                imageURL={school}
-                navigation={navigation}
-              />
-            </View>
-            <View style={campusStyle.View.container}>
-              <MenuItem bbstype="하교" imageURL={bus} navigation={navigation} />
-            </View>
-            <View style={campusStyle.View.container}>
-              <MenuItem bbstype="야작" imageURL={pen} navigation={navigation} />
-            </View>
-          </View>
+      <>
 
-          <View style={campusStyle.View.rowflex}>
-            <View style={campusStyle.View.container}>
-              <MenuItem
-                bbstype="독서실"
-                imageURL={study}
-                navigation={navigation}
-              />
-            </View>
-            <View style={campusStyle.View.container}>
-              <MenuItem bbstype="PC방" imageURL={game} navigation={navigation} />
-            </View>
-            <View style={campusStyle.View.container}>
-              <MenuItem
-                bbstype="놀이동산"
-                imageURL={party}
-                navigation={navigation}
-              />
+        <View style={campusStyle.View.container}>
+          <View style={campusStyle.View.backgroundColorBlue}>
+            <View>
+              <View style={campusStyle.View.mainHeaderBackground}>
+                <View style={campusStyle.View.row}>
+                  <Text style={campusStyle.Text.middleSize}> CAMPUS TAXI</Text>
+                </View>
+                <Text style={campusStyle.Text.mainUnivText}>
+                  [서울]삼육대학교{/* {userStore.user.l} */}
+                </Text>
+                <Image style={campusStyle.Image.mainImage} source={ad} />
+              </View>
             </View>
           </View>
-          <View style={campusStyle.View.rowflex}>
-            <View style={campusStyle.View.container}>
-              <MenuItem bbstype="클럽" imageURL={club} navigation={navigation} />
+          {/* <Button onPress={() => userStore.findUniv("대")}></Button> */}
+          {/* 메인메뉴버튼부분 */}
+          <View style={campusStyle.View.mainItemView}>
+            <View style={campusStyle.View.rowflex}>
+              <View style={campusStyle.View.container}>
+                <MenuItem
+                  bbstype="등교"
+                  imageURL={school}
+                  navigation={navigation}
+                />
+              </View>
+              <View style={campusStyle.View.container}>
+                <MenuItem bbstype="하교" imageURL={bus} navigation={navigation} />
+              </View>
+              <View style={campusStyle.View.container}>
+                <MenuItem bbstype="야작" imageURL={pen} navigation={navigation} />
+              </View>
             </View>
-            <View style={campusStyle.View.container}>
-              <MenuItem
-                bbstype="스키장"
-                imageURL={ski}
-                navigation={navigation}
-              />
+
+            <View style={campusStyle.View.rowflex}>
+              <View style={campusStyle.View.container}>
+                <MenuItem
+                  bbstype="독서실"
+                  imageURL={study}
+                  navigation={navigation}
+                />
+              </View>
+              <View style={campusStyle.View.container}>
+                <MenuItem bbstype="PC방" imageURL={game} navigation={navigation} />
+              </View>
+              <View style={campusStyle.View.container}>
+                <MenuItem
+                  bbstype="놀이동산"
+                  imageURL={party}
+                  navigation={navigation}
+                />
+              </View>
             </View>
-            <View style={campusStyle.View.container}>
-              <MenuItem
-                bbstype="오션월드"
-                imageURL={ocean}
-                navigation={navigation}
-              />
+            <View style={campusStyle.View.rowflex}>
+              <View style={campusStyle.View.container}>
+                <MenuItem bbstype="클럽" imageURL={club} navigation={navigation} />
+              </View>
+              <View style={campusStyle.View.container}>
+                <MenuItem
+                  bbstype="스키장"
+                  imageURL={ski}
+                  navigation={navigation}
+                />
+              </View>
+              <View style={campusStyle.View.container}>
+                <MenuItem
+                  bbstype="오션월드"
+                  imageURL={ocean}
+                  navigation={navigation}
+                />
+              </View>
             </View>
           </View>
         </View>
-      </View>
+      </>
     );
   }
 }

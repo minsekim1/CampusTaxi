@@ -6,7 +6,6 @@ import chatScreen from "./chatScreen"
 import chatroomScreen from "./chatroomScreen"
 import createRoom from "./createRoom"
 import selectPlace from "./selectPlace"
-
 const s = createStackNavigator();
 const headerDisable = { headerShown: false };
 

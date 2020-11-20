@@ -10,6 +10,8 @@ import { TextInput } from "react-native";
 import { Picker } from "@react-native-community/picker";
 import { userStore } from "../store/store";
 import Constants from "expo-constants";
+import { AuthContext } from "../store/UserStore"
+
 function HomeScreen({ navigation }) {
   const list = [
     {
@@ -26,10 +28,6 @@ function HomeScreen({ navigation }) {
       title: "로그아웃",
       navigation: "로그아웃",
     },
-    // {
-    //   type: "title",
-    //   title: "로그아웃",
-    // },
     // {
     //   type: "text",
     //   title: "알림 설정",
@@ -95,7 +93,6 @@ function HomeScreen({ navigation }) {
 }
 //내 정보: 회원정보 수정페이지
 function clientChangePage({ navigation: { goBack } }) {
-  userStore.login("loginid 1", "loginpassword 1");
   const [clientName, onChangeName] = useState(userStore.user.name);
   const [clientNickName, onChangeNickName] = useState(userStore.user.nickname);
   const [email, setEmail] = useState(userStore.user.joindatemail);
@@ -322,21 +319,8 @@ function clientChangePage({ navigation: { goBack } }) {
 }
 //내 정보 페이지
 class clientpage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: userStore.user.name,
-      univ: userStore.user.univ,
-      nickname: userStore.user.nickname,
-      gender: userStore.user.gender,
-      firstDate: userStore.user.joindate,
-      id: userStore.user.loginid,
-      email: userStore.user.email,
-      auth: userStore.user.userStatus,
-    };
-  }
   studentText() {
-    let status = userStore.user.userStatus;
+    let status = userStore.user.get('userStatus');
     switch (status) {
       case 0:
         return (
@@ -365,9 +349,12 @@ class clientpage extends React.Component {
     }
   }
 
+
   render() {
-    userStore.login("loginid 1", "loginpassword 1");
     const { navigation } = this.props;
+    function f1() {
+      console.log(userStore.user.get('name'));
+    }
     return (
       <ScrollView
         style={{
@@ -384,21 +371,21 @@ class clientpage extends React.Component {
         <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
           이름
         </Text>
-        <Text style={{ marginBottom: 10 }}>{userStore.user.name}</Text>
+        <Text style={{ marginBottom: 10 }}>{userStore.user.get('name')}</Text>
         <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
         <View style={{ flexDirection: "row" }}>
           <View style={{ flex: 1 }}>
             <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
               학교
             </Text>
-            <Text style={{ marginBottom: 10 }}>{userStore.user.univ}</Text>
+            <Text style={{ marginBottom: 10 }}>{userStore.user.get('univ')}</Text>
           </View>
         </View>
         <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
         <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
           닉네임
         </Text>
-        <Text style={{ marginBottom: 10 }}>{userStore.user.nickname}</Text>
+        <Text style={{ marginBottom: 10 }}>{userStore.user.get('nickname')}</Text>
         <Divider style={{ marginBottom: 20, backgroundColor: "#D2D2D2" }} />
         <View style={{ flexDirection: "row" }}>
           <View style={{ flex: 1 }}>
@@ -406,7 +393,7 @@ class clientpage extends React.Component {
               성별
             </Text>
             <Text style={{ marginBottom: 10 }}>
-              {userStore.user.gender == 0 ? "남자" : "여자"}
+              {userStore.user.get('gender') == 0 ? "남자" : "여자"}
             </Text>
           </View>
           <View style={{ flex: 1 }}>
@@ -414,7 +401,7 @@ class clientpage extends React.Component {
               최초가입일
             </Text>
             <Text style={{ marginBottom: 10 }}>
-              {userStore.user.joindate}
+              {userStore.tokoreanTime(String(userStore.user.get('createdAt')))}
             </Text>
           </View>
         </View>
@@ -425,14 +412,14 @@ class clientpage extends React.Component {
             <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
               아이디
             </Text>
-            <Text style={{ marginBottom: 10 }}>{userStore.userkey}</Text>
+            <Text style={{ marginBottom: 10 }}>{userStore.user.get('username')}</Text>
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ marginBottom: 3, fontSize: 11, color: "#7D849B" }}>
               이메일
             </Text>
             <Text style={{ marginBottom: 10, fontSize: 11 }}>
-              {userStore.user.email}
+              {userStore.user.get('email')}
             </Text>
           </View>
         </View>
@@ -581,8 +568,10 @@ function clientpageQuestion({ navigation: { goBack } }) {
 }
 function logout({ navigation }) {
   userStore.logout();
+  const { signOut } = React.useContext(AuthContext);
+  signOut();
   alert("로그아웃 되었습니다.");
-  return <View></View>;
+  return <></>;
 }
 function setting() {
   return (
