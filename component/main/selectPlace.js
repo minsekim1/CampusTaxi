@@ -343,6 +343,8 @@ export default function selectPlace(props, { navigation }) {
                   , createRoompersonmax: createRoompersonmax
                   , createRoomGender: createRoomGender
                   , date: date
+                  , cost: diplayData != null ? diplayData[2] : null
+
                 });
               } else {
                 alert(

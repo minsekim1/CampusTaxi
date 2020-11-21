@@ -4,7 +4,7 @@ import { Text, Button, ButtonGroup } from "react-native-elements";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-community/picker";
 import campusStyle from "./campusStyle";
-import { userStore } from "store";
+import { userStore } from "../store/store";
 
 export default function createRoom({ route, navigation }) {
   const bbstype = route.params.bbstype;
@@ -12,6 +12,7 @@ export default function createRoom({ route, navigation }) {
   const [createRoompersonmax, setCreateRoompersonmax] = useState(4);
   const [createRoomGender, setCreateRoomGender] = useState(1);
   const [createSelectGender, setCreateSelectGender] = useState(2);
+  const [cost, setCost] = useState(0);
   const [placeStart, setPlaceStart] = useState(null);
   const [placeEnd, setPlaceEnd] = useState(null);
   //채팅방만들기시간선택
@@ -21,6 +22,8 @@ export default function createRoom({ route, navigation }) {
   React.useEffect(() => {
     if (route.params.start != null)
       setPlaceStart(route.params.start);
+    if (route.params.cost != null)
+      setCost(route.params.cost);
     if (route.params.end != null)
       setPlaceEnd(route.params.end);
     if (route.params.createRoomCategory != null)
@@ -173,23 +176,8 @@ export default function createRoom({ route, navigation }) {
               userStore.isCreate(bbstype)
                 .then(r => {
                   if (r) {
-                    //REST API 3 - 2. createRoom.js isCreate
-                    //fetch(<EC2:url>/bbs/iscreate/userid/2/bbstype/1 => return true/false)
-                    // * if조건: isEnter과 비슷하게 카테고리(bbsytype)별로 1개씩만 만들 수 있음
-                    alert("방이 생성되었습니다. 내 채팅에서 확인해주세요.");
-                    // bbsStore
-                    //   .addBbs(
-                    //     createRoomCategory,
-                    //     anotherStore.placeEnd,
-                    //     createSelectGender,
-                    //     userStore.user.i,
-                    //     date,
-                    //     createRoompersonmax,
-                    //     anotherStore.placeStart,
-                    //     userStore.userkey
-                    //   )
-                    //   .then(() => {
-                    //   });
+                    userStore.createBbs(createRoomCategory, date, createRoompersonmax, createSelectGender, placeStart, placeEnd, cost)
+                      .then(() => alert("방이 생성되었습니다. 내 채팅에서 확인해주세요."));
                   } else {
                     alert(
                       "채팅방은 카테고리별로 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요."

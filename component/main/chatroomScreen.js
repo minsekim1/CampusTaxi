@@ -10,7 +10,6 @@ export default class chatroomScreen extends Component {
     };
   }
   componentDidMount() {
-    userStore.login("loginid 1", "loginpassword 1");
     userStore.getBbs(this.props.route.params.bbs.bbsid).then(r => this.setState({ bbs: r }));
   }
   async sendMessage(bbs) {
@@ -75,14 +74,14 @@ export default class chatroomScreen extends Component {
         leftComponent: <Button
           type="clear"
           title=""
-          icon={<Icon name="arrow-back" size={24} color="white" />}
+          icon={<Ionicons name="md-arrow-back" size={24} color="white" />}
           onPress={() => navigation.goBack()}
         ></Button>
         , rightComponent: <View style={campusStyle.View.row}>
           <Button
             type="clear"
             title=""
-            icon={<Icon name="map" size={24} color="white" />}
+            icon={<Ionicons name="md-map" size={24} color="white" />}
             onPress={() => {
               navigation.navigate("지도", {
                 url:
@@ -93,7 +92,7 @@ export default class chatroomScreen extends Component {
           <Button
             type="clear"
             title=""
-            icon={<Icon name="person" size={24} color="white" />}
+            icon={<Ionicons name="person" size={24} color="white" />}
             onPress={() => {
               navigation.navigate("채팅방정보", {
                 bbsid: this.state.bbs.bbsid,
@@ -234,17 +233,11 @@ class ChattingItem extends React.PureComponent {
         borderRadius: 10,
       },
     });
-    // 방장 일경우 왕관 이미지 넣기
     let image;
     if (isLeader) {
       image = <Image source={crown} />;
     }
-    let containerItem; //내 채팅일 경우 좌우반전
-    //getMonth +1 월
-    //getDate 일
-    //getDay 요일(0:일, 1:월 ...)
-    //getHours 0-23
-    //getMinutes() 0-59
+    let containerItem;
     if (item.isSys == 1) {
       containerItem = (
         <View style={ItemStyle.itemSystem_Message}>
@@ -283,7 +276,6 @@ class ChattingItem extends React.PureComponent {
           <View style={ItemStyle.itemMain_container}>
             <Text style={ItemStyle.item_content}>{item.say}</Text>
             <Text style={ItemStyle.item_time}>
-              {/* {day + " " + hour + ":" + min} */}
               {item.time}
             </Text>
           </View>
@@ -301,7 +293,8 @@ import {
   FlatList,
   Image,
 } from "react-native";
-import { Header, Icon, Button } from "react-native-elements";
+import { Header, Button } from "react-native-elements";
+import { Ionicons } from '@expo/vector-icons';
 import campusStyle from "./campusStyle";
 import { TextInput } from "react-native-gesture-handler";
 import crown from "./image/crown.png";

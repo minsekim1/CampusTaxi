@@ -9,7 +9,7 @@ import {
   TextInput,
   ImageBackground,
 } from "react-native";
-import { userStore } from "store";
+import { userStore } from "../store/store";
 import { AuthContext } from "../store/UserStore"
 import LogoWhite from "./logoWhite.js";
 export default function loginPage({ route, navigation }) {

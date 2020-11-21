@@ -8,7 +8,6 @@ import LoginNav from './component/Login/nav'
 import mapNav from './component/map/nav'
 import mychatNav from './component/mychat/nav'
 import settingNav from './component/setting/nav'
-
 import { AuthContext } from './component/store/UserStore'
 const t = createBottomTabNavigator();
 const headerDisable = { headerShown: false };
@@ -54,7 +53,6 @@ export default function App({ navigation }) {
       userToken: null,
     }
   );
-
   React.useEffect(() => {
     const bootstrapAsync = async () => {
       let userToken;
@@ -65,8 +63,6 @@ export default function App({ navigation }) {
     };
     bootstrapAsync();
   }, []);
-
-
   const authContext = React.useMemo(
     () => ({
       signIn: async data => {

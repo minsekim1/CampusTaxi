@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 export const AuthContext = React.createContext();
 
 export default class UserStore {
-  @observable user = null;
+  state = observable({ user: null });
 
   // REST API. 기본 CRUD 구성방식
   // 반환: JSON형식, 없으면 null 리턴.
@@ -189,16 +189,16 @@ export default class UserStore {
 
   //#endregion
   //#region BBS
-  async createBbs(bbstype, leadername, meetingdate, gender, startplace, endplace, cost) {
+  async createBbs(bbstype, meetingdate, max, gender, startplace, endplace, cost) {
     const bbs = Parse.Object.extend('bbs');
-    const User = (await this.readUser_filter("nickname", leadername))[0];
+    const User = (await this.readUser_filter("nickname", this.user.get('nickname')))[0];
     const newObj = new bbs();
     newObj.set('available', 1);
     newObj.set('bbstype', bbstype);
-    newObj.set('leadername', User);
+    newObj.set('leader', User);
     newObj.set('meetingdate', meetingdate);
     newObj.set('gender', gender);
-    newObj.set('personmax', 1);
+    newObj.set('personmax', max);
     newObj.set('personpresent', 1);
     newObj.set('personmember', [User]);
     newObj.set('startplace', startplace);

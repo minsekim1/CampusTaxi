@@ -10,6 +10,7 @@
     "a": "git pull && npm i && expo start"
   },
   "dependencies": {
+    "@expo/vector-icons": "^10.2.1",
     "@react-native-async-storage/async-storage": "^1.13.2",
     "@react-native-community/datetimepicker": "^3.0.5",
     "@react-native-community/masked-view": "0.1.10",
@@ -20,7 +21,6 @@
     "@types/parse": "^2.12.7",
     "axios": "^0.21.0",
     "babel-plugin-module-resolver": "^4.0.0",
-    "base-64": "^1.0.0",
     "expo": "~39.0.2",
     "expo-image-picker": "^9.1.1",
     "expo-mail-composer": "^8.4.0",
@@ -42,6 +42,7 @@
     "react-native-safe-area-context": "3.1.4",
     "react-native-screens": "~2.10.1",
     "react-native-svg": "^12.1.0",
+    "react-native-vector-icons": "^7.1.0",
     "react-native-web": "~0.13.12",
     "react-native-webview": "^10.7.0"
   },

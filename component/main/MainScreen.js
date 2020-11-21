@@ -1,4 +1,4 @@
-//#region imports
+//메인화면
 import React, { Component } from "react";
 import {
   View,
@@ -6,6 +6,7 @@ import {
   Image,
   TouchableHighlight,
   BackHandler,
+  FlatList,
 } from "react-native";
 import campusStyle from "./campusStyle";
 import ad from "./image/ad.png";
@@ -42,23 +43,18 @@ class HomeScreen extends Component {
           activeOpacity={0.5}
           underlayColor="#DDDDDD"
           onPress={async () => {
-            let status = 1;//userStore.user.n
+            let status = userStore.user.get('userStatus');
             if (status == 1) {
               navigation.navigate("모든 채팅방 목록", {
                 bbstype: bbstype,
               });
             } else if (status == 0) {
-              //미인증 0인경우
-              alert(
-                "현재 학생증 인증대기중입니다.\n 1~2일이 지나도 변함이 없을경우\n 설정->문의하기를 통해 알려주세요."
-              );
+              alert("현재 학생증 인증대기중입니다.\n 1~2일이 지나도 변함이 없을경우\n 설정->문의하기를 통해 알려주세요.");
             } else if (status == 2) {
-              alert(
-                "학생증 인증이 거부되었습니다.\n 학생증 재인증은 설정->문의하기를 통해 사진을 전송해주세요."
-              );
+              alert("학생증 인증이 거부되었습니다.\n 학생증 재인증은 설정->문의하기를 통해 사진을 전송해주세요.");
             } else {
               // 정지상태인경우
-              let servertime = new Date(status);//await anotherStore.servertime();
+              let servertime = new Date(status);
               if (new Date(servertime) > new Date(status)) {
                 alert("정지가 풀렸습니다.");
                 // userStore.blockEnd(); 정지해체
@@ -80,7 +76,6 @@ class HomeScreen extends Component {
     }
     return (
       <>
-
         <View style={campusStyle.View.container}>
           <View style={campusStyle.View.backgroundColorBlue}>
             <View>
@@ -89,13 +84,13 @@ class HomeScreen extends Component {
                   <Text style={campusStyle.Text.middleSize}> CAMPUS TAXI</Text>
                 </View>
                 <Text style={campusStyle.Text.mainUnivText}>
-                  [서울]삼육대학교{/* {userStore.user.l} */}
+                  {userStore.user.get('univ')}
                 </Text>
                 <Image style={campusStyle.Image.mainImage} source={ad} />
               </View>
             </View>
           </View>
-          {/* <Button onPress={() => userStore.findUniv("대")}></Button> */}
+          <Button onPress={() => console.log(userStore.user)}></Button>
           {/* 메인메뉴버튼부분 */}
           <View style={campusStyle.View.mainItemView}>
             <View style={campusStyle.View.rowflex}>

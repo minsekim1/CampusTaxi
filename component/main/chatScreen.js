@@ -1,28 +1,20 @@
-//채팅목록 화면
+//모든 채팅방 목록
 export default function chatScreen({ route, navigation }) {
+  //#region 
   const bbstype = route.params.bbstype;
-  const myname = userStore.user.name;
-  const mygender = 1; //userStore.user.d;
+  const myname = userStore.user.get('nickname');
+  const mygender = userStore.user.get('gender');
   const [bbslist, setBbslist] = useState([{ "cost": 1, "bbsid": 1, "gender": 1, "bbsDate": "2020-11-15 00:09:46.000000", "bbstype": 1, "endplace": "endplace 1", "available": 1, "personmax": 1, "leadername": "minsekim", "startplace": "startplace 1", "meetingdate": "2020-11-15 00:09:46.000000", "personmember": "personmember 1", "personpresent": 1 }
     , { "cost": 2, "bbsid": 2, "gender": 2, "bbsDate": "2020-11-15 00:09:46.000000", "bbstype": 1, "endplace": "endplace 2", "available": 1, "personmax": 2, "leadername": "ohju", "startplace": "startplace 2", "meetingdate": "2020-11-15 00:09:46.000000", "personmember": "personmember 2", "personpresent": 2 }
     , { "cost": 3, "bbsid": 3, "gender": 0, "bbsDate": "2020-11-15 00:09:46.000000", "bbstype": 2, "endplace": "endplace 3", "available": 1, "personmax": 3, "leadername": "ohju", "startplace": "startplace 3", "meetingdate": "2020-11-15 00:09:46.000000", "personmember": "personmember 3", "personpresent": 3 }]
   );
-  React.useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      userStore.login("loginid 1", "loginpassword 1");
-      // REST API 방 목록 가져오기 filter따라
-    });
-
-    return unsubscribe;
-  }, []);
-
   const style = {
     header: {
       h: { height: 80 },
       leftComponent: <Button
         type="clear"
         title=""
-        icon={<Icon name="arrow-back" size={24} color="white" />}
+        icon={<Ionicons name="md-arrow-back" size={24} color="white" />}
         onPress={() => navigation.goBack()}
       ></Button>,
       centerComponent: {
@@ -32,9 +24,9 @@ export default function chatScreen({ route, navigation }) {
       rightComponent: <Button
         type="clear"
         title=""
-        icon={<Icon name="refresh" size={24} color="white" />}
+        icon={<Ionicons name="md-refresh" size={24} color="white" />}
         onPress={() => userStore.readBbs_filter("bbstype", bbstype).then(r => setBbslist(r))}
-      ></Button>,
+      />,
     },
     container: {
       flex: 1,
@@ -56,7 +48,6 @@ export default function chatScreen({ route, navigation }) {
       });
     }
   }
-  //#endregion
   const renderItem = ({ item }) => <Item item={item} />;
   const Item = ({ item }) => (
     <TouchableOpacity onPress={() => enter(item)} style={style.touch}>
@@ -129,6 +120,8 @@ export default function chatScreen({ route, navigation }) {
       </View>
     </TouchableOpacity>
   );
+  //#endregion
+
   return (
     <>
       <Header
@@ -150,7 +143,7 @@ export default function chatScreen({ route, navigation }) {
             })
           }
         >
-          <Icon name="add" size={32} color="white" />
+          <Ionicons name="md-add" size={32} color="white" />
           <Text style={campusStyle.Text.smallSize}>방만들기</Text>
         </TouchableOpacity>
       </View>
@@ -169,18 +162,9 @@ import {
   ScrollView, SafeAreaView, StatusBar
 } from "react-native";
 // import * as TimeAPI from "../Email/globalTimeAPI.js";
-import {
-  Header,
-  ListItem,
-  Icon,
-  Text,
-  Card,
-  Button,
-  ButtonGroup,
-  Input,
-} from "react-native-elements";
+import { Header, Button, Text } from "react-native-elements";
 import campusStyle from "./campusStyle";
 import crown from "./image/crown.png";
 import { userStore } from "../store/store";
-
+import { Ionicons } from '@expo/vector-icons';
 //#endregion
