@@ -4,10 +4,11 @@ export default function chatScreen({ route, navigation }) {
   const bbstype = route.params.bbstype;
   const myname = userStore.user.get('nickname');
   const mygender = userStore.user.get('gender');
-  const [bbslist, setBbslist] = useState([{ "cost": 1, "bbsid": 1, "gender": 1, "bbsDate": "2020-11-15 00:09:46.000000", "bbstype": 1, "endplace": "endplace 1", "available": 1, "personmax": 1, "leadername": "minsekim", "startplace": "startplace 1", "meetingdate": "2020-11-15 00:09:46.000000", "personmember": "personmember 1", "personpresent": 1 }
-    , { "cost": 2, "bbsid": 2, "gender": 2, "bbsDate": "2020-11-15 00:09:46.000000", "bbstype": 1, "endplace": "endplace 2", "available": 1, "personmax": 2, "leadername": "ohju", "startplace": "startplace 2", "meetingdate": "2020-11-15 00:09:46.000000", "personmember": "personmember 2", "personpresent": 2 }
-    , { "cost": 3, "bbsid": 3, "gender": 0, "bbsDate": "2020-11-15 00:09:46.000000", "bbstype": 2, "endplace": "endplace 3", "available": 1, "personmax": 3, "leadername": "ohju", "startplace": "startplace 3", "meetingdate": "2020-11-15 00:09:46.000000", "personmember": "personmember 3", "personpresent": 3 }]
-  );
+  const [bbslist, setBbslist] = useState([]);
+  // [{ "cost": 1, "bbsid": 1, "gender": 1, "bbsDate": "2020-11-15 00:09:46.000000", "bbstype": 1, "endplace": "endplace 1", "available": 1, "personmax": 1, "leadername": "minsekim", "startplace": "startplace 1", "meetingdate": "2020-11-15 00:09:46.000000", "personmember": "personmember 1", "personpresent": 1 }
+  //   , { "cost": 2, "bbsid": 2, "gender": 2, "bbsDate": "2020-11-15 00:09:46.000000", "bbstype": 1, "endplace": "endplace 2", "available": 1, "personmax": 2, "leadername": "ohju", "startplace": "startplace 2", "meetingdate": "2020-11-15 00:09:46.000000", "personmember": "personmember 2", "personpresent": 2 }
+  //   , { "cost": 3, "bbsid": 3, "gender": 0, "bbsDate": "2020-11-15 00:09:46.000000", "bbstype": 2, "endplace": "endplace 3", "available": 1, "personmax": 3, "leadername": "ohju", "startplace": "startplace 3", "meetingdate": "2020-11-15 00:09:46.000000", "personmember": "personmember 3", "personpresent": 3 }]
+  
   const style = {
     header: {
       h: { height: 80 },
