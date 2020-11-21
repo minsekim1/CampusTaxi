@@ -1,18 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "react-native-elements";
-import {
-  Text,
-  View,
-  TouchableOpacity,
-} from "react-native";
-import { Searchbar } from "react-native-paper";
-import MapView, {
-  Polyline,
-  Marker,
-} from "react-native-maps";
+import { Text, View, TouchableOpacity } from "react-native";
+import { TextInput } from "react-native-paper";
+import MapView, { Polyline, Marker } from "react-native-maps";
 import Constants from "expo-constants";
 import * as Location from "expo-location";
-import { StackActions } from '@react-navigation/native';
 
 export default function selectPlace(props, { navigation }) {
   //#region 변수&함수
@@ -31,7 +23,12 @@ export default function selectPlace(props, { navigation }) {
   const [firstQuery, setFirstQuery] = useState("");
   const [isStart, setStart] = useState(true);
   const [path, setPath] = useState(null);
-  const [region, setRegion] = useState();
+  const [region, setRegion] = useState({
+    latitude: 37.64116,
+    longitude: 127.106604,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
+  });
   // red, tomato, orange, yellow, green, gold, wheat, linen, tan, blue, aqua, teal, violet, purple, indigo, turquoise, navy and plum 만 가능
   const pinColor = "blue";
   const pinColorRS = "orange";
@@ -62,7 +59,6 @@ export default function selectPlace(props, { navigation }) {
           getMyPlace();
         } else {
           setRegion({
-            //삼육대 좌표
             latitude: 37.64116,
             longitude: 127.106604,
             latitudeDelta: 0.01,
@@ -192,13 +188,11 @@ export default function selectPlace(props, { navigation }) {
   return (
     <>
       <View style={{ alignItems: "center" }}>
-        <Searchbar
-          style={{
-            marginTop: 30,
-            width: "80%",
-            backgroundColor: "rgba(255, 255, 255, 0.7)",
-          }}
-          onCancel={() => alert("asd")}
+        <TextInput style={{
+          marginTop: 30,
+          width: "80%",
+          backgroundColor: "rgba(255, 255, 255, 0.7)",
+        }}
           placeholder="출발지 혹은 도착지를 누른후 검색해주세요."
           onChangeText={(query) => changeText(query)}
           value={firstQuery}
@@ -217,7 +211,7 @@ export default function selectPlace(props, { navigation }) {
           >
             {place != null
               ? place.map((data, i) => (
-                <TouchableOpacity key={i} onPress={() => placeSelect(data)}>
+                <TouchableOpacity key={String(data)} onPress={() => placeSelect(data)}>
                   <View style={{ padding: 10 }}>
                     <View style={{ flexDirection: "row" }} numberOfLines={1}>
                       <Text style={{ fontWeight: "bold" }}>
@@ -336,7 +330,6 @@ export default function selectPlace(props, { navigation }) {
             title="장소 선택하기"
             onPress={() => {
               if (realStartMarker != null && realEndMarker != null) {
-                // REST API 장소 선택후 방만들어주기 createBbs
                 props.navigation.push('방 만들기', {
                   bbstype: bbstype, start: realStartMarker, end: realEndMarker
                   , createRoomCategory: createRoomCategory

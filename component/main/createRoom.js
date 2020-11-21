@@ -65,20 +65,17 @@ export default function createRoom({ route, navigation }) {
         <Text>카테고리</Text>
         <Picker
           selectedValue={createRoomCategory}
-          onValueChange={(itemValue) => {
-            setCreateRoomCategory(itemValue);
-          }}
-        >
-          <Picker.Item key={"gray"} color="gray" label={bbstype} />
-          {menuList.map((item) =>
-            item != bbstype ? (
+          onValueChange={itemValue => setCreateRoomCategory(itemValue)}>
+          {
+            menuList.map((item) =>
               <Picker.Item
-                key={(item, i) => String(i)}
+                key={i => String(i)}
                 label={item}
                 value={item}
+                color={item != createRoomCategory ? "gray" : "black"}
               />
-            ) : null
-          )}
+            )
+          }
         </Picker>
 
         {placeStart != null && placeEnd != null ? (
@@ -125,7 +122,6 @@ export default function createRoom({ route, navigation }) {
             />
           </View>
         </View>
-        {/* 날짜선택 Picker창 */}
         {show && (
           <DateTimePicker
             testID="dateTimePicker"
@@ -152,7 +148,7 @@ export default function createRoom({ route, navigation }) {
           onPress={(index) => {
             if (index == 0) {
               setCreateRoomGender(0);
-              setCreateSelectGender(Number(userStore.user.gender));
+              setCreateSelectGender(userStore.user.get('gender'));
             } else {
               setCreateRoomGender(1);
               setCreateSelectGender(2);

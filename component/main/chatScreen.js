@@ -5,10 +5,12 @@ export default function chatScreen({ route, navigation }) {
   const myname = userStore.user.get('nickname');
   const mygender = userStore.user.get('gender');
   const [bbslist, setBbslist] = useState([]);
-  // [{ "cost": 1, "bbsid": 1, "gender": 1, "bbsDate": "2020-11-15 00:09:46.000000", "bbstype": 1, "endplace": "endplace 1", "available": 1, "personmax": 1, "leadername": "minsekim", "startplace": "startplace 1", "meetingdate": "2020-11-15 00:09:46.000000", "personmember": "personmember 1", "personpresent": 1 }
-  //   , { "cost": 2, "bbsid": 2, "gender": 2, "bbsDate": "2020-11-15 00:09:46.000000", "bbstype": 1, "endplace": "endplace 2", "available": 1, "personmax": 2, "leadername": "ohju", "startplace": "startplace 2", "meetingdate": "2020-11-15 00:09:46.000000", "personmember": "personmember 2", "personpresent": 2 }
-  //   , { "cost": 3, "bbsid": 3, "gender": 0, "bbsDate": "2020-11-15 00:09:46.000000", "bbstype": 2, "endplace": "endplace 3", "available": 1, "personmax": 3, "leadername": "ohju", "startplace": "startplace 3", "meetingdate": "2020-11-15 00:09:46.000000", "personmember": "personmember 3", "personpresent": 3 }]
-  
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      userStore.readBbs_filter("bbstype", bbstype).then(r => setBbslist(r))
+    });
+    return unsubscribe;
+  }, [navigation]);
   const style = {
     header: {
       h: { height: 80 },
@@ -39,90 +41,55 @@ export default function chatScreen({ route, navigation }) {
     },
   };
   async function enter(bbs) {
-    // let isEnter = fetch?
     let isEnter = await userStore.isEnter(bbs);
     if (isEnter) {
-      navigation.navigate("채팅방", {
-        bbs: bbs,
-        mygender: mygender,
-        myname: myname,
-      });
+      navigation.navigate("채팅방", { bbs: bbs, mygender: mygender, myname: myname });
     }
   }
-  const renderItem = ({ item }) => <Item item={item} />;
-  const Item = ({ item }) => (
-    <TouchableOpacity onPress={() => enter(item)} style={style.touch}>
+  function render(obj) {
+    let item = obj.item;
+    return <TouchableOpacity onPress={() => enter(item)} style={style.touch}>
       <View style={campusStyle.View.row}>
         <View
           style={{
-            borderRadius: 100,
-            width: 55,
-            height: 55,
-            backgroundColor:
-              item.gender == 0
-                ? "#579FEE"
-                : item.gender == 1
-                  ? "#C278DE"
-                  : "#3A3A3A",
-            justifyContent: "center",
-            alignItems: "center",
+            borderRadius: 100, width: 55, height: 55, backgroundColor: item.get('gender') == 0 ? "#579FEE" : item.get('gender') == 1 ? "#C278DE" : "#3A3A3A", justifyContent: "center", alignItems: "center"
           }}
         >
+          <Text style={campusStyle.Text.middleBold}>{obj.index}</Text>
           <Text style={campusStyle.Text.middleBold}>
-            {item.bbsid}
-          </Text>
-          <Text style={campusStyle.Text.middleBold}>
-            {item.gender == 0
-              ? "남자"
-              : item.gender == 1
-                ? "여자"
-                : "모두"}
+            {item.get('gender') == 0 ? "남자" : item.get('gender') == 1 ? "여자" : "모두"}
           </Text>
         </View>
         <View style={{ flex: 6 }}>
           <View style={campusStyle.View.row}>
-            <Image
-              style={{
-                width: 23,
-                height: 15,
-                marginLeft: 10,
-              }}
-              source={crown}
-            />
-            <Text>{(String(item.leadername).length > 9) ? String(item.leadername).substring(0, 9) + "..." : item.leadername}</Text>
+            <Image style={{ width: 23, height: 15, marginLeft: 10 }} source={crown} />
+            <Text>{(String(item.get('leader').get('nickname')).length > 9) ? String(item.get('leader').get('nickname')).substring(0, 9) + "..." : String(item.get('leader').get('nickname'))}</Text>
           </View>
           <Text style={{ marginLeft: 10 }}>
-            출발지:{item.startplace}
+            출발지:{item.get('startplace').name}
           </Text>
           <Text style={{ marginLeft: 10 }}>
-            도착지:{item.endplace}
+            도착지:{item.get('endplace').name}
           </Text>
         </View>
         <View style={{ flex: 1 }}>
-          {
-            item.personpresent >= item.personmax ?
-              <Text style={campusStyle.Text.red}>
-                {item.personpresent}/{item.personmax}
-              </Text>
-              :
-              <Text>
-                {item.personpresent}/{item.personmax}
-              </Text>
-          }
+          {item.get('personpresent') >= item.get('personmax') ?
+            <Text style={campusStyle.Text.red}>
+              {item.get('personpresent')}/{item.get('personmax')}
+            </Text> :
+            <Text>
+              {item.get('personpresent')}/{item.get('personmax')}
+            </Text>}
         </View>
         <View style={{ flex: 3, alignItems: "center" }}>
-          <Text style={campusStyle.Text.grayDDark}>
-            탑승시간▼
-          </Text>
-          <Text style={campusStyle.Text.grayDDark}>
-            {item.meetingdate}
-          </Text>
+          <Text style={campusStyle.Text.grayDDark}>탑승시간▼</Text>
+          <Text style={campusStyle.Text.grayDDark}>{userStore.toRoomDateKR(item.get('meetingdate'))}</Text>
         </View>
       </View>
     </TouchableOpacity>
-  );
-  //#endregion
+  }
 
+  //#endregion
   return (
     <>
       <Header
@@ -132,17 +99,11 @@ export default function chatScreen({ route, navigation }) {
         centerComponent={style.header.centerComponent}
         rightComponent={style.header.rightComponent}
       />
-      {/* 채팅목록 출력부분 */}
-      <FlatList data={bbslist} renderItem={renderItem} keyExtractor={item => String(item.bbsid)} />
-      {/* 방만들기 버튼부분 */}
+      <FlatList data={bbslist} renderItem={(item) => render(item)} keyExtractor={(i, id) => String(id)} />
       <View style={campusStyle.View.createRoomView}>
         <TouchableOpacity
           style={campusStyle.Button.createRoomBtn}
-          onPress={() =>
-            navigation.navigate("방 만들기", {
-              bbstype: bbstype,
-            })
-          }
+          onPress={() => navigation.navigate("방 만들기", { bbstype: bbstype })}
         >
           <Ionicons name="md-add" size={32} color="white" />
           <Text style={campusStyle.Text.smallSize}>방만들기</Text>
@@ -163,6 +124,7 @@ import {
   ScrollView, SafeAreaView, StatusBar
 } from "react-native";
 // import * as TimeAPI from "../Email/globalTimeAPI.js";
+import { useFocusEffect } from '@react-navigation/native';
 import { Header, Button, Text } from "react-native-elements";
 import campusStyle from "./campusStyle";
 import crown from "./image/crown.png";

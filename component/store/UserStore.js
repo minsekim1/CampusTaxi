@@ -253,48 +253,46 @@ export default class UserStore {
     });
   }
   //#endregion
-
-
-  // return ([{ "cost": 1, "bbsid": 1, "gender": 1, "bbsDate": "2020-11-15 00:09:46.000000", "bbstype": 1, "endplace": "endplace 1", "available": 1, "personmax": 1, "leadername": "minsekim", "startplace": "startplace 1", "meetingdate": "2020-11-15 00:09:46.000000", "personmember": "personmember 1", "personpresent": 0 }
-  //   , { "cost": 2, "bbsid": 2, "gender": 2, "bbsDate": "2020-11-15 00:09:46.000000", "bbstype": 1, "endplace": "endplace 2", "available": 1, "personmax": 2, "leadername": "ohju", "startplace": "startplace 2", "meetingdate": "2020-11-15 00:09:46.000000", "personmember": "personmember 2", "personpresent": 1 }])
-
-  async getBbs(bbsid) {
-    // REST API 5. bbsid를 통해 특정 bbs하나만 가져오는 것.(chats포함)
-    // fetch(<EC2:url>/bbs/get/bbsid/bbsid값)
-    return ({ "cost": 1, "bbsid": 1, "chats": [{ "say": "님이 입장하셨습니다.", "time": "2020-11-14 22:22:06", "isSys": 2, "nickname": "minsekim" }, { "say": "테스트 공지사항입니다.", "time": "2020-11-14 22:22:06", "isSys": 1, "nickname": "NULL" }, { "say": "안녕하세요?", "time": "2020-11-14 22:22:06", "isSys": 0, "nickname": "minsekim" }, { "say": "테스트 공지사항입니다.", "time": "2020-11-14 22:22:06", "isSys": 1, "nickname": "NULL" }, { "say": "안녕하세요?", "time": "2020-11-14 22:22:06", "isSys": 0, "nickname": "minsekim" }, { "say": "테스트 공지사항입니다.", "time": "2020-11-14 22:22:06", "isSys": 1, "nickname": "NULL" }, { "say": "안녕하세요?", "time": "2020-11-14 22:22:06", "isSys": 0, "nickname": "minsekim" }, { "say": "테스트 공지사항입니다.", "time": "2020-11-14 22:22:06", "isSys": 1, "nickname": "NULL" }, { "say": "안녕하세요?", "time": "2020-11-14 22:22:06", "isSys": 0, "nickname": "minsekim" }, { "say": "테스트 공지사항입니다.", "time": "2020-11-14 22:22:06", "isSys": 1, "nickname": "NULL" }, { "say": "안녕하세요?", "time": "2020-11-14 22:22:06", "isSys": 0, "nickname": "minsekim" }], "gender": 1, "bbsDate": "2020-11-15 00:09:46.000000", "bbstype": 1, "endplace": "endplace 1", "available": 1, "personmax": 4, "leadername": 1, "startplace": "startplace 1", "meetingdate": "2020-11-15 00:09:46.000000", "personmember": "personmember 1", "personpresent": 1 });
-  }
   async isEnter(bbs) {
-    const update = await this.getBbs(bbs.bbsid);
-    if (update.gender != 2 && update.gender != this.user.gender) {
+    // REST API 3-1. chatScreen.js isEnter 유저가 방에 들어갈 수 있는지
+    // 유저가 속한 bbstype(etc. 등교)의 수가 0인지 확인
+    // true이면 bbs.bbsmember에 userid를 추가하고 bbs.persent를 1증가시킴.
+    const objid = JSON.parse(JSON.stringify(bbs)).objectId;
+    bbs = await this.readBbs_objid(objid);
+    if (bbs.get('gender') != 2 && bbs.get('gender') != this.user.get('gender')) {
       alert("해당방은 성별 제한이 걸려있습니다.");
-      return false;
-    } else if (update.personpresent >= update.personmax) {
+    } else if (Number(bbs.get('personpresent')) >= Number(bbs.get('personmax'))) {
       alert("방이 가득찼습니다.");
-      return false;
-    } else if (false) {
-      // REST API 3-1. chatScreen.js isEnter 유저가 방에 들어갈 수 있는지
-      // 유저가 속한 bbstype(etc. 등교)의 수가 0인지 확인
-      // true이면 bbs.bbsmember에 userid를 추가하고 bbs.persent를 1증가시킴.
-      // fetch(<EC2:url>/bbs/isenter/userid/userid값/bbstype/bbstype값)
-      // 반환: true/false
-      alert(
-        "채팅방은 카테고리별로 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요."
-      );
-      return false;
-    } else if (update.available != 1) {
+    } else if (bbs.get('available') != 1) {
       alert("삭제된 방입니다.");
-      return false;
+    } else {
+      const bbsSet = Parse.Object.extend('bbs');
+      let query = new Parse.Query(bbsSet);
+      query.equalTo("leader", this.user);
+      query.equalTo("bbstype", bbs.get('bbstype'));
+      query.notEqualTo("objectId", objid);
+      query.limit(1);
+      let result = await query.find();
+      if (result.length == 0)
+        return true;
+      else
+        alert("채팅방은 카테고리별로 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요.");
     }
-    return true;
+    return false;
   }
 
   async isCreate(bbstype) {
-    //REST API 3 - 2. createRoom.js isCreate
-    //fetch(<EC2:url>/bbs/iscreate/userid/2/bbstype/1
-    //반환 true / false
-    // * if조건: isEnter과 비슷하게 카테고리(bbsytype)별로 1개씩만 만들 수 있음
-    //isEnter과는 다르게 bbs의 값을 올리지 않음.
-    return true;
+    const bbs = Parse.Object.extend('bbs');
+    let query = new Parse.Query(bbs);
+    query.equalTo("leader", this.user);
+    query.equalTo("bbstype", bbstype);
+    query.limit(1);
+    let result = await query.find();
+    if (result.length == 0)
+      return true;
+    else
+      alert("채팅방은 카테고리별로 1개만 만들 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요.");
+    return false;
   }
   async appendChat(bbsid, say) {
     // REST API 7. bbsid, say, user 이용해 채팅 추가후 bbs 1개 json반환
@@ -338,7 +336,42 @@ export default class UserStore {
       return true;
     }
   }
+  toRoomDateKR(date) {
+    const arr = ["Mon", "월", "Tue", "화", "Wed", "수", "Thu", "목", "Fri", "금", "Sat", "토", "Sun", "일", "Jan", "1", "Feb", "2", "Mar", "3", "Apr", "4", "May", "5", "Jun", "6", "Jul", "7", "Aug", "8", "Sep", "9", "Oct", "10", "Nov", "11", "Dec", "12"]
+    date = String(date).split(" ");
+    for (let j = 0; date[j] != null; j++) {
+      for (let i = 0; arr[i] != null; i += 2) {
+        if (date[j] == arr[i]) {
+          date[j] = date[j].replace(arr[i], arr[i + 1]);
+          j++;
+          i = 0;
+        }
+      }
+    }
+    let now = new Date();
+    let condition1 = String(now.getMonth() + 1) == date[1];
+    let condition2 = String(now.getDate()) == date[2];
+    let condition4 = String(now.getDate() + 1) == date[2];
+    let condition5 = String(now.getDate() - 1) == date[2];
+    let condition3 = String(now.getFullYear()) == date[3];
+    if (condition3 && condition1 && condition5)
+      date = "어제 " + date[4].substring(0, 5) + "(" + date[0] + ")";
+    else if (condition3 && condition1 && condition4)
+      date = "내일 " + date[4].substring(0, 5) + "(" + date[0] + ")";
+    else if (condition3 && condition1 && condition2)
+      date = "오늘 " + date[4].substring(0, 5) + "(" + date[0] + ")";
+    else if (condition3)
+      date = date[1] + "월 " + date[2] + "일 " + date[4].substring(0, 5) + "(" + date[0] + ")";
+    else
+      date = date[3] + "년 " + date[1] + "월 " + date[2] + "일 " + date[4].substring(0, 5) + "(" + date[0] + ")";
+    // if (date[3] == now.getFullYear && date[1] == now.getMonth + 1 && date[2] == now.getDay)
+    //   date = "오늘 " + date[4] + "(" + date[0] + ")";
+    // else if (date[3] == now.getFullYear)
+    //   date = date[1] + "월 " + date[2] + "일 " + date[4] + "(" + date[0] + ")";
+    return date;
+  }
 }
+
 // const testFunc = () => {
 //   var request = new XMLHttpRequest();
 
