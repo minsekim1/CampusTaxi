@@ -1,56 +1,125 @@
-//#region imports
-import React, { Component } from "react";
-//시작 루트 컴포넌트
-import LoginNav from "./App/component/Login/LoginNav";
-import Navigation from "./App/component/Navigation";
-//최적화 설정
-import { enableScreens } from "react-native-screens";
-enableScreens();
-//UI 설정
-import { Provider as PaperProvider } from "react-native-paper";
-import { Provider } from "mobx-react";
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-//firebase 설정
-import { firebaseConfig } from "firebaseConfig";
-const firebase = require("firebase");
-try {
-  firebase.initializeApp(firebaseConfig);
-} catch (error) {}
-//{userStore.develop == true ? "설정" : "홈"}
-//#endregion
-import * as Location from "expo-location";
-//#region 경고창 무시: Setting a timer for a long period of time, i.e. multiple minute
-import { LogBox } from "react-native";
-import _ from "lodash";
-// LogBox.ignoreAllLogs(disable);
-// LogBox.ignoreWarnings([
-//   "Setting a timer",
-//   "expo-google-sign-in is not supported",
-//   "Cancelled by user",
-//   "@firebase/database:", //파이어베이스 null 등 모든 경고 닫음
-// ]);
-const _console = _.clone(console);
-console.warn = (message) => {
-  if (message.indexOf("Setting a timer") <= -1) {
-    _console.warn(message);
-  }
-};
-import { bbsStore, userStore } from "store";
-import { Observer } from "mobx-react";
-// <Navigation />
-//에러제어
-//#endregion
-export default class App extends Component {
-  render() {
-    Location.requestPermissionsAsync();
-    return (
-      <Provider>
-        <PaperProvider>
-              <Observer>
-                {() => (!userStore.isKey() ? <LoginNav /> : <Navigation />)}
-              </Observer>
-        </PaperProvider>
-      </Provider>
-    );
-  }
+import * as React from 'react';
+// import 'react-native-gesture-handler';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import mainNav from './component/main/nav'
+import LoginNav from './component/Login/nav'
+import mapNav from './component/map/nav'
+import mychatNav from './component/mychat/nav'
+import settingNav from './component/setting/nav'
+import { AuthContext } from './component/store/UserStore'
+import { Ionicons } from '@expo/vector-icons';
+const t = createBottomTabNavigator();
+const headerDisable = { headerShown: false };
+function Nav() {
+  return (
+    <t.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarIcon: ({ focused, color, size }) => {
+          //아이콘 설정
+          let iconName;
+          if (route.name === "main") {
+            iconName = focused ? "md-home" : "md-home";
+          } else if (route.name === "mychat") {
+            iconName = focused ? "md-chatboxes" : "md-chatboxes";
+          } else if (route.name === "map") {
+            iconName = focused ? "md-map" : "md-map";
+            // } else if (route.name === "alarm") {
+            //   iconName = focused ? "alarm" : "alarm";
+          } else if (route.name === "setting") {
+            iconName = focused ? "md-settings" : "md-settings";
+          }
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+      })}
+      tabBarOptions={{
+        //아이콘 색상 설정
+        activeTintColor: "tomato",
+        inactiveTintColor: "gray",
+      }}
+    >
+      <t.Screen name="main" component={mainNav} />
+      <t.Screen name="mychat" component={mychatNav} />
+      <t.Screen name="map" component={mapNav} />
+      <t.Screen name="setting" component={settingNav} />
+    </t.Navigator>
+  )
 }
+
+const s = createStackNavigator();
+export default function App({ navigation }) {
+  const [state, dispatch] = React.useReducer(
+    (prevState, action) => {
+      switch (action.type) {
+        case 'RESTORE_TOKEN':
+          return {
+            ...prevState,
+            userToken: action.token,
+            isLoading: false,
+          };
+        case 'SIGN_IN':
+          return {
+            ...prevState,
+            isSignout: false,
+            userToken: action.token,
+          };
+        case 'SIGN_OUT':
+          return {
+            ...prevState,
+            isSignout: true,
+            userToken: null,
+          };
+      }
+    },
+    {
+      isLoading: true,
+      isSignout: false,
+      userToken: null,
+    }
+  );
+  React.useEffect(() => {
+    const bootstrapAsync = async () => {
+      let userToken;
+      try {
+        userToken = await AsyncStorage.getItem('userToken');
+      } catch (e) { }
+      dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+    };
+    bootstrapAsync();
+  }, []);
+  const authContext = React.useMemo(
+    () => ({
+      signIn: async data => {
+        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+      },
+      signOut: () => dispatch({ type: 'SIGN_OUT' }),
+      signUp: async data => {
+        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+      },
+    }),
+    []
+  );
+  return (
+    <AuthContext.Provider value={authContext}>
+      <NavigationContainer >
+        <s.Navigator screenOptions={headerDisable}>
+          {state.userToken == null ? (
+            <s.Screen name="SignIn" component={LoginNav} />
+          ) : (
+              <s.Screen name="Home" component={Nav} />
+            )}
+        </s.Navigator>
+      </NavigationContainer>
+    </AuthContext.Provider>
+  );
+}
+
+
+
+
+
+
+
+
