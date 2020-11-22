@@ -1,9 +1,7 @@
 //모든 채팅방 목록
-export default function chatScreen({ route, navigation }) {
+export default function roomList({ route, navigation }) {
   //#region 
   const bbstype = route.params.bbstype;
-  const myname = userStore.user.get('nickname');
-  const mygender = userStore.user.get('gender');
   const [bbslist, setBbslist] = useState([]);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -42,9 +40,7 @@ export default function chatScreen({ route, navigation }) {
   };
   async function enter(bbs) {
     let isEnter = await userStore.isEnter(bbs);
-    if (isEnter) {
-      navigation.navigate("채팅방", { bbs: bbs, mygender: mygender, myname: myname });
-    }
+    if (isEnter) navigation.navigate("채팅방", { bbs: bbs })
   }
   function render(obj) {
     let item = obj.item;

@@ -4,25 +4,34 @@ export default class chatroomScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      personmember: this.props.route.params.bbs.personmember,
       bbs: this.props.route.params.bbs,
+      chats: [],
       textInput: "",
     };
   }
+
   componentDidMount() {
-    userStore.getBbs(this.props.route.params.bbs.bbsid).then(r => this.setState({ bbs: r }));
+    userStore.readBbs_objid(JSON.parse(JSON.stringify(this.state.bbs)).objectId).then(r => this.setState({ bbs: r }));
+    userStore.readChats(this.state.bbs).then(r => this.setState({ chats: r }));
   }
-  async sendMessage(bbs) {
-    //alert(this.state.bbsStore.bbs.bbskey.h);
+  async sendMessage() {
     if (this.state.textInput != "") {
-      await userStore.appendChat(bbs, this.state.textInput).then(r => this.setState({ bbs: r })); //채팅 데이터를 넣습니다.
-      this.setState({ textInput: "" }); //Input의 채팅 내용을 지웁니다.
-      this.flatListRef.scrollToEnd({ animated: true }); // 채팅을 가장 아래로 내립니다.
+      this.setState({ textInput: "" });
+      await userStore.appendChat(this.state.bbs, this.state.textInput);
+      await userStore.readChats(this.state.bbs).then(r => this.setState({ chats: r }));
+      await userStore.readBbs_objid(JSON.parse(JSON.stringify(this.state.bbs)).objectId).then(r => this.setState({ bbs: r }));
+      this.flatListRef.scrollToEnd({ animated: true });
     }
   }
   //#endregion
   render() {
     const { navigation } = this.props;
+    // React.useEffect(() => {
+    //   const unsubscribe = navigation.addListener('focus', () => {
+    //     userStore.readBbs_objid(JSON.parse(JSON.stringify(this.state.bbs)).objectId).then(r => this.setState({ bbs: r }));
+    //   });
+    //   return unsubscribe;
+    // }, [navigation]);
     const style = {
       view: {
         position: "absolute",
@@ -32,11 +41,9 @@ export default class chatroomScreen extends Component {
         zIndex: 1
       },
       header: {
-        color: this.state.bbs.gender == 2
-          ? "#3A3A3A"
-          : this.state.bbs.gender == 1
-            ? "#DE22A3"
-            : "#55A1EE",
+        color: this.state.bbs.get('gender') == 2
+          ? "#3A3A3A" : this.state.bbs.get('gender') == 1
+            ? "#DE22A3" : "#55A1EE",
         container: {
           height: 170,
           alignItems: "stretch"
@@ -57,18 +64,18 @@ export default class chatroomScreen extends Component {
                   style={{ width: 23, height: 15, marginTop: 3 }}
                 />
                 <Text style={campusStyle.Text.middleBold}>
-                  {this.state.bbs.leardername}
+                  {this.state.bbs.get('leader').get('nickname')}
                 </Text>
               </View>
             </View>
             <Text style={campusStyle.Text.whiteInput}>
-              출발지:{this.state.bbs.startplace}
+              출발지:{this.state.bbs.get('startplace').name}
             </Text>
             <Text style={campusStyle.Text.whiteInput}>
-              도착지:{this.state.bbs.endplace}
+              도착지:{this.state.bbs.get('endplace').name}
             </Text>
             <Text style={campusStyle.Text.smallCenter}>
-              {this.state.bbs.meetingdate} 출발예정
+              {userStore.tokoreanTime(String(this.state.bbs.get('meetingdate')))} 출발예정
 						</Text>
           </View>,
         leftComponent: <Button
@@ -83,28 +90,32 @@ export default class chatroomScreen extends Component {
             title=""
             icon={<Ionicons name="md-map" size={24} color="white" />}
             onPress={() => {
-              navigation.navigate("지도", {
-                url:
-                  "https://m.map.naver.com/directions/#/publicTransit/detail/%25ED%2583%259C%25EB%25A6%2589%25EC%259E%2585%25EA%25B5%25AC%25EC%2597%25AD%25206%25ED%2598%25B8%25EC%2584%25A0,127.0747201,37.6173467,127.0744909,37.6174622,false,13479509/%25EC%2582%25BC%25EC%259C%25A1%25EB%258C%2580%25ED%2595%2599%25EA%25B5%2590,127.1042695,37.6429793,127.1074000,37.6386000,false,11591563/0/0/map/0",
-              });
+              const url = "https://m.map.naver.com/directions/#/publicTransit/detail/"
+                + encodeURI(encodeURI(this.state.bbs.get('startplace').name)) + ","
+                + this.state.bbs.get('startplace').longitude + "," +
+                +this.state.bbs.get('startplace').latitude + ","
+                + this.state.bbs.get('startplace').longitude + ","
+                + this.state.bbs.get('startplace').latitude + ",false,13479509/"
+                + encodeURI(encodeURI(this.state.bbs.get('endplace').name)) + ","
+                + this.state.bbs.get('endplace').longitude + ","
+                + this.state.bbs.get('endplace').latitude + ","
+                + this.state.bbs.get('endplace').longitude0 + ","
+                + this.state.bbs.get('endplace').latitude + ",false,11591563/0/0/map/0";
+              navigation.navigate("지도", { url: url });
             }}
           />
           <Button
             type="clear"
             title=""
             icon={<Ionicons name="person" size={24} color="white" />}
-            onPress={() => {
-              navigation.navigate("채팅방정보", {
-                bbsid: this.state.bbs.bbsid,
-              });
-            }}
+            onPress={() => { navigation.navigate("채팅방정보", { bbs: this.state.bbs }) }}
           />
         </View>
       }
     };
     return (
       <>
-        <View style={{ height: "20%", marginBottom: 15 }}>
+        <View style={{ height: "20%", marginBottom: 30 }}>
           <View
             style={style.view}
           >
@@ -119,18 +130,10 @@ export default class chatroomScreen extends Component {
         </View>
         {/* 채팅 내용부분 */}
         <FlatList
-          data={this.state.bbs.chats}
+          data={this.state.chats}
           keyExtractor={(item, i) => String(i)}
-          ref={(ref) => {
-            this.flatListRef = ref;
-          }}
-          renderItem={({ item }) => (
-            <ChattingItem
-              isLeader={this.state.bbs.leardername == item.nickname ? true : false}
-              isMychat={userStore.user.nickname == item.nickname ? true : false}
-              item={item}
-            />
-          )}
+          ref={(ref) => this.flatListRef = ref}
+          renderItem={({ item }) => <ChattingItem item={item} bbs={this.state.bbs} />}
         />
         {/* 채팅 Input 부분 */}
         <View style={campusStyle.View.wideWhite}>
@@ -156,9 +159,8 @@ export default class chatroomScreen extends Component {
 
 class ChattingItem extends React.PureComponent {
   render() {
-    const isLeader = this.props.isLeader;
     const item = this.props.item;
-    const isMychat = this.props.isMychat;
+    const bbs = this.props.bbs;
     // const now = new Date(item.time);
     // let hour = now.getHours().toString();
     // let min = now.getMinutes().toString();
@@ -234,35 +236,35 @@ class ChattingItem extends React.PureComponent {
       },
     });
     let image;
-    if (isLeader) {
+    if (bbs.get('leader').get('nickname') == item.get('user').get('nickname')) {
       image = <Image source={crown} />;
     }
     let containerItem;
     if (item.isSys == 1) {
       containerItem = (
         <View style={ItemStyle.itemSystem_Message}>
-          <Text>{item.say}</Text>
+          <Text>{item.get('say')}</Text>
         </View>
       );
-    } else if (item.isSys == 2) {
+    } else if (item.get('isSys') == 2) {
       containerItem = (
         <View style={ItemStyle.itemSystem_Message}>
-          <Text>{item.nickname}{item.say}</Text>
+          <Text>{item.get('user').get('nickname')}{item.get('say')}</Text>
         </View>
       );
-    } else if (isMychat) {
+    } else if (userStore.user.get('nickname') == item.get('user').get('nickname')) {
       containerItem = (
         <View>
           <Text style={ItemStyle.item_titleReverse}>
             {image}
-            {item.nickname}
+            {item.get('user').get('nickname')}
           </Text>
           <View style={ItemStyle.itemMain_containerReverse}>
             <Text style={ItemStyle.item_time}>
               {/* {day + " " + hour + ":" + min} */}
-              {item.time}
+              {userStore.toTime(String(item.get('createdAt')))}
             </Text>
-            <Text style={ItemStyle.item_contentReverse}>{item.say}</Text>
+            <Text style={ItemStyle.item_contentReverse}>{item.get('say')}</Text>
           </View>
         </View>
       );
@@ -271,12 +273,12 @@ class ChattingItem extends React.PureComponent {
         <View>
           <Text style={ItemStyle.item_title}>
             {image}
-            {item.nickname}
+            {item.get('user').get('nickname')}
           </Text>
           <View style={ItemStyle.itemMain_container}>
-            <Text style={ItemStyle.item_content}>{item.say}</Text>
+            <Text style={ItemStyle.item_content}>{item.get('say')}</Text>
             <Text style={ItemStyle.item_time}>
-              {item.time}
+              {userStore.toTime(String(item.get('createdAt')))}
             </Text>
           </View>
         </View>
@@ -298,4 +300,5 @@ import { Ionicons } from '@expo/vector-icons';
 import campusStyle from "./campusStyle";
 import { TextInput } from "react-native-gesture-handler";
 import crown from "./image/crown.png";
-import { userStore } from "../store/store";
+import { userStore } from "../store/store"; import { log } from "react-native-reanimated";
+

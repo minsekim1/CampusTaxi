@@ -204,7 +204,6 @@ export default class UserStore {
     newObj.set('startplace', startplace);
     newObj.set('endplace', endplace);
     newObj.set('cost', cost);
-
     newObj.save().then((r) => {
       if (typeof document !== 'undefined') document.write(`bbs created: ${JSON.stringify(r)}`);
       console.log('bbs created', r);
@@ -294,24 +293,33 @@ export default class UserStore {
       alert("채팅방은 카테고리별로 1개만 만들 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요.");
     return false;
   }
-  async appendChat(bbsid, say) {
-    // REST API 7. bbsid, say, user 이용해 채팅 추가후 bbs 1개 json반환
-    // 올바르게 들어갔으면 bbs를 리턴합니다.
-    // return getBbs(bbsid);
-    const time = new Date();
-    const user = this.user;
-    let result = await this.getBbs(bbsid);
-    return result;
-    // 문제있으면 return false;
+  //#region chat
+  async readChats(bbs) {
+    const chat = Parse.Object.extend('chat');
+    let query = new Parse.Query(chat);
+    query.equalTo('bbs', bbs);
+    return await query.find();
   }
-  // 안건드려도돼는 부분
-  // async getServerTime() {
-  //   fetch("http://worldtimeapi.org/api/timezone/Asia/Seoul")
-  //     .then((res) => res.json())
-  //     .then((result) => {
-  //       return (result.datetime.slice(0, 21) + result.datetime.slice(26, 32));
-  //     });
-  // }
+  async appendChat(bbs, say) {
+    // REST API 7. bbsid, say, user 이용해 채팅 추가후 bbs 1개 json반환
+    const chat = Parse.Object.extend('chat');
+    const newObj = new chat();
+    newObj.set('say', say);
+    newObj.set('isSys', 0);
+    newObj.set('user', this.user);
+    newObj.set('bbs', bbs);
+    newObj.save().then((r) => {
+      if (typeof r !== 'undefined') console.log('chat append');
+      // document.write(`bbs created: ${JSON.stringify(r)}`);
+    }, (e) => {
+      if (typeof r !== 'undefined') document.write(`Error while creating bbs: ${JSON.stringify(e)}`);
+      console.error('Error while creating chat: ', e);
+    }
+    );
+  }
+  //#endregion
+  //////////////////////////////////////////////////
+  // Util 안건드려도돼는 부분
   tokoreanTime(date) {
     const arr = ["Mon", "월", "Tue", "화", "Wed", "수", "Thu", "목", "Fri", "금", "Sat", "토", "Sun", "일", "Jan", "1월", "Feb", "2월", "Mar", "3월", "Apr", "4월", "May", "5월", "Jun", "6월", "Jul", "7월", "Aug", "8월", "Sep", "9월", "Oct", "10월", "Nov", "11월", "Dec", "12월",
     ]
@@ -364,10 +372,11 @@ export default class UserStore {
       date = date[1] + "월 " + date[2] + "일 " + date[4].substring(0, 5) + "(" + date[0] + ")";
     else
       date = date[3] + "년 " + date[1] + "월 " + date[2] + "일 " + date[4].substring(0, 5) + "(" + date[0] + ")";
-    // if (date[3] == now.getFullYear && date[1] == now.getMonth + 1 && date[2] == now.getDay)
-    //   date = "오늘 " + date[4] + "(" + date[0] + ")";
-    // else if (date[3] == now.getFullYear)
-    //   date = date[1] + "월 " + date[2] + "일 " + date[4] + "(" + date[0] + ")";
+    return date;
+  }
+  toTime(date) {
+    date = String(date).split(" ");
+    date = date[4];
     return date;
   }
 }
