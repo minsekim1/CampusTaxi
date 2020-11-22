@@ -38,11 +38,39 @@ export default class UserStore {
   // 그외: login / readBbsType / readBbs / isEnter / isCreate
 
   //#region USER
-  createUser(loginid, loginpassword, email, nickname, phone, name, address, studentCard, univ, gender, policy) {
-    const temp = new Parse.File(name + ".png", studentCard, "image/png");
-    temp.save();
-    console.log(temp);
+  async createUser(loginid, loginpassword, email, nickname, phone, name, address, studentCard, univ, gender, policy) {
+    //const temp = new Parse.File(name + ".png", studentCard, "image/png");
+    //temp.save();
+    //console.log(temp);
+
+    //같은 아이디/이메일/닉네임이 있는지확인
     const User = Parse.Object.extend('User');
+    let result; let query;
+    query = new Parse.Query(User);
+    query.equalTo('nickname', nickname);
+    query.limit(1);
+    result = await query.find();
+    if (result.length == 1) {
+      alert("중복된 닉네임이 있습니다.")
+      return false;
+    }
+    query = new Parse.Query(User);
+    query.equalTo('username', loginid);
+    query.limit(1);
+    result = await query.find();
+    if (result.length == 1) {
+      alert("중복된 아이디가 있습니다.")
+      return false;
+    }
+    query = new Parse.Query(User);
+    query.equalTo('email', email);
+    query.limit(1);
+    result = await query.find();
+    if (result.length == 1) {
+      alert("이미 가입된 이메일이 있습니다.")
+      return false;
+    }
+
     const obj = new User();
     obj.set('username', loginid);
     obj.set('password', loginpassword);
@@ -66,6 +94,7 @@ export default class UserStore {
         if (typeof document !== 'undefined') document.write(`Error while creating User: ${JSON.stringify(error)}`);
         console.error('Error while creating User: ', error);
       });
+    return true;
   }
   async readUser_objid(objid) {
     const User = Parse.Object.extend('User');
@@ -76,6 +105,7 @@ export default class UserStore {
     const User = Parse.Object.extend('User');
     let query = new Parse.Query(User);
     query.equalTo(rows, val);
+
     return await query.find();
   }
   updateUser(objKey, row, value) {

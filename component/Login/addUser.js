@@ -19,18 +19,18 @@ export class addUser extends Component {
     super(props);
     this.state = {
       image: "",
-      nickname: "민세킴2",
+      nickname: "",
       isNext: false,
-      id: "slsl786",
-      pw: "tkarnr",
-      pwCheck: "tkarnr",
+      id: "",
+      pw: "",
+      pwCheck: "",
       gender: 1,
-      email: "tkarrnwl7862@naver.com",
-      address: "서울",
+      email: "",
+      address: "",
       studentcardCheck: false,
       studentcardBtn: "학생증 사진 선택",
-      name: "김민",
-      univ: "삼육대학교",
+      name: "",
+      univ: "",
       univSearch: null,
       univSelected: null,
       error: "아무런 값이 입력되지 않았습니다.",
@@ -119,7 +119,7 @@ export class addUser extends Component {
     var result = await ImagePicker.launchImageLibraryAsync();
     if (!result.cancelled) {
       this.setState({ image: result.uri });
-      userStore.imageUpload(result);
+      //userStore.imageUpload(result);
       try {
         this.checkStudentCard();
       } catch (error) {
@@ -203,7 +203,7 @@ export class addUser extends Component {
                 value={this.state.nickname}
                 onChangeText={(val) => this.onChangednickname(val)}
                 maxLength={20}
-                placeholder="파리의택시드라이버"
+                placeholder="사용할 닉네임을 4자리이상입력해주세요."
                 style={{ fontSize: 16, marginBottom: 5 }}
               />
             </View>
@@ -221,7 +221,7 @@ export class addUser extends Component {
                     value={this.state.id}
                     onChangeText={(val) => this.onChangedid(val)}
                     maxLength={20}
-                    placeholder="slsl7862"
+                    placeholder="아이디를 5자리이상입력해주세요."
                     style={{ fontSize: 16, marginBottom: 5 }}
                   />
                 </View>
@@ -238,7 +238,7 @@ export class addUser extends Component {
                     value={this.state.pw}
                     onChangeText={(val) => this.onChangedpw(val)}
                     maxLength={20}
-                    placeholder="비밀번호"
+                    placeholder="비밀번호를 5자리이상입력해주세요."
                     style={{ fontSize: 16, marginBottom: 5 }}
                   />
                 </View>
@@ -254,7 +254,7 @@ export class addUser extends Component {
                     value={this.state.pwCheck}
                     onChangeText={(val) => this.onChangedpwCheck(val)}
                     maxLength={20}
-                    placeholder="비밀번호확인"
+                    placeholder="비밀번호를 똑같이 입력해주세요."
                     style={{ fontSize: 16, marginBottom: 5 }}
                   />
                 </View>
@@ -299,14 +299,14 @@ export class addUser extends Component {
 
           <View style={{ marginBottom: 20, marginTop: 30 }}>
             <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
-              이메일 (선택)
+              이메일 (필수)
              </Text>
             <View style={SignIn.input}>
               <TextInput
                 value={this.state.email}
                 onChangeText={(val) => this.onChangedemail(val)}
                 maxLength={40}
-                placeholder="campustaxi@naver.com"
+                placeholder="email@naver.com *동일 이메일은 중복가입을 할 수 없습니다."
               />
             </View>
           </View>

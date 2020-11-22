@@ -5,7 +5,7 @@ import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { AuthContext } from "../store/UserStore"
 import { Button } from "react-native-paper";
 
-export function complete({ route }) {
+export function complete({ route, navigation }) {
   const { signIn } = React.useContext(AuthContext);
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#ffffff", }}>
@@ -48,25 +48,17 @@ export function complete({ route }) {
                   textAlign: "center",
                   fontSize: 17,
                 }}
-              >
-                처음으로 돌아가기
-                </Text>
+              >처음으로 돌아가기</Text>
             </TouchableOpacity>
           </View>
           <View style={button_style.next_button}>
             <TouchableOpacity
-              onPress={async () => { signIn(route.params.id, route.params.pw); userStore.login(route.params.id, route.params.pw); }}
+              onPress={async () => { await userStore.login(route.params.id, route.params.pw).then((r) => { if (r !== null) { signIn(route.params.id, route.params.pw) } }) }}
               color="#162A64"
             >
               <Text
-                style={{
-                  color: "#ffffff",
-                  textAlign: "center",
-                  fontSize: 17,
-                }}
-              >
-                로 그 인
-                </Text>
+                style={{ color: "#ffffff", textAlign: "center", fontSize: 17, }}
+              >로 그 인</Text>
             </TouchableOpacity>
           </View>
         </View>

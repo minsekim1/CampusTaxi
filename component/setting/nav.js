@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, ScrollView, Linking, StyleSheet } from "react-native";
+import { View, Text, ScrollView, Linking, StyleSheet, SectionList, FlatList } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { createStackNavigator } from "@react-navigation/stack";
 const s = createStackNavigator();
@@ -13,6 +13,11 @@ import Constants from "expo-constants";
 import { AuthContext } from "../store/UserStore"
 
 function HomeScreen({ navigation }) {
+  // {
+  //   type: "text",
+  //   title: "알림 설정",
+  //   navigation: "알림 설정",
+  // },
   const list = [
     {
       type: "title",
@@ -28,11 +33,6 @@ function HomeScreen({ navigation }) {
       title: "로그아웃",
       navigation: "로그아웃",
     },
-    // {
-    //   type: "text",
-    //   title: "알림 설정",
-    //   navigation: "알림 설정",
-    // },
     {
       type: "title",
       title: "앱 정보",
@@ -74,21 +74,16 @@ function HomeScreen({ navigation }) {
   ];
 
   return (
-    <ScrollView>
-      {list.map((item, i) =>
-        (function () {
-          return (
-            <ListItem
-              keyExtractor={(item) => item.id} key={(item, i) => String(i)}
-              onPress={() => { if (item.type == "text") { navigation.navigate({ name: item.navigation }) } }}
-            >
-              <Text style={item.type === "text" ? styles.text : styles.title}>
-                {item.title}</Text>
-            </ListItem>
-          );
-        })()
-      )}
-    </ScrollView>
+    <FlatList
+      data={list}
+      keyExtractor={(item, index) => item + index}
+      renderItem={({ item }) =>
+        <ListItem onPress={() => { if (item.type == "text") { navigation.navigate({ name: item.navigation }) } }}>
+          <Text style={item.type === "text" ? styles.text : styles.title}>{item.title}</Text>
+        </ListItem>
+      }
+    >
+    </FlatList >
   );
 }
 //내 정보: 회원정보 수정페이지
@@ -539,6 +534,7 @@ export function clientpagePolicy4() {
 
 import SendEmail from "./EmailComposer";
 import { useState } from "react";
+import { log } from "react-native-reanimated";
 
 function clientpageQuestion({ navigation: { goBack } }) {
   const [email_title, setemail_title] = useState(
