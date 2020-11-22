@@ -103,6 +103,13 @@ export default function selectPlace(props, { navigation }) {
     }).done();
   }
   function placeSelect(data) {
+    setRegion({
+      latitude: Number(data.y),
+      longitude: Number(data.x),
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
+      name: data.place_name,
+    });
     setFirstQuery(data.place_name);
     setPlace(null);
     if (isStart) {
@@ -200,6 +207,7 @@ export default function selectPlace(props, { navigation }) {
         />
         {place != null ? (
           <View
+            key={"View"}
             style={{
               width: "80%",
               padding: 3,
@@ -210,8 +218,10 @@ export default function selectPlace(props, { navigation }) {
             }}
           >
             {place != null
-              ? place.map((data, i) => (
-                <TouchableOpacity key={String(data)} onPress={() => placeSelect(data)}>
+              ? place.map((data) => (
+                <TouchableOpacity
+                  key={String(data.place_url)}
+                  onPress={() => placeSelect(data)}>
                   <View style={{ padding: 10 }}>
                     <View style={{ flexDirection: "row" }} numberOfLines={1}>
                       <Text style={{ fontWeight: "bold" }}>

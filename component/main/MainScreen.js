@@ -36,7 +36,7 @@ class HomeScreen extends Component {
   render() {
     const { navigation } = this.props;
     // 메인화면 버튼 부분
-    function MenuItem({ navigation, imageURL, bbstype }) {
+    function MenuItem({ imageURL, bbstype }) {
       return (
         <TouchableHighlight
           style={campusStyle.View.mainItemTouchItem}
@@ -81,7 +81,7 @@ class HomeScreen extends Component {
             <View>
               <View style={campusStyle.View.mainHeaderBackground}>
                 <View style={campusStyle.View.row}>
-                  <Text style={campusStyle.Text.middleSize}> CAMPUS TAXI</Text>
+                  <Text style={{ color: "white", fontSize: 18, marginTop: 30 }}> CAMPUS TAXI</Text>
                 </View>
                 <Text style={campusStyle.Text.mainUnivText}>
                   {userStore.user.get('univ')}

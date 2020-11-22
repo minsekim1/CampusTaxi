@@ -5,75 +5,63 @@ export default class chatinfo extends Component {
     this.state = { bbs: this.props.route.params.bbs };
   }
   componentDidMount() {
+    this.refresh();
+  }
+  refresh() {
     userStore.readBbs_objid(JSON.parse(JSON.stringify(this.state.bbs)).objectId).then(r => this.setState({ bbs: r }));
   }
   render() {
-    return (
-      <>
-        <Observer>{() => {
-          this.props.navigation.setOptions({ title: "대화상대(" + this.state.bbs.get("personpresent") + "/" + this.state.bbs.get("personmax") + ")", });
+    return (<>
+      <Header backgroundColor="#172864" leftComponent={<Button
+        type="clear"
+        title=""
+        icon={<Ionicons name="md-arrow-back" size={24} color="white" />}
+        onPress={() => this.props.navigation.pop(1)}
+      ></Button>}
+        centerComponent={<Text style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>{"대화상대(" + this.state.bbs.get("personpresent") + "/" + this.state.bbs.get("personmax") + ")"}</Text>}
+        rightComponent={<Button
+          type="clear"
+          title=""
+          icon={<Ionicons name="md-refresh" size={24} color="white" />}
+          onPress={() => userStore.readBbs_objid(JSON.parse(JSON.stringify(this.state.bbs)).objectId).then(r => this.setState({ bbs: r }))}
+        />}
+      ></Header>
+      <FlatList
+        data={this.state.bbs.get('personmember')}
+        extraData={this.state.bbs}
+        key={(item, i) => String(i)}
+        keyExtractor={(item, i) => String(i)}
+        renderItem={({ item }) => {
+          const image = this.state.bbs.get('leader').get('nickname') == item.get('nickname')
+            ? item.get('gender') == 0 ? manCrownSVG : womanCrownSVG : item.get('gender') == 0 ? manSVG : womanSVG;
+          const hostIcon = hostSVG;
           return (
-            <FlatList
-              data={this.state.bbs.get('personmember')}
-              extraData={this.state.bbs}
-              key={(item, i) => String(i)}
-              keyExtractor={(item, i) => String(i)}
-              renderItem={({ item }) => {
-                const image = this.state.bbs.get('leader').get('nickname') == item.get('nickname')
-                  ? item.get('gender') == 0
-                    ? manCrownSVG
-                    : womanCrownSVG
-                  : item.get('gender') == 0
-                    ? manSVG
-                    : womanSVG;
-                const hostIcon = hostSVG;
-                return (
-                  <View style={{ flexDirection: "row", padding: 10 }}>
-                    <View style={{ flex: 1 }}>
-                      <Text>{image}</Text>
-                    </View>
-                    <View style={{ flex: 5 }}>
-                      <Text>{item.get('nickname')}</Text>
-                      <Text>{item.get('univ')}</Text>
-                    </View>
+            <View style={{ flexDirection: "row", padding: 10 }}>
+              <View style={{ flex: 1 }}>
+                <Text>{image}</Text>
+              </View>
+              <View style={{ flex: 5 }}>
+                <Text>{item.get('nickname')}</Text>
+                <Text>{item.get('univ')}</Text>
+              </View>
+              {this.state.bbs.get('leader').get('nickname') == userStore.user.get('nickname') && this.state.bbs.get('leader').get('nickname') != item.get('nickname') ? (<TouchableHighlight
+                underlayColor={"rgba(0,0,0,0.15)"}
+                onPress={() => userStore.leaderPass(this.state.bbs, item).then(() => this.refresh())}>
+                <View style={{ flex: 2, alignItems: "center" }}>
+                  <FontAwesome5 name="vote-yea" size={24} color="#3d6adb" />
+                  <Text style={{ fontSize: 10 }}>방장권한위임</Text>
+                </View>
+              </TouchableHighlight>
+              ) : null}
+            </View>
 
-                    {/* {this.state.bbs.get('leader').get('nickname') == userStore.user.get('nickname') &&
-                      this.state.bbs.get('leader').get('nickname') != item.get('nickname') ? (
-                        <TouchableHighlight
-                          underlayColor={"rgba(0,0,0,0.15)"}
-                          onPress={() => userStore.hostPass(
-                            this.state.bbs.get('leader').get('nickname'),
-                            item.get('nickname'), bbs)}
-                        >
-                          <View style={{ flex: 2, alignItems: "center" }}>
-                            <FontAwesome5
-                              name="vote-yea"
-                              size={24}
-                              color="black"
-                            />
-                            <Text style={{ fontSize: 10 }}>방장권한위임</Text>
-                          </View>
-                        </TouchableHighlight>
-                      ) : null} */}
-                  </View>
-                );
-              }}
-            />
           );
         }}
-        </Observer>
-
-        <View>
-          <Button
-            onPress={() => {
-              // bbsStore.outBbs(userStore.userkey, bbskey);
-              this.props.navigation.pop(2);
-            }}
-            title="방나가기"
-          />
-        </View>
-      </>
-    );
+      />
+      <View>
+        <Button buttonStyle={{ backgroundColor: "#172864" }} onPress={() => { userStore.outRoom(this.state.bbs); this.props.navigation.pop(2); }} title="방나가기" />
+      </View>
+    </>)
   }
 }
 //#region SVG파일들
@@ -200,21 +188,13 @@ const hostSVG = ( //방장권한양도아이콘
 //#endregion
 //#region imports
 import React, { useState, useRef, Component, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  Image,
-  StatusBar,
-  TouchableHighlight,
-} from "react-native";
+import { View, Text, StyleSheet, FlatList, Image, StatusBar, TouchableHighlight } from "react-native";
 import { Header, Button } from "react-native-elements";
 import campusStyle from "./campusStyle";
 import { TextInput } from "react-native-gesture-handler";
 import crown from "./image/crown.png";
 import { Observer } from "mobx-react";
 import Svg, { G, Circle, Path } from "react-native-svg";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { userStore } from "../store/store";
 

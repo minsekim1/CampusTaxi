@@ -2,12 +2,12 @@
   "expo": {
     "name": "campustaxi",
     "slug": "campustaxi",
-    "version": "1.0.0",
+    "version": "4.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/campustaxi_icon.png",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
+      "image": "./assets/campustaxi_splash.png",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "updates": {
@@ -17,16 +17,25 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "com.campustaxi.campustaxi",
+      "buildNumber": "4.0.0",
       "supportsTablet": true
     },
     "android": {
+      "package": "com.campustaxi.campustaxi",
+      "versionCode": 20,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBVIfNVsdQk6J56bD4CwZSPDyYlxF_XBe0"
+        }
+      },
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/campustaxi_icon.png",
         "backgroundColor": "#FFFFFF"
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/campustaxi_favicon.png"
     }
   }
 }

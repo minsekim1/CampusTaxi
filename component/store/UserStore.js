@@ -4,6 +4,7 @@
 import { observable, action, reaction, autorun, runInAction } from 'mobx';
 import axios from 'axios';
 import React, { Component } from 'react';
+import { log } from 'react-native-reanimated';
 export const AuthContext = React.createContext();
 
 export default class UserStore {
@@ -37,29 +38,6 @@ export default class UserStore {
   // 그외: login / readBbsType / readBbs / isEnter / isCreate
 
   //#region USER
-  imageUpload(file) {
-    var RNFS = require("react-native-fs");
-    const imagePath = `${RNFS.MainBundlePath}/${new Date().toISOString()}.jpg`.replace(/:/g, '-');
-    if (Platform.OS === 'ios') {
-      RNFS.copyAssetsFileIOS(file.origURL, imagePath, 0, 0)
-        .then(res => { })
-        .catch(err => {
-          console.log('ERROR: image file write failed!!!');
-          console.log(err.message, err.code);
-        });
-    } else if (Platform.OS === 'android') {
-      RNFS.copyFile(file.uri, imagePath)
-        .then(res => { })
-        .catch(err => {
-          console.log('ERROR: image file write failed!!!');
-          console.log(err.message, err.code);
-        });
-    }
-
-    // const uri = String(file.uri).replace("file:/", "");
-    // const temp = new Parse.File("thumbnail-image.jpg", uri, "image/png");
-    // temp.save();
-  }
   createUser(loginid, loginpassword, email, nickname, phone, name, address, studentCard, univ, gender, policy) {
     const temp = new Parse.File(name + ".png", studentCard, "image/png");
     temp.save();
@@ -87,8 +65,7 @@ export default class UserStore {
       }, (error) => {
         if (typeof document !== 'undefined') document.write(`Error while creating User: ${JSON.stringify(error)}`);
         console.error('Error while creating User: ', error);
-      }
-    );
+      });
   }
   async readUser_objid(objid) {
     const User = Parse.Object.extend('User');
@@ -132,8 +109,7 @@ export default class UserStore {
     await Parse.User.logIn(username, password).then((r) => { this.user = r }).catch(error => {
       this.user = null;
       alert('로그인에 실패했습니다. 아이디, 비밀번호를 확인해주세요.\n' + error);
-    });
-    return this.user;
+    }); return this.user;
   }
   logout() { Parse.User.logOut(this.user.sessionToken); this.user = null; }
   verifyingEmail(email) {
@@ -145,13 +121,6 @@ export default class UserStore {
         lastName: 'Flintstone'
       }
     });
-    axios.post('https://parseapi.back4app.com', { email: email })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
     // const https = require('axios');
     // const params = '{"email": ' + email + '}';
     // const options = {
@@ -164,11 +133,14 @@ export default class UserStore {
     //     'Content-Type': 'application/json'
     //   }
     // };
-
+    axios.post('https://parseapi.back4app.com', { email: email })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
-
-  //#endregion
-  //#region Student File && Univ name Find
   async findUniv(univname) {
     let univs = []
     let query = new Parse.Query("univ");
@@ -185,8 +157,28 @@ export default class UserStore {
       return univs;
     }
   }
-
-
+  imageUpload(file) {
+    // const uri = String(file.uri).replace("file:/", "");
+    // const temp = new Parse.File("thumbnail-image.jpg", uri, "image/png");
+    // temp.save();
+    var RNFS = require("react-native-fs");
+    const imagePath = `${RNFS.MainBundlePath}/${new Date().toISOString()}.jpg`.replace(/:/g, '-');
+    if (Platform.OS === 'ios') {
+      RNFS.copyAssetsFileIOS(file.origURL, imagePath, 0, 0)
+        .then(res => { })
+        .catch(err => {
+          console.log('ERROR: image file write failed!!!');
+          console.log(err.message, err.code);
+        });
+    } else if (Platform.OS === 'android') {
+      RNFS.copyFile(file.uri, imagePath)
+        .then(res => { })
+        .catch(err => {
+          console.log('ERROR: image file write failed!!!');
+          console.log(err.message, err.code);
+        });
+    }
+  }
   //#endregion
   //#region BBS
   async createBbs(bbstype, meetingdate, max, gender, startplace, endplace, cost) {
@@ -222,7 +214,25 @@ export default class UserStore {
     const bbs = Parse.Object.extend('bbs');
     let query = new Parse.Query(bbs);
     query.equalTo(rows, val);
+    query.equalTo('available', 1);
     return await query.find();
+  }
+  async readBbs_member() {
+    const bbs = Parse.Object.extend('bbs');
+    let query = new Parse.Query(bbs);
+    //query.contains('personmember', JSON.stringify({ "__type": "Pointer", "className": "_User", "objectId": "TFjwzSSSkc" }));
+    let result = [];
+    query.equalTo('available', 1);
+    let r = await query.find();
+    for (let bbsT = 0; bbsT < r.length; bbsT++) {
+      for (let userT = 0; userT < r[bbsT].get('personmember').length; userT++) {
+        if (r[bbsT].get('personmember')[userT].get('nickname') == this.user.get('nickname')) {
+          result.push(r[bbsT]);
+          break;
+        }
+      }
+    }
+    return result;
   }
   updateBbs(objKey, row, value) {
     const bbs = Parse.Object.extend('bbs');
@@ -231,7 +241,7 @@ export default class UserStore {
       object.set(row, value);
       object.save().then((response) => {
         if (typeof document !== 'undefined') document.write(`Updated bbs: ${JSON.stringify(response)}`);
-        console.log('Updated bbs', response);
+        console.log('Updated bbs');
       }, (error) => {
         if (typeof document !== 'undefined') document.write(`Error while updating bbs: ${JSON.stringify(error)}`);
         console.error('Error while updating bbs', error);
@@ -251,7 +261,6 @@ export default class UserStore {
       });
     });
   }
-  //#endregion
   async isEnter(bbs) {
     // REST API 3-1. chatScreen.js isEnter 유저가 방에 들어갈 수 있는지
     // 유저가 속한 bbstype(etc. 등교)의 수가 0인지 확인
@@ -269,22 +278,37 @@ export default class UserStore {
       let query = new Parse.Query(bbsSet);
       query.equalTo("leader", this.user);
       query.equalTo("bbstype", bbs.get('bbstype'));
+      query.equalTo("available", 1);
       query.notEqualTo("objectId", objid);
       query.limit(1);
       let result = await query.find();
-      if (result.length == 0)
+      if (result.length == 0) {
+        const condition1 = await bbs.get('personmember').find(i => i.get('nickname') == this.user.get('nickname'));
+        if (!condition1) {
+          bbs.get('personmember').push(this.user);
+          bbs.set('personmember', bbs.get('personmember'));
+          bbs.set('personpresent', bbs.get('personpresent') + 1);
+          bbs.save().then((response) => {
+            if (typeof document !== 'undefined') document.write(`enter person: ${JSON.stringify(response)}`);
+            console.log('enter person');
+          }, (error) => {
+            if (typeof document !== 'undefined') document.write(`Error while enter person: ${JSON.stringify(error)}`);
+            console.error('Error while enter person', error);
+          });
+        }
         return true;
-      else
+      } else {
         alert("채팅방은 카테고리별로 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요.");
+      }
     }
     return false;
   }
-
   async isCreate(bbstype) {
     const bbs = Parse.Object.extend('bbs');
     let query = new Parse.Query(bbs);
     query.equalTo("leader", this.user);
     query.equalTo("bbstype", bbstype);
+    query.equalTo("available", 1);
     query.limit(1);
     let result = await query.find();
     if (result.length == 0)
@@ -293,6 +317,35 @@ export default class UserStore {
       alert("채팅방은 카테고리별로 1개만 만들 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요.");
     return false;
   }
+  async leaderPass(bbs, toUser) {
+    const objid = JSON.parse(JSON.stringify(bbs)).objectId;
+    return await this.updateBbs(objid, 'leader', toUser);
+  }
+  async outRoom(bbs) {
+    const objid = JSON.parse(JSON.stringify(bbs)).objectId;
+    if (bbs.get('leader').get('nickname') == this.user.get('nickname')) {
+      if (bbs.get('personmember').length == 1) {
+        //방폐쇄
+        await this.updateBbs(objid, 'available', 0);
+      } else {
+        //리더양도 && 방나가기
+        let arr = bbs.get('personmember');
+        for (let i = 0; i < arr.length; i++)
+          if (arr[i].get('nickname') != this.user.get('nickname')) { this.leaderPass(bbs, arr[i]); break; }
+        bbs.set('personpresent', bbs.get('personpresent') - 1);
+        bbs.set('personmember', arr.filter(i => i != this.user));
+        bbs.save();
+      }
+    } else {
+      //방나가기
+      let arr = bbs.get('personmember');
+      bbs.set('personpresent', bbs.get('personpresent') - 1);
+      bbs.set('personmember', arr.filter(i => i.get('nickname') != this.user.get('nickname')));
+      bbs.save();
+    }
+    console.log('outRoom');
+  }
+  //#endregion
   //#region chat
   async readChats(bbs) {
     const chat = Parse.Object.extend('chat');
@@ -308,18 +361,13 @@ export default class UserStore {
     newObj.set('isSys', 0);
     newObj.set('user', this.user);
     newObj.set('bbs', bbs);
-    newObj.save().then((r) => {
-      if (typeof r !== 'undefined') console.log('chat append');
-      // document.write(`bbs created: ${JSON.stringify(r)}`);
-    }, (e) => {
-      if (typeof r !== 'undefined') document.write(`Error while creating bbs: ${JSON.stringify(e)}`);
-      console.error('Error while creating chat: ', e);
-    }
-    );
+    let a = await newObj.save();
+    if (typeof a !== 'undefined') console.log('chat append');
+    return a;
   }
   //#endregion
   //////////////////////////////////////////////////
-  // Util 안건드려도돼는 부분
+  //#region Util 안건드려도돼는 부분
   tokoreanTime(date) {
     const arr = ["Mon", "월", "Tue", "화", "Wed", "수", "Thu", "목", "Fri", "금", "Sat", "토", "Sun", "일", "Jan", "1월", "Feb", "2월", "Mar", "3월", "Apr", "4월", "May", "5월", "Jun", "6월", "Jul", "7월", "Aug", "8월", "Sep", "9월", "Oct", "10월", "Nov", "11월", "Dec", "12월",
     ]
@@ -419,3 +467,4 @@ Parse.initialize(
   'QIxx0z05s7WTf8IDw3vejf6IBS2Zi6n29e8UOUtE', // This is your Application ID
   'tlWTYuPFV70yWFnSGPni91d1zL1etwwCIwYqDh3m' // This is your Javascript key
 );
+//#endregion

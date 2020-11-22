@@ -172,12 +172,9 @@ export default function createRoom({ route, navigation }) {
               userStore.isCreate(bbstype)
                 .then(r => {
                   if (r) {
-                    userStore.createBbs(createRoomCategory, date, createRoompersonmax, createSelectGender, placeStart, placeEnd, cost)
-                      .then(() => alert("방이 생성되었습니다. 내 채팅에서 확인해주세요."));
+                    userStore.createBbs(createRoomCategory, date, createRoompersonmax, createSelectGender, placeStart, placeEnd, cost).then(() => alert("방이 생성되었습니다. 내 채팅에서 확인해주세요."));
                   } else {
-                    alert(
-                      "채팅방은 카테고리별로 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요."
-                    );
+                    alert("채팅방은 카테고리별로 1개만 들어갈 수 있습니다. 내 채팅->채팅방->사람아이콘 클릭에서 채팅방 나가기를 해주세요.");
                   }
                   setPlaceEnd(null);
                   setPlaceStart(null);

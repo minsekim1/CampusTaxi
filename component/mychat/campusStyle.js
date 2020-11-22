@@ -95,8 +95,6 @@ const view = StyleSheet.create({
     width: wp(100),
     backgroundColor: "white",
     flexDirection: "row",
-    marginLeft: 5,
-    marginRight: 5,
   },
   createRoomView: {
     position: "absolute",

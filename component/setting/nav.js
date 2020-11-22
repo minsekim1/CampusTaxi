@@ -79,7 +79,7 @@ function HomeScreen({ navigation }) {
         (function () {
           return (
             <ListItem
-              keyExtractor={(item) => item.id} key={i}
+              keyExtractor={(item) => item.id} key={(item, i) => String(i)}
               onPress={() => { if (item.type == "text") { navigation.navigate({ name: item.navigation }) } }}
             >
               <Text style={item.type === "text" ? styles.text : styles.title}>

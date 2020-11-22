@@ -49,7 +49,7 @@ FROM bbs WHERE bbstype="등교";
 => 배열로 반환해야함.(미해결)
 [{"..."},{"..."}]
 
-REST API 3-1. chatScreen.js isEnter 
+REST API 3-1. roomList.js isEnter 
 fetch (/DB:url/bbs/isenter/gender/1/bbskey/SAD123/bbstype/1 => return true/false)
 
   async function isEnter(bbsGender, bbskey, bbstype) {

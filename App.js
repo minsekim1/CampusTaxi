@@ -9,11 +9,37 @@ import mapNav from './component/map/nav'
 import mychatNav from './component/mychat/nav'
 import settingNav from './component/setting/nav'
 import { AuthContext } from './component/store/UserStore'
+import { Ionicons } from '@expo/vector-icons';
 const t = createBottomTabNavigator();
 const headerDisable = { headerShown: false };
 function Nav() {
   return (
-    <t.Navigator>
+    <t.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarIcon: ({ focused, color, size }) => {
+          //아이콘 설정
+          let iconName;
+          if (route.name === "main") {
+            iconName = focused ? "md-home" : "md-home";
+          } else if (route.name === "mychat") {
+            iconName = focused ? "md-chatboxes" : "md-chatboxes";
+          } else if (route.name === "map") {
+            iconName = focused ? "md-map" : "md-map";
+            // } else if (route.name === "alarm") {
+            //   iconName = focused ? "alarm" : "alarm";
+          } else if (route.name === "setting") {
+            iconName = focused ? "md-settings" : "md-settings";
+          }
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+      })}
+      tabBarOptions={{
+        //아이콘 색상 설정
+        activeTintColor: "tomato",
+        inactiveTintColor: "gray",
+      }}
+    >
       <t.Screen name="main" component={mainNav} />
       <t.Screen name="mychat" component={mychatNav} />
       <t.Screen name="map" component={mapNav} />

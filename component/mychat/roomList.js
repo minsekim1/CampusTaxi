@@ -1,12 +1,10 @@
 //모든 채팅방 목록
-export default function chatScreen({ route, navigation }) {
+export default function roomList({ route, navigation }) {
   //#region 
-  const myname = userStore.user.get('nickname');
-  const mygender = userStore.user.get('gender');
   const [bbslist, setBbslist] = useState([]);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      userStore.readBbs_filter("leader", userStore.user).then(r => setBbslist(r))
+      userStore.readBbs_member().then(r => setBbslist(r))
     });
     return unsubscribe;
   }, [navigation]);
@@ -21,7 +19,7 @@ export default function chatScreen({ route, navigation }) {
         type="clear"
         title=""
         icon={<Ionicons name="md-refresh" size={24} color="white" />}
-        onPress={() => userStore.readBbs_filter("leader", userStore.user).then(r => setBbslist(r))}
+        onPress={() => userStore.readBbs_member().then(r => setBbslist(r))}
       />,
     },
     container: {
@@ -34,7 +32,7 @@ export default function chatScreen({ route, navigation }) {
     },
   };
   async function enter(bbs) {
-    navigation.navigate("채팅방", { bbs: bbs, mygender: mygender, myname: myname });
+    navigation.navigate("채팅방", { bbs: bbs })
   }
   function render(obj) {
     let item = obj.item;
@@ -104,9 +102,10 @@ import {
   ScrollView, SafeAreaView, StatusBar
 } from "react-native";
 // import * as TimeAPI from "../Email/globalTimeAPI.js";
+import { useFocusEffect } from '@react-navigation/native';
 import { Header, Button, Text } from "react-native-elements";
-import campusStyle from "../main/campusStyle";
-import crown from "../main/image/crown.png";
+import campusStyle from "./campusStyle";
+import crown from "./image/crown.png";
 import { userStore } from "../store/store";
 import { Ionicons } from '@expo/vector-icons';
 //#endregion

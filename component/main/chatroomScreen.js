@@ -3,24 +3,33 @@ export default class chatroomScreen extends Component {
   //#region 초기값
   constructor(props) {
     super(props);
-    this.state = {
-      bbs: this.props.route.params.bbs,
-      chats: [],
-      textInput: "",
-    };
+    this.state = { bbs: this.props.route.params.bbs, chats: [], textInput: "" };
   }
 
   componentDidMount() {
-    userStore.readBbs_objid(JSON.parse(JSON.stringify(this.state.bbs)).objectId).then(r => this.setState({ bbs: r }));
-    userStore.readChats(this.state.bbs).then(r => this.setState({ chats: r }));
+    this.refresh();
   }
-  async sendMessage() {
-    if (this.state.textInput != "") {
-      this.setState({ textInput: "" });
-      await userStore.appendChat(this.state.bbs, this.state.textInput);
-      await userStore.readChats(this.state.bbs).then(r => this.setState({ chats: r }));
-      await userStore.readBbs_objid(JSON.parse(JSON.stringify(this.state.bbs)).objectId).then(r => this.setState({ bbs: r }));
+  onRef() {
+    let a = setInterval(() => {
       this.flatListRef.scrollToEnd({ animated: true });
+    }, 100);
+    setTimeout(() => { clearInterval(a) }, 1500);
+
+  }
+  async refresh() {
+    userStore.readChats(this.state.bbs).then(r => this.setState({ chats: r }))
+    userStore.readBbs_objid(JSON.parse(JSON.stringify(this.state.bbs)).objectId).then(r => this.setState({ bbs: r }))
+      .then(this.onRef());
+  }
+  sendMessage() {
+    if (this.state.textInput != "") {
+      userStore.appendChat(this.state.bbs, this.state.textInput).then(r => {
+        let temp = this.state.chats;
+        temp.push(r);
+        this.setState({ chats: temp });
+      }).then(this.onRef());
+      this.setState({ textInput: "" });
+
     }
   }
   //#endregion
@@ -84,31 +93,39 @@ export default class chatroomScreen extends Component {
           icon={<Ionicons name="md-arrow-back" size={24} color="white" />}
           onPress={() => navigation.goBack()}
         ></Button>
-        , rightComponent: <View style={campusStyle.View.row}>
+        , rightComponent: <View style={{ flexDirection: "row" }}>
+          <Button
+            type="clear"
+            title=""
+            icon={<Ionicons name="md-refresh" size={24} color="white" />}
+            onPress={() => this.refresh()}
+            buttonStyle={{ marginRight: 3 }} />
           <Button
             type="clear"
             title=""
             icon={<Ionicons name="md-map" size={24} color="white" />}
             onPress={() => {
-              const url = "https://m.map.naver.com/directions/#/publicTransit/detail/"
+              const url = "https://m.map.naver.com/directions/#/drive/list/"
                 + encodeURI(encodeURI(this.state.bbs.get('startplace').name)) + ","
-                + this.state.bbs.get('startplace').longitude + "," +
-                +this.state.bbs.get('startplace').latitude + ","
                 + this.state.bbs.get('startplace').longitude + ","
-                + this.state.bbs.get('startplace').latitude + ",false,13479509/"
+                + this.state.bbs.get('startplace').latitude + ","
+                + ","
+                + ",false,13479509/"
                 + encodeURI(encodeURI(this.state.bbs.get('endplace').name)) + ","
                 + this.state.bbs.get('endplace').longitude + ","
                 + this.state.bbs.get('endplace').latitude + ","
-                + this.state.bbs.get('endplace').longitude0 + ","
-                + this.state.bbs.get('endplace').latitude + ",false,11591563/0/0/map/0";
+                + ","
+                + ",false,11591563/2";
               navigation.navigate("지도", { url: url });
             }}
+            buttonStyle={{ marginRight: 3 }}
           />
           <Button
             type="clear"
             title=""
-            icon={<Ionicons name="person" size={24} color="white" />}
+            icon={<Ionicons name="md-person" size={24} color="white" />}
             onPress={() => { navigation.navigate("채팅방정보", { bbs: this.state.bbs }) }}
+            buttonStyle={{ marginRight: 3 }}
           />
         </View>
       }
@@ -135,6 +152,7 @@ export default class chatroomScreen extends Component {
           ref={(ref) => this.flatListRef = ref}
           renderItem={({ item }) => <ChattingItem item={item} bbs={this.state.bbs} />}
         />
+
         {/* 채팅 Input 부분 */}
         <View style={campusStyle.View.wideWhite}>
           <View style={{ flex: 4 }}>
@@ -147,8 +165,8 @@ export default class chatroomScreen extends Component {
             />
           </View>
           <View style={{ flex: 1 }}>
-            <Button title="전송" onPress={() => this.sendMessage(this.state.bbs)}>
-              <Image style={campusStyle.Image.middleSize} />
+            <Button title="전송" buttonStyle={{ backgroundColor: "#1e45c7" }} onPress={() => this.sendMessage(this.state.bbs)}>
+              {/* <Image style={campusStyle.Image.middleSize} /> */}
             </Button>
           </View>
         </View>
