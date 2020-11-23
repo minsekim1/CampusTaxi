@@ -87,20 +87,20 @@ export default class chatroomScreen extends Component {
               {userStore.tokoreanTime(String(this.state.bbs.get('meetingdate')))} 출발예정
 						</Text>
           </View>,
-        leftComponent: <Button
+        leftComponent: <Button // 뒤로 가기
           type="clear"
           title=""
           icon={<Ionicons name="md-arrow-back" size={24} color="white" />}
           onPress={() => navigation.goBack()}
         ></Button>
         , rightComponent: <View style={{ flexDirection: "row" }}>
-          <Button
+          <Button // 새로 고침
             type="clear"
             title=""
             icon={<Ionicons name="md-refresh" size={24} color="white" />}
             onPress={() => this.refresh()}
             buttonStyle={{ marginRight: 3 }} />
-          <Button
+          <Button // 지도
             type="clear"
             title=""
             icon={<Ionicons name="md-map" size={24} color="white" />}
@@ -120,6 +120,12 @@ export default class chatroomScreen extends Component {
             }}
             buttonStyle={{ marginRight: 3 }}
           />
+          <Button // 찾기
+            type="clear"
+            title=""
+            icon={<Ionicons name="md-search" size={24} color="white" />}
+            onPress={() => {}}
+          />  
           <Button
             type="clear"
             title=""
