@@ -8,16 +8,24 @@ export default class chatroomScreen extends Component {
 
   componentDidMount() {
     this.refresh();
+    this.onGetChat;
   }
   onRef() {
     let a = setInterval(() => {
       this.flatListRef.scrollToEnd({ animated: true });
     }, 100);
     setTimeout(() => { clearInterval(a) }, 1500);
-
+  }
+  onGetChat = setInterval(()=>{
+    userStore.readChats(this.state.bbs).then(r => {
+      if(this.state.chats != r){this.setState({ chats: r })}})
+  }, 1000);
+  async endGetChat(){
+    setTimeout(() => { clearInterval(this.onGetChat) }, 1500);
   }
   async refresh() {
-    userStore.readChats(this.state.bbs).then(r => this.setState({ chats: r }))
+    userStore.readChats(this.state.bbs).then(r =>{
+      if(this.state.chats != r){this.setState({ chats: r })}})
     userStore.readBbs_objid(JSON.parse(JSON.stringify(this.state.bbs)).objectId).then(r => this.setState({ bbs: r }))
       .then(this.onRef());
   }
@@ -91,7 +99,7 @@ export default class chatroomScreen extends Component {
           type="clear"
           title=""
           icon={<Ionicons name="md-arrow-back" size={24} color="white" />}
-          onPress={() => navigation.goBack()}
+          onPress={async() => {await this.endGetChat(); navigation.goBack()}}
         ></Button>
         , rightComponent: <View style={{ flexDirection: "row" }}>
           <Button
@@ -104,7 +112,7 @@ export default class chatroomScreen extends Component {
             type="clear"
             title=""
             icon={<Ionicons name="md-map" size={24} color="white" />}
-            onPress={() => {
+            onPress={async () => {
               const url = "https://m.map.naver.com/directions/#/drive/list/"
                 + encodeURI(encodeURI(this.state.bbs.get('startplace').name)) + ","
                 + this.state.bbs.get('startplace').longitude + ","
@@ -116,6 +124,7 @@ export default class chatroomScreen extends Component {
                 + this.state.bbs.get('endplace').latitude + ","
                 + ","
                 + ",false,11591563/2";
+                await this.endGetChat();
               navigation.navigate("지도", { url: url });
             }}
             buttonStyle={{ marginRight: 3 }}
@@ -124,7 +133,7 @@ export default class chatroomScreen extends Component {
             type="clear"
             title=""
             icon={<Ionicons name="md-person" size={24} color="white" />}
-            onPress={() => { navigation.navigate("채팅방정보", { bbs: this.state.bbs }) }}
+            onPress={async() => { await this.endGetChat();navigation.navigate("채팅방정보", { bbs: this.state.bbs }) }}
             buttonStyle={{ marginRight: 3 }}
           />
         </View>
@@ -318,5 +327,5 @@ import { Ionicons } from '@expo/vector-icons';
 import campusStyle from "./campusStyle";
 import { TextInput } from "react-native-gesture-handler";
 import crown from "./image/crown.png";
-import { userStore } from "../store/store"; import { log } from "react-native-reanimated";
+import { userStore } from "../store/store";
 
