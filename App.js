@@ -10,6 +10,7 @@ import mychatNav from './component/mychat/nav'
 import settingNav from './component/setting/nav'
 import { AuthContext } from './component/store/UserStore'
 import { Ionicons } from '@expo/vector-icons';
+import * as Font from 'expo-font';
 const t = createBottomTabNavigator();
 const headerDisable = { headerShown: false };
 function Nav() {
@@ -50,6 +51,7 @@ function Nav() {
 
 const s = createStackNavigator();
 export default function App({ navigation }) {
+  
   const [state, dispatch] = React.useReducer(
     (prevState, action) => {
       switch (action.type) {
@@ -80,6 +82,11 @@ export default function App({ navigation }) {
     }
   );
   React.useEffect(() => {
+    Font.loadAsync({
+      // Load a font `Montserrat` from a static resource
+      FontAwesome: require('./assets/fonts/Montserrat.ttf'),
+    });
+
     const bootstrapAsync = async () => {
       let userToken;
       try {

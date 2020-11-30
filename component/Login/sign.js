@@ -1,6 +1,9 @@
 import * as React from "react";
 import { Component, useState, createRef } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, CheckBox } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+//import Checkbox from '@react-native-community/Checkbox';
+//import { Checkbox } from 'react-native-elements';
+import { Checkbox } from 'react-native-paper';
 export default class Sign1 extends Component {
   constructor(props) {
     super(props);
@@ -23,7 +26,13 @@ export default class Sign1 extends Component {
       <View style={Terms.terms_container}>
         {/* 필수 동의 란 */}
         <View style={[Terms.nt_item, { marginBottom: 40 }]}>
-          <CheckBox
+        <Checkbox
+      status={'checked'}
+      onPress={() => {
+        
+      }}
+    />
+          <Checkbox
             style={Terms.term_CheckBox}
             disabled={false}
             value={this.state.check[0]}
@@ -52,7 +61,7 @@ export default class Sign1 extends Component {
         </View>
 
         <View style={Terms.nt_item}>
-          <CheckBox
+          <Checkbox
             disabled={false}
             value={this.state.check[1]}
             onValueChange={() => {
@@ -76,7 +85,7 @@ export default class Sign1 extends Component {
         </View>
 
         <View style={Terms.nt_item}>
-          <CheckBox
+          <Checkbox
             disabled={false}
             value={this.state.check[2]}
             onValueChange={() => {
@@ -100,7 +109,7 @@ export default class Sign1 extends Component {
         </View>
 
         <View style={Terms.nt_item}>
-          <CheckBox
+          <Checkbox
             disabled={false}
             value={this.state.check[3]}
             onValueChange={() => {
@@ -125,7 +134,7 @@ export default class Sign1 extends Component {
 
         {/* 선택 동의 란 */}
         <View style={[Terms.nt_item, { marginBottom: 20 }]}>
-          <CheckBox
+          <Checkbox
             disabled={false}
             value={this.state.check[4]}
             onValueChange={() => {
@@ -159,7 +168,7 @@ export default class Sign1 extends Component {
         {/*여기서 부터 선택 View*/}
         <View style={Terms.not_necessary_temrs}>
           <View style={Terms.nnt_item}>
-            <CheckBox
+            <Checkbox
               disabled={false}
               value={this.state.check[5]}
               onValueChange={() => {
@@ -174,7 +183,7 @@ export default class Sign1 extends Component {
           </View>
 
           <View style={Terms.nnt_item}>
-            <CheckBox
+            <Checkbox
               disabled={false}
               value={this.state.check[6]}
               onValueChange={() => {
@@ -189,7 +198,7 @@ export default class Sign1 extends Component {
           </View>
 
           <View style={Terms.nnt_item}>
-            <CheckBox
+            <Checkbox
               disabled={false}
               value={this.state.check[7]}
               onValueChange={() => {
