@@ -1,9 +1,10 @@
 import * as React from "react";
-import { Component, useState, createRef } from "react";
+import { Component } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
 //import Checkbox from '@react-native-community/Checkbox';
-//import { Checkbox } from 'react-native-elements';
-import { Checkbox } from 'react-native-paper';
+import { Button } from 'react-native-elements';
+//import { Checkbox } from 'react-native-paper';
 export default class Sign1 extends Component {
   constructor(props) {
     super(props);
@@ -25,46 +26,49 @@ export default class Sign1 extends Component {
     return (
       <View style={Terms.terms_container}>
         {/* 필수 동의 란 */}
-        <View style={[Terms.nt_item, { marginBottom: 40 }]}>
-        <Checkbox
-      status={'checked'}
-      onPress={() => {
-        
-      }}
-    />
-          <Checkbox
-            style={Terms.term_CheckBox}
-            disabled={false}
-            value={this.state.check[0]}
-            onValueChange={() => {
-              let checkReturn = this.state.check;
-              checkReturn[0] = !checkReturn[0];
-              checkReturn = [
-                checkReturn[0],
-                checkReturn[0],
-                checkReturn[0],
-                checkReturn[0],
-                checkReturn[0],
-                checkReturn[0],
-                checkReturn[0],
-                checkReturn[0],
-              ];
-              this.setState({
-                check: checkReturn,
-                isNext: checkReturn[0]
-              });
-            }}
-          />
-          <Text style={Terms.nt_item_text}>
-            캠퍼스 택시의 모든 운영원칙에 동의
-          </Text>
+        <View style={{alignItems: 'center', flexDirection:'row',marginBottom: 40}}>
+        <Button
+        type="clear"
+        buttonStyle={{borderColor:this.state.check[0]?"#2761b8":"gray",borderWidth:2,margin:0,
+          paddingBottom:0,paddingTop:0,paddingLeft:2,paddingRight:2}}
+        containerStyle={{backgroundColor:"white"}}
+        icon={<Ionicons name="md-checkmark"size={25}
+
+        color={this.state.check[0]?"#2761b8":"gray"}/>}
+        value={this.state.check[0]}
+        onPress={() => {
+          let checkReturn = this.state.check;
+          checkReturn[0] = !checkReturn[0];
+          checkReturn = [
+            checkReturn[0],
+            checkReturn[0],
+            checkReturn[0],
+            checkReturn[0],
+            checkReturn[0],
+            checkReturn[0],
+            checkReturn[0],
+            checkReturn[0],
+          ];
+          this.setState({
+            check: checkReturn,
+            isNext: checkReturn[0]
+          });
+        }}
+        />
+          <Text style={Terms.nt_item_text}>  캠퍼스 택시의 모든 운영원칙에 동의</Text>
         </View>
 
-        <View style={Terms.nt_item}>
-          <Checkbox
-            disabled={false}
-            value={this.state.check[1]}
-            onValueChange={() => {
+        <View style={{alignItems: 'center', flexDirection:'row',marginBottom: 40}}>
+          <Button
+        type="clear"
+        buttonStyle={{borderColor:this.state.check[1]?"#2761b8":"gray",borderWidth:2,margin:0,
+          paddingBottom:0,paddingTop:0,paddingLeft:2,paddingRight:2}}
+        containerStyle={{backgroundColor:"white"}}
+        icon={<Ionicons name="md-checkmark"size={25}
+        color={this.state.check[1]?"#2761b8":"gray"}/>}
+        value={this.state.check[1]}
+
+            onPress={() => {
               let checkReturn = this.state.check;
               this.state.check[0] = false;
               checkReturn[1] = !checkReturn[1];
@@ -74,7 +78,7 @@ export default class Sign1 extends Component {
               this.checkNext();
             }}
           />
-          <Text style={Terms.nt_item_text}>서비스 이용약관 (필수)</Text>
+          <Text style={Terms.nt_item_text}>  서비스 이용약관 (필수)</Text>
           <View style={{ flex: 1, alignItems: "flex-end" }}>
             <TouchableOpacity
               onPress={() => navigation.navigate("서비스 이용약관")}
@@ -84,11 +88,16 @@ export default class Sign1 extends Component {
           </View>
         </View>
 
-        <View style={Terms.nt_item}>
-          <Checkbox
-            disabled={false}
-            value={this.state.check[2]}
-            onValueChange={() => {
+        <View style={{alignItems: 'center', flexDirection:'row',marginBottom: 40}}>
+          <Button
+        type="clear"
+        buttonStyle={{borderColor:this.state.check[2]?"#2761b8":"gray",borderWidth:2,margin:0,
+          paddingBottom:0,paddingTop:0,paddingLeft:2,paddingRight:2}}
+        containerStyle={{backgroundColor:"white"}}
+        icon={<Ionicons name="md-checkmark"size={25}
+        color={this.state.check[2]?"#2761b8":"gray"}/>}
+        value={this.state.check[2]}
+            onPress={() => {
               let checkReturn = this.state.check;
               this.state.check[0] = false;
               checkReturn[2] = !checkReturn[2];
@@ -98,7 +107,7 @@ export default class Sign1 extends Component {
               this.checkNext();
             }}
           />
-          <Text style={Terms.nt_item_text}>개인정보 처리방침 (필수)</Text>
+          <Text style={Terms.nt_item_text}>  개인정보 처리방침 (필수)</Text>
           <View style={{ flex: 1, alignItems: "flex-end" }}>
             <TouchableOpacity
               onPress={() => navigation.navigate("개인정보처리방침")}
@@ -108,11 +117,16 @@ export default class Sign1 extends Component {
           </View>
         </View>
 
-        <View style={Terms.nt_item}>
-          <Checkbox
-            disabled={false}
-            value={this.state.check[3]}
-            onValueChange={() => {
+        <View style={{alignItems: 'center', flexDirection:'row',marginBottom: 40}}>
+          <Button
+        type="clear"
+        buttonStyle={{borderColor:this.state.check[3]?"#2761b8":"gray",borderWidth:2,margin:0,
+          paddingBottom:0,paddingTop:0,paddingLeft:2,paddingRight:2}}
+        containerStyle={{backgroundColor:"white"}}
+        icon={<Ionicons name="md-checkmark"size={25}
+        color={this.state.check[3]?"#2761b8":"gray"}/>}
+        value={this.state.check[3]}
+            onPress={() => {
               let checkReturn = this.state.check;
               checkReturn[3] = !checkReturn[3];
               this.state.check[0] = false;
@@ -122,7 +136,7 @@ export default class Sign1 extends Component {
               this.checkNext();
             }}
           />
-          <Text style={Terms.nt_item_text}>위치정보 이용약관(필수)</Text>
+          <Text style={Terms.nt_item_text}>  위치정보 이용약관(필수)</Text>
           <View style={{ flex: 1, alignItems: "flex-end" }}>
             <TouchableOpacity
               onPress={() => navigation.navigate("위치정보 이용약관")}
@@ -132,12 +146,16 @@ export default class Sign1 extends Component {
           </View>
         </View>
 
-        {/* 선택 동의 란 */}
-        <View style={[Terms.nt_item, { marginBottom: 20 }]}>
-          <Checkbox
-            disabled={false}
-            value={this.state.check[4]}
-            onValueChange={() => {
+        <View style={{alignItems: 'center', flexDirection:'row',marginBottom: 40}}>
+          <Button
+        type="clear"
+        buttonStyle={{borderColor:this.state.check[4]?"#2761b8":"gray",borderWidth:2,margin:0,
+          paddingBottom:0,paddingTop:0,paddingLeft:2,paddingRight:2}}
+        containerStyle={{backgroundColor:"white"}}
+        icon={<Ionicons name="md-checkmark"size={25}
+        color={this.state.check[4]?"#2761b8":"gray"}/>}
+        value={this.state.check[4]}
+            onPress={() => {
               let checkReturn = this.state.check;
               checkReturn[4] = !checkReturn[4];
               checkReturn = [
@@ -155,7 +173,7 @@ export default class Sign1 extends Component {
               });
             }}
           />
-          <Text style={Terms.nt_item_text}>마케팅 정보 수신 (선택)</Text>
+          <Text style={Terms.nt_item_text}>  마케팅 정보 수신 (선택)</Text>
           <View style={{ flex: 1, alignItems: "flex-end" }}>
             <TouchableOpacity
               onPress={() => navigation.navigate("마케팅 정보 수신")}
@@ -165,13 +183,17 @@ export default class Sign1 extends Component {
           </View>
         </View>
 
-        {/*여기서 부터 선택 View*/}
         <View style={Terms.not_necessary_temrs}>
-          <View style={Terms.nnt_item}>
-            <Checkbox
-              disabled={false}
-              value={this.state.check[5]}
-              onValueChange={() => {
+        <View style={{alignItems: 'center', flexDirection:'row',marginBottom: 40}}>
+          <Button
+        type="clear"
+        buttonStyle={{borderColor:this.state.check[5]?"#2761b8":"gray",borderWidth:2,margin:0,
+          paddingBottom:0,paddingTop:0,paddingLeft:2,paddingRight:2}}
+        containerStyle={{backgroundColor:"white"}}
+        icon={<Ionicons name="md-checkmark"size={25}
+        color={this.state.check[5]?"#2761b8":"gray"}/>}
+        value={this.state.check[5]}
+              onPress={() => {
                 let checkReturn = this.state.check;
                 checkReturn[5] = !checkReturn[5];
                 this.setState({
@@ -179,14 +201,19 @@ export default class Sign1 extends Component {
                 });
               }}
             />
-            <Text>앱 Push</Text>
+            <Text>  앱 Push  </Text>
           </View>
 
-          <View style={Terms.nnt_item}>
-            <Checkbox
-              disabled={false}
-              value={this.state.check[6]}
-              onValueChange={() => {
+          <View style={{alignItems: 'center', flexDirection:'row',marginBottom: 40}}>
+          <Button
+        type="clear"
+        buttonStyle={{borderColor:this.state.check[6]?"#2761b8":"gray",borderWidth:2,margin:0,
+          paddingBottom:0,paddingTop:0,paddingLeft:2,paddingRight:2}}
+        containerStyle={{backgroundColor:"white"}}
+        icon={<Ionicons name="md-checkmark"size={25}
+        color={this.state.check[6]?"#2761b8":"gray"}/>}
+        value={this.state.check[6]}
+              onPress={() => {
                 let checkReturn = this.state.check;
                 checkReturn[6] = !checkReturn[6];
                 this.setState({
@@ -194,14 +221,19 @@ export default class Sign1 extends Component {
                 });
               }}
             />
-            <Text>SMS</Text>
+            <Text>  SMS  </Text>
           </View>
 
-          <View style={Terms.nnt_item}>
-            <Checkbox
-              disabled={false}
-              value={this.state.check[7]}
-              onValueChange={() => {
+          <View style={{alignItems: 'center', flexDirection:'row',marginBottom: 40}}>
+          <Button
+        type="clear"
+        buttonStyle={{borderColor:this.state.check[7]?"#2761b8":"gray",borderWidth:2,margin:0,
+          paddingBottom:0,paddingTop:0,paddingLeft:2,paddingRight:2}}
+        containerStyle={{backgroundColor:"white"}}
+        icon={<Ionicons name="md-checkmark"size={25}
+        color={this.state.check[7]?"#2761b8":"gray"}/>}
+        value={this.state.check[7]}
+              onPress={() => {
                 let checkReturn = this.state.check;
                 checkReturn[7] = !checkReturn[7];
                 this.setState({
@@ -209,7 +241,7 @@ export default class Sign1 extends Component {
                 });
               }}
             />
-            <Text>이메일</Text>
+            <Text>  이메일  </Text>
           </View>
 
           <Text style={{ fontSize: 12, color: "#a9a9a9" }}>
