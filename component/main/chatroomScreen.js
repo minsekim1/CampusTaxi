@@ -18,7 +18,7 @@ export default class chatroomScreen extends Component {
   }
   onGetChat = setInterval(()=>{
     userStore.readChats(this.state.bbs).then(r => {
-      if(this.state.chats != r){this.setState({ chats: r })}})
+      if(this.state.chats != r){this.setState({ chats: r });}})
   }, 1000);
   async endGetChat(){
     setTimeout(() => { clearInterval(this.onGetChat) }, 1500);
@@ -31,13 +31,12 @@ export default class chatroomScreen extends Component {
   }
   sendMessage() {
     if (this.state.textInput != "") {
+      this.setState({ textInput: "" });
       userStore.appendChat(this.state.bbs, this.state.textInput).then(r => {
         let temp = this.state.chats;
         temp.push(r);
         this.setState({ chats: temp });
       }).then(this.onRef());
-      this.setState({ textInput: "" });
-
     }
   }
   //#endregion
