@@ -1,53 +1,64 @@
 //실제 유저들이 채팅하는 화면
+const { AsyncStorage } = require('react-native');
+const Parse = require('parse/react-native');
+Parse.setAsyncStorage(AsyncStorage);
+Parse.serverURL = 'https://parseapi.back4app.com'; // This is your Server URL
+Parse.initialize(
+  'QIxx0z05s7WTf8IDw3vejf6IBS2Zi6n29e8UOUtE', // This is your Application ID
+  'tlWTYuPFV70yWFnSGPni91d1zL1etwwCIwYqDh3m' // This is your Javascript key
+);
+const client = new Parse.LiveQueryClient({
+  applicationId: 'QIxx0z05s7WTf8IDw3vejf6IBS2Zi6n29e8UOUtE',
+  serverURL: 'wss://' + 'chatting.b4a.io',
+  javascriptKey: 'tlWTYuPFV70yWFnSGPni91d1zL1etwwCIwYqDh3m'
+});
 export default class chatroomScreen extends Component {
   //#region 초기값
   constructor(props) {
     super(props);
-    this.state = { bbs: this.props.route.params.bbs, chats: [], textInput: "" };
+    this.state = { bbs: this.props.route.params.bbs, chats: [], textInput: "", test:"" };
+    console.log("client open");
+    client.open();
+      var query = new Parse.Query('chat');
+      query.equalTo('bbs',this.props.route.params.bbs);
+      var subscription = client.subscribe(query);
+      subscription.on('create', (r) => {
+        if(typeof r == 'object'){
+          this.setState({chats: [...this.state.chats,r]},
+            ()=>this.onRef()
+          )
+        }})
+      //open/create/update/enter/leave/delete/close
+      subscription.on('delete', () => 
+        userStore.readChats(this.props.route.params.bbs).then(r =>this.setState({chats:r})))
   }
-
   componentDidMount() {
-    this.refresh();
-    this.onGetChat;
+      userStore.readChats(this.props.route.params.bbs).then(r =>this.setState({chats:r},()=>this.onRef()));
+      setTimeout(()=>this.onRef(), 3000);
   }
+  
   onRef() {
-    let a = setInterval(() => {
       this.flatListRef.scrollToEnd({ animated: true });
-    }, 100);
-    setTimeout(() => { clearInterval(a) }, 1500);
+      console.log("onref");
   }
-  onGetChat = setInterval(()=>{
-    userStore.readChats(this.state.bbs).then(r => {
-      if(this.state.chats != r){this.setState({ chats: r });}})
-  }, 1000);
-  async endGetChat(){
-    setTimeout(() => { clearInterval(this.onGetChat) }, 1500);
+  async endChat(){
+    console.log("clinet close");
+    client.close();
   }
   async refresh() {
     userStore.readChats(this.state.bbs).then(r =>{
       if(this.state.chats != r){this.setState({ chats: r })}})
-    userStore.readBbs_objid(JSON.parse(JSON.stringify(this.state.bbs)).objectId).then(r => this.setState({ bbs: r }))
-      .then(this.onRef());
+    userStore.readBbs_objid(JSON.parse(JSON.stringify(this.state.bbs)).objectId).then(r => this.setState({ bbs: r },()=>this.onRef()))
   }
   sendMessage() {
     if (this.state.textInput != "") {
       this.setState({ textInput: "" });
-      userStore.appendChat(this.state.bbs, this.state.textInput).then(r => {
-        let temp = this.state.chats;
-        temp.push(r);
-        this.setState({ chats: temp });
-      }).then(this.onRef());
+      userStore.appendChat(this.state.bbs, this.state.textInput)
     }
   }
   //#endregion
   render() {
     const { navigation } = this.props;
-    // React.useEffect(() => {
-    //   const unsubscribe = navigation.addListener('focus', () => {
-    //     userStore.readBbs_objid(JSON.parse(JSON.stringify(this.state.bbs)).objectId).then(r => this.setState({ bbs: r }));
-    //   });
-    //   return unsubscribe;
-    // }, [navigation]);
     const style = {
       view: {
         position: "absolute",
@@ -98,7 +109,7 @@ export default class chatroomScreen extends Component {
           type="clear"
           title=""
           icon={<Ionicons name="md-arrow-back" size={24} color="white" />}
-          onPress={async() => {await this.endGetChat(); navigation.goBack()}}
+          onPress={async() => {await this.endChat(); navigation.goBack()}}
         ></Button>
         , rightComponent: <View style={{ flexDirection: "row" }}>
           <Button
@@ -123,7 +134,7 @@ export default class chatroomScreen extends Component {
                 + this.state.bbs.get('endplace').latitude + ","
                 + ","
                 + ",false,11591563/2";
-                await this.endGetChat();
+                await this.endChat();
               navigation.navigate("지도", { url: url });
             }}
             buttonStyle={{ marginRight: 3 }}
@@ -132,7 +143,7 @@ export default class chatroomScreen extends Component {
             type="clear"
             title=""
             icon={<Ionicons name="md-person" size={24} color="white" />}
-            onPress={async() => { await this.endGetChat();navigation.navigate("채팅방정보", { bbs: this.state.bbs }) }}
+            onPress={async() => { await this.endChat();navigation.navigate("채팅방정보", { bbs: this.state.bbs }) }}
             buttonStyle={{ marginRight: 3 }}
           />
         </View>
@@ -154,6 +165,7 @@ export default class chatroomScreen extends Component {
           </View>
         </View>
         {/* 채팅 내용부분 */}
+    <Text>{this.state.test}</Text>
         <FlatList
           data={this.state.chats}
           keyExtractor={(item, i) => String(i)}
