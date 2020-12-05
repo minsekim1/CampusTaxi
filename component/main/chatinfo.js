@@ -59,6 +59,15 @@ export default class chatinfo extends Component {
         }}
       />
       <View>
+      <Button buttonStyle={{ backgroundColor: "yellow", margin:30, borderRadius:100, borderColor:"black", borderBottomWidth:2}} titleStyle={{color:'black'}}
+      onPress={() => {
+        let url = "https://t.kakao.com/launch?type=taxi"+
+        "&origin_lat="+this.state.bbs.get('startplace').latitude+
+        "&origin_lng="+this.state.bbs.get('startplace').longitude+
+        "&dest_lat="+this.state.bbs.get('endplace').latitude+
+        "&dest_lng="+this.state.bbs.get('endplace').longitude
+        console.log("taxi url:"+url);Linking.openURL(url)
+        }} title="카카오택시 호출" />
         <Button buttonStyle={{ backgroundColor: "#172864" }} onPress={() => { userStore.outRoom(this.state.bbs); this.props.navigation.pop(2); }} title="방나가기" />
       </View>
     </>)
@@ -188,7 +197,7 @@ const hostSVG = ( //방장권한양도아이콘
 //#endregion
 //#region imports
 import React, { useState, useRef, Component, useEffect } from "react";
-import { View, Text, StyleSheet, FlatList, Image, StatusBar, TouchableHighlight } from "react-native";
+import { View, Text, StyleSheet, FlatList, Image, StatusBar, TouchableHighlight, Linking } from "react-native";
 import { Header, Button } from "react-native-elements";
 import campusStyle from "./campusStyle";
 import { TextInput } from "react-native-gesture-handler";

@@ -21,37 +21,35 @@ function Nav() {
         tabBarIcon: ({ focused, color, size }) => {
           //아이콘 설정
           let iconName;
-          if (route.name === "main") {
+          if (route.name === "홈") {
             iconName = focused ? "md-home" : "md-home";
-          } else if (route.name === "mychat") {
+          } else if (route.name === "내 채팅") {
             iconName = focused ? "md-chatboxes" : "md-chatboxes";
-          } else if (route.name === "map") {
+          } else if (route.name === "지도") {
             iconName = focused ? "md-map" : "md-map";
             // } else if (route.name === "alarm") {
             //   iconName = focused ? "alarm" : "alarm";
-          } else if (route.name === "setting") {
+          } else if (route.name === "설정") {
             iconName = focused ? "md-settings" : "md-settings";
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
       })}
       tabBarOptions={{
-        //아이콘 색상 설정
         activeTintColor: "tomato",
         inactiveTintColor: "gray",
       }}
     >
-      <t.Screen name="main" component={mainNav} />
-      <t.Screen name="mychat" component={mychatNav} />
-      <t.Screen name="map" component={mapNav} />
-      <t.Screen name="setting" component={settingNav} />
+      <t.Screen name="홈" component={mainNav} />
+      <t.Screen name="내 채팅" component={mychatNav} />
+      <t.Screen name="지도" component={mapNav} />
+      <t.Screen name="설정" component={settingNav} />
     </t.Navigator>
   )
 }
 
 const s = createStackNavigator();
 export default function App({ navigation }) {
-  
   const [state, dispatch] = React.useReducer(
     (prevState, action) => {
       switch (action.type) {

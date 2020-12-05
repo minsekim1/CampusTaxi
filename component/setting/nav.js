@@ -467,7 +467,7 @@ function clientpageAppvesion() {
         justifyContent: "center",
       }}
     >
-      <Text>{Constants.nativeAppVersion}</Text>
+      <Text>{Constants.platform=='ios'? Constants.manifest.ios.buildNumber:Constants.manifest.android.versionCode}</Text>
     </View>
   );
 }
