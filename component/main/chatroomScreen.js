@@ -25,7 +25,7 @@ export default class chatroomScreen extends Component {
       subscription.on('create', (r) => {
         if(typeof r == 'object'){
           this.setState({chats: [...this.state.chats,r]},
-            ()=>this.onRef()
+           ()=> setTimeout(()=>this.onRef(), 1000)
           )
         }})
       //open/create/update/enter/leave/delete/close
