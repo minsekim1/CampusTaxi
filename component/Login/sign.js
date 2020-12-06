@@ -22,7 +22,6 @@ export default class Sign1 extends Component {
   render() {
     const { navigation } = this.props;
 
-
     return (
       <View style={Terms.terms_container}>
         {/* 필수 동의 란 */}

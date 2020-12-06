@@ -13,6 +13,7 @@ import {
   CheckBox,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import univ_list from "./univ_list";
 
 export class addUser extends Component {
   constructor(props) {
@@ -155,8 +156,17 @@ export class addUser extends Component {
   async onChangeduniv(univ) {
     await this.setState({ univ: univ });
     this.checkStudentCard();
-    userStore.findUniv(univ).then((r) => { this.setState({ univSearch: r }); });
-
+    let arr = [];
+    if(univ==""){
+      this.setState({ univSearch: arr });
+      return ;
+    }
+   await univ_list.map(i=>{
+     if(i.univ.includes(this.state.univ)){
+      arr.push(i)
+     }
+    })
+    await this.setState({ univSearch: arr });
   }
 
   checkSign() {
@@ -366,21 +376,21 @@ export class addUser extends Component {
             <Text style={{ fontSize: 11, marginBottom: 2, color: "#7D849B" }}>
               대학교 검색결과
              </Text>
+
             {this.state.univSearch != null
               ?
-              this.state.univSearch.map((i) => {
-                const schoolName = i.univ_name;
+              this.state.univSearch.map(r => {
                 return (
                   <TouchableOpacity
-                    key={String(i.id)}
+                    key={String(r.id)}
                     style={{
                       borderBottomWidth: 1,
                       borderBottomColor: "gray",
                     }}
-                    onPress={() => this.onChangedUnivSelected(schoolName)}
+                    onPress={() => this.onChangedUnivSelected(r.univ)}
                   >
                     <Text style={{ margin: 10, padding: 10 }}>
-                      {schoolName}
+                      {r.univ}
                     </Text>
                   </TouchableOpacity>
                 );

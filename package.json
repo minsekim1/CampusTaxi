@@ -6,6 +6,7 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "upload": "git add . && git commit -m asd && git push",
+    "build":"expo build:android ",
     "a": "git pull && npm i && expo start"
   },
   "dependencies": {
