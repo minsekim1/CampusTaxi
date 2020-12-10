@@ -69,7 +69,7 @@ const view = StyleSheet.create({
   mainItemView: {
     flex: 2.5,
     backgroundColor: "#eaeaea",
-    marginTop: 80,
+    marginTop: 40,
     marginLeft: 20,
     marginRight: 20,
     marginBottom: 20,

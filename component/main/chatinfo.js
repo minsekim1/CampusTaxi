@@ -53,6 +53,14 @@ export default class chatinfo extends Component {
                 </View>
               </TouchableHighlight>
               ) : null}
+              <TouchableHighlight
+                underlayColor={"rgba(0,0,0,0.15)"}
+                onPress={() => SendEmail("제목: 아이디/닉네임/문의사항요약", "양식에 맞추어 이메일을 보내주세요.\n  \n 내용: 아이디 닉네임 문의사항 표기")}>
+                <View style={{ flex: 2, alignItems: "center", marginLeft:10,marginRight:10 }}>
+                  <FontAwesome5 name="exclamation" size={24} color="red" />
+                  <Text style={{ fontSize: 10 }}>신고하기</Text>
+                </View>
+              </TouchableHighlight>
             </View>
 
           );
@@ -206,4 +214,4 @@ import { Observer } from "mobx-react";
 import Svg, { G, Circle, Path } from "react-native-svg";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { userStore } from "../store/store";
-
+import SendEmail from "../setting/EmailComposer";

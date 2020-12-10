@@ -90,7 +90,6 @@ class HomeScreen extends Component {
               </View>
             </View>
           </View>
-          <Button onPress={() => console.log(userStore.user)}></Button>
           {/* 메인메뉴버튼부분 */}
           <View style={campusStyle.View.mainItemView}>
             <View style={campusStyle.View.rowflex}>
