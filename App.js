@@ -109,22 +109,37 @@ export default function App({ navigation }) {
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer >
-        <s.Navigator screenOptions={headerDisable}>
-          {state.userToken == null ? (
-            <s.Screen name="SignIn" component={LoginNav} />
-          ) : (
-              <s.Screen name="Home" component={Nav} />
-            )}
-        </s.Navigator>
-      </NavigationContainer>
+<s.Navigator screenOptions={headerDisable}>
+  {state.userToken == null ? (
+    <s.Screen name="SignIn" component={LoginNav} />
+  ) : (
+      <s.Screen name="Home" component={Nav} />
+    )}
+</s.Navigator>
+</NavigationContainer>
     </AuthContext.Provider>
   );
 }
 
+//import TestScreen from "./TestScreen"
 
 
 
 
+{/*
+      <TestScreen></TestScreen>
+    
+    */}/*
 
-
-
+<AuthContext.Provider value={authContext}>
+      <NavigationContainer >
+<s.Navigator screenOptions={headerDisable}>
+  {state.userToken == null ? (
+    <s.Screen name="SignIn" component={LoginNav} />
+  ) : (
+      <s.Screen name="Home" component={Nav} />
+    )}
+</s.Navigator>
+</NavigationContainer>
+    </AuthContext.Provider>
+    */

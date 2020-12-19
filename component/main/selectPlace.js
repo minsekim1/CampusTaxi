@@ -4,7 +4,7 @@ import { Text, View, TouchableOpacity } from "react-native";
 import { TextInput } from "react-native-paper";
 import MapView, { Polyline, Marker } from "react-native-maps";
 import Constants from "expo-constants";
-import * as Location from "expo-location";
+//import * as Location from "expo-location";
 
 export default function selectPlace(props, { navigation }) {
   //#region 변수&함수
@@ -33,38 +33,38 @@ export default function selectPlace(props, { navigation }) {
   const pinColor = "blue";
   const pinColorRS = "orange";
   const pinColorRE = "turquoise";
-  async function getMyPlace() {
-    let { coords } = await Location.getCurrentPositionAsync({});
-    setMyPlace({
-      latitude: coords.latitude,
-      longitude: coords.longitude,
-      latitudeDelta: 0.01,
-      longitudeDelta: 0.01,
-    });
-    setRegion({
-      latitude: coords.latitude,
-      longitude: coords.longitude,
-      latitudeDelta: 0.01,
-      longitudeDelta: 0.01,
-    });
-    return coords;
-  }
+  // async function getMyPlace() {
+  //   let { coords } = await Location.getCurrentPositionAsync({});
+  //   setMyPlace({
+  //     latitude: coords.latitude,
+  //     longitude: coords.longitude,
+  //     latitudeDelta: 0.01,
+  //     longitudeDelta: 0.01,
+  //   });
+  //   setRegion({
+  //     latitude: coords.latitude,
+  //     longitude: coords.longitude,
+  //     latitudeDelta: 0.01,
+  //     longitudeDelta: 0.01,
+  //   });
+  //   return coords;
+  // }
   useEffect(() => {
     if (Platform.OS === "android" && !Constants.isDevice) {
       alert("Oops, this will not work on Sketch in an Android emulator. Try it on your device!");
     } else {
       (async () => {
-        let { status } = await Location.requestPermissionsAsync();
-        if (status === 'granted') {
-          getMyPlace();
-        } else {
+        // let { status } = await Location.requestPermissionsAsync();
+        // if (status === 'granted') {
+        //   getMyPlace();
+        // } else {
           setRegion({
             latitude: 37.64116,
             longitude: 127.106604,
             latitudeDelta: 0.01,
             longitudeDelta: 0.01,
           });
-        }
+        // }
       })();
     }
   }, [navigation]);

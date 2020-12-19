@@ -1,13 +1,9 @@
 {
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "eject": "expo eject",
-    "upload": "git add . && git commit -m asd && git push",
-    "build":"expo build:android ",
-    "a": "git pull && npm i && expo start"
+    "upload": "git add . && git commit -m \"delete GPS seletePace.js \" && git push",
+    "build": "expo build:android -t app-bundle",
+    "push": "yarn build && yarn upload"
   },
   "dependencies": {
     "@expo/vector-icons": "^10.2.1",
@@ -33,6 +29,7 @@
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.4.tar.gz",
+    "react-native-daummap": "^0.2.8",
     "react-native-elements": "^3.0.0-alpha.1",
     "react-native-fs": "^2.16.6",
     "react-native-gesture-handler": "~1.7.0",
@@ -45,7 +42,8 @@
     "react-native-svg": "^12.1.0",
     "react-native-vector-icons": "^7.1.0",
     "react-native-web": "~0.13.12",
-    "react-native-webview": "^10.7.0"
+    "react-native-webview": "^10.7.0",
+    "styled-components": "^5.2.1"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.12.1",
