@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "expo start",
+    "start": "expo start --tunnel",
+    "s":"expo start",
     "upload": "git add . && git commit -m \"delete GPS seletePace.js \" && git push",
     "build": "expo build:android -t app-bundle",
     "push": "yarn build && yarn upload"
