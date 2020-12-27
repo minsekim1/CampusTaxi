@@ -348,6 +348,7 @@ export default class UserStore {
     return false;
   }
   async leaderPass(bbs, toUser) {
+    (await this.readUser_filter("nickname", this.user.get('nickname')))[0];
     const objid = JSON.parse(JSON.stringify(bbs)).objectId;
     return await this.updateBbs(objid, 'leader', toUser);
   }
@@ -374,6 +375,13 @@ export default class UserStore {
       bbs.save();
     }
     console.log('outRoom');
+  }
+  async kickUser(bbs, userNickname) {
+    let arr = bbs.get('personmember');
+    bbs.set('personpresent', bbs.get('personpresent') - 1);
+    bbs.set('personmember', arr.filter(i => i.get('nickname') != userNickname));
+    bbs.save();
+    console.log('kickUser');
   }
   //#endregion
   //#region chat

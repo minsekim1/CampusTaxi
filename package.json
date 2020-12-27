@@ -1,8 +1,8 @@
 {
   "scripts": {
     "start": "expo start --tunnel",
-    "s":"expo start",
-    "upload": "git add . && git commit -m \"delete GPS seletePace.js \" && git push",
+    "s": "expo start",
+    "upload": "git add . && git commit -m \"create kickUser chatroomScreen && create chatMenu && ios rebuild  \" && git push",
     "build": "expo build:android -t app-bundle",
     "push": "yarn build && yarn upload"
   },
@@ -36,6 +36,7 @@
     "react-native-gesture-handler": "~1.7.0",
     "react-native-maps": "^0.27.1",
     "react-native-paper": "^4.4.0",
+    "react-native-popover-view": "^3.1.1",
     "react-native-reanimated": "~1.13.0",
     "react-native-responsive-screen": "^1.4.1",
     "react-native-safe-area-context": "3.1.4",
@@ -48,7 +49,8 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.12.1",
-    "@babel/plugin-proposal-decorators": "^7.12.1"
+    "@babel/plugin-proposal-decorators": "^7.12.1",
+    "react-native-select-list": "^1.0.5"
   },
   "private": true
 }

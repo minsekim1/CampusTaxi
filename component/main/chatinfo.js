@@ -56,7 +56,7 @@ export default class chatinfo extends Component {
               <TouchableHighlight
                 underlayColor={"rgba(0,0,0,0.15)"}
                 onPress={() => SendEmail("제목: 아이디/닉네임/문의사항요약", "양식에 맞추어 이메일을 보내주세요.\n  \n 내용: 아이디 닉네임 문의사항 표기")}>
-                <View style={{ flex: 2, alignItems: "center", marginLeft:10,marginRight:10 }}>
+                <View style={{ flex: 2, alignItems: "center", marginLeft: 10, marginRight: 10 }}>
                   <FontAwesome5 name="exclamation" size={24} color="red" />
                   <Text style={{ fontSize: 10 }}>신고하기</Text>
                 </View>
@@ -67,15 +67,15 @@ export default class chatinfo extends Component {
         }}
       />
       <View>
-      <Button buttonStyle={{ backgroundColor: "yellow", margin:30, borderRadius:100, borderColor:"black", borderBottomWidth:2}} titleStyle={{color:'black'}}
-      onPress={() => {
-        let url = "https://t.kakao.com/launch?type=taxi"+
-        "&origin_lat="+this.state.bbs.get('startplace').latitude+
-        "&origin_lng="+this.state.bbs.get('startplace').longitude+
-        "&dest_lat="+this.state.bbs.get('endplace').latitude+
-        "&dest_lng="+this.state.bbs.get('endplace').longitude
-        console.log("taxi url:"+url);Linking.openURL(url)
-        }} title="카카오택시 호출" />
+        <Button buttonStyle={{ backgroundColor: "yellow", margin: 30, borderRadius: 100, borderColor: "black", borderBottomWidth: 2 }} titleStyle={{ color: 'black' }}
+          onPress={() => {
+            let url = "https://t.kakao.com/launch?type=taxi" +
+              "&origin_lat=" + this.state.bbs.get('startplace').latitude +
+              "&origin_lng=" + this.state.bbs.get('startplace').longitude +
+              "&dest_lat=" + this.state.bbs.get('endplace').latitude +
+              "&dest_lng=" + this.state.bbs.get('endplace').longitude
+            console.log("taxi url:" + url); Linking.openURL(url)
+          }} title="카카오택시 호출" />
         <Button buttonStyle={{ backgroundColor: "#172864" }} onPress={() => { userStore.outRoom(this.state.bbs); this.props.navigation.pop(2); }} title="방나가기" />
       </View>
     </>)

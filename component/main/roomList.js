@@ -59,7 +59,7 @@ export default function roomList({ route, navigation }) {
         <View style={{ flex: 6 }}>
           <View style={campusStyle.View.row}>
             <Image style={{ width: 23, height: 15, marginLeft: 10 }} source={crown} />
-            <Text>{(String(item.get('leader').get('nickname')).length > 9) ? String(item.get('leader').get('nickname')).substring(0, 9) + "..." : String(item.get('leader').get('nickname'))}</Text>
+            <Text>{_.isUndefined(item.get('leader')) ? null : (String(item.get('leader').get('nickname')).length > 9) ? String(item.get('leader').get('nickname')).substring(0, 9) + "..." : String(item.get('leader').get('nickname'))}</Text>
           </View>
           <Text style={{ marginLeft: 10 }}>
             출발지:{item.get('startplace').name}
@@ -121,6 +121,7 @@ import {
 } from "react-native";
 // import * as TimeAPI from "../Email/globalTimeAPI.js";
 import { useFocusEffect } from '@react-navigation/native';
+import _ from 'lodash';
 import { Header, Button, Text } from "react-native-elements";
 import campusStyle from "./campusStyle";
 import crown from "./image/crown.png";
