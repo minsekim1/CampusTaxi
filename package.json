@@ -2,7 +2,7 @@
   "scripts": {
     "start": "expo start --tunnel",
     "s": "expo start",
-    "upload": "git add . && git commit -m \"create kickUser chatroomScreen && create chatMenu && ios rebuild  \" && git push",
+    "upload": "git add . && git commit -m \"Update : BackHandler Double Exit in MainScreen.js \" && git push",
     "b_and": "expo build:android -t app-bundle",
     "b_ios": "expo build:ios -t archive",
     "push": "yarn build && yarn upload"
@@ -42,6 +42,7 @@
     "react-native-responsive-screen": "^1.4.1",
     "react-native-safe-area-context": "3.1.4",
     "react-native-screens": "~2.10.1",
+    "react-native-simple-toast": "^1.1.3",
     "react-native-svg": "^12.1.0",
     "react-native-vector-icons": "^7.1.0",
     "react-native-web": "~0.13.12",

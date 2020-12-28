@@ -3,6 +3,23 @@ export default function roomList({ route, navigation }) {
   //#region 
   const bbstype = route.params.bbstype;
   const [bbslist, setBbslist] = useState([]);
+
+  // 뒤로가기 버튼 제어
+  React.useEffect(() => {
+    navigation.addListener('focus', () => {
+      BackHandler.addEventListener("hardwareBackPress", handleBackButton)
+      console.log("focus roomList");
+    });
+    navigation.addListener('blur', () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
+      console.log("blur roomList");
+    })
+    console.log("useEffect 2");
+  }, []);
+  const handleBackButton = () => {
+    console.log("asd");
+  }
+
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       userStore.readBbs_filter("bbstype", bbstype).then(r => setBbslist(r))
@@ -117,7 +134,7 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
-  ScrollView, SafeAreaView, StatusBar
+  ScrollView, SafeAreaView, StatusBar, BackHandler
 } from "react-native";
 // import * as TimeAPI from "../Email/globalTimeAPI.js";
 import { useFocusEffect } from '@react-navigation/native';

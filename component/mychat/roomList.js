@@ -2,6 +2,22 @@
 export default function roomList({ route, navigation }) {
   //#region 
   const [bbslist, setBbslist] = useState([]);
+  // 뒤로가기 버튼 제어
+  React.useEffect(() => {
+    navigation.addListener('focus', () => {
+      BackHandler.addEventListener("hardwareBackPress", handleBackButton)
+      console.log("focus mychat roomList");
+    });
+    navigation.addListener('blur', () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
+      console.log("blur mychat roomList");
+    })
+    console.log("useEffect");
+  }, []);
+  const handleBackButton = () => {
+    console.log("asd");
+  }
+
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       userStore.readBbs_member().then(r => setBbslist(r))
@@ -98,7 +114,7 @@ import {
   View,
   FlatList,
   Image,
-  TouchableOpacity,
+  TouchableOpacity, BackHandler,
   ScrollView, SafeAreaView, StatusBar
 } from "react-native";
 // import * as TimeAPI from "../Email/globalTimeAPI.js";
