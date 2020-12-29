@@ -5,7 +5,6 @@ import MainScreen from "./MainScreen"
 import createRoom from "./createRoom"
 import selectPlace from "./selectPlace"
 import map from '../map/map';
-import chatinfo from './chatinfo';
 import roomList from './roomList';
 import chatroomScreen from './chatroomScreen';
 const s = createStackNavigator();
@@ -17,7 +16,6 @@ export default function mainNav() {
       <s.Screen name="모든 채팅방 목록" component={roomList} />
       <s.Screen name="채팅방" component={chatroomScreen} />
       <s.Screen name="방 만들기" component={createRoom} />
-      <s.Screen name="채팅방정보" component={chatinfo} />
       <s.Screen name="지도검색" component={selectPlace} />
       <s.Screen name="지도" component={map} />
     </s.Navigator>

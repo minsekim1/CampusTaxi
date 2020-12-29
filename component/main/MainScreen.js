@@ -36,13 +36,12 @@ function HomeScreen({ route, navigation }) {
       if (!user || !user.id)
         navigation.navigate("SignIn");
       BackHandler.addEventListener("hardwareBackPress", handleBackButton)
-      console.log("focus MainScreen");
+      //console.log("focus MainScreen");
     });
     navigation.addListener('blur', () => {
       BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
-      console.log("blur MainScreen");
+      //console.log("blur MainScreen");
     })
-    console.log("useEffect");
   }, []);
   const handleBackButton = () => {
     if (currentCount < 1) {

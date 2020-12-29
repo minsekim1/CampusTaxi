@@ -2,7 +2,6 @@ import * as React from "react";
 import { Component, useState } from "react";
 import { userStore } from "../store/store";
 import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
-import { AuthContext } from "../store/UserStore"
 import { Button } from "react-native-paper";
 import { CustomContext } from "../store/context";
 

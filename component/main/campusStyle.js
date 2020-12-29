@@ -52,7 +52,6 @@ const view = StyleSheet.create({
     alignItems: "center",
   },
   row: {
-    marginTop: 20,
     flexDirection: "row",
   },
   rowflex: {

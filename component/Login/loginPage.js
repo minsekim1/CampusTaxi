@@ -27,11 +27,11 @@ export default function loginPage({ route, navigation }) {
   React.useEffect(() => {
     navigation.addListener('focus', () => {
       BackHandler.addEventListener("hardwareBackPress", handleBackButton)
-      console.log("focus loginPage");
+      //console.log("focus loginPage");
     });
     navigation.addListener('blur', () => {
       BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
-      console.log("blur loginPage");
+      //console.log("blur loginPage");
     })
   }, []);
   const handleBackButton = () => {

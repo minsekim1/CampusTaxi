@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, ScrollView, Linking, StyleSheet, SectionList, FlatList } from "react-native";
+import { View, Text, ScrollView, Linking, StyleSheet, SectionList, FlatList, BackHandler } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 const s = createStackNavigator();
 import { Button, ThemeProvider, ListItem, Divider } from "react-native-elements";
@@ -9,8 +9,33 @@ import { TextInput } from "react-native";
 import { Picker } from "@react-native-community/picker";
 import { userStore } from "../store/store";
 import Constants from "expo-constants";
-
+import Toast from 'react-native-simple-toast';
 function HomeScreen({ navigation }) {
+  //#region  뒤로가기 버튼 제어 & 더블클릭시 앱 종료
+  let currentCount = 0;
+  React.useEffect(() => {
+    navigation.addListener('focus', () => {
+      BackHandler.addEventListener("hardwareBackPress", handleBackButton)
+      //console.log("focus MainScreen");
+    });
+    navigation.addListener('blur', () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
+      //console.log("blur MainScreen");
+    })
+  }, []);
+  const handleBackButton = () => {
+    if (currentCount < 1) {
+      currentCount += 1;
+      Toast.show('뒤로 가기를 한번 더 누르면 앱이 종료됩니다.\n로그아웃은 설정->로그아웃으로 가주세요.', Toast.LONG, Toast.BOTTOM);
+    } else {
+      BackHandler.exitApp();
+    }
+    setTimeout(() => {
+      currentCount = 0;
+    }, 2000);
+    return true;
+  }
+  ////#endregion
   // {
   //   type: "text",
   //   title: "알림 설정",
@@ -47,9 +72,12 @@ function HomeScreen({ navigation }) {
       navigation: "앱 버전",
     },
     {
-      type: "text",
+      type: "button",
       title: "문의하기",
-      navigation: "문의하기",
+      ft_function: () => {
+        const myname = userStore.user.get('nickname');
+        SendEmail("캠퍼스택시 문의 / 내닉네임(" + myname + ") ", "양식에 맞추어 이메일을 보내주세요.\n\n \n내닉네임(" + myname + ")\n\n문의사항:\n")
+      }
     },
     {
       type: "title",
@@ -538,33 +566,6 @@ export function clientpagePolicy4() {
 import SendEmail from "./EmailComposer";
 import { useState } from "react";
 import { CustomContext } from "../store/context.js";
-function clientpageQuestion({ navigation: { goBack } }) {
-  const [email_title, setemail_title] = useState(
-    "제목: 아이디/닉네임/문의사항요약"
-  );
-  const [email_body, setemail_body] = useState(
-    "양식에 맞추어 이메일을 보내주세요.\n  \n 내용: 아이디 닉네임 문의사항 표기"
-  );
-
-  function GO_SendFunction() {
-    SendEmail(email_title, email_body);
-  }
-  return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <View>
-        {GO_SendFunction()}
-        {goBack()}
-      </View>
-    </View>
-  );
-}
-
 function setting() {
   return (
     <s.Navigator
@@ -622,11 +623,6 @@ function setting() {
         options={navOptions}
         name="앱 버전"
         component={clientpageAppvesion}
-      />
-      <s.Screen
-        options={navOptions}
-        name="문의하기"
-        component={clientpageQuestion}
       />
       <s.Screen
         options={navOptions}

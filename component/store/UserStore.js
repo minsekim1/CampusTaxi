@@ -4,9 +4,6 @@
 import { observable, action, reaction, autorun, runInAction } from 'mobx';
 import axios from 'axios';
 import React, { Component } from 'react';
-import { log } from 'react-native-reanimated';
-export const AuthContext = React.createContext();
-
 export default class UserStore {
   state = observable({ user: null });
 

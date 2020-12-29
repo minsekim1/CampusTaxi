@@ -62,7 +62,8 @@ export default class chatroomScreen extends Component {
     });
   }
   onRef() {
-    this.flatListRef.scrollToEnd({ animated: true });
+    if (!!this.flatListRef && !!this.flatListRef.scrollToEnd)
+      this.flatListRef.scrollToEnd({ animated: true });
     console.log("onref");
   }
   async endChat() {
@@ -271,69 +272,65 @@ export default class chatroomScreen extends Component {
         }}
       />;
     return (
-      <Container>
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-          {/*  팝업유저 강퇴/차단/신고/위임기능 */}
-          <Popover from={new Rect(wp(50), hp(60), 0, 0)} isVisible={this.state.showPopover} onRequestClose={() => this.setState({ showPopover: false })}>
-            <View style={{ margin: 10 }}>
-              {this.state.popIsmandate ? null : <Text>{this.state.popNickname}</Text>}
-              {this.state.popIsmandate ? null : <Button_styled title="강퇴하기" onPress={() => ft_kick(this.state.bbs, this.state.popNickname)} />}
-              {true ? null : <Button_styled title="밴 하기" onPress={() => ft_ban(this.state.popNickname)} />}
-              <Button_styled title="신고하기" onPress={() => ft_report(this.state.popNickname)} />
-              {this.state.popIsmandate ? null : <Button_styled title="방장위임" onPress={() => ft_mandate(this.state.popNickname)} />}
-            </View>
-          </Popover>
-          <View style={{ height: hp(20), marginBottom: 30 }}>
-            {/* 채팅방 메뉴 */}
-            {this.state.showMenu ?
-              <Animated.View style={_getStyle()}>
-                <TouchableOpacity style={chatroomScreen_style.background} onPress={() => this.hideMenu()} activeOpacity={0.2} />
-                <View style={chatroomScreen_style.menu}>
-                  <Text style={chatroomScreen_style.menu_text}>채팅방 메뉴</Text>
-                  <Menu_Btn title="지도 보기" icon="md-map" onPress={ft_showMap} />
-                  <Menu_Btn title="카카오택시 호출" icon="ios-car" onPress={ft_callTaxi} />
-                  <Text style={chatroomScreen_style.menu_text}>대화 상대</Text>
-                  <FlatList_member />
-                </View>
-              </Animated.View>
-              : null}
-            <View style={style.view}>
-              <Header
-                containerStyle={style.header.container}
-                backgroundColor={style.header.color}
-                leftComponent={style.header.leftComponent}
-                centerComponent={style.header.centerComponent}
-                rightComponent={style.header.rightComponent}
-              />
-            </View>
+      <>
+        {/*  팝업유저 강퇴/차단/신고/위임기능 */}
+        <Popover from={new Rect(wp(50), hp(60), 0, 0)} isVisible={this.state.showPopover} onRequestClose={() => this.setState({ showPopover: false })}>
+          <View style={{ margin: 10 }}>
+            {this.state.popIsmandate ? null : <Text>{this.state.popNickname}</Text>}
+            {this.state.popIsmandate ? null : <Button_styled title="강퇴하기" onPress={() => ft_kick(this.state.bbs, this.state.popNickname)} />}
+            {false ? null : <Button_styled title="밴 하기" onPress={() => ft_ban(this.state.popNickname)} />}
+            <Button_styled title="신고하기" onPress={() => ft_report(this.state.popNickname)} />
+            {this.state.popIsmandate ? null : <Button_styled title="방장위임" onPress={() => ft_mandate(this.state.popNickname)} />}
           </View>
-          {/* 채팅 내용부분 */}
-          <FlatList
-            data={this.state.chats}
-            keyExtractor={(item, i) => String(i)}
-            ref={(ref) => this.flatListRef = ref}
-            renderItem={({ item }) => <ChattingItem item={item} bbs={this.state.bbs} />}
+        </Popover>
+        <View style={{ height: hp(20), marginBottom: 30 }}>
+          {/* 채팅방 메뉴 */}
+          {this.state.showMenu ?
+            <Animated.View style={_getStyle()}>
+              <TouchableOpacity style={chatroomScreen_style.background} onPress={() => this.hideMenu()} activeOpacity={0.2} />
+              <View style={chatroomScreen_style.menu}>
+                <Text style={chatroomScreen_style.menu_text}>채팅방 메뉴</Text>
+                <Menu_Btn title="지도 보기" icon="md-map" onPress={ft_showMap} />
+                <Menu_Btn title="카카오택시 호출" icon="ios-car" onPress={ft_callTaxi} />
+                <Text style={chatroomScreen_style.menu_text}>대화 상대</Text>
+                <FlatList_member />
+              </View>
+            </Animated.View>
+            : null}
+          <Header
+            containerStyle={style.header.container}
+            backgroundColor={style.header.color}
+            leftComponent={style.header.leftComponent}
+            centerComponent={style.header.centerComponent}
+            rightComponent={style.header.rightComponent}
           />
+        </View>
+        {/* 채팅 내용부분 */}
+        <FlatList
+          data={this.state.chats}
+          keyExtractor={(item, i) => String(i)}
+          ref={(ref) => this.flatListRef = ref}
+          renderItem={({ item }) => <ChattingItem item={item} bbs={this.state.bbs} />}
+        />
 
-          {/* 채팅 Input 부분 */}
-          <View style={campusStyle.View.wideWhite}>
-            <View style={{ flex: 4 }}>
-              <TextInput
-                value={this.state.textInput}
-                onChangeText={(textEntry) => {
-                  this.setState({ textInput: textEntry });
-                }}
-                onSubmitEditing={() => this.sendMessage(this.state.bbs)}
-              />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Button title="전송" buttonStyle={{ backgroundColor: "#1e45c7" }} onPress={() => this.sendMessage(this.state.bbs)}>
-                {/* <Image style={campusStyle.Image.middleSize} /> */}
-              </Button>
-            </View>
+        {/* 채팅 Input 부분 */}
+        <View style={campusStyle.View.wideWhite}>
+          <View style={{ flex: 4 }}>
+            <TextInput
+              value={this.state.textInput}
+              onChangeText={(textEntry) => {
+                this.setState({ textInput: textEntry });
+              }}
+              onSubmitEditing={() => this.sendMessage(this.state.bbs)}
+            />
           </View>
-        </KeyboardAvoidingView>
-      </Container >
+          <View style={{ flex: 1 }}>
+            <Button title="전송" buttonStyle={{ backgroundColor: "#1e45c7" }} onPress={() => this.sendMessage(this.state.bbs)}>
+              {/* <Image style={campusStyle.Image.middleSize} /> */}
+            </Button>
+          </View>
+        </View>
+      </ >
     );
   }
 }
@@ -490,10 +487,6 @@ import Svg, { G, Circle, Path } from "react-native-svg";
 import Popover, { PopoverMode, PopoverPlacement, Rect } from 'react-native-popover-view';
 import SendEmail from "../setting/EmailComposer";
 import _ from 'lodash'
-const Container = styled.SafeAreaView`
-  flex: 1;
-  padding-top: ${Constants.statusBarHeight}px;
-`;
 const KeyboardAvoidingView = styled.KeyboardAvoidingView`
   flex: 1;
 `;
