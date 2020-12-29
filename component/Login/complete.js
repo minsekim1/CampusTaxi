@@ -4,9 +4,10 @@ import { userStore } from "../store/store";
 import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { AuthContext } from "../store/UserStore"
 import { Button } from "react-native-paper";
+import { CustomContext } from "../store/context";
 
 export function complete({ route, navigation }) {
-  const { signIn } = React.useContext(AuthContext);
+  const { setId, setPw } = useContext(CustomContext);
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#ffffff", }}>
       {/* logo && title */}
@@ -53,7 +54,7 @@ export function complete({ route, navigation }) {
           </View>
           <View style={button_style.next_button}>
             <TouchableOpacity
-              onPress={async () => { await userStore.login(route.params.id, route.params.pw).then((r) => { if (r !== null) { signIn(route.params.id, route.params.pw) } }) }}
+              onPress={async () => { await userStore.login(route.params.id, route.params.pw).then((r) => { if (r !== null) { setId(route.params.id); setPw(route.params.pw) } }) }}
               color="#162A64"
             >
               <Text

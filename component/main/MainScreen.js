@@ -7,6 +7,7 @@ import {
   TouchableHighlight,
   BackHandler,
   FlatList,
+  KeyboardAvoidingView,
 } from "react-native";
 import campusStyle from "./campusStyle";
 import ad from "./image/ad.png";
@@ -22,12 +23,18 @@ import ocean from "./image/ocean.png";
 import { userStore } from "../store/store";
 import { Button } from "react-native-paper";
 import Toast from 'react-native-simple-toast';
+import { CustomContext } from "../store/context";
+import styled from 'styled-components/native';
+import { heightPercentageToDP, widthPercentageToDP } from "react-native-responsive-screen";
 
 function HomeScreen({ route, navigation }) {
   // 뒤로가기 버튼 제어 & 더블클릭시 앱 종료
   let currentCount = 0;
+  const { user } = React.useContext(CustomContext);
   React.useEffect(() => {
     navigation.addListener('focus', () => {
+      if (!user || !user.id)
+        navigation.navigate("SignIn");
       BackHandler.addEventListener("hardwareBackPress", handleBackButton)
       console.log("focus MainScreen");
     });
@@ -57,7 +64,7 @@ function HomeScreen({ route, navigation }) {
         activeOpacity={0.5}
         underlayColor="#DDDDDD"
         onPress={async () => {
-          let status = userStore.user.get('userStatus');
+          let status = 1//userStore.user.get('userStatus');
           if (status == 1) {
             navigation.navigate("모든 채팅방 목록", {
               bbstype: bbstype,
@@ -89,82 +96,76 @@ function HomeScreen({ route, navigation }) {
     );
   }
 
-
   return (
-    <>
-      <View style={campusStyle.View.container}>
-        <View style={campusStyle.View.backgroundColorBlue}>
-          <View>
-            <View style={campusStyle.View.mainHeaderBackground}>
-              <View style={campusStyle.View.row}>
-                <Text style={{ color: "white", fontSize: 18, marginTop: 30 }}> CAMPUS TAXI</Text>
-              </View>
-              <Text style={campusStyle.Text.mainUnivText}>
-                {userStore.user.get('univ')}
+    <View>
+      <View style={campusStyle.View.backgroundColorBlue}>
+        <View style={campusStyle.View.mainHeaderBackground}>
+          <Text style={{ color: "white", fontSize: 18, marginTop: 50 }}> CAMPUS TAXI</Text>
+          <Text style={campusStyle.Text.mainUnivText}>
+            {/*userStore.user.get('univ')*/}univ
               </Text>
-              <Image style={campusStyle.Image.mainImage} source={ad} />
-            </View>
+          <Image style={campusStyle.Image.mainImage} source={ad} />
+        </View>
+      </View>
+      {/* 메인메뉴버튼부분 */}
+      <View style={campusStyle.View.mainItemView}>
+        <View style={campusStyle.View.rowflex}>
+          <View style={campusStyle.View.container}>
+            <MenuItem
+              bbstype="등교"
+              imageURL={school}
+              navigation={navigation}
+            />
+          </View>
+          <View style={campusStyle.View.container}>
+            <MenuItem bbstype="하교" imageURL={bus} navigation={navigation} />
+          </View>
+          <View style={campusStyle.View.container}>
+            <MenuItem bbstype="야작" imageURL={pen} navigation={navigation} />
           </View>
         </View>
-        {/* 메인메뉴버튼부분 */}
-        <View style={campusStyle.View.mainItemView}>
-          <View style={campusStyle.View.rowflex}>
-            <View style={campusStyle.View.container}>
-              <MenuItem
-                bbstype="등교"
-                imageURL={school}
-                navigation={navigation}
-              />
-            </View>
-            <View style={campusStyle.View.container}>
-              <MenuItem bbstype="하교" imageURL={bus} navigation={navigation} />
-            </View>
-            <View style={campusStyle.View.container}>
-              <MenuItem bbstype="야작" imageURL={pen} navigation={navigation} />
-            </View>
-          </View>
 
-          <View style={campusStyle.View.rowflex}>
-            <View style={campusStyle.View.container}>
-              <MenuItem
-                bbstype="독서실"
-                imageURL={study}
-                navigation={navigation}
-              />
-            </View>
-            <View style={campusStyle.View.container}>
-              <MenuItem bbstype="PC방" imageURL={game} navigation={navigation} />
-            </View>
-            <View style={campusStyle.View.container}>
-              <MenuItem
-                bbstype="놀이동산"
-                imageURL={party}
-                navigation={navigation}
-              />
-            </View>
+        <View style={campusStyle.View.rowflex}>
+          <View></View>
+          <View style={campusStyle.View.container}>
+            <MenuItem
+              bbstype="독서실"
+              imageURL={study}
+              navigation={navigation}
+            />
           </View>
-          <View style={campusStyle.View.rowflex}>
-            <View style={campusStyle.View.container}>
-              <MenuItem bbstype="클럽" imageURL={club} navigation={navigation} />
-            </View>
-            <View style={campusStyle.View.container}>
-              <MenuItem
-                bbstype="스키장"
-                imageURL={ski}
-                navigation={navigation}
-              />
-            </View>
-            <View style={campusStyle.View.container}>
-              <MenuItem
-                bbstype="오션월드"
-                imageURL={ocean}
-                navigation={navigation}
-              />
-            </View>
+          <View style={campusStyle.View.container}>
+            <MenuItem bbstype="PC방" imageURL={game} navigation={navigation} />
+          </View>
+          <View style={campusStyle.View.container}>
+            <MenuItem
+              bbstype="놀이동산"
+              imageURL={party}
+              navigation={navigation}
+            />
+          </View>
+        </View>
+        <View style={campusStyle.View.rowflex}>
+          <View style={campusStyle.View.container}>
+            <MenuItem bbstype="클럽" imageURL={club} navigation={navigation} />
+          </View>
+          <View style={campusStyle.View.container}>
+            <MenuItem
+              bbstype="스키장"
+              imageURL={ski}
+              navigation={navigation}
+            />
+          </View>
+          <View style={campusStyle.View.container}>
+            <MenuItem
+              bbstype="오션월드"
+              imageURL={ocean}
+              navigation={navigation}
+            />
           </View>
         </View>
       </View>
-    </>
+    </View>
   );
 }
 //#endregion 작업완료

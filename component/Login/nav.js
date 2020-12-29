@@ -15,7 +15,7 @@ const s = createStackNavigator();
 const headerDisable = { headerShown: false };
 export default function LoginNav() {
   return (
-    <s.Navigator >
+    <s.Navigator>
       <s.Screen name="login" component={loginPage} options={headerDisable} />
       <s.Screen name="회원가입" component={sign} />
       <s.Screen name="서비스 이용약관" component={clientpagePolicy3} />

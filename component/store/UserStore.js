@@ -135,13 +135,14 @@ export default class UserStore {
       });
     });
   }
-  async login(username, password) {//id=user.username
+  async login(username, password) {
     await Parse.User.logIn(username, password).then((r) => { this.user = r }).catch(error => {
       this.user = null;
       alert('로그인에 실패했습니다. 아이디, 비밀번호를 확인해주세요.\n' + error);
     }); return this.user;
   }
-  logout() { Parse.User.logOut(this.user.sessionToken); this.user = null; }
+  logout() { Parse.User.logOut(); }
+
   verifyingEmail(email) {
     axios({
       method: 'post',
@@ -422,13 +423,6 @@ export default class UserStore {
     }
     date = date[3] + "년 " + date[1] + " " + date[2] + "일 " + date[4] + "(" + date[0] + ")";
     return date;
-  }
-  isLogin() {
-    if (this.user == null) {
-      return false;
-    } else {
-      return true;
-    }
   }
   toRoomDateKR(date) {
     const arr = ["Mon", "월", "Tue", "화", "Wed", "수", "Thu", "목", "Fri", "금", "Sat", "토", "Sun", "일", "Jan", "1", "Feb", "2", "Mar", "3", "Apr", "4", "May", "5", "Jun", "6", "Jul", "7", "Aug", "8", "Sep", "9", "Oct", "10", "Nov", "11", "Dec", "12"]

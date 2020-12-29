@@ -31,7 +31,6 @@ const view = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "#eaeaea",
   },
   container0: {
     margin: 0,
@@ -46,12 +45,14 @@ const view = StyleSheet.create({
   },
   backgroundColorBlue: {
     backgroundColor: "#0d3664",
+    height: hp(30)
   },
   mainHeaderBackground: {
     marginTop: "4%",
     alignItems: "center",
   },
   row: {
+    marginTop: 20,
     flexDirection: "row",
   },
   rowflex: {
@@ -67,12 +68,11 @@ const view = StyleSheet.create({
     justifyContent: "center",
   },
   mainItemView: {
-    flex: 2.5,
-    backgroundColor: "#eaeaea",
-    marginTop: 40,
-    marginLeft: 20,
-    marginRight: 20,
-    marginBottom: 20,
+    padding: 20,
+    paddingTop: 30,
+    paddingBottom: 10,
+    height: hp(60),
+
   },
   mainItemTouchItem: {
     flex: 1,
@@ -80,8 +80,8 @@ const view = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "white",
     borderRadius: 10,
-    margin: 6,
-    borderColor: "#ddd",
+    margin: 10,
+    borderColor: "gray",
     borderBottomWidth: 0,
     shadowColor: "black",
     shadowOffset: { width: 0, height: 0 },
@@ -245,10 +245,11 @@ const button = StyleSheet.create({
 //#region image
 const image = StyleSheet.create({
   mainImage: {
-    transform: [{ translateY: 30 }],
-    width: "80%",
+    width: wp(60),
     height: 100,
     resizeMode: "contain",
+    position: "relative",
+    top: 30
   },
   middleSize: {
     width: 45,

@@ -8,41 +8,75 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
-  ImageBackground,Switch
+  ImageBackground, Switch, BackHandler
 } from "react-native";
-import { Button  } from "react-native-paper";
+import Toast from 'react-native-simple-toast';
+import _ from "lodash";
+import { Button } from "react-native-paper";
 import { userStore } from "../store/store";
-import { AuthContext } from "../store/UserStore"
 import LogoWhite from "./logoWhite.js";
+import { CustomContext } from "../store/context";
+//import { LoginContext } from "../../App";
 export default function loginPage({ route, navigation }) {
-  const [id, setId] = useState('');
-  const [pw, setPw] = useState('');
+  const [id, changeId] = useState('');
+  const [pw, changePw] = useState('');
   const [autoLogin, setAutoLogin] = useState(false);
-  const { signIn } = React.useContext(AuthContext);
+  const { setUser, setToken, setId, setPw, user } = React.useContext(CustomContext);
+  // 뒤로가기 버튼 제어 & 더블클릭시 앱 종료
+  let currentCount = 0;
+  React.useEffect(() => {
+    navigation.addListener('focus', () => {
+      BackHandler.addEventListener("hardwareBackPress", handleBackButton)
+      console.log("focus loginPage");
+    });
+    navigation.addListener('blur', () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
+      console.log("blur loginPage");
+    })
+  }, []);
+  const handleBackButton = () => {
+    if (currentCount < 1) {
+      currentCount += 1;
+      Toast.show('뒤로 가기를 한번 더 누르면 앱이 종료됩니다.\n로그아웃은 설정->로그아웃으로 가주세요.', Toast.LONG, Toast.BOTTOM);
+    } else {
+      BackHandler.exitApp();
+    }
+    setTimeout(() => {
+      currentCount = 0;
+    }, 2000);
+    return true;
+  }
   async function login() {
     if (id != "" && pw != "")
-      await userStore.login(id, pw).then((r) => 
-      { if (r !== null) {
-        if(autoLogin){
-          AsyncStorage.setItem('id',id); 
-          AsyncStorage.setItem('pw',pw);
-          AsyncStorage.setItem('autoLogin','true');
-        }else{
-          AsyncStorage.setItem('id',''); 
-          AsyncStorage.setItem('pw','');
-          AsyncStorage.setItem('autoLogin','false');
+      await userStore.login(id, pw).then((r) => {
+        if (r) {
+          if (autoLogin) {
+            AsyncStorage.setItem('id', id);
+            AsyncStorage.setItem('pw', pw);
+            AsyncStorage.setItem('autoLogin', 'true');
+          } else {
+            AsyncStorage.setItem('id', '');
+            AsyncStorage.setItem('pw', '');
+            AsyncStorage.setItem('autoLogin', 'false');
+          }
+          setUser(r); setId(id); setPw(pw);
+          console.log("gogo");
+          navigation.navigate("MainScreen")
+          setToken(null);
+        } else {
+          setUser(null); setId(null); setPw(null);
         }
-        signIn({ id, pw }); } });
+      });
   }
-  React.useEffect(()=>{
-    AsyncStorage.getItem('autoLogin').then((r)=>{
-      if(r){
-        AsyncStorage.getItem('id').then((r)=>setId(r));
-        AsyncStorage.getItem('pw').then((r)=>setPw(r));
-        AsyncStorage.getItem('autoLogin').then((r)=>{if(r=='true')setAutoLogin(true);else setAutoLogin(false)});
+  React.useEffect(() => {
+    AsyncStorage.getItem('autoLogin').then((r) => {
+      if (r) {
+        AsyncStorage.getItem('id').then((r) => changeId(r));
+        AsyncStorage.getItem('pw').then((r) => changePw(r));
+        AsyncStorage.getItem('autoLogin').then((r) => { if (r == 'true') setAutoLogin(true); else setAutoLogin(false) });
       }
     })
-  },[])
+  }, [])
   return (
     <View style={LoginStyle.container}>
       <ImageBackground
@@ -64,7 +98,7 @@ export default function loginPage({ route, navigation }) {
               placeholderTextColor="#f0f0f0"
               style={LoginStyle.login_input_text}
               value={id}
-              onChangeText={(textEntry) => setId(textEntry)}
+              onChangeText={(textEntry) => changeId(textEntry)}
               onSubmitEditing={() => login()}
             />
             <TextInput
@@ -72,15 +106,15 @@ export default function loginPage({ route, navigation }) {
               placeholderTextColor="#f0f0f0"
               style={LoginStyle.login_input_text}
               value={pw}
-              onChangeText={(textEntry) => setPw(textEntry)}
+              onChangeText={(textEntry) => changePw(textEntry)}
               onSubmitEditing={() => login()}
               secureTextEntry
             />
-            <View style={{flexDirection:"row", alignItems:"center",justifyContent:"flex-end"}}>
-            <Switch
-                    onValueChange={(r)=>setAutoLogin(r)}
-                    value={autoLogin}
-            /><Text style={{color:"white"}}>자동 로그인</Text></View>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-end" }}>
+              <Switch
+                onValueChange={(r) => setAutoLogin(r)}
+                value={autoLogin}
+              /><Text style={{ color: "white" }}>자동 로그인</Text></View>
           </View>
           <View style={LoginStyle.button_container}>
             <View style={[LoginStyle.login_btn_style, LoginStyle.login_btn]}>

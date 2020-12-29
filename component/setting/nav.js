@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { View, Text, ScrollView, Linking, StyleSheet, SectionList, FlatList } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 import { createStackNavigator } from "@react-navigation/stack";
 const s = createStackNavigator();
 import { Button, ThemeProvider, ListItem, Divider } from "react-native-elements";
@@ -10,7 +9,6 @@ import { TextInput } from "react-native";
 import { Picker } from "@react-native-community/picker";
 import { userStore } from "../store/store";
 import Constants from "expo-constants";
-import { AuthContext } from "../store/UserStore"
 
 function HomeScreen({ navigation }) {
   // {
@@ -18,6 +16,7 @@ function HomeScreen({ navigation }) {
   //   title: "알림 설정",
   //   navigation: "알림 설정",
   // },
+  const { setUser, setId, setPw } = React.useContext(CustomContext);
   const list = [
     {
       type: "title",
@@ -29,9 +28,14 @@ function HomeScreen({ navigation }) {
       navigation: "내 정보",
     },
     {
-      type: "text",
+      type: "button",
       title: "로그아웃",
-      navigation: "로그아웃",
+      ft_function: () => {
+        userStore.logout();
+        setUser(null); setId(null); setPw(null);
+        navigation.navigate("SignIn")
+        alert("로그아웃 되었습니다.");
+      }
     },
     {
       type: "title",
@@ -78,8 +82,8 @@ function HomeScreen({ navigation }) {
       data={list}
       keyExtractor={(item, index) => item + index}
       renderItem={({ item }) =>
-        <ListItem onPress={() => { if (item.type == "text") { navigation.navigate({ name: item.navigation }) } }}>
-          <Text style={item.type === "text" ? styles.text : styles.title}>{item.title}</Text>
+        <ListItem onPress={(item.type == "text") ? () => navigation.navigate({ name: item.navigation }) : (item.type == "button") ? item.ft_function : null}>
+          <Text style={item.type === "title" ? styles.title : styles.text}>{item.title}</Text>
         </ListItem>
       }
     >
@@ -443,7 +447,6 @@ class clientpage extends React.Component {
 
 }
 
-
 function clientpageAlram() {
   return (
     <View
@@ -467,7 +470,7 @@ function clientpageAppvesion() {
         justifyContent: "center",
       }}
     >
-      <Text>{Constants.platform=='ios'? Constants.manifest.ios.buildNumber:Constants.manifest.android.versionCode}</Text>
+      <Text>{Constants.platform == 'ios' ? Constants.manifest.ios.buildNumber : Constants.manifest.android.versionCode}</Text>
     </View>
   );
 }
@@ -534,8 +537,7 @@ export function clientpagePolicy4() {
 
 import SendEmail from "./EmailComposer";
 import { useState } from "react";
-import { log } from "react-native-reanimated";
-
+import { CustomContext } from "../store/context.js";
 function clientpageQuestion({ navigation: { goBack } }) {
   const [email_title, setemail_title] = useState(
     "제목: 아이디/닉네임/문의사항요약"
@@ -562,13 +564,7 @@ function clientpageQuestion({ navigation: { goBack } }) {
     </View>
   );
 }
-function logout({ navigation }) {
-  userStore.logout();
-  const { signOut } = React.useContext(AuthContext);
-  signOut();
-  alert("로그아웃 되었습니다.");
-  return <></>;
-}
+
 function setting() {
   return (
     <s.Navigator
@@ -657,7 +653,6 @@ function setting() {
         name="회원정보 수정"
         component={clientChangePage}
       />
-      <s.Screen options={navOptions} name="로그아웃" component={logout} />
     </s.Navigator>
   );
 }
