@@ -1,5 +1,7 @@
 import React, { Component } from "react";
-import { View, Text, ScrollView, Linking, StyleSheet, SectionList, FlatList, BackHandler } from "react-native";
+import { View,ToastAndroid,
+  Platform,
+  AlertIOS, Text, ScrollView, Linking, StyleSheet, SectionList, FlatList, BackHandler, } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 const s = createStackNavigator();
 import { Button, ThemeProvider, ListItem, Divider } from "react-native-elements";
@@ -9,7 +11,6 @@ import { TextInput } from "react-native";
 import { Picker } from "@react-native-community/picker";
 import { userStore } from "../store/store";
 import Constants from "expo-constants";
-import Toast from 'react-native-simple-toast';
 function HomeScreen({ navigation }) {
   //#region  뒤로가기 버튼 제어 & 더블클릭시 앱 종료
   let currentCount = 0;
@@ -26,7 +27,11 @@ function HomeScreen({ navigation }) {
   const handleBackButton = () => {
     if (currentCount < 1) {
       currentCount += 1;
-      Toast.show('뒤로 가기를 한번 더 누르면 앱이 종료됩니다.\n로그아웃은 설정->로그아웃으로 가주세요.', Toast.LONG, Toast.BOTTOM);
+      if (Platform.OS === 'android') {
+      ToastAndroid.show('뒤로 가기를 한번 더 누르면 앱이 종료됩니다.\n로그아웃은 설정->로그아웃으로 가주세요.', ToastAndroid.SHORT)
+    } else {
+      AlertIOS.alert('뒤로 가기를 한번 더 누르면 앱이 종료됩니다.\n로그아웃은 설정->로그아웃으로 가주세요.');
+    }
     } else {
       BackHandler.exitApp();
     }

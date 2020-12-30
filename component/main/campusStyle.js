@@ -212,14 +212,12 @@ const button = StyleSheet.create({
     backgroundColor: "#172864",
   },
   groupActive: {
-    flex: 1,
     color: "white",
     padding: 20,
     backgroundColor: "#172864",
     width: 280 / 2,
   },
   groupCancel: {
-    flex: 1,
     color: "white",
     padding: 20,
     backgroundColor: "#B7B7BB",

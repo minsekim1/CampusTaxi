@@ -91,55 +91,6 @@ export default class chatroomScreen extends Component {
         color: this.state.bbs.get('gender') == 2
           ? "#3A3A3A" : this.state.bbs.get('gender') == 1
             ? "#DE22A3" : "#55A1EE",
-        container: {
-          height: 170,
-          alignItems: "stretch"
-        },
-        centerComponent:
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "column",
-              justifyContent: "space-around",
-              alignItems: "center",
-            }}
-          >
-            <View style={campusStyle.View.top5}>
-              <View style={campusStyle.View.row}>
-                <Image
-                  source={crown}
-                  style={{ width: 23, height: 15, marginTop: 3 }}
-                />
-                <Text style={campusStyle.Text.middleBold}>
-                  {_.isUndefined(this.state.bbs.get('leader')) ? null : this.state.bbs.get('leader').get('nickname')}
-                </Text>
-              </View>
-            </View>
-            <Text style={campusStyle.Text.whiteInput}>
-              출발지:{this.state.bbs.get('startplace').name}
-            </Text>
-            <Text style={campusStyle.Text.whiteInput}>
-              도착지:{this.state.bbs.get('endplace').name}
-            </Text>
-            <Text style={campusStyle.Text.smallCenter}>
-              {userStore.tokoreanTime(String(this.state.bbs.get('meetingdate')))} 출발예정
-						</Text>
-          </View>,
-        leftComponent: <Button
-          type="clear"
-          title=""
-          icon={<Ionicons name="md-arrow-back" size={24} color="white" />}
-          onPress={async () => { await this.endChat(); navigation.goBack() }}
-        ></Button>
-        , rightComponent: <View style={{ flexDirection: "row" }}>
-          <Button
-            type="clear"
-            title=""
-            icon={<Ionicons name="md-menu" size={24} color="white" />}
-            onPress={() => { this.showMenu(); this.setState({ showMenu: !this.state.showMenu }) }}
-            buttonStyle={{ marginRight: 3 }}
-          />
-        </View>
       }
     };
     const _getStyle = () => {
@@ -259,7 +210,6 @@ export default class chatroomScreen extends Component {
             <TouchableOpacity delayLongPress={400} onLongPress={() => ft_showPop(item, username)} activeOpacity={0.2}>
               <View style={{ flexDirection: "row", padding: 10 }}>
                 <View>
-
                   <Text>{image}</Text>
                 </View>
                 <View style={{ paddingLeft: 10, justifyContent: "center", width: "80%" }}>
@@ -274,16 +224,16 @@ export default class chatroomScreen extends Component {
     return (
       <>
         {/*  팝업유저 강퇴/차단/신고/위임기능 */}
-        <Popover from={new Rect(wp(50), hp(60), 0, 0)} isVisible={this.state.showPopover} onRequestClose={() => this.setState({ showPopover: false })}>
+        <Popover from={new Rect(0, hp(60), wp(100), hp(10))} isVisible={this.state.showPopover} onRequestClose={() => this.setState({ showPopover: false })}>
           <View style={{ margin: 10 }}>
-            {this.state.popIsmandate ? null : <Text>{this.state.popNickname}</Text>}
-            {this.state.popIsmandate ? null : <Button_styled title="강퇴하기" onPress={() => ft_kick(this.state.bbs, this.state.popNickname)} />}
+            {!this.state.popIsmandate ? null : <Text>{this.state.popNickname}</Text>}
+            {!this.state.popIsmandate ? null : <Button_styled title="강퇴하기" onPress={() => ft_kick(this.state.bbs, this.state.popNickname)} />}
             {false ? null : <Button_styled title="밴 하기" onPress={() => ft_ban(this.state.popNickname)} />}
             <Button_styled title="신고하기" onPress={() => ft_report(this.state.popNickname)} />
             {this.state.popIsmandate ? null : <Button_styled title="방장위임" onPress={() => ft_mandate(this.state.popNickname)} />}
           </View>
         </Popover>
-        <View style={{ height: hp(20), marginBottom: 30 }}>
+
           {/* 채팅방 메뉴 */}
           {this.state.showMenu ?
             <Animated.View style={_getStyle()}>
@@ -297,13 +247,51 @@ export default class chatroomScreen extends Component {
               </View>
             </Animated.View>
             : null}
-          <Header
-            containerStyle={style.header.container}
-            backgroundColor={style.header.color}
-            leftComponent={style.header.leftComponent}
-            centerComponent={style.header.centerComponent}
-            rightComponent={style.header.rightComponent}
+{/* Header */}
+
+<View style={{ alignItems: "center",  backgroundColor:style.header.color,paddingTop:10,paddingBottom:10,width:wp(100)}} >
+<View style={{ flexDirection: "row", alignSelf:"stretch" }}>
+            <View style={{ }}>
+        <Button
+          type="clear"
+          title=""
+          buttonStyle={{ marginLeft: 10 }}
+          icon={<Ionicons name="md-arrow-back" size={24} color="white" />}
+          onPress={async () => { await this.endChat(); navigation.goBack() }}
+        ></Button>
+         </View>
+         <View style={{ alignItems:"center", flex:1 }}>
+            <View style={campusStyle.View.top5}>
+              <View style={campusStyle.View.row}>
+                <Image
+                  source={crown}
+                  style={{ width: 23, height: 15, marginTop: 3 }}
+                />
+                <Text style={campusStyle.Text.middleBold}>
+                  {_.isUndefined(this.state.bbs.get('leader')) ? null : this.state.bbs.get('leader').get('nickname')}
+                </Text>
+              </View>
+            </View>
+            <Text style={campusStyle.Text.whiteInput}>
+              출발지:{this.state.bbs.get('startplace').name}
+            </Text>
+            <Text style={campusStyle.Text.whiteInput}>
+              도착지:{this.state.bbs.get('endplace').name}
+            </Text>
+            <Text style={campusStyle.Text.smallCenter}>
+              {userStore.tokoreanTime(String(this.state.bbs.get('meetingdate')))} 출발예정
+						</Text>
+            </View>
+         <View style={{ }}>
+          <Button
+            type="clear"
+            title=""
+            icon={<Ionicons name="md-menu" size={24} color="white" />}
+            onPress={() => { this.showMenu(); this.setState({ showMenu: !this.state.showMenu }) }}
+            buttonStyle={{ marginRight: 10 }}
           />
+          </View>
+        </View>
         </View>
         {/* 채팅 내용부분 */}
         <FlatList
@@ -317,6 +305,7 @@ export default class chatroomScreen extends Component {
         <View style={campusStyle.View.wideWhite}>
           <View style={{ flex: 4 }}>
             <TextInput
+            style={{height:50}}
               value={this.state.textInput}
               onChangeText={(textEntry) => {
                 this.setState({ textInput: textEntry });
@@ -325,7 +314,7 @@ export default class chatroomScreen extends Component {
             />
           </View>
           <View style={{ flex: 1 }}>
-            <Button title="전송" buttonStyle={{ backgroundColor: "#1e45c7" }} onPress={() => this.sendMessage(this.state.bbs)}>
+            <Button title="전송" buttonStyle={{ padding:0,margin:0,height:50,backgroundColor: "#1e45c7" }} onPress={() => this.sendMessage(this.state.bbs)}>
               {/* <Image style={campusStyle.Image.middleSize} /> */}
             </Button>
           </View>

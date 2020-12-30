@@ -17,7 +17,11 @@ export default function roomList({ route, navigation }) {
   const handleBackButton = () => {
     if (currentCount < 1) {
       currentCount += 1;
-      Toast.show('뒤로 가기를 한번 더 누르면 앱이 종료됩니다.\n로그아웃은 설정->로그아웃으로 가주세요.', Toast.LONG, Toast.BOTTOM);
+      if (Platform.OS === 'android') {
+      ToastAndroid.show('뒤로 가기를 한번 더 누르면 앱이 종료됩니다.\n로그아웃은 설정->로그아웃으로 가주세요.', ToastAndroid.SHORT)
+    } else {
+      AlertIOS.alert('뒤로 가기를 한번 더 누르면 앱이 종료됩니다.\n로그아웃은 설정->로그아웃으로 가주세요.');
+    }
     } else {
       BackHandler.exitApp();
     }
@@ -123,7 +127,9 @@ import {
   View,
   FlatList,
   Image,
-  TouchableOpacity, BackHandler,
+  TouchableOpacity, BackHandler,ToastAndroid,
+  Platform,
+  AlertIOS,
   ScrollView, SafeAreaView, StatusBar
 } from "react-native";
 // import * as TimeAPI from "../Email/globalTimeAPI.js";
@@ -133,5 +139,4 @@ import campusStyle from "./campusStyle";
 import crown from "./image/crown.png";
 import { userStore } from "../store/store";
 import { Ionicons } from '@expo/vector-icons';
-import Toast from 'react-native-simple-toast';
 //#endregion

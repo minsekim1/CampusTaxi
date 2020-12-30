@@ -8,9 +8,10 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
-  ImageBackground, Switch, BackHandler
+  ImageBackground, Switch, BackHandler,ToastAndroid,
+  Platform,
+  AlertIOS,
 } from "react-native";
-import Toast from 'react-native-simple-toast';
 import _ from "lodash";
 import { Button } from "react-native-paper";
 import { userStore } from "../store/store";
@@ -37,7 +38,11 @@ export default function loginPage({ route, navigation }) {
   const handleBackButton = () => {
     if (currentCount < 1) {
       currentCount += 1;
-      Toast.show('뒤로 가기를 한번 더 누르면 앱이 종료됩니다.\n로그아웃은 설정->로그아웃으로 가주세요.', Toast.LONG, Toast.BOTTOM);
+      if (Platform.OS === 'android') {
+      ToastAndroid.show('뒤로 가기를 한번 더 누르면 앱이 종료됩니다.\n로그아웃은 설정->로그아웃으로 가주세요.', ToastAndroid.SHORT)
+    } else {
+      AlertIOS.alert('뒤로 가기를 한번 더 누르면 앱이 종료됩니다.\n로그아웃은 설정->로그아웃으로 가주세요.');
+    }
     } else {
       BackHandler.exitApp();
     }

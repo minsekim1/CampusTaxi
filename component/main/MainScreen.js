@@ -7,7 +7,9 @@ import {
   TouchableHighlight,
   BackHandler,
   FlatList,
-  KeyboardAvoidingView,
+  KeyboardAvoidingView,ToastAndroid,
+  Platform,
+  AlertIOS,
 } from "react-native";
 import campusStyle from "./campusStyle";
 import ad from "./image/ad.png";
@@ -22,7 +24,6 @@ import ski from "./image/ski.png";
 import ocean from "./image/ocean.png";
 import { userStore } from "../store/store";
 import { Button } from "react-native-paper";
-import Toast from 'react-native-simple-toast';
 import { CustomContext } from "../store/context";
 import styled from 'styled-components/native';
 import { heightPercentageToDP, widthPercentageToDP } from "react-native-responsive-screen";
@@ -46,7 +47,11 @@ function HomeScreen({ route, navigation }) {
   const handleBackButton = () => {
     if (currentCount < 1) {
       currentCount += 1;
-      Toast.show('뒤로 가기를 한번 더 누르면 앱이 종료됩니다.\n로그아웃은 설정->로그아웃으로 가주세요.', Toast.LONG, Toast.BOTTOM);
+      if (Platform.OS === 'android') {
+      ToastAndroid.show('뒤로 가기를 한번 더 누르면 앱이 종료됩니다.\n로그아웃은 설정->로그아웃으로 가주세요.', ToastAndroid.SHORT)
+    } else {
+      AlertIOS.alert('뒤로 가기를 한번 더 누르면 앱이 종료됩니다.\n로그아웃은 설정->로그아웃으로 가주세요.');
+    }
     } else {
       BackHandler.exitApp();
     }
