@@ -2,10 +2,10 @@
   "scripts": {
     "start": "expo start --tunnel",
     "s": "expo start",
-    "upload": "git add . && git commit -m \"Update : Android Permission\" && git push",
+    "upload": "git add . && git commit -m \"UI Fixed : IOS chat & createRoom\" && git push",
     "b_and": "expo build:android -t app-bundle",
     "b_ios": "expo build:ios -t archive",
-    "push": "yarn upload && yarn b_and"
+    "push": "yarn build && yarn upload"
   },
   "dependencies": {
     "@expo/vector-icons": "^10.2.1",
