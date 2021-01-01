@@ -22,7 +22,7 @@
       "supportsTablet": true
     },
     "android": {
-       "permissions": [],
+      "permissions": [],
       "package": "com.campustaxi.campustaxi",
       "versionCode": 28,
       "config": {
