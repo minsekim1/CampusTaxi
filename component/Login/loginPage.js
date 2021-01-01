@@ -11,13 +11,18 @@ import {
   ImageBackground, Switch, BackHandler,ToastAndroid,
   Platform,
   AlertIOS,
+  KeyboardAvoidingView,
+  Image,
 } from "react-native";
 import _ from "lodash";
 import { Button } from "react-native-paper";
 import { userStore } from "../store/store";
 import LogoWhite from "./logoWhite.js";
 import { CustomContext } from "../store/context";
+import { heightPercentageToDP, widthPercentageToDP } from "react-native-responsive-screen";
 //import { LoginContext } from "../../App";
+import Constants from 'expo-constants';
+
 export default function loginPage({ route, navigation }) {
   const [id, changeId] = useState('');
   const [pw, changePw] = useState('');
@@ -65,7 +70,6 @@ export default function loginPage({ route, navigation }) {
             AsyncStorage.setItem('autoLogin', 'false');
           }
           setUser(r); setId(id); setPw(pw);
-          console.log("gogo");
           navigation.navigate("MainScreen")
           setToken(null);
         } else {
@@ -83,12 +87,10 @@ export default function loginPage({ route, navigation }) {
     })
   }, [])
   return (
-    <View style={LoginStyle.container}>
-      <ImageBackground
-        source={require("./background.png")}
-        style={LoginStyle.background}
-      >
-        <View style={LoginStyle.header}>
+    <>
+    <KeyboardAvoidingView style={LoginStyle.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}>
+          <View style={LoginStyle.header}>
           <LogoWhite />
           <View style={{ marginTop: 10 }}>
             <Text style={{ color: "#ffffff", fontSize: 18 }}>
@@ -116,10 +118,13 @@ export default function loginPage({ route, navigation }) {
               secureTextEntry
             />
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-end" }}>
-              <Switch
+            <Switch
                 onValueChange={(r) => setAutoLogin(r)}
                 value={autoLogin}
-              /><Text style={{ color: "white" }}>자동 로그인</Text></View>
+                style={(Platform.OS == "ios") ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } :null}
+              />
+            <Text style={{ color: "white", fontSize:14 }}>자동 로그인</Text>
+              </View>
           </View>
           <View style={LoginStyle.button_container}>
             <View style={[LoginStyle.login_btn_style, LoginStyle.login_btn]}>
@@ -150,24 +155,24 @@ export default function loginPage({ route, navigation }) {
                   </Text>
               </TouchableOpacity>
             </View>
-
           </View>
         </View>
-      </ImageBackground>
-    </View >
+    </KeyboardAvoidingView >
+    <Image source={require("./background.png")} style={{position:"absolute",height:heightPercentageToDP(100), width:widthPercentageToDP(100), zIndex:-1}}/>
+    </>
   );
 }
 
 const LoginStyle = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+    paddingTop: Constants.statusBarHeight,
   },
   background: {
-    width: "100%",
-    height: "100%",
+    width: widthPercentageToDP(100),
+    height: heightPercentageToDP(100),
   },
   //로고, 캠퍼스택시 container
   header: {
@@ -177,12 +182,11 @@ const LoginStyle = StyleSheet.create({
   },
   //로그인 body container
   body: {
-    flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "center",
+    flex:1,
+    alignItems:"center"
   },
   login_input_container: {
-    width: "60%",
+    width: widthPercentageToDP(60),
     marginBottom: 10,
   },
   login_input_text: {
@@ -190,16 +194,13 @@ const LoginStyle = StyleSheet.create({
     margin: 0,
     borderColor: "#a9a9a9",
     borderBottomWidth: 2,
-    marginBottom: 20,
-    paddingBottom: 10,
+    marginBottom: 10,
+    paddingBottom: 5,
     textAlign: "center",
     color: "#ffffff",
   },
   button_container: {
-    flex: 1,
-    width: "60%",
-    justifyContent: "flex-start",
-    alignItems: "center",
+    width:widthPercentageToDP(60)
   },
 
   login_btn_style: {

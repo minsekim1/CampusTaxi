@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Component, } from "react";
 import { userStore } from "../store/store";
+import Constants from 'expo-constants';
 import {
   Button,
   View,
@@ -11,9 +12,11 @@ import {
   StyleSheet,
   ScrollView,
   CheckBox,
+  KeyboardAvoidingView,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import univ_list from "./univ_list";
+import { heightPercentageToDP, widthPercentageToDP } from "react-native-responsive-screen";
 
 export class addUser extends Component {
   constructor(props) {
@@ -37,6 +40,7 @@ export class addUser extends Component {
       error: "아무런 값이 입력되지 않았습니다.",
       policy: this.props.route.params.policy,
       confirmBtn: false,
+      signCheck: false,
     };
   }
 
@@ -197,7 +201,9 @@ export class addUser extends Component {
     const { navigation } = this.props;
     return (
       <ScrollView>
-        <View style={{ flex: 1, margin: 20, marginLeft: 30, marginRight: 30, }}>
+        <KeyboardAvoidingView 
+      behavior={Platform.OS === "ios" ? "padding" : "height"}>
+          <View style={{paddingLeft:20,paddingRight:20}}>
           <View style={SignIn.complete_alert_checkbox}>
             <CheckBox disabled={true} value={this.state.signCheck} />
             <Text>
@@ -400,15 +406,12 @@ export class addUser extends Component {
               선택한 대학교: {this.state.univSelected}
             </Text>
           </View>
-        </View>
-
         <View style={button_style.next_button}>
           <TouchableOpacity
-            style={{ width: "100%" }}
+            style={{ width: widthPercentageToDP(100) }}
             onPress={async () => {
               if (this.state.signCheck && this.state.studentcardCheck) {
-                if (this.state.token == null) {
-                  await userStore.createUser(
+                  userStore.createUser(
                     this.state.id,
                     this.state.pw,
                     this.state.email,
@@ -420,15 +423,13 @@ export class addUser extends Component {
                     this.state.univSelected.toString(),
                     this.state.gender,
                     this.state.policy
-                  );
-                }
-                await navigation.navigate("회원 가입 완료", {
-                  id: this.state.id,
-                  pw: this.state.pw,
-                });
-              } else if (this.state.studentcardCheck) {
+                  ).then((r)=>r?navigation.navigate("회원 가입 완료", {
+                    id: this.state.id,
+                    pw: this.state.pw,
+                  }):null);
+              } else if (!this.state.studentcardCheck) {
                 alert("완료되지 않는 절차가 있습니다." + "\n사유:" + this.state.error);
-              } else if (this.state.signCheck) {
+              } else if (!this.state.signCheck) {
                 alert("학생증 제출을 완료해주세요.")
               }
             }}
@@ -438,6 +439,8 @@ export class addUser extends Component {
              </Text>
           </TouchableOpacity>
         </View>
+        </View>
+        </KeyboardAvoidingView>
       </ScrollView >
     );
   }
@@ -494,10 +497,10 @@ const button_style = StyleSheet.create({
   next_button: {
     backgroundColor: "#162A64",
     height: 50,
-    margin: 0,
     alignSelf: "center",
     justifyContent: "center",
-    width: "100%",
+    width:widthPercentageToDP(101),
+    position:"relative",
   },
   gender_change: {
     borderRadius: 20,
