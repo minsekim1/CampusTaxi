@@ -6,7 +6,7 @@ import { Button } from "react-native-paper";
 import { CustomContext } from "../store/context";
 
 export function complete({ route, navigation }) {
-  const { setId, setPw } = useContext(CustomContext);
+  const { setUser,setId, setPw } = React.useContext(CustomContext);
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#ffffff", }}>
       {/* logo && title */}
@@ -53,7 +53,13 @@ export function complete({ route, navigation }) {
           </View>
           <View style={button_style.next_button}>
             <TouchableOpacity
-              onPress={async () => { await userStore.login(route.params.id, route.params.pw).then((r) => { if (r !== null) { setId(route.params.id); setPw(route.params.pw) } }) }}
+              onPress={async () => { await userStore.login(route.params.id, route.params.pw).then((r) => { 
+                if (!!r) 
+                { 
+                  setId(route.params.id); setPw(route.params.pw) 
+                  setUser(r);
+                  navigation.navigate("MainScreen")
+                }})}}
               color="#162A64"
             >
               <Text

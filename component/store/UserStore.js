@@ -83,15 +83,13 @@ export default class UserStore {
     obj.set('gender', gender);
     obj.set('userStatus', 1);
     obj.set('policy', policy);
-    obj.save().then(
-      (result) => {
-        if (typeof document !== 'undefined') document.write(`User created: ${JSON.stringify(result)}`);
-        console.log('User created', result);
-      }, (error) => {
-        if (typeof document !== 'undefined') document.write(`Error while creating User: ${JSON.stringify(error)}`);
-        console.error('Error while creating User: ', error);
-      });
-    return true;
+    try{
+      let rtn = await obj.save();
+      if(!!rtn) return true;
+    }catch (e){
+      alert("가입 에러:"+e)
+      return false;
+    }
   }
   async readUser_objid(objid) {
     const User = Parse.Object.extend('User');

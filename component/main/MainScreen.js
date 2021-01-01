@@ -106,7 +106,7 @@ function HomeScreen({ route, navigation }) {
         <View style={campusStyle.View.mainHeaderBackground}>
           <Text style={{ color: "white", fontSize: 18, marginTop: 50 }}> CAMPUS TAXI</Text>
           <Text style={campusStyle.Text.mainUnivText}>
-            {/*userStore.user.get('univ')*/}univ
+            {!!userStore.user ? userStore.user.get('univ') : null}
               </Text>
           <Image style={campusStyle.Image.mainImage} source={ad} />
         </View>

@@ -2,7 +2,7 @@
   "scripts": {
     "start": "expo start --tunnel",
     "s": "expo start",
-    "upload": "git add . && git commit -m \"UI Fixed : IOS chat & createRoom\" && git push",
+    "upload": "git add . && git commit -m \"UI Fixed : IOS Login & Sign \" && git push",
     "b_and": "expo build:android -t app-bundle",
     "b_ios": "expo build:ios -t archive",
     "push": "yarn build && yarn upload"
