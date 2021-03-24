@@ -12,16 +12,20 @@ type Props = {
     keyboardType?: KeyboardTypeOptions;
     flex?: number;
     centered?: boolean;
+    myvalue?: string;
+    onFocus?: (option: string) => void;
 };
 export const HomeLocationTextField: React.FC<Props> = ({
-                                               maxLength,
-                                               placeholder,
-                                               keyboardType,
-                                               flex,
-                                               centered,
-                                           }) => {
+    maxLength,
+    placeholder,
+    keyboardType,
+    flex,
+    centered,
+    myvalue,
+    onFocus,
+}) => {
 
-    const [value, setValue] = useState("");
+    const [value, setValue] = useState(myvalue);
 
     return (
         <Box
@@ -34,17 +38,18 @@ export const HomeLocationTextField: React.FC<Props> = ({
             centered={centered}
         >
             <TouchableOpacity>
-                <Search/>
+                <Search />
             </TouchableOpacity>
             <LocationInput
                 flex={flex}
-                value={value}
-                onChangeText={setValue}
+                value={myvalue == "" ? "" : myvalue}
                 maxLength={maxLength}
                 placeholder={placeholder}
                 placeholderTextColor="#808083"
                 keyboardType={keyboardType}
                 centered={centered}
+                editable={myvalue == "" ? true : false}
+                onFocus={onFocus}
             />
             {/* <CancleView>
                 <TouchableOpacity
@@ -82,5 +87,5 @@ const LocationInput = styled.TextInput<{ flex?: number; centered?: boolean }>`
   padding: 0 0 2px 5px;
   font-size: 11px;
   color: #080808;
-  placeholder-text-color="#808083"
+  placeholder-text-color="#808083";
 `;

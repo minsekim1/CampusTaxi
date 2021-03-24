@@ -14,7 +14,7 @@ type Props = {
 export const MapRoomCard: React.FC<Props> = ({ data, onCancelPress, onPress, backgroundColor, activeCancelBtn }) => {
   const gender = (data) ? data.gender : 'all';
   const bgColor = ((gender == 0) ? '#579FEE' : ((gender == 1) ? '#FF6464' : '#000000'));
-  const genderText = ((gender == 0) ? '남자' : ((gender == 0) ? '여자' : '무관'));
+  const genderText = ((gender == 0) ? '남자' : ((gender == 1) ? '여자' : '무관'));
   activeCancelBtn = (!activeCancelBtn) ? false : true;
   if (!data)
     return <></>;
@@ -33,7 +33,7 @@ export const MapRoomCard: React.FC<Props> = ({ data, onCancelPress, onPress, bac
         <CardContainer>
           <CardHeaderContainer>
             <LeftContainer>
-              <Time>{data.boarding_dtm}</Time>
+              <Time>{data.boarding_dtm} 탑승</Time>
               <TitleView>
                 <Title>{data.owner}</Title>
               <TitleVip>VIP</TitleVip>
@@ -152,7 +152,7 @@ const Count = styled.Text`
 
 const Time = styled.Text`
   font-size: 8px;
-  width: 60px;
+  width: 80px;
   font-weight: bold;
   padding: 3px 8px 3px 8px;
   border-radius: 7px;

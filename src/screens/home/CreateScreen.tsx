@@ -16,10 +16,10 @@ import axios from 'axios';
 import { GOOGLE_MAPAPI_URL } from '../../constant';
 
 //distance 계산 필요
-const list = [{// TEST CODE 
+export const list = [{// TEST CODE 
 	id: 1,
 	unreadMessage: 'string',
-	distance: 1.1,
+	distance: 1.0,
 	start_address_code: 'string',
 	start_address: '태릉입구역 2번출구',
 	start_address_detail: '태릉입구역 2번출구',
@@ -39,7 +39,7 @@ const list = [{// TEST CODE
 	id: 2,
 	unreadMessage: 'string',
 	distance: 1.1,
-	start_address_code: 'string',
+	start_address_code: '01849',
 	start_address: '태릉입구역 7번출구',
 	start_address_detail: '태릉입구역 7번출구',
 	start_lat: 37.61770651126973,
@@ -58,7 +58,7 @@ const list = [{// TEST CODE
 	id: 3,
 	unreadMessage: 'string',
 	distance: 2.1,
-	start_address_code: 'string',
+	start_address_code: '01849',
 	start_address: '태릉입구역 7번출구',
 	start_address_detail: '태릉입구역 7번출구',
 	start_lat: 37.61770651126973,
@@ -114,7 +114,7 @@ const list = [{// TEST CODE
 }, {
 	id: 6,
 	unreadMessage: 'string',
-	distance: 1.1,
+	distance: 6.1,
 	start_address_code: 'string',
 	start_address: '태릉입구역 2번출구',
 	start_address_detail: '태릉입구역 2번출구',

@@ -3,11 +3,14 @@ import React from 'react';
 import { Text } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
+const Cotent = styled.Text`
+  padding:30px;
+`
 export const GeoScreen: React.FC = () => {
   return (
     <Container>
       <ScrollView>
-        <Text>{`제1조 (목적)
+        <Cotent>{`제1조 (목적)
 
 본 약관은 회원(캠퍼스 택시 서비스 이용약관에 동의한 자를 말합니다. 이하 “회원”이라고 합니다.)이 캠퍼스택시(이하 “회사”라고 합니다.)가 제공하는 위치기반서비스 (이하 “서비스”라고 합니다.)를 이용함에 있어 필요한 회사와 회원의 권리의무 및 책임사항을 규정함을 목적으로 합니다.
  
@@ -179,7 +182,7 @@ export const GeoScreen: React.FC = () => {
 회원의 고의나 과실에 의해 본 약관의 규정을 위반함으로 인하여 회사에 손해가 발생하게 되는 경우, 본 약관을 위반한 회원은 회사에 발생하는 모든 손해를 배상하여야 합니다.
 회원이 서비스를 이용함에 있어 행한 불법행위나 회원의 고의나 과실에 의해 이 약관 위반행위로 인하여 회사가 당해 회원 이외의 제3자로부터 손해배상청구 또는 소송을 비롯한 각종 이의제기를 받는 경우 당해 회원은 그로 인하여 회사에 발생한 손해를 배상하여야 합니다.
 회사가 위치정보법 제15조 내지 제26조의 규정을 위반한 행위 혹은 회사가 제공하는 서비스로 인하여 회원에게 손해가 발생한 경우, 회사가 고의 또는 과실 없음을 입증하지 아니하면, 회원의 손해에 대하여 책임을 부담합니다.
- `}</Text>
+ `}</Cotent>
       </ScrollView>
     </Container>
   );

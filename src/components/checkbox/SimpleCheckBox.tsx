@@ -16,7 +16,7 @@ export const SimpleCheckBox: React.FC<Props> = ({ value, setValue, disabled }) =
       onValueChange={(newValue) => setValue && setValue(newValue)}
       onTintColor="#f8a000"
       onCheckColor="#f8a000"
-      tintColor="#000000"
+      tintColors={{ true: "#76A2EB", false:"#000000"}}
       boxType="square"
       onAnimationType="flat"
       offAnimationType="flat"

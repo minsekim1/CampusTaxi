@@ -5,24 +5,24 @@ import Svg, { G, Path } from 'react-native-svg';
 type Props = {
   onPress?: () => void;
 };
-export const BackIcon: React.FC<Props> = ({ onPress }) => {
+export const CloseIcon: React.FC<Props> = ({ onPress }) => {
   return (
     <Box onPress={onPress}>
-      <Svg width="20.081" height="16.043" viewBox="0 0 20.081 16.043">
-        <G transform="translate(1.414 0.707)">
+      <Svg width="14.614" height="14.614" viewBox="0 0 14.614 14.614">
+        <G transform="translate(-2.027 -0.007)">
           <Path
-            d="M472.486,1548.91l-7.314,7.314,7.314,7.314"
-            transform="translate(-465.171 -1548.91)"
+            d="M465.171,1556.235h18.667"
+            transform="translate(-1426.617 -757.585) rotate(-45)"
             fill="none"
             stroke="#000"
-            strokeWidth="2"
+            stroke-width="2"
           />
           <Path
             d="M465.171,1556.235h18.667"
-            transform="translate(-465.171 -1548.921)"
+            transform="translate(774.232 -1428.636) rotate(45)"
             fill="none"
             stroke="#000"
-            strokeWidth="2"
+            stroke-width="2"
           />
         </G>
       </Svg>

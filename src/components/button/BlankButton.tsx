@@ -12,6 +12,7 @@ type Props = {
   height?: number;
   width?: number;
   borderWidth?: borderWidth;
+  disable?: boolean;
 };
 
 export const BlankButton: React.FC<Props> = ({
@@ -26,6 +27,7 @@ export const BlankButton: React.FC<Props> = ({
   height,
   width,
   borderWidth,
+  disable
 }) => {
   return (
     <Box
@@ -36,7 +38,8 @@ export const BlankButton: React.FC<Props> = ({
       paddingBottom={paddingBottom}
       height={height}
       width={width}
-      borderWidth={borderWidth}>
+      borderWidth={borderWidth}
+      disabled={disable}>
       <Container>
         {icon && <IconConatiner>{icon}</IconConatiner>}
         <ChildrenText color={color}>{children}</ChildrenText>

@@ -1,18 +1,10 @@
 import React from 'react';
-import { ChatRoomCard } from './ChatRoomCard';
+import { MapRoomCard } from '../map/MapRoomCard';
 
 export type ChatRoom = {
   id: number;
-  // gender: string;
-  // title: string;
-  // currentCount: number;
-  // maxCount: number;
-  // time: string;
-  // startLocation: string;
-  // arriveLocation: string;
   unreadMessage?: string;
   distance?: number;
-
   start_address_code?: string,
   start_address?: string,
   start_address_detail?: string,
@@ -51,6 +43,7 @@ export const ChatRoomDummy = {
   category: undefined,
   current: undefined,
 };
+export const ChatRoomDummyList = [ChatRoomDummy, ChatRoomDummy, ChatRoomDummy, ChatRoomDummy, ChatRoomDummy, ChatRoomDummy, ChatRoomDummy];
 
 export type Props = {
   onPress: (id: number) => () => void;
@@ -60,7 +53,7 @@ export const ChatRoomList: React.FC<Props> = ({ datas, onPress }) => {
   return (
     <>
       {datas.map((data) => (
-        <ChatRoomCard key={data.id} data={data} onPress={onPress(data.id)} />
+        <MapRoomCard key={data.id} data={data} onPress={onPress(data.id)} />
       ))}
     </>
   );

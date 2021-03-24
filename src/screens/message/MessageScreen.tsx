@@ -5,28 +5,20 @@ import axios from 'axios';
 import { format } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
-import { ChatRoom, ChatRoomList } from '../../components/chat-room/ChatRoomList';
+import { ChatRoom, ChatRoomDummyList, ChatRoomList } from '../../components/chat-room/ChatRoomList';
 import { API_URL } from '../../constant';
 import { useAuthContext } from '../../contexts/AuthContext';
 import { MessageStackParamList } from './MessageNavigation';
 
 type MessageNavigation = StackNavigationProp<MessageStackParamList, 'MessageScreen'>;
 
-const Gender = ['여자', '남자'];
-type APIData = {
+export const Gender = ['여자', '남자'];
+export const Week = ['일', '월', '화', '수', '목', '금', '토'];
+export type APIData = {
   count: number;
   next: number;
   previous: number;
-
-  results: {
-    id: number;
-    gender: number;
-    personnel_limit: number;
-    current: number;
-    boarding_dtm: string;
-    start_address: string;
-    end_address: string;
-  }[];
+  results: ChatRoom[];
 };
 
 export const MessageScreen: React.FC = () => {
@@ -43,17 +35,20 @@ export const MessageScreen: React.FC = () => {
         },
       })
       .then((response) => {
-        const data = response.data.results.map((item) => ({
-          id: 1,
-          gender: Gender[item.gender] ?? '남 여',
-          title: 'title',
-          currentCount: item.current,
-          maxCount: item.personnel_limit,
-          time: format(new Date(item.boarding_dtm), 'HH:MM'),
-          startLocation: item.start_address,
-          arriveLocation: item.end_address,
-          unreadMessage: '300+',
-        }));
+        const data: any = response.data.results.map((d) => {
+          const day = (d.boarding_dtm) ? Week[new Date(d.boarding_dtm).getDay()] : '';
+          const date = (d.boarding_dtm) ? new Date(d.boarding_dtm) : '';
+          return {
+          ...d,
+            boarding_dtm: (d.boarding_dtm) ?
+              (date && date.getDate() == new Date().getDate()) ?
+                format(new Date(d.boarding_dtm), '오늘 HH:mm')
+                : format(new Date(d.boarding_dtm), 'MM/dd(' + day + ')')
+              
+              : undefined
+          
+        }
+      });
         setDatas(data);
       });
   }, [token]);
@@ -77,4 +72,6 @@ export const MessageScreen: React.FC = () => {
 };
 const Container = styled.SafeAreaView`
   flex: 1;
+  background-color:white;
+  padding-top:20px;
 `;

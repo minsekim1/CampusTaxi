@@ -2,7 +2,7 @@ import styled from '@emotion/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState, useEffect} from 'react';
-import { Platform, Button, ScrollView, Text, TouchableOpacity, View, Image } from 'react-native';
+import { Platform, Button, ScrollView, Text, TouchableOpacity, View, Image, Linking } from 'react-native';
 import { OptionButton } from '../../components/button/OptionButton';
 import { CardButton } from '../../components/button/CardButton';
 import { TextField } from '../../components/form/TextField';
@@ -40,6 +40,7 @@ export const HomeScreen: React.FC<Props> = () => {
   const [category, setCategory] = useState(0);
   const [limit, setLimit] = useState(0);
   const [gender, setGender] = useState(0);
+  const [schoollocation, setSchoollocation] = useState("택시대학교");
 
   return (
       <BlankBackground color="#76A2EB">
@@ -51,47 +52,41 @@ export const HomeScreen: React.FC<Props> = () => {
           <LogoContainer>
             <MainLogo fill="#fff" />
             <MyCampusInfo>
-              <UserCampusInfo>택시 대학교 [서울]</UserCampusInfo>
+              <UserCampusInfo>{schoollocation} [서울]</UserCampusInfo>
             </MyCampusInfo>
-
             <MiniIconContainer>
-              <MiniIconTouchable>
+            <MiniIconTouchable onPress={() => Linking.openURL("https://syu.ac.kr")}>
                 <MiniHomeIcon/>
                 <MiniIconText>학교 홈</MiniIconText>
               </MiniIconTouchable>
-              <MiniIconTouchable>
+            <MiniIconTouchable onPress={() => Linking.openURL("https://lms.suwings.syu.ac.kr/")}>
                 <MiniEIcon/>
                 <MiniIconText>E-Class</MiniIconText>
               </MiniIconTouchable>
             </MiniIconContainer>
-
-
           </LogoContainer>
-
           <ScrollView>
             <MainContainer>
+              <Button title="방 만들기 (test)" onPress={() => navigate("CreateScreenDetails")}/>
               <SubContainer>
                 <SubTitleView>
                   <SubTitle>카테고리</SubTitle>
                 </SubTitleView>
-
-              <CardButton
+                <CardButton
                 options={["등교", "하교", "기타"]}
                 onChange={(option) => {setCategory(parseInt(option));}}
                 icon={[<SchoolIcon />, <BusIcon />, <EtcIcon />]} />
-
               </SubContainer>
-
               <SubContainer>
                 <SubTitleView>
                   <SubTitle>인원</SubTitle>
                 </SubTitleView>
               <OptionButton
-                options={["2", "3", "4"]}
+                options={["2명", "3명", "4명", "무관"]}
                 onChange={(option) => { setLimit(parseInt(option) + 2); }}
-                height={26} width={26} />
+                height={26} width={40}
+                defaultIndex={3}/>
               </SubContainer>
-
               <SubContainer>
                 <SubTitleView>
                   <SubTitle>탑승 성별</SubTitle>
@@ -99,17 +94,16 @@ export const HomeScreen: React.FC<Props> = () => {
               <OptionButton
                 options={["동성만", "무관"]}
                 onChange={(option) => { setGender(parseInt(option)); }}
-                height={28} width={58} />
+                height={28} width={58}
+                defaultIndex={1} />
               </SubContainer>
-
               <SubContainer>
                 <SubTitleView>
                   <SubTitle>검색</SubTitle>
                 </SubTitleView>
-
                 <SearchView>
                   <DepartIcon/>
-                  <HomeLocationTextField placeholder={"출발지를 검색하세요"} centered={true}/>
+                  <HomeLocationTextField onFocus={() => navigate("CreateScreen", { type: category, gender: gender, limit: limit, value: schoollocation })} myvalue = {(category == 1) ? schoollocation : ""} placeholder={"출발지를 검색하세요"} centered={true}/>
                 </SearchView>
                 <SearchView>
                   <DotlineIcon/>
@@ -117,18 +111,16 @@ export const HomeScreen: React.FC<Props> = () => {
                 </SearchView>
                 <SearchView>
                   <ArriveIcon/>
-                  <HomeLocationTextField placeholder={"도착지를 검색하세요"} centered={true}/>
+                  <HomeLocationTextField onFocus={() => navigate("CreateScreen", { type: category, gender: gender, limit: limit, value: schoollocation })} myvalue = {(category == 0) ? schoollocation : ""} placeholder={"도착지를 검색하세요"} centered={true}/>
                 </SearchView>
               </SubContainer>
-
               <SubContainer>
-              <SearchRoom onPress={() => navigate("CreateScreen", { type: category, gender: gender, limit: limit, value: "택시 대학교" })}>
+              <SearchRoom onPress={() => navigate("CreateScreen", { type: category, gender: gender, limit: limit, value: schoollocation })}>
                   <SearchRoomText>방 검색하기 & 만들기</SearchRoomText>
                 </SearchRoom>
               </SubContainer>
             </MainContainer>
           </ScrollView>
-
         </Container>
       </BlankBackground>
   );

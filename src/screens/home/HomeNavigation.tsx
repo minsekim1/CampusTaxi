@@ -14,7 +14,7 @@ export const HomeNavigation = () => {
   return (
     <HomeStack.Navigator  initialRouteName="HomeScreen" >
       <HomeStack.Screen name="HomeScreen" options={{headerShown: false}} component={HomeScreen} />
-      <HomeStack.Screen name="CreateScreen" options={{ headerTitleAlign: 'center', headerBackTitle:"asd", title: "지도 선택", }}component={CreateScreen} />
+      <HomeStack.Screen name="CreateScreen" options={{ headerTitleAlign: 'center', title: "지도 선택"}}component={CreateScreen} />
     </HomeStack.Navigator>
   );
 };

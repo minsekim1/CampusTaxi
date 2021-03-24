@@ -118,7 +118,7 @@ export const LoginScreen: React.FC = ({}) => {
                   카카오 로그인
                 </BlankButton>
               </ButtonContainer>
-              {Platform.OS === 'ios' && (
+              {Platform.OS == 'ios' && (
                 <ButtonContainer>
                   <BlankButton
                     borderRadius={36}

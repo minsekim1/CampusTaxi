@@ -40,7 +40,7 @@ export const AgreeScreen: React.FC = ({}) => {
             <Content onPress={handleCheckAll}>캠퍼스 택시의 모든 운영원칙에 동의</Content>
           </Checkbox>
         </CheckboxContainer>
-        <CheckboxContainer>
+        <CheckboxContainer style={{marginLeft:20}}>
           <Checkbox>
             <SimpleCheckBox value={terms} setValue={setTerms} />
             <Content>서비스 이용약관 (필수)</Content>
@@ -52,7 +52,7 @@ export const AgreeScreen: React.FC = ({}) => {
             자세히보기
           </Description>
         </CheckboxContainer>
-        <CheckboxContainer>
+        <CheckboxContainer style={{ marginLeft: 20 }}>
           <Checkbox>
             <SimpleCheckBox value={privacy} setValue={setPrivacy} />
             <Content>개인정보 처리방침 (필수)</Content>
@@ -64,7 +64,7 @@ export const AgreeScreen: React.FC = ({}) => {
             자세히보기
           </Description>
         </CheckboxContainer>
-        <CheckboxContainer>
+        <CheckboxContainer style={{ marginLeft: 20 }}>
           <Checkbox>
             <SimpleCheckBox value={location} setValue={setLocation} />
             <Content>위치정보 이용약관 (필수)</Content>
@@ -76,9 +76,9 @@ export const AgreeScreen: React.FC = ({}) => {
             자세히보기
           </Description>
         </CheckboxContainer>
-        <CheckboxContainer>
-          <Checkbox>
-            <SimpleCheckBox value={marketing} setValue={setMarketing} />
+        <CheckboxContainer style={{ marginLeft: 20 }}>
+          <Checkbox >
+            <SimpleCheckBox   value={marketing} setValue={setMarketing} />
             <Content>마케팅 정보 수신 (선택)</Content>
           </Checkbox>
           <Description
@@ -91,12 +91,13 @@ export const AgreeScreen: React.FC = ({}) => {
         <Note>※ 선택 약관에 동의하지 않아도 회원가입이 가능합니다.</Note>
       </ContentContainer>
       <BottomButton
+        disable={!(terms && privacy && location)}
         onPress={() => {
           if (terms && privacy && location) {
             navigate('RegisterScreen');
           }
         }}>
-        다음
+        다 음
       </BottomButton>
     </Container>
   );
@@ -120,7 +121,7 @@ const CheckboxContainer = styled.View`
 `;
 
 const Content = styled.Text`
-  margin-left: 8px;
+  margin-left: 18px;
 `;
 
 const Checkbox = styled.View`
@@ -130,7 +131,8 @@ const Checkbox = styled.View`
 const Description = styled.Text`
   color: #8b8b8b;
   border-bottom-width: 1px;
-  border-bottom-color: #8b8b8b;
+  border-bottom-color: #BFBFBF;
+  padding: 3px 0px 3px 0px;
 `;
 
 const Note = styled.Text`

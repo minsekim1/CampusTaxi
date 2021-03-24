@@ -1,6 +1,5 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import { BackIcon } from '../../components/icon/BackIcon';
 import { PremiumScreen } from './PremiumScreen';
 
 export type PremiumStackParamList = {
@@ -14,7 +13,6 @@ export const PremiumNavigation = () => {
       initialRouteName="PremiumScreen"
       screenOptions={{
         headerTitleStyle: { alignSelf: 'center' },
-        headerLeft: ({ onPress }) => <BackIcon onPress={onPress} />,
       }}>
       <PremiumStack.Screen
         name="PremiumScreen"

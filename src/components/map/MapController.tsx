@@ -166,6 +166,7 @@ const StyledInput = styled.TextInput`
   font-size: 12px;
   margin: 0 0 0 5px;
   padding: 0;
+  width: 90%;
 `
 const Container = styled.View`
   background-color: white;

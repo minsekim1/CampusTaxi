@@ -2,12 +2,14 @@ import styled from '@emotion/native';
 import React from 'react';
 import { Text } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-
+const Cotent = styled.Text`
+  padding:30px;
+`
 export const PrivacyScreen: React.FC = () => {
   return (
     <Container>
       <ScrollView>
-        <Text>{`<캠퍼스택시>('http://www.campustaxi.coo.kr/'이하 'CampusTaxi')은(는) 개인정보보호법에 따라 이용자의 개인정보 보호 및 권익을 보호하고 개인정보와 관련한 이용자의 고충을 원활하게 처리할 수 있도록 다음과 같은 처리방침을 두고 있습니다.
+        <Cotent>{`<캠퍼스택시>('http://www.campustaxi.coo.kr/'이하 'CampusTaxi')은(는) 개인정보보호법에 따라 이용자의 개인정보 보호 및 권익을 보호하고 개인정보와 관련한 이용자의 고충을 원활하게 처리할 수 있도록 다음과 같은 처리방침을 두고 있습니다.
 
 <캠퍼스택시>('CampusTaxi') 은(는) 회사는 개인정보처리방침을 개정하는 경우 웹사이트 공지사항(또는 개별공지)을 통하여 공지할 것입니다.
 
@@ -140,7 +142,7 @@ export const PrivacyScreen: React.FC = () => {
 개인정보처리시스템에 접속한 기록을 최소 6개월 이상 보관, 관리하고 있으며, 접속 기록이 위변조 및 도난, 분실되지 않도록 보안기능 사용하고 있습니다.
 
 4. 개인정보에 대한 접근 제한
-개인정보를 처리하는 데이터베이스시스템에 대한 접근권한의 부여,변경,말소를 통하여 개인정보에 대한 접근통제를 위하여 필요한 조치를 하고 있으며 침입차단시스템을 이용하여 외부로부터의 무단 접근을 통제하고 있습니다.`}</Text>
+개인정보를 처리하는 데이터베이스시스템에 대한 접근권한의 부여,변경,말소를 통하여 개인정보에 대한 접근통제를 위하여 필요한 조치를 하고 있으며 침입차단시스템을 이용하여 외부로부터의 무단 접근을 통제하고 있습니다.`}</Cotent>
       </ScrollView>
     </Container>
   );

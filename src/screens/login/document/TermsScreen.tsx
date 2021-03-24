@@ -2,12 +2,14 @@ import styled from '@emotion/native';
 import React from 'react';
 import { Text } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-
+const Cotent = styled.Text`
+  padding:30px;
+`
 export const TermsScreen: React.FC = () => {
   return (
     <Container>
       <ScrollView>
-        <Text>{`<캠퍼스 택시 이용규칙>
+        <Cotent>{`<캠퍼스 택시 이용규칙>
 
 채팅방 이용규칙
 1. 채팅방을 이용하기 전 커뮤니티 이용규칙의 모든 내용을 반드시 숙지해주시기 바랍니다.
@@ -68,7 +70,7 @@ export const TermsScreen: React.FC = () => {
 1. 방장은 택시를 호출함.
 2. 방에 문제 생기면 문의하기.
 3. 택시 동승 중에 남들에게 피해갈 만한 행동금지
-4. 방장은 택시 요금을 혼자 부담하며, 나머지 동승자로부터 돈을 받는 구조. `}</Text>
+4. 방장은 택시 요금을 혼자 부담하며, 나머지 동승자로부터 돈을 받는 구조. `}</Cotent>
       </ScrollView>
     </Container>
   );

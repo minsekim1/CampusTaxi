@@ -3,9 +3,14 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import axios from 'axios';
 import { differenceInMilliseconds } from 'date-fns';
 import React, { useEffect, useRef, useState } from 'react';
-import { Platform, ScrollView, StatusBar } from 'react-native';
+import { Platform, ScrollView, StatusBar, Text, TextInput } from 'react-native';
+import { ChatRoom } from '../../components/chat-room/ChatRoomList';
 import { Chat } from '../../components/chat/Chat';
+import { Crown } from '../../components/icon/chat/Crown';
+import { Menu } from '../../components/icon/chat/Menu';
+import { SearchIcon } from '../../components/icon/chat/SearchIcon';
 import { BlankBackground } from '../../components/layout/BlankBackground';
+import { showToastWithGravity } from '../../components/layout/Toast';
 import { API_URL } from '../../constant';
 import { useAuthContext } from '../../contexts/AuthContext';
 import { MessageStackParamList } from './MessageNavigation';
@@ -22,33 +27,33 @@ export type Message = {
 };
 
 const data = [
-  {
-    id: 1,
-    message: 'hello',
-    message_type: 'Message',
-    writer: 1,
-    room: 1,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    id: 2,
-    message: 'hello',
-    message_type: 'Message',
-    writer: 1,
-    room: 1,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    id: 3,
-    message: 'hello',
-    message_type: 'Message',
-    writer: 2,
-    room: 1,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
+  // {
+  //   id: 1,
+  //   message: 'hello',
+  //   message_type: 'Message',
+  //   writer: 1,
+  //   room: 1,
+  //   created_at: new Date(),
+  //   updated_at: new Date(),
+  // },
+  // {
+  //   id: 2,
+  //   message: 'hello',
+  //   message_type: 'Message',
+  //   writer: 1,
+  //   room: 1,
+  //   created_at: new Date(),
+  //   updated_at: new Date(),
+  // },
+  // {
+  //   id: 3,
+  //   message: 'hello',
+  //   message_type: 'Message',
+  //   writer: 2,
+  //   room: 1,
+  //   created_at: new Date(),
+  //   updated_at: new Date(),
+  // },
 ];
 
 export const ChatRoomScreen: React.FC = () => {
@@ -58,11 +63,14 @@ export const ChatRoomScreen: React.FC = () => {
   const route = useRoute<NavigationRoute>();
   const id = route.params.id;
   const [refetch, setRefetch] = useState<Date>();
+  const [search, setSearch] = useState<boolean>(false);
+  const [searchInput, setSearchInput] = useState<string>('');
+  const searchRef = React.useRef<TextInput>(null);
   const scrollView = useRef<ScrollView>(null);
 
   useEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor('#579fee');
+      StatusBar.setBackgroundColor('#579FEE');
     }
     StatusBar.setBarStyle('dark-content');
   }, []);
@@ -110,24 +118,52 @@ export const ChatRoomScreen: React.FC = () => {
     }
   };
 
-  if (!datas || datas.length <= 0) {
-    return <></>;
+  const searchOnChangeText = (t: string) => {
+    setSearchInput(t);
+    showToastWithGravity("채팅 데이터가 없어 검색이 되지 않습니다.");
   }
-
   return (
     <BlankBackground color="#579fee">
       <KeyboardContainer behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <Container>
           <BlankBackground color="#fff">
-            <TitleContainer />
+            <TitleContainer>
+              {search ?
+                <>
+                <SearchBar>
+                  <SearchIconView>
+                  <SearchIcon fill="#B7B7BB"/>
+                  </SearchIconView>
+                    <SearchInput value={searchInput} onChangeText={(t) => searchOnChangeText(t)} ref={searchRef}/>
+                </SearchBar>
+                  <CancelBtn onPress={() => setSearch(false)}>
+                    <CancelText>취소</CancelText>
+                  </CancelBtn>
+                  </>
+               : 
+                <>
+               <Crown />
+              <Title>asd</Title>
+              <Group>
+                    <Btn onPress={() => setSearch(true)}>
+                      <SearchIcon fill="white" />
+                </Btn>
+                <Btn>
+                  <Menu />
+                </Btn>
+              </Group>
+                </>}
+                
+
+            </TitleContainer>
             <ContentContainer
               ref={scrollView}
               onLayout={() => {
                 scrollView.current?.scrollToEnd({ animated: true });
               }}>
-              {datas.map((data, index) => (
+              {/* {datas.map((data, index) => (
                 <Chat key={data.created_at.toString()} data={data} index={index} datas={datas} />
-              ))}
+              ))} */}
             </ContentContainer>
             <TextAreaContainer>
               <TextArea
@@ -147,7 +183,48 @@ export const ChatRoomScreen: React.FC = () => {
     </BlankBackground>
   );
 };
-
+const CancelBtn = styled.TouchableOpacity`
+`
+const CancelText = styled.Text`
+  color:white;
+  padding-left:10px;
+  margin:0;
+`
+const SearchBar = styled.View`
+  background-color: white;
+  flex-direction: row;
+  border-radius: 3px;
+`
+const SearchIconView = styled.View`
+  height: 31px;
+  margin-top:3px;
+  padding:0 10px 0 5px;
+  justify-content: center;
+`
+const SearchInput = styled.TextInput`
+  height: 31px;
+  margin-top:3px;
+  width: 60%;
+  padding:0;
+`
+const Btn = styled.TouchableOpacity`
+  margin: 2px 3px 0 3px;
+  padding: 0 6px 0 6px;
+`
+const Group = styled.View`
+  position: absolute;
+  right:0;
+  flex-direction:row;
+  align-items: center;
+  justify-content: center;
+  margin-right:10px;
+`
+const Title = styled.Text`
+  color:white;
+  margin:3px 0 0 10px;
+  font-size:18px;
+  font-weight: bold;
+`
 const Container = styled.SafeAreaView`
   justify-content: space-around;
   padding-top: 24px;
@@ -159,8 +236,11 @@ const KeyboardContainer = styled.KeyboardAvoidingView`
 `;
 
 const TitleContainer = styled.View`
-  background-color: #579fee;
-  height: 120px;
+  background-color: #579FEE;
+  height: 55px;
+  flex-direction:row;
+  justify-content: center;
+  align-items: center;
 `;
 
 const ContentContainer = styled.ScrollView`

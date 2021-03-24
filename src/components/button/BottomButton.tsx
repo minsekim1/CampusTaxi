@@ -7,18 +7,18 @@ type Props = {
   icon?: ReactNode;
   color?: string;
   backgroundColor?: string;
-  clicked?: boolean;
+  disable?: boolean;
 };
 
-export const BottomButton: React.FC<Props> = ({ children, onPress, icon, clicked }) => {
+export const BottomButton: React.FC<Props> = ({ children, onPress, icon, disable }) => {
   return (
     <ButtonContainer>
       <BlankButton
-        backgroundColor={clicked ? '#CBCED7' : '#172864'}
+        backgroundColor={disable ? '#CBCED7' : '#76A2EB'}
         color="white"
         icon={icon}
         onPress={onPress}
-        paddingBottom={16}>
+        disable={disable}>
         {children}
       </BlankButton>
     </ButtonContainer>
