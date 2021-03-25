@@ -1,11 +1,18 @@
 import React from 'react';
-import { useAuthContext } from '../contexts/AuthContext';
-import { LoginNavigation } from './login/LoginNavigation';
-import { HomeTabNavigation } from './tab/HomeTabNavigation';
+import { useAuthContext, MoveNavProps } from '../contexts/AuthContext';
+import { LoginNavigation } from './notab/login/LoginNavigation';
+import { TabNavigation } from './tab/TabNavigation';
+import { NoTabNavigation } from './notab/NoTabNavigation';
 
 export const RootScreen = () => {
   const { isLoggedIn } = useAuthContext();
+  const { MoveNav } = useAuthContext();
 
-  return isLoggedIn ? <HomeTabNavigation /> : <LoginNavigation />;
-  //test로 바꿨음 느낌표 빼셈!!!!!!!!!!!!!!
+  return isLoggedIn ? getNavigationObject(MoveNav) : <LoginNavigation />;
 };
+
+const getNavigationObject = (props:MoveNavProps) => {
+  if (props.istab === "NoTab") return <NoTabNavigation />
+  return <TabNavigation />
+};
+

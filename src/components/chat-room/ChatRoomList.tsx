@@ -46,14 +46,14 @@ export const ChatRoomDummy = {
 export const ChatRoomDummyList = [ChatRoomDummy, ChatRoomDummy, ChatRoomDummy, ChatRoomDummy, ChatRoomDummy, ChatRoomDummy, ChatRoomDummy];
 
 export type Props = {
-  onPress: (id: number) => () => void;
+  onPress: (data: ChatRoom) => () => void;
   datas: ChatRoom[];
 };
 export const ChatRoomList: React.FC<Props> = ({ datas, onPress }) => {
   return (
     <>
       {datas.map((data) => (
-        <MapRoomCard key={data.id} data={data} onPress={onPress(data.id)} />
+        <MapRoomCard key={data.id} data={data} onPress={onPress(data)} />
       ))}
     </>
   );

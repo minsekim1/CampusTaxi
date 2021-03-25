@@ -1,10 +1,11 @@
 import styled from '@emotion/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import { View, Text, TextInput, Alert } from 'react-native';
 import { Search } from '../../components/icon/home/Search';
 import { GOOGLE_MAPAPI_URL } from '../../constant';
-import { myCoordProps } from '../../screens/home/CreateScreen';
+import { myCoordProps } from '../../screens/notab/home/CreateScreen';
 type Props = {
   roomType?: number;
   start?: any;
@@ -41,15 +42,24 @@ export const MapController: React.FC<Props> = ({
   const [startOnFocus, setStartOnFocus] = React.useState<boolean>(false);
   const [endOnFocus, setEndOnFocus] = React.useState<boolean>(false);
   const [searchResult, setSearchResult] = React.useState<Array<GooglePlacePros>>([]);
+
   const searchLocation = async (text: string, onSearch: Dispatch<SetStateAction<myCoordProps>>, value:myCoordProps) => {
     onSearch({ latitude: value.latitude, longitude: value.longitude, zoom: value.zoom, name: text });
+    //데이터를 로컬에 저장해놓고 쓴다.(과도사용방지)
+    //android / gradle.properties에 100MB로 설정해놨다.
     if (text.length > 1)
-      axios.request({
-          method: 'post',
-        url: `https://maps.googleapis.com/maps/api/place/autocomplete/json?region=kr&language=ko&input=${text}&rankby=distance&key=${GOOGLE_MAPAPI_URL}`,
-        }).then((response) => {
-          setSearchResult(response.data.predictions);
+    {
+      let r: any = await AsyncStorage.getItem('searchLocation(' + text + ')');
+      if (!r) {
+        r = await axios.request({
+            method: 'post',
+            url: `https://maps.googleapis.com/maps/api/place/autocomplete/json?region=kr&language=ko&input=${text}&rankby=distance&key=${GOOGLE_MAPAPI_URL}`,
         }).catch((e) => console.log(e.response));
+        AsyncStorage.setItem('searchLocation(' + text + ')', JSON.stringify(r));
+      } else
+        r = JSON.parse(r);
+      setSearchResult(r.data.predictions);
+    }
     else
       setSearchResult([])
   };
@@ -61,23 +71,31 @@ export const MapController: React.FC<Props> = ({
     if (EndRef)
       EndRef.current.blur()
   }
-  const onPressResultText = (d: GooglePlacePros) => {
+  const onPressResultText = async (d: GooglePlacePros) => {
     if (d.place_id)
-      axios.request({
-        method: 'post',
-        url: `https://maps.googleapis.com/maps/api/place/details/json?place_id=${d.place_id}&language=ko&fields=formatted_address,name,geometry&key=${GOOGLE_MAPAPI_URL}`,
-      }).then((response) => {
-        const d: any = response.data.result;
-        if (startOnFocus)
-          onPressPosSetButton('searchStart', start, end, setStartState,{
-            latitude: d.geometry.location.lat, longitude: d.geometry.location.lng, name: d.formatted_address + "(" + d.name + ")"
-          })
-        else if (endOnFocus)
-          onPressPosSetButton('searchEnd', end,start, setEndState, {
-            latitude: d.geometry.location.lat, longitude: d.geometry.location.lng, name: d.formatted_address + "(" + d.name + ")"
-          })
-        onPressBlurView();
-      }).catch((e) => console.log(e.response));
+    {
+      //Data 절약을 위해 로컬에 데이터 저장함 100MB로 설정했음 android/gradle.properties
+      let response: any = await AsyncStorage.getItem('searchLocation(' + d.place_id + ')');
+      if (!response) {
+        response = await axios.request({
+          method: 'post',
+          url: `https://maps.googleapis.com/maps/api/place/details/json?place_id=${d.place_id}&language=ko&fields=formatted_address,name,geometry&key=${GOOGLE_MAPAPI_URL}`,
+        }).catch((e) => Alert.alert(e.response));
+        AsyncStorage.setItem('searchLocation(' + d.place_id + ')', JSON.stringify(response));
+      } else
+        response = JSON.parse(response);
+        
+      const result: any = response.data.result;
+      if (startOnFocus)
+        onPressPosSetButton('searchStart', start, end, setStartState,{
+          latitude: result.geometry.location.lat, longitude: result.geometry.location.lng, name: result.formatted_address + "(" + result.name + ")"
+        })
+      else if (endOnFocus)
+        onPressPosSetButton('searchEnd', end,start, setEndState, {
+          latitude: result.geometry.location.lat, longitude: result.geometry.location.lng, name: result.formatted_address + "(" + result.name + ")"
+        })
+      onPressBlurView();
+      }
   }
   return (
     <>

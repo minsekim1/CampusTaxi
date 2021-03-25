@@ -3,7 +3,7 @@ import { format, getDate } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import React from 'react';
 import { Text } from 'react-native';
-import { Message } from '../../screens/message/ChatRoomScreen';
+import { Message } from '../../screens/notab/message/ChatRoomScreen';
 import { MessageCard } from './MessageCard';
 
 type Props = {

@@ -9,15 +9,33 @@ export type AuthState = {
   isLoggedIn: boolean;
   setLoggedIn: (token: string, refresh: string) => void;
   setLoggedOut: () => void;
+  MoveNav: MoveNavProps;
+  setNavName: (arg0: MoveNavProps) => void;
 };
 
 const AuthContext = React.createContext<AuthState>({
   token: undefined,
   isLoading: true,
   isLoggedIn: false,
+  MoveNav: { istab: 'Tab', tab : 'HomeTabScreen', props: undefined},
   setLoggedIn: () => { },
   setLoggedOut: () => { },
+  setNavName: (MoveNavProps) => { },
 });
+
+export type MoveNavProps = 
+  {
+    istab: 'Tab' | 'NoTab',
+    tab:
+    'HomeNoTabNavigation' |
+    'MessageNoTabNavigation' |
+    'SettingNoTabNavigation' |
+    'HomeTabScreen' |
+    'MessageTabScreen' |
+    'PremiumTabScreen' |
+    'SettingTabScreen'
+    , screen?: string, props?: any
+  }
 
 export const useAuthContext = () => useContext(AuthContext);
 
@@ -25,6 +43,14 @@ export const AuthProvider: React.FC = ({ children }) => {
   const [token, setToken] = useState<string | undefined>();
   const [refresh, setRefresh] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [MoveNav, setMoveNav] = useState<MoveNavProps>({istab: 'Tab', tab: 'HomeTabScreen'});
+
+  const setNavName = useCallback(
+    (props: MoveNavProps) => {
+      setMoveNav(props);
+    },
+    [setMoveNav]
+  );
 
   const setLoggedIn = useCallback(
     (accessData: string, refreshData: string) => {
@@ -88,8 +114,10 @@ export const AuthProvider: React.FC = ({ children }) => {
         token,
         isLoading,
         isLoggedIn: Boolean(token),
+        MoveNav,
         setLoggedOut,
         setLoggedIn,
+        setNavName,
       }}>
       {children}
     </AuthContext.Provider>
