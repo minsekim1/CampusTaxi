@@ -2,10 +2,10 @@ import styled from '@emotion/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState, useEffect} from 'react';
-import { HomeCreateStackParamList } from './HomeNoTabNavigation';
 import { Platform, Button, ScrollView, Text, TouchableOpacity, View, Image, Linking } from 'react-native';
+import { HomeNoTabNavigationParamList } from './HomeNoTabNavigation';
 
-type CreateScreenDetailsNavigationProp = StackNavigationProp<HomeCreateStackParamList, 'CreateScreenDetails'>;
+type CreateScreenDetailsNavigationProp = StackNavigationProp<HomeNoTabNavigationParamList, 'CreateScreenDetails'>;
 
 type Props = {
     navigation: CreateScreenDetailsNavigationProp;

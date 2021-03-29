@@ -2,6 +2,7 @@ import styled from '@emotion/native';
 import React, { Dispatch, SetStateAction} from 'react';
 import { Text } from 'react-native';
 import { ChatRoom } from '../chat-room/ChatRoomList';
+import { GenderColor, GenderText } from '../color/GenderColor';
 import { CreateRoomSelectCancel} from '../icon/home/CreateRoomSelectCancel';
 
 type Props = {
@@ -12,9 +13,11 @@ type Props = {
   activeCancelBtn?: boolean;
 };
 export const MapRoomCard: React.FC<Props> = ({ data, onCancelPress, onPress, backgroundColor, activeCancelBtn }) => {
+  if (!data)
+    return <></>
   const gender = (data) ? data.gender : 'all';
-  const bgColor = ((gender == 0) ? '#579FEE' : ((gender == 1) ? '#FF6464' : '#000000'));
-  const genderText = ((gender == 0) ? '남자' : ((gender == 1) ? '여자' : '무관'));
+  const bgColor = GenderColor(data.gender);
+  const genderText = GenderText(data.gender);
   activeCancelBtn = (!activeCancelBtn) ? false : true;
   if (!data)
     return <></>;
@@ -93,7 +96,7 @@ const TempCircle = styled.View`
   width: 64px;
   height: 64px;
   border-radius: 17px;
-  background-color: #ff6464;
+  background-color: #F28A8A;
   justify-content: center;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
   margin-right: 16px;

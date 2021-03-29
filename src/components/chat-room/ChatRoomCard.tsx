@@ -66,7 +66,7 @@ const TempCircle = styled.View`
   width: 64px;
   height: 64px;
   border-radius: 31px;
-  background-color: #ff6464;
+  background-color: #F28A8A;
   justify-content: center;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
   margin-right: 16px;

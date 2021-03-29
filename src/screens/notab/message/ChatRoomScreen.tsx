@@ -5,6 +5,8 @@ import axios from "axios";
 import { differenceInMilliseconds } from "date-fns";
 import React, { useEffect, useRef, useState } from "react";
 import { Platform, ScrollView, StatusBar, Text, TextInput } from "react-native";
+import { ChatRoom } from "../../../components/chat-room/ChatRoomList";
+import { GenderColor } from "../../../components/color/GenderColor";
 import BackIconWhite from "../../../components/icon/chat/BackIconWhite";
 import { Crown } from "../../../components/icon/chat/Crown";
 import { Menu } from "../../../components/icon/chat/Menu";
@@ -15,7 +17,10 @@ import { API_URL } from "../../../constant";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import { MessageNoTabNavigationParamList } from "./MessageNoTabNavigation";
 
-export type MessageNoTabNavigationProp = StackNavigationProp<MessageNoTabNavigationParamList, 'ChatRoomScreen'>;
+export type MessageNoTabNavigationProp = StackNavigationProp<
+  MessageNoTabNavigationParamList,
+  "ChatRoomScreen"
+>;
 
 type NavigationRoute = RouteProp<
   MessageNoTabNavigationParamList,
@@ -31,7 +36,7 @@ export type Message = {
   updated_at: Date;
 };
 
-const data: Message[] | (() => Message[]) = [
+const MessageDummy: Message[] | (() => Message[]) = [
   {
     id: 1,
     message: "hello",
@@ -63,11 +68,13 @@ const data: Message[] | (() => Message[]) = [
 
 export const ChatRoomScreen: React.FC = () => {
   const { navigate } = useNavigation<MessageNoTabNavigationProp>();
-  const [datas, setDatas] = useState<Message[]>(data);
+  const [messages, setMessages] = useState<Message[]>(MessageDummy);
   const [message, setMessage] = useState("");
+  const [room, setRoom] = useState<ChatRoom>(
+    useAuthContext().MoveNav.props.data
+  );
   const { token } = useAuthContext();
   const route = useRoute<NavigationRoute>();
-  const id = useAuthContext().MoveNav.props.id;
   const [refetch, setRefetch] = useState<Date>();
   const [search, setSearch] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState<string>("");
@@ -77,15 +84,16 @@ export const ChatRoomScreen: React.FC = () => {
 
   useEffect(() => {
     if (Platform.OS === "android") {
-      StatusBar.setBackgroundColor("#579FEE");
+      StatusBar.setBackgroundColor(GenderColor(room?.gender));
     }
     StatusBar.setBarStyle("dark-content");
   }, []);
 
   useEffect(() => {
-    if (id) {
+    if (room.id == -1) console.warn("room.id 가 -1입니다.");
+    else if (room.id) {
       axios
-        .get<Message[]>(`${API_URL}/api/v1/messages/?room=${id}`, {
+        .get<Message[]>(`${API_URL}/api/v1/messages/?room=${room.id}`, {
           headers: {
             Authorization: `Token ${token}`,
           },
@@ -100,22 +108,22 @@ export const ChatRoomScreen: React.FC = () => {
           // setDatas(data);
         });
     }
-  }, [id, token, refetch]);
+  }, [room.id, token, refetch]);
 
   useEffect(() => {
-    if (datas && scrollView.current) {
+    if (messages && scrollView.current) {
       setTimeout(() => {
         scrollView.current?.scrollToEnd({ animated: true });
       }, 500);
     }
-  }, [scrollView, datas]);
+  }, [scrollView, messages]);
 
   const sendMessage = (text: string) => {
     if (token) {
       axios
         .post(
           `${API_URL}/api/v1/messages/`,
-          { message: text, message_type: "Message", writer: 1, room: id },
+          { message: text, message_type: "Message", writer: 1, room: room.id },
           {
             headers: {
               Authorization: `Token ${token}`,
@@ -133,13 +141,13 @@ export const ChatRoomScreen: React.FC = () => {
     showToastWithGravity("채팅 데이터가 없어 검색이 되지 않습니다.");
   };
   return (
-    <BlankBackground color="#579fee">
+    <BlankBackground color={GenderColor(room?.gender)}>
       <KeyboardContainer
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <Container>
           <BlankBackground color="#fff">
-            <TitleContainer>
+            <TitleContainer room={room}>
               {search ? (
                 <>
                   <SearchBar>
@@ -158,7 +166,11 @@ export const ChatRoomScreen: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <LeftBtn onPress={()=>setNavName({istab:'Tab', tab:'MessageTabScreen'})}>
+                  <LeftBtn
+                    onPress={() =>
+                      setNavName({ istab: "Tab", tab: "MessageTabScreen" })
+                    }
+                  >
                     <BackIconWhite />
                   </LeftBtn>
                   <Crown />
@@ -167,7 +179,7 @@ export const ChatRoomScreen: React.FC = () => {
                     <Btn onPress={() => setSearch(true)}>
                       <SearchIcon fill="white" />
                     </Btn>
-                    <Btn onPress={() => navigate('ChatRoomScreenDetails')}>
+                    <Btn onPress={() => navigate("ChatRoomScreenDetails")}>
                       <Menu />
                     </Btn>
                   </Group>
@@ -259,7 +271,7 @@ const KeyboardContainer = styled.KeyboardAvoidingView`
 `;
 
 const TitleContainer = styled.View`
-  background-color: #579fee;
+ background-color: ${props => GenderColor(props.room.gender)};
   height: 55px;
   flex-direction: row;
   justify-content: center;

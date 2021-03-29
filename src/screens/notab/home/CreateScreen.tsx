@@ -286,8 +286,7 @@ export const CreateScreen: React.FC<Props> = ({}) => {
         }])
     }
     const MapMove = (datas: [Coord, Coord]) => {
-        if (MapRef)
-            MapRef.current.animateToTwoCoordinates({
+            MapRef?.current?.animateToTwoCoordinates({
                 latitude: datas[0].latitude,
                 longitude: datas[0].longitude
             }, {
