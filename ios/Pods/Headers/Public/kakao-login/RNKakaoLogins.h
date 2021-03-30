@@ -1,11 +1,1 @@
-
-#if __has_include("RCTBridgeModule.h")
-#import "RCTBridgeModule.h"
-#else
-#import <React/RCTBridgeModule.h>
-#endif
-
-@interface RNKakaoLogins : NSObject <RCTBridgeModule>
-
-@end
-  
+../../../../../node_modules/@react-native-seoul/kakao-login/ios/RNKakaoLogins/RNKakaoLogins.h

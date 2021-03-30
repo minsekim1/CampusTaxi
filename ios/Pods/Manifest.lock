@@ -333,6 +333,8 @@ PODS:
     - React-Core
   - RNCCheckbox (0.5.7):
     - React-Core
+  - RNCClipboard (1.7.0):
+    - React-Core
   - RNCMaskedView (0.1.10):
     - React
   - RNCPicker (1.9.10):
@@ -407,6 +409,7 @@ DEPENDENCIES:
   - "RNAppleAuthentication (from `../node_modules/@invertase/react-native-apple-authentication`)"
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCCheckbox (from `../node_modules/@react-native-community/checkbox`)"
+  - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
@@ -502,6 +505,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCCheckbox:
     :path: "../node_modules/@react-native-community/checkbox"
+  RNCClipboard:
+    :path: "../node_modules/@react-native-clipboard/clipboard"
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
   RNCPicker:
@@ -567,6 +572,7 @@ SPEC CHECKSUMS:
   RNAppleAuthentication: 46cbc67739bae83ca229497f9b0038f3f5431443
   RNCAsyncStorage: da95b83e241a7f5efe3da1a949b3ec3175380be0
   RNCCheckbox: d1749e6a92178ce5dbc31e63becd1f34f0c76bbd
+  RNCClipboard: 245417a78ab585e0d4d83926c28907e7b2bc24bd
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
   RNCPicker: 77183d9b1cd80ae55505322f8ad09ba0036e29ba
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211

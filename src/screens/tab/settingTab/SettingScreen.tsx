@@ -2,9 +2,10 @@ import styled from '@emotion/native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { SafeAreaView } from 'react-native';
+import { BackHandler, Platform, SafeAreaView } from 'react-native';
 import { RightIcon } from '../../../components/icon/RightIcon';
 import { BlankBackground } from '../../../components/layout/BlankBackground';
+import { showToast } from '../../../components/layout/Toast';
 import { useAuthContext } from '../../../contexts/AuthContext';
 import { SettingStackParamList } from './SettingStackNavigation';
 
@@ -16,6 +17,35 @@ type Props = {
 export const SettingScreen: React.FC<Props> = () => {
   const { setLoggedOut } = useAuthContext();
   const { setNavName } = useAuthContext();
+
+  const navigation = useNavigation<SettingScreenNavigationProp>();
+  //#region 뒤로가기 버튼 제어 & 더블클릭시 앱 종료
+  let currentCount = 0;
+  React.useEffect(() => {
+    navigation.addListener('focus', () => {
+      BackHandler.addEventListener("hardwareBackPress", handleBackButton)
+      //console.log("focus MainScreen");
+    });
+    navigation.addListener('blur', () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
+      //console.log("blur MainScreen");
+    })
+  }, []);
+  const handleBackButton = () => {
+    if (currentCount < 1) {
+      currentCount += 1;
+      if (Platform.OS === 'android') {
+        showToast('뒤로 가기를 한번 더 누르면 앱이 종료됩니다.\n로그아웃은 설정->로그아웃으로 가주세요.')
+      } else {
+        BackHandler.exitApp();
+      }
+      setTimeout(() => {
+        currentCount = 0;
+      }, 2000);
+      return true;
+    }
+  }
+  //#endregion 뒤로가기 버튼 제어 & 더블클릭시 앱 종료
   return (
     <BlankBackground color="#fff">
       <SafeAreaView>

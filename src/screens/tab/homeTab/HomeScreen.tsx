@@ -1,7 +1,7 @@
 import styled from '@emotion/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState} from 'react';
-import { Platform, ScrollView, View, Linking } from 'react-native';
+import { Platform, ScrollView, View, Linking, BackHandler } from 'react-native';
 import { OptionButton } from '../../../components/button/OptionButton';
 import { CardButton } from '../../../components/button/CardButton';
 import { HomeLocationTextField } from '../../../components/form/HomeLocationTextField';
@@ -18,6 +18,8 @@ import { BlankBackground } from '../../../components/layout/BlankBackground';
 import { MainLogo } from '../../../components/logo/MainLogo';
 import { HomeStackParamList } from './HomeStackNavigation';
 import { useAuthContext } from '../../../contexts/AuthContext';
+import { showToast } from '../../../components/layout/Toast';
+import { useNavigation } from '@react-navigation/native';
 
 type HomeScreenNavigationProp = StackNavigationProp<HomeStackParamList, 'HomeScreen'>;
 
@@ -31,6 +33,34 @@ export const HomeScreen: React.FC<Props> = () => {
   const [gender, setGender] = useState(0);
   const [schoollocation] = useState("택시대학교");
   const { setNavName } = useAuthContext();
+  const navigation = useNavigation<HomeScreenNavigationProp>();
+  //#region 뒤로가기 버튼 제어 & 더블클릭시 앱 종료
+  let currentCount = 0;
+  React.useEffect(() => {
+    navigation.addListener('focus', () => {
+      BackHandler.addEventListener("hardwareBackPress", handleBackButton)
+      //console.log("focus MainScreen");
+    });
+    navigation.addListener('blur', () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
+      //console.log("blur MainScreen");
+    })
+  }, []);
+  const handleBackButton = () => {
+    if (currentCount < 1) {
+      currentCount += 1;
+      if (Platform.OS === 'android') {
+        showToast('뒤로 가기를 한번 더 누르면 앱이 종료됩니다.\n로그아웃은 설정->로그아웃으로 가주세요.')
+      } else {
+        BackHandler.exitApp();
+      }
+      setTimeout(() => {
+        currentCount = 0;
+      }, 2000);
+      return true;
+    }
+  }
+  //#endregion 뒤로가기 버튼 제어 & 더블클릭시 앱 종료
 
   return (
       <BlankBackground color="#76A2EB">

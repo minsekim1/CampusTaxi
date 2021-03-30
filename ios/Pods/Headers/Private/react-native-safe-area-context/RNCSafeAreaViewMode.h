@@ -1,7 +1,1 @@
-#import <Foundation/Foundation.h>
-
-typedef NS_ENUM(NSInteger, RNCSafeAreaViewMode) {
-  RNCSafeAreaViewModePadding,
-  RNCSafeAreaViewModeMargin,
-  RNCSafeAreaViewModeBorder,
-};
+../../../../../node_modules/react-native-safe-area-context/ios/SafeAreaView/RNCSafeAreaViewMode.h

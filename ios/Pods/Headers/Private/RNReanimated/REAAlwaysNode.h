@@ -1,4 +1,1 @@
-#import "REANode.h"
-
-@interface REAAlwaysNode : REANode <REAFinalNode>
-@end
+../../../../../node_modules/react-native-reanimated/ios/Nodes/REAAlwaysNode.h

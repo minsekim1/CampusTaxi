@@ -25,10 +25,10 @@ export const SwipeableView: React.FC<Props> = ({
 	return (
 			<Container>
 				<Modalize alwaysOpen={70} ref={modalizeRef}
-					overlayStyle={{ backgroundColor: 'rgba(0,0,0,0)' }}
+					overlayStyle={overlayStyle}
 					handlePosition="inside"
-					handleStyle={{ backgroundColor: "#707070" }}
-					modalStyle={{ backgroundColor: 'rgba(255,250,240,0.9)', padding: 10, marginHorizontal: 5, paddingTop:42 }}
+					handleStyle={handleStyle}
+					modalStyle={modalStyle}
 				>
 					{datas.map((data) => (
 						(data.id != -1 && data.id != -2) ?
@@ -38,6 +38,9 @@ export const SwipeableView: React.FC<Props> = ({
 		</Container>
   );
 };
+const overlayStyle = { backgroundColor: 'rgba(0,0,0,0)' }
+const handleStyle = { backgroundColor: "#707070" }
+const modalStyle = { backgroundColor: 'rgba(255,250,240,0.9)', padding: 10, marginHorizontal: 5, paddingTop:52 }
 const Container = styled.View`
 	height:76%;
 	width: 100%;

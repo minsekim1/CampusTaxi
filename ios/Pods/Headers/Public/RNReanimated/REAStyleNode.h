@@ -1,6 +1,1 @@
-#import "REANode.h"
-
-@interface REAStyleNode : REANode
-
-@end
-
+../../../../../node_modules/react-native-reanimated/ios/Nodes/REAStyleNode.h

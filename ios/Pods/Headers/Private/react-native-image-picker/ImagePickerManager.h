@@ -1,11 +1,1 @@
-#import <React/RCTBridgeModule.h>
-#import <UIKit/UIKit.h>
-
-typedef NS_ENUM(NSInteger, RNImagePickerTarget) {
-  camera = 1,
-  library
-};
-
-@interface ImagePickerManager : NSObject <RCTBridgeModule, UINavigationControllerDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate>
-
-@end
+../../../../../node_modules/react-native-image-picker/ios/ImagePickerManager.h

@@ -4,8 +4,9 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import axios from 'axios';
 import { format } from 'date-fns';
 import React, { useEffect, useState } from 'react';
-import { ScrollView } from 'react-native';
+import { BackHandler, Platform, ScrollView } from 'react-native';
 import { ChatRoom, ChatRoomDummyList, ChatRoomList } from '../../../components/chat-room/ChatRoomList';
+import { showToast } from '../../../components/layout/Toast';
 import { API_URL } from '../../../constant';
 import { useAuthContext } from '../../../contexts/AuthContext';
 import { MessageStackParamList } from './MessageStackNavigation';
@@ -24,8 +25,35 @@ export type APIData = {
 export const MessageScreen: React.FC = () => {
   const [datas, setDatas] = useState<ChatRoom[]>();
   const { token } = useAuthContext();
-  // const navigation = useNavigation<MessageNavigation>();
   const { setNavName } = useAuthContext();
+  const navigation = useNavigation<MessageNavigation>();
+    //#region 뒤로가기 버튼 제어 & 더블클릭시 앱 종료
+  let currentCount = 0;
+  React.useEffect(() => {
+    navigation.addListener('focus', () => {
+      BackHandler.addEventListener("hardwareBackPress", handleBackButton)
+      //console.log("focus MainScreen");
+    });
+    navigation.addListener('blur', () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
+      //console.log("blur MainScreen");
+    })
+  }, []);
+  const handleBackButton = () => {
+    if (currentCount < 1) {
+      currentCount += 1;
+      if (Platform.OS === 'android') {
+        showToast('뒤로 가기를 한번 더 누르면 앱이 종료됩니다.\n로그아웃은 설정->로그아웃으로 가주세요.')
+      } else {
+        BackHandler.exitApp();
+      }
+      setTimeout(() => {
+        currentCount = 0;
+      }, 2000);
+      return true;
+    }
+  }
+  //#endregion 뒤로가기 버튼 제어 & 더블클릭시 앱 종료
   useEffect(() => {
     console.log('token', token);
     axios

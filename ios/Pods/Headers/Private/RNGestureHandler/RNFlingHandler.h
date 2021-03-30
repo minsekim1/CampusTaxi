@@ -1,4 +1,1 @@
-#import "RNGestureHandler.h"
-
-@interface RNFlingGestureHandler : RNGestureHandler
-@end
+../../../../../node_modules/react-native-gesture-handler/ios/Handlers/RNFlingHandler.h
