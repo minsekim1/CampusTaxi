@@ -6,6 +6,8 @@ import { differenceInMilliseconds } from "date-fns";
 import React, { useEffect, useRef, useState } from "react";
 import { Platform, ScrollView, StatusBar, Text, TextInput } from "react-native";
 import { ChatRoom } from "../../../components/chat-room/ChatRoomList";
+import { ChatList } from "../../../components/chat/ChatList";
+import { Message, MessageDummy } from "../../../components/chat/Message";
 import { GenderColor } from "../../../components/color/GenderColor";
 import BackIconWhite from "../../../components/icon/chat/BackIconWhite";
 import { Crown } from "../../../components/icon/chat/Crown";
@@ -26,45 +28,6 @@ type NavigationRoute = RouteProp<
   MessageNoTabNavigationParamList,
   "ChatRoomScreen"
 >;
-export type Message = {
-  id: number;
-  message: string;
-  message_type: "Message" | "Notice" | "Enter";
-  writer: number;
-  room: number;
-  created_at: Date;
-  updated_at: Date;
-};
-
-const MessageDummy: Message[] | (() => Message[]) = [
-  {
-    id: 1,
-    message: "hello",
-    message_type: "Message",
-    writer: 1,
-    room: 1,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    id: 2,
-    message: "hello",
-    message_type: "Message",
-    writer: 1,
-    room: 1,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    id: 3,
-    message: "hello",
-    message_type: "Message",
-    writer: 2,
-    room: 1,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-];
 
 export const ChatRoomScreen: React.FC = () => {
   const { navigate } = useNavigation<MessageNoTabNavigationProp>();
@@ -90,6 +53,9 @@ export const ChatRoomScreen: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (search) searchRef.current?.focus();
+  },[search])
+  useEffect(() => {
     if (room.id == -1) console.warn("room.id 가 -1입니다.");
     else if (room.id) {
       axios
@@ -105,6 +71,7 @@ export const ChatRoomScreen: React.FC = () => {
               new Date(b.created_at)
             )
           );
+          console.log(data);
           // setDatas(data);
         });
     }
@@ -116,7 +83,7 @@ export const ChatRoomScreen: React.FC = () => {
         scrollView.current?.scrollToEnd({ animated: true });
       }, 500);
     }
-  }, [scrollView, messages]);
+  }, []); //scrollView, messages
 
   const sendMessage = (text: string) => {
     if (token) {
@@ -138,7 +105,13 @@ export const ChatRoomScreen: React.FC = () => {
 
   const searchOnChangeText = (t: string) => {
     setSearchInput(t);
-    showToastWithGravity("채팅 데이터가 없어 검색이 되지 않습니다.");
+    if (!messages)
+      showToastWithGravity("채팅 데이터가 없어 검색이 되지 않습니다.");
+  };
+  const LeftBtnOnPress = () =>
+    setNavName({ istab: "Tab", tab: "MessageTabScreen" });
+  const ContentContainerOnonLayout = () => {
+    scrollView.current?.scrollToEnd({ animated: true });
   };
   return (
     <BlankBackground color={GenderColor(room?.gender)}>
@@ -147,9 +120,11 @@ export const ChatRoomScreen: React.FC = () => {
       >
         <Container>
           <BlankBackground color="#fff">
+            {/* 헤더 */}
             <TitleContainer room={room}>
               {search ? (
                 <>
+                  {/* 검색 중 화면 */}
                   <SearchBar>
                     <SearchIconView>
                       <SearchIcon fill="#B7B7BB" />
@@ -165,12 +140,9 @@ export const ChatRoomScreen: React.FC = () => {
                   </CancelBtn>
                 </>
               ) : (
-                <>
-                  <LeftBtn
-                    onPress={() =>
-                      setNavName({ istab: "Tab", tab: "MessageTabScreen" })
-                    }
-                  >
+                  <>
+                    {/* 검색 아닐 시 */}
+                  <LeftBtn onPress={LeftBtnOnPress}>
                     <BackIconWhite />
                   </LeftBtn>
                   <Crown />
@@ -186,15 +158,12 @@ export const ChatRoomScreen: React.FC = () => {
                 </>
               )}
             </TitleContainer>
+            {/* 채팅 내용 */}
             <ContentContainer
               ref={scrollView}
-              onLayout={() => {
-                scrollView.current?.scrollToEnd({ animated: true });
-              }}
+              onLayout={ContentContainerOnonLayout}
             >
-              {/* {datas.map((data, index) => (
-                <Chat key={data.created_at.toString()} data={data} index={index} datas={datas} />
-              ))} */}
+              <ChatList messages={messages} />
             </ContentContainer>
             <TextAreaContainer>
               <TextArea
@@ -270,8 +239,8 @@ const KeyboardContainer = styled.KeyboardAvoidingView`
   flex: 1;
 `;
 
-const TitleContainer = styled.View`
- background-color: ${props => GenderColor(props.room.gender)};
+const TitleContainer: any = styled.View`
+  background-color: ${(props) => GenderColor(props.room.gender)};
   height: 55px;
   flex-direction: row;
   justify-content: center;

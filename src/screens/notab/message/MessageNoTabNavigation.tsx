@@ -1,12 +1,9 @@
 import styled from "@emotion/native";
 import {
   createStackNavigator,
-  HeaderBackButton,
 } from "@react-navigation/stack";
 import React from "react";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { BackIconWhite } from "../../../components/icon/chat/BackIconWhite";
-import { SearchIcon } from "../../../components/icon/chat/SearchIcon";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import { ChatRoomScreen } from "./ChatRoomScreen";
 import { ChatRoomScreenDetails } from "./ChatRoomScreenDetails";
@@ -18,7 +15,6 @@ export type MessageNoTabNavigationParamList = {
 const MessageStack = createStackNavigator<MessageNoTabNavigationParamList>();
 export const MessageNoTabNavigation = (p) => {
   const props = useAuthContext().MoveNav.props;
-  const { setNavName } = useAuthContext();
   return (
     <MessageStack.Navigator
       initialRouteName={props?.screen ? props.screen : "ChatRoomScreen"}
