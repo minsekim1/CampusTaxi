@@ -1,44 +1,20 @@
 import styled from "@emotion/native";
-import { format, getDate } from "date-fns";
-import { ko } from "date-fns/locale";
 import React from "react";
-import { Text } from "react-native";
 import { windowWidth } from "../../constant";
 import { Crown } from "../icon/chat/Crown";
 import { ManRect } from "../icon/chat/ManRect";
 import { WomanRect } from "../icon/chat/WomanRect";
+import { DateToRecently } from "./date";
 import { Message } from "./Message";
 
 type Props = {
-  messages: Message[];
-};
-export const ChatList: React.FC<Props> = ({ messages }) => {
-  // const beforeDate = getDate(new Date);//index !== 0 ? getDate(new Date(datas[index - 1].created_at)) : undefined;
-  // const nowDate = getDate(new Date(data.created_at));
-
-  return (
-    <ListContainer>
-      {messages.map((message: Message, index: number) => (
-        <Chat
-          key={index}
-          message={message}
-          gender={index % 3 ? 1 : 0}
-          isLeft={index % 2 ? true : false}
-          isHost={index % 3 ? true : false}
-        />
-      ))}
-    </ListContainer>
-  );
-};
-
-type ChildProps = {
   message: Message;
   gender: number;
   isLeft: boolean;
   isHost: boolean;
 };
 
-const Chat: React.FC<ChildProps> = ({ message, gender, isLeft, isHost }) => {
+export const Chat: React.FC<Props> = ({ message, gender, isLeft, isHost }) => {
   const GenderRect = () => (gender == 1 ? <ManRect /> : <WomanRect />);
   return (
     <Container>
@@ -53,14 +29,18 @@ const Chat: React.FC<ChildProps> = ({ message, gender, isLeft, isHost }) => {
           <GenderRect />
         </MessageProfile>
       ) : null}
-      <MessageConatiner>
-        {isLeft ? <UserName>화성인</UserName> : null}
+      <MessageConatiner isLeft={isLeft}>
+        {isLeft ? <UserName>{message.writer}</UserName> : null}
         <UserChat>
-          {!isLeft ? <ChatTime>오전 9:30</ChatTime> : null}
+          {!isLeft ? <ChatTime>{DateToRecently(message.created_at)}</ChatTime> : null}
           <ChatText isLeft={isLeft}>
-            야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야야
+            {message.message}
+            <SearchedText>
+              {message.message_searched}
+              </SearchedText>
+            {message.message_afterSearchText}
           </ChatText>
-          {isLeft ? <ChatTime>오전 9:30</ChatTime> : null}
+          {isLeft ? <ChatTime>{DateToRecently(message.created_at)}</ChatTime> : null}
         </UserChat>
       </MessageConatiner>
     </Container>
@@ -68,10 +48,8 @@ const Chat: React.FC<ChildProps> = ({ message, gender, isLeft, isHost }) => {
 };
 // ChatList
 // Profile
-const ListContainer = styled.View`
-  align-items: center;
-  margin-top: 20px;
-`;
+// Search
+const SearchedText = styled.Text`color:white; background-color:black;`
 // Chat
 const ChatTime = styled.Text`
   color: #b7b7bb;
@@ -104,8 +82,9 @@ const MessageProfile = styled.View`
   width: 40px;
   align-items: center;
 `;
-const MessageConatiner = styled.View`
+const MessageConatiner:any = styled.View`
   width: ${String(windowWidth * 0.9 - 40)}px;
+  align-items: ${(props) => (props.isLeft ? "flex-start" : "flex-end")}; ;
 `;
 const Container = styled.View`
   flex-direction: row;

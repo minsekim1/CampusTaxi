@@ -13,7 +13,7 @@ export type MessageNoTabNavigationParamList = {
   ChatRoomScreenDetails: undefined;
 };
 const MessageStack = createStackNavigator<MessageNoTabNavigationParamList>();
-export const MessageNoTabNavigation = (p) => {
+export const MessageNoTabNavigation = (p:any) => {
   const props = useAuthContext().MoveNav.props;
   return (
     <MessageStack.Navigator

@@ -1,6 +1,5 @@
 import React from 'react';
 import { MapRoomCard } from '../map/MapRoomCard';
-import { MakeRandomId } from './RendomText';
 
 export type ChatRoom = {
   id: number;

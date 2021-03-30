@@ -4,9 +4,9 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import axios from "axios";
 import { differenceInMilliseconds } from "date-fns";
 import React, { useEffect, useRef, useState } from "react";
-import { Platform, ScrollView, StatusBar, Text, TextInput } from "react-native";
+import { Platform, FlatList, StatusBar, Text, TextInput } from "react-native";
 import { ChatRoom } from "../../../components/chat-room/ChatRoomList";
-import { ChatList } from "../../../components/chat/ChatList";
+import { Chat } from "../../../components/chat/ChatList";
 import { Message, MessageDummy } from "../../../components/chat/Message";
 import { GenderColor } from "../../../components/color/GenderColor";
 import BackIconWhite from "../../../components/icon/chat/BackIconWhite";
@@ -32,6 +32,7 @@ type NavigationRoute = RouteProp<
 export const ChatRoomScreen: React.FC = () => {
   const { navigate } = useNavigation<MessageNoTabNavigationProp>();
   const [messages, setMessages] = useState<Message[]>(MessageDummy);
+  const [searchedMessages, setSearchedMessages] = useState<Message[]>();
   const [message, setMessage] = useState("");
   const [room, setRoom] = useState<ChatRoom>(
     useAuthContext().MoveNav.props.data
@@ -42,7 +43,7 @@ export const ChatRoomScreen: React.FC = () => {
   const [search, setSearch] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState<string>("");
   const searchRef = React.useRef<TextInput>(null);
-  const scrollView = useRef<ScrollView>(null);
+  const scrollView = useRef<FlatList>(null);
   const { setNavName } = useAuthContext();
 
   useEffect(() => {
@@ -54,7 +55,7 @@ export const ChatRoomScreen: React.FC = () => {
 
   useEffect(() => {
     if (search) searchRef.current?.focus();
-  },[search])
+  }, [search]);
   useEffect(() => {
     if (room.id == -1) console.warn("room.id 가 -1입니다.");
     else if (room.id) {
@@ -103,15 +104,43 @@ export const ChatRoomScreen: React.FC = () => {
     }
   };
 
-  const searchOnChangeText = (t: string) => {
-    setSearchInput(t);
+  const searchOnSubmit = async () => {
+    // 채팅 데이터 검색 함수
+    // 채팅 데이터가 없는 경우
     if (!messages)
       showToastWithGravity("채팅 데이터가 없어 검색이 되지 않습니다.");
+    // 입력한게 없는 경우
+    else if (!searchInput) return;
+    else {
+      // 텍스트인풋에서 포커싱해제
+      searchRef.current?.blur();
+      // 해당 문자열이 포함된 것 반환
+      const result = await messages.filter((d) =>
+        d.message.includes(searchInput)
+      );
+      // 결과가 있을경우 첫번째로 스크롤 하고 message_searchedText로 잘라 넣음
+      if (result[0]) {
+        scrollView.current?.scrollToItem({ animated: true, item: result[0] });
+        const splitText = result[0].message.split(searchInput);
+        result[0].message = splitText[0];
+        result[0].message_searched = searchInput;
+        result[0].message_afterSearchText = splitText[1];
+        // setMessages({
+        //   ...messages.filter((d) => d.index < result[0].index),
+        //   ...result[0],
+        //   ...messages.filter((d)=>d.index > result[0].index)
+        // });
+      }
+      // 결과가 없을경우 없음 출력
+      else if (!result[0]) showToastWithGravity("검색 결과가 없습니다.");
+    }
   };
   const LeftBtnOnPress = () =>
     setNavName({ istab: "Tab", tab: "MessageTabScreen" });
-  const ContentContainerOnonLayout = () => {
-    scrollView.current?.scrollToEnd({ animated: true });
+  const ContentContainerStyle = {
+    alignItems: "center",
+    marginTop: 20,
+    paddingBottom: 20,
   };
   return (
     <BlankBackground color={GenderColor(room?.gender)}>
@@ -131,8 +160,10 @@ export const ChatRoomScreen: React.FC = () => {
                     </SearchIconView>
                     <SearchInput
                       value={searchInput}
-                      onChangeText={(t) => searchOnChangeText(t)}
+                      onChangeText={(t) => setSearchInput(t)}
+                      onSubmitEditing={searchOnSubmit}
                       ref={searchRef}
+                      returnKeyType="search"
                     />
                   </SearchBar>
                   <CancelBtn onPress={() => setSearch(false)}>
@@ -140,8 +171,8 @@ export const ChatRoomScreen: React.FC = () => {
                   </CancelBtn>
                 </>
               ) : (
-                  <>
-                    {/* 검색 아닐 시 */}
+                <>
+                  {/* 검색 아닐 시 */}
                   <LeftBtn onPress={LeftBtnOnPress}>
                     <BackIconWhite />
                   </LeftBtn>
@@ -161,10 +192,18 @@ export const ChatRoomScreen: React.FC = () => {
             {/* 채팅 내용 */}
             <ContentContainer
               ref={scrollView}
-              onLayout={ContentContainerOnonLayout}
-            >
-              <ChatList messages={messages} />
-            </ContentContainer>
+              data={messages}
+              contentContainerStyle={ContentContainerStyle}
+              renderItem={(props: any) => (
+                <Chat
+                  key={props.index}
+                  message={props.item}
+                  gender={props.index % 3 ? 1 : 0}
+                  isLeft={props.index % 2 ? true : false}
+                  isHost={props.index % 3 ? true : false}
+                />
+              )}
+            ></ContentContainer>
             <TextAreaContainer>
               <TextArea
                 value={message}
@@ -247,9 +286,7 @@ const TitleContainer: any = styled.View`
   align-items: center;
 `;
 
-const ContentContainer = styled.ScrollView`
-  margin-bottom: 12px;
-`;
+const ContentContainer: any = styled.FlatList``;
 
 const TextAreaContainer = styled.View`
   padding: 5px 22px 10px 24px;
