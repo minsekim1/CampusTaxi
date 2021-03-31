@@ -1,6 +1,6 @@
 import styled from '@emotion/native';
 import React, { useState, useEffect} from 'react';
-import { Platform, Button, ScrollView, Text, View, TouchableOpacity} from 'react-native';
+import { Platform, Button, ScrollView, Text, View, TouchableOpacity, ListViewComponent} from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { OptionButton } from '../../../components/button/OptionButton';
 import { ChatRoom } from '../../../components/chat-room/ChatRoomList';
@@ -8,8 +8,9 @@ import { HomeLocationTextField } from '../../../components/form/HomeLocationText
 import ArriveIcon from '../../../components/icon/ArriveIcon';
 import DepartIcon from '../../../components/icon/DepartIcon';
 import DotlineIcon from '../../../components/icon/DotlineIcon';
-import { SelectedBottomView } from '../../../components/map/SelectedBottomView';
+import { CreateSelectedView } from '../../../components/map/CreateSelectedView';
 import { HomeStackParamList } from '../../tab/homeTab/HomeStackNavigation';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 type HomeScreenNavigationProp = StackNavigationProp<HomeStackParamList, 'HomeScreen'>;
 
@@ -41,13 +42,34 @@ export const CreateScreenDetails: React.FC<Props> = () => {
         category: 'string',
         current: '3',
     }
-
-    const [date, setDate] = useState(new Date(1598051730000));
+    
+    const [date, setDate] = useState(new Date());
     const [timeonly, setTimeonly] = useState(date.getHours().toString() + ":" + date.getMinutes().toString());
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
 
     const [createRoom, setcreateRoom] = React.useState<ChatRoom>(testRoomData);
+
+    const getInputDayLabel = (day:number) => {
+        const week = new Array('일', '월', '화', '수', '목', '금', '토');
+        
+        return week[day];
+    }
+
+    const OptionDateFormat = (month:number, date:number, day:number) => {
+        let korDay = getInputDayLabel(day);
+        return month.toString() + "/" + date.toString() + " (" + korDay + ")";
+    }
+
+    const getNextThreeDay = (date: Date) => {
+        let tomorrow = new Date(date.getTime() + (24 * 60 * 60 * 1000));
+        let nextTomorrow = new Date(tomorrow.getTime() + (24 * 60 * 60 * 1000));
+        return [OptionDateFormat(date.getMonth()+1,date.getDate(),date.getDay())+"\n오늘",
+        OptionDateFormat(tomorrow.getMonth()+1,tomorrow.getDate(),tomorrow.getDay())+"\n내일",
+        OptionDateFormat(nextTomorrow.getMonth()+1,nextTomorrow.getDate(),nextTomorrow.getDay())+"\n모레",]
+    }
+
+    let datelist = getNextThreeDay(date);
 
     const onChange = (event: any, selectedDate: Date) => {
         const currentDate = selectedDate || date;
@@ -65,13 +87,15 @@ export const CreateScreenDetails: React.FC<Props> = () => {
         showMode('time');
     };
 
+
     return (
+        <View style={{flex:1}}>
         <ScrollView>
         <Container>
             <SubContainer>
                 <SearchView>
                     <DepartIcon/>
-                    {/* <HomeLocationTextField onFocus={() => navigate("CreateScreen", { type: category, gender: gender, limit: limit, value: schoollocation })} myvalue = {"출발지: " + createRoom.start_address_detail} centered={true}/> */}
+                    {<HomeLocationTextField myvalue = {"출발지: " + createRoom.start_address_detail} border={"1px solid #6987ff"} iconvisible={false} centered={true}/>}
                 </SearchView>
                 <SearchView>
                     <DotlineIcon/>
@@ -79,17 +103,17 @@ export const CreateScreenDetails: React.FC<Props> = () => {
                 </SearchView>
                 <SearchView>
                     <ArriveIcon/>
-                    {/* <HomeLocationTextField onFocus={() => navigate("CreateScreen", { type: category, gender: gender, limit: limit, value: schoollocation })} myvalue = {"출발지: " + createRoom.end_address_detail} placeholder={"도착지를 검색하세요"} centered={true}/> */}
+                    {<HomeLocationTextField myvalue = {"도착지: " + createRoom.end_address_detail} border={"1px solid #6987ff"} iconvisible={false} centered={true}/>}
                 </SearchView>
+
+                <CreateSelectedView data={createRoom} />
+
             </SubContainer>
-
-
-            <SelectedBottomView data={createRoom} />
 
             <SelectSubContainer>
                 <SubTitle>탑승날짜</SubTitle>
                 <OptionButton
-                    options={["3/18(월)\n오늘", "3월/19(화)\n내일", "3월/20(화)\n모레"]}
+                    options={datelist}
                     onChange={(option) => { console.log(option); }}
                     height={50} width={60}
                     borderRadius={"13px"}
@@ -99,7 +123,7 @@ export const CreateScreenDetails: React.FC<Props> = () => {
             <SelectSubContainer>
                 <SubTitle>탑승시각</SubTitle>
 
-                {/* <TouchableOpacity onPress={showTimepicker}>
+                {<TouchableOpacity onPress={showTimepicker}>
                     {show && (
                         <DateTimePicker
                             testID="dateTimePicker"
@@ -111,7 +135,7 @@ export const CreateScreenDetails: React.FC<Props> = () => {
                         />
                     )}
                     <Text>{timeonly}</Text>
-                </TouchableOpacity> */}
+                </TouchableOpacity>}
             </SelectSubContainer>
 
             <SelectSubContainer>
@@ -132,7 +156,19 @@ export const CreateScreenDetails: React.FC<Props> = () => {
                     defaultIndex={1}/>
             </SelectSubContainer>
         </Container>
+
         </ScrollView>
+
+        <BottomButton
+            underlayColor={'#83ABED'}
+            onPress={() => console.log("createScreenDetails : createroom")}
+            style={{ backgroundColor: "rgb(118, 162, 235)"}}>
+            <BottomBtnTitle>
+                방 만들기
+            </BottomBtnTitle> 
+        </BottomButton>
+        </View>
+        
     );
 };
 
@@ -170,3 +206,19 @@ const SubTitle = styled.Text`
   font-size: 11px;
   margin-bottom: 10px;
 `;
+
+const BottomButton = styled.TouchableHighlight`
+	position:absolute;
+	bottom:0;
+	width:100%;
+	height: 48px;
+	justify-content: center;
+	align-items: center;
+	z-index: 1;
+`;
+
+const BottomBtnTitle = styled.Text`
+	font-size: 14px;
+	font-family: bold;
+	color: #FFFFFF;
+`

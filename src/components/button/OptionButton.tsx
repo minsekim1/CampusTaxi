@@ -10,12 +10,14 @@ type Props = {
     clicked?: boolean;
     height?: number;
     width?: number;
+    borderRadius?: string;
     onChange?: (option: string) => void;
+    defaultIndex?: number;
 };
 
-export const OptionButton: React.FC<Props> = ({ onChange, children, options, icon, clicked, height, width }) => {
+export const OptionButton: React.FC<Props> = ({ onChange, children, options, icon, clicked, height, width, borderRadius, defaultIndex }) => {
 
-    const [activeoption, setActiveoption] = useState(options[options.length-1]);
+    const [activeoption, setActiveoption] = useState(options[defaultIndex]);
 
     return (
         <OptionButtonContainer>
@@ -33,7 +35,7 @@ export const OptionButton: React.FC<Props> = ({ onChange, children, options, ico
                         setActiveoption(option);
                         onChange(index);
                     }}
-                    borderRadius={25}>
+                    borderRadius={borderRadius}>
                     <ButtonText
                         color={activeoption === option ? '#000000' :  '#B7B7BB'}
                         fontSize={11}

@@ -67,7 +67,7 @@ const Box = styled.TouchableOpacity<BoxProps>`
   background-color: ${({ backgroundColor }) => backgroundColor};
   border-color: ${({ borderColor }) => borderColor};
   align-items: center;
-  border-radius: ${({ borderRadius }) => borderRadius && `${borderRadius}px`};
+  border-radius: ${({ borderRadius }) => borderRadius ?? `25px`};
   justify-content: center;
   padding-bottom: ${({ paddingBottom }) => paddingBottom && `${paddingBottom}px`};
   height: ${({ height }) => height && `${height}px`};

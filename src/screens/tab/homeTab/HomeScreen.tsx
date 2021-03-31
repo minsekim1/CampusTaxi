@@ -144,7 +144,8 @@ export const HomeScreen: React.FC<Props> = () => {
                     limit: limit,
                     value: schoollocation
                   }
-                })} myvalue = {(category == 1) ? schoollocation : ""} placeholder={"출발지를 검색하세요"} centered={true}/>
+                })} 
+                iconvisible={true} myvalue = {(category == 1) ? schoollocation : ""} placeholder={"출발지를 검색하세요"} centered={true}/>
                 </SearchView>
                 <SearchView>
                   <DotlineIcon/>
@@ -162,7 +163,8 @@ export const HomeScreen: React.FC<Props> = () => {
                     limit: limit,
                     value: schoollocation
                   }
-                })} myvalue = {(category == 0) ? schoollocation : ""} placeholder={"도착지를 검색하세요"} centered={true}/>
+                })} 
+                iconvisible={true} myvalue = {(category == 0) ? schoollocation : ""} placeholder={"도착지를 검색하세요"} centered={true}/>
                 </SearchView>
               </SubContainer>
               <SubContainer>
