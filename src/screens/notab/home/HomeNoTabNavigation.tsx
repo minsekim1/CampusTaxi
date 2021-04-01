@@ -37,6 +37,14 @@ export const HomeNoTabNavigation = () => {
       <HomeNoTabStack.Screen
         name="CreateScreenDetails"
         component={CreateScreenDetails}
+        options={() => ({
+          headerTitleAlign: "center",
+          title: "방만들기",
+          headerStyle: {
+            elevation: 0,
+            shadowOpacity: 0
+          },
+        })}
       />
     </HomeNoTabStack.Navigator>
   );

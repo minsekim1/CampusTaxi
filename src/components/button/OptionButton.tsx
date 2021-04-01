@@ -6,6 +6,7 @@ type Props = {
     options: string[];
     icon?: ReactNode;
     color?: string;
+    borderColor?: string;
     backgroundColor?: string;
     clicked?: boolean;
     height?: number;
@@ -15,7 +16,7 @@ type Props = {
     defaultIndex?: number;
 };
 
-export const OptionButton: React.FC<Props> = ({ onChange, children, options, icon, clicked, height, width, borderRadius, defaultIndex }) => {
+export const OptionButton: React.FC<Props> = ({ onChange, children, options, icon, borderColor, clicked, height, width, color, backgroundColor, borderRadius, defaultIndex }) => {
 
     const [activeoption, setActiveoption] = useState(options[defaultIndex]);
 
@@ -24,10 +25,9 @@ export const OptionButton: React.FC<Props> = ({ onChange, children, options, ico
             {options.map((option, index) => (
                 <ToggleButton
                     key={index}
-                    backgroundColor={activeoption === option ? '#FFFFFF' :  'rgba(255, 255, 255, 0)'}
+                    backgroundColor={activeoption === option ? {backgroundColor} : 'rgba(255, 255, 255, 0)'}
                     borderWidth={1.5}
-                    borderColor={activeoption === option ? '#000000' :  '#B7B7BB'}
-                    color="white"
+                    borderColor={activeoption === option ? {borderColor} :  '#B7B7BB'}
                     height={height}
                     width={width}
                     icon={icon}
@@ -37,7 +37,7 @@ export const OptionButton: React.FC<Props> = ({ onChange, children, options, ico
                     }}
                     borderRadius={borderRadius}>
                     <ButtonText
-                        color={activeoption === option ? '#000000' :  '#B7B7BB'}
+                        color={activeoption === option ? {color} :  '#B7B7BB'}
                         fontSize={11}
                     >
                         {options[index]}
@@ -56,4 +56,5 @@ const OptionButtonContainer = styled.View`
 const ButtonText = styled.Text`
   color: ${({ color }) => color};
   font-size: 11px;
+  text-align: center;
 `;

@@ -59,7 +59,7 @@ const Container = styled.View`
     marginTop: 30px;
 	width:${(windowWidth-150).toString()}px;
 	height:72px;
-	background-color: #f0f3ff;
+	background-color: rgba(118, 162, 235, 0.14);
 	border-radius: 8px;
 	flex-direction: row;
 	justify-content: space-evenly;

@@ -95,4 +95,5 @@ const IconConatiner = styled.View`
 const ChildrenText = styled.Text<{ color?: string }>`
   font-size: 18px;
   color: ${({ color }) => color};
+  text-align: center;
 `;

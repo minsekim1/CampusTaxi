@@ -89,13 +89,13 @@ export const CreateScreenDetails: React.FC<Props> = () => {
 
 
     return (
-        <View style={{flex:1}}>
+        <View style={{flex:1, backgroundColor: 'white'}}>
         <ScrollView>
         <Container>
             <SubContainer>
                 <SearchView>
                     <DepartIcon/>
-                    {<HomeLocationTextField myvalue = {"출발지: " + createRoom.start_address_detail} border={"1px solid #6987ff"} iconvisible={false} centered={true}/>}
+                    {<HomeLocationTextField myvalue = {"출발지: " + createRoom.start_address_detail} border={"1px solid #578fee"} iconvisible={false} centered={true}/>}
                 </SearchView>
                 <SearchView>
                     <DotlineIcon/>
@@ -103,7 +103,7 @@ export const CreateScreenDetails: React.FC<Props> = () => {
                 </SearchView>
                 <SearchView>
                     <ArriveIcon/>
-                    {<HomeLocationTextField myvalue = {"도착지: " + createRoom.end_address_detail} border={"1px solid #6987ff"} iconvisible={false} centered={true}/>}
+                    {<HomeLocationTextField myvalue = {"도착지: " + createRoom.end_address_detail} border={"1px solid #578fee"} iconvisible={false} centered={true}/>}
                 </SearchView>
 
                 <CreateSelectedView data={createRoom} />
@@ -114,9 +114,12 @@ export const CreateScreenDetails: React.FC<Props> = () => {
                 <SubTitle>탑승날짜</SubTitle>
                 <OptionButton
                     options={datelist}
+                    backgroundColor={'#76a2eb'}
+                    borderColor={'#76a2eb'}
+                    color={'#ffffff'}
                     onChange={(option) => { console.log(option); }}
-                    height={50} width={60}
-                    borderRadius={"13px"}
+                    height={43} width={58}
+                    borderRadius={"14px"}
                     defaultIndex={0} />
             </SelectSubContainer>
 
@@ -142,8 +145,11 @@ export const CreateScreenDetails: React.FC<Props> = () => {
                 <SubTitle>탑승인원</SubTitle>
                 <OptionButton
                     options={["2", "3", "4"]}
+                    backgroundColor={'#76a2eb'}
+                    borderColor={'#76a2eb'}
+                    color={'#ffffff'}
                     onChange={(option) => { console.log(option); }}
-                    height={26} width={26}
+                    height={21} width={21}
                     defaultIndex={2} />
             </SelectSubContainer>
 
@@ -151,6 +157,9 @@ export const CreateScreenDetails: React.FC<Props> = () => {
                 <SubTitle>탑승 인원</SubTitle>
                 <OptionButton
                     options={["동성만", "무관"]}
+                    backgroundColor={'#76a2eb'}
+                    borderColor={'#76a2eb'}
+                    color={'#ffffff'}
                     onChange={(option) => { console.log(option); }}
                     height={28} width={58}
                     defaultIndex={1}/>
