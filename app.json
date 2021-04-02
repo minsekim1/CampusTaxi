@@ -1,6 +1,6 @@
 {
   "name": "CampusTaxi",
-  "displayName": "CampusTaxi",
+  "displayName": "캠퍼스택시",
   "splash": {
     "image": "./assets/registerLogo.png",
     "resizeMode": "cover",

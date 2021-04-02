@@ -7,39 +7,30 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		089833A3BD25632A013398BE /* libPods-CampusTaxi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 332ACC28AE0DE79E2734AFBA /* libPods-CampusTaxi.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		5AFCCDA825BD72F4009F8E95 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5AFCCDA725BD72F4009F8E95 /* SplashScreen.storyboard */; };
+		E216BE9EF82B81718D50BE29 /* libPods-CampusTaxi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 977F5E62C639E56D5C88FD44 /* libPods-CampusTaxi.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* CampusTaxiTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CampusTaxiTests.m; sourceTree = "<group>"; };
-		02DB85540E2843C01BFBF039 /* Pods-CampusTaxi-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CampusTaxi-tvOS.release.xcconfig"; path = "Target Support Files/Pods-CampusTaxi-tvOS/Pods-CampusTaxi-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* CampusTaxi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CampusTaxi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = CampusTaxi/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = CampusTaxi/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = CampusTaxi/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = CampusTaxi/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = CampusTaxi/main.m; sourceTree = "<group>"; };
-		24C1D99BFB1AB595AFF64F8A /* libPods-CampusTaxi-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CampusTaxi-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		332ACC28AE0DE79E2734AFBA /* libPods-CampusTaxi.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CampusTaxi.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5ABC616825BDD6FE00D23728 /* CampusTaxi.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = CampusTaxi.entitlements; path = CampusTaxi/CampusTaxi.entitlements; sourceTree = "<group>"; };
 		5AFCCDA725BD72F4009F8E95 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = CampusTaxi/SplashScreen.storyboard; sourceTree = "<group>"; };
-		5C470020BEDEA63FCAD678CD /* Pods-CampusTaxi-CampusTaxiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CampusTaxi-CampusTaxiTests.release.xcconfig"; path = "Target Support Files/Pods-CampusTaxi-CampusTaxiTests/Pods-CampusTaxi-CampusTaxiTests.release.xcconfig"; sourceTree = "<group>"; };
-		6D7893141A2692AFD43936AE /* Pods-CampusTaxi-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CampusTaxi-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-CampusTaxi-tvOS/Pods-CampusTaxi-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
-		8468F9663EEA5FD010458F31 /* Pods-CampusTaxi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CampusTaxi.release.xcconfig"; path = "Target Support Files/Pods-CampusTaxi/Pods-CampusTaxi.release.xcconfig"; sourceTree = "<group>"; };
-		A609337102E6D9C6A2A2AE64 /* libPods-CampusTaxi-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CampusTaxi-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		BEF3BF0B4D6987EBC363FAB2 /* Pods-CampusTaxi-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CampusTaxi-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-CampusTaxi-tvOSTests/Pods-CampusTaxi-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
-		E378AF98085954AB59BB2932 /* Pods-CampusTaxi-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CampusTaxi-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-CampusTaxi-tvOSTests/Pods-CampusTaxi-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
-		E4A54EEDF5C8D643AC2E0874 /* libPods-CampusTaxi-CampusTaxiTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CampusTaxi-CampusTaxiTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		81944AADD87300A8BB1388AA /* Pods-CampusTaxi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CampusTaxi.debug.xcconfig"; path = "Target Support Files/Pods-CampusTaxi/Pods-CampusTaxi.debug.xcconfig"; sourceTree = "<group>"; };
+		83543B4426649D77114933DF /* Pods-CampusTaxi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CampusTaxi.release.xcconfig"; path = "Target Support Files/Pods-CampusTaxi/Pods-CampusTaxi.release.xcconfig"; sourceTree = "<group>"; };
+		977F5E62C639E56D5C88FD44 /* libPods-CampusTaxi.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CampusTaxi.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
-		F6A9168DFD50B6CF765F5CEE /* Pods-CampusTaxi-CampusTaxiTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CampusTaxi-CampusTaxiTests.debug.xcconfig"; path = "Target Support Files/Pods-CampusTaxi-CampusTaxiTests/Pods-CampusTaxi-CampusTaxiTests.debug.xcconfig"; sourceTree = "<group>"; };
-		F852A5C4D3235E3962FD2829 /* Pods-CampusTaxi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CampusTaxi.debug.xcconfig"; path = "Target Support Files/Pods-CampusTaxi/Pods-CampusTaxi.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,7 +38,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				089833A3BD25632A013398BE /* libPods-CampusTaxi.a in Frameworks */,
+				E216BE9EF82B81718D50BE29 /* libPods-CampusTaxi.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,10 +82,7 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				332ACC28AE0DE79E2734AFBA /* libPods-CampusTaxi.a */,
-				E4A54EEDF5C8D643AC2E0874 /* libPods-CampusTaxi-CampusTaxiTests.a */,
-				24C1D99BFB1AB595AFF64F8A /* libPods-CampusTaxi-tvOS.a */,
-				A609337102E6D9C6A2A2AE64 /* libPods-CampusTaxi-tvOSTests.a */,
+				977F5E62C639E56D5C88FD44 /* libPods-CampusTaxi.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -102,14 +90,8 @@
 		6185AC0AC17A37663D64CF14 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				F852A5C4D3235E3962FD2829 /* Pods-CampusTaxi.debug.xcconfig */,
-				8468F9663EEA5FD010458F31 /* Pods-CampusTaxi.release.xcconfig */,
-				F6A9168DFD50B6CF765F5CEE /* Pods-CampusTaxi-CampusTaxiTests.debug.xcconfig */,
-				5C470020BEDEA63FCAD678CD /* Pods-CampusTaxi-CampusTaxiTests.release.xcconfig */,
-				6D7893141A2692AFD43936AE /* Pods-CampusTaxi-tvOS.debug.xcconfig */,
-				02DB85540E2843C01BFBF039 /* Pods-CampusTaxi-tvOS.release.xcconfig */,
-				E378AF98085954AB59BB2932 /* Pods-CampusTaxi-tvOSTests.debug.xcconfig */,
-				BEF3BF0B4D6987EBC363FAB2 /* Pods-CampusTaxi-tvOSTests.release.xcconfig */,
+				81944AADD87300A8BB1388AA /* Pods-CampusTaxi.debug.xcconfig */,
+				83543B4426649D77114933DF /* Pods-CampusTaxi.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -151,13 +133,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "CampusTaxi" */;
 			buildPhases = (
-				6DC181665E92C5625546F11D /* [CP] Check Pods Manifest.lock */,
+				8511A924667AB8636D81640B /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				15002CBCD5A47EB7167D7829 /* [CP] Copy Pods Resources */,
+				9A9BE8B8B398E77FF45E7249 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -228,25 +210,7 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
-		15002CBCD5A47EB7167D7829 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CampusTaxi/Pods-CampusTaxi-resources.sh",
-				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CampusTaxi/Pods-CampusTaxi-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		6DC181665E92C5625546F11D /* [CP] Check Pods Manifest.lock */ = {
+		8511A924667AB8636D81640B /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -266,6 +230,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9A9BE8B8B398E77FF45E7249 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CampusTaxi/Pods-CampusTaxi-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CampusTaxi/Pods-CampusTaxi-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -304,7 +286,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F852A5C4D3235E3962FD2829 /* Pods-CampusTaxi.debug.xcconfig */;
+			baseConfigurationReference = 81944AADD87300A8BB1388AA /* Pods-CampusTaxi.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -332,7 +314,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8468F9663EEA5FD010458F31 /* Pods-CampusTaxi.release.xcconfig */;
+			baseConfigurationReference = 83543B4426649D77114933DF /* Pods-CampusTaxi.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

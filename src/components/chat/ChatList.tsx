@@ -1,6 +1,8 @@
 import styled from "@emotion/native";
 import React from "react";
+import { proc } from "react-native-reanimated";
 import { windowWidth } from "../../constant";
+import { searchProps } from "../../screens/notab/message/ChatRoomScreen";
 import { Crown } from "../icon/chat/Crown";
 import { ManRect } from "../icon/chat/ManRect";
 import { WomanRect } from "../icon/chat/WomanRect";
@@ -12,10 +14,25 @@ type Props = {
   gender: number;
   isLeft: boolean;
   isHost: boolean;
+  searchResult?: searchProps;
 };
 
-export const Chat: React.FC<Props> = ({ message, gender, isLeft, isHost }) => {
+export const Chat: React.FC<Props> = ({
+  message,
+  gender,
+  isLeft,
+  isHost,
+  searchResult,
+}) => {
   const GenderRect = () => (gender == 1 ? <ManRect /> : <WomanRect />);
+  let sliceText = undefined;
+  if (message.index === searchResult?.index) {
+    sliceText = [
+      message.message.slice(0, searchResult.indexInMessage),
+      searchResult?.searchString,
+      message.message.slice(searchResult.indexInMessage + searchResult?.searchString.length, message.message.length),
+    ];
+  }
   return (
     <Container>
       {isLeft ? (
@@ -32,15 +49,17 @@ export const Chat: React.FC<Props> = ({ message, gender, isLeft, isHost }) => {
       <MessageConatiner isLeft={isLeft}>
         {isLeft ? <UserName>{message.writer}</UserName> : null}
         <UserChat>
-          {!isLeft ? <ChatTime>{DateToRecently(message.created_at)}</ChatTime> : null}
+          {!isLeft ? (
+            <ChatTime>{DateToRecently(message.created_at)}</ChatTime>
+          ) : null}
           <ChatText isLeft={isLeft}>
-            {message.message}
-            <SearchedText>
-              {message.message_searched}
-              </SearchedText>
-            {message.message_afterSearchText}
+            {sliceText && searchResult ? sliceText[0] : message.message}
+            {sliceText ? <SearchedText>{sliceText[1]}</SearchedText> : null}
+            {sliceText && searchResult ? sliceText[2] : null}
           </ChatText>
-          {isLeft ? <ChatTime>{DateToRecently(message.created_at)}</ChatTime> : null}
+          {isLeft ? (
+            <ChatTime>{DateToRecently(message.created_at)}</ChatTime>
+          ) : null}
         </UserChat>
       </MessageConatiner>
     </Container>
@@ -49,7 +68,10 @@ export const Chat: React.FC<Props> = ({ message, gender, isLeft, isHost }) => {
 // ChatList
 // Profile
 // Search
-const SearchedText = styled.Text`color:white; background-color:black;`
+const SearchedText = styled.Text`
+  color: white;
+  background-color: black;
+`;
 // Chat
 const ChatTime = styled.Text`
   color: #b7b7bb;
@@ -82,9 +104,9 @@ const MessageProfile = styled.View`
   width: 40px;
   align-items: center;
 `;
-const MessageConatiner:any = styled.View`
+const MessageConatiner: any = styled.View`
   width: ${String(windowWidth * 0.9 - 40)}px;
-  align-items: ${(props) => (props.isLeft ? "flex-start" : "flex-end")}; ;
+  align-items: ${(props) => (props.isLeft ? "flex-start" : "flex-end")};
 `;
 const Container = styled.View`
   flex-direction: row;

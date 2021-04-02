@@ -97,14 +97,15 @@ export const AuthProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     if (refresh && token) {
-      const interval = setInterval(() => {
+      //test code
+      // const interval = setInterval(() => {
         axios.post(`${API_URL}/accounts/token/verify/`, { token }).then((response) => {
           if (response.data.code) {
             refreshToken();
           }
         });
-      }, 600000);
-      return () => clearInterval(interval);
+      // }, 600000);
+      // return () => clearInterval(interval);
     }
   }, [token, refresh, refreshToken]);
 

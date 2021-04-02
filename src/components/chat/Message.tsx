@@ -1,8 +1,6 @@
 export type Message = {
   id: number;
   message: string;
-  message_searched?: string;
-  message_afterSearchText?: string;
   index: number;
   message_type: "Message" | "Notice" | "Enter";
   writer: number;

@@ -31,7 +31,7 @@ export const SwipeableView: React.FC<Props> = ({
 					modalStyle={modalStyle}
 				>
 					{datas.map((data) => (
-						(data.id != -1 && data.id != -2) ?
+						(data.id != -1) ?
 							<MapRoomCard key={data.id} data={data} onPress={() => onPressMapRoomCard(data)} /> : null
 					))}
 				</Modalize>

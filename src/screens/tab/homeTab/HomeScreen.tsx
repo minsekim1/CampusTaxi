@@ -87,18 +87,6 @@ export const HomeScreen: React.FC<Props> = () => {
           </LogoContainer>
           <ScrollView>
             <MainContainer>
-              {/* <Button title="방 만들기 (test)" onPress={() => navigate("CreateScreenDetails")}/> */}
-            {/* <Button title="No Tab 으로 이동 (test)" onPress={() => */}
-              {/* setNavName({
-                name: "HomeCreateNavigation",
-                props: {
-                  screen: 'CreateScreen', //CreateScreenDetails하면 기본 초기화 화면 바꿔서 바로 그쪽으로 이동. 안의 props값은 useAuthContext로 해당 페이지에서 또 읽음
-                  type: category,
-                  gender: gender,
-                  limit: limit,
-                  value: schoollocation
-                }
-              })} /> */}
               <SubContainer>
                 <SubTitleView>
                   <SubTitle>카테고리</SubTitle>

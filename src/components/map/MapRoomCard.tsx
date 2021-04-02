@@ -1,7 +1,7 @@
 import styled from '@emotion/native';
 import React, { Dispatch, SetStateAction} from 'react';
-import { Text } from 'react-native';
 import { ChatRoom } from '../chat-room/ChatRoomList';
+import { Boarding_dtmToRecently } from '../chat/date';
 import { GenderColor, GenderText } from '../color/GenderColor';
 import { CreateRoomSelectCancel} from '../icon/home/CreateRoomSelectCancel';
 
@@ -15,11 +15,9 @@ type Props = {
 export const MapRoomCard: React.FC<Props> = ({ data, onCancelPress, onPress, backgroundColor, activeCancelBtn }) => {
   if (!data)
     return <></>
-  const gender = (data) ? data.gender : 'all';
   const bgColor = GenderColor(data.gender);
   const genderText = GenderText(data.gender);
-  activeCancelBtn = (!activeCancelBtn) ? false : true;
-  if (!data)
+  if (!data || !data?.start_lon || !data?.end_lon)
     return <></>;
   if (activeCancelBtn && data?.id == -1)
     return <>
@@ -36,7 +34,7 @@ export const MapRoomCard: React.FC<Props> = ({ data, onCancelPress, onPress, bac
         <CardContainer>
           <CardHeaderContainer>
             <LeftContainer>
-              <Time>{data.boarding_dtm} 탑승</Time>
+              <Time>{Boarding_dtmToRecently(data.boarding_dtm)} 탑승</Time>
               <TitleView>
                 <Title>{data.owner}</Title>
               <TitleVip>VIP</TitleVip>

@@ -15,7 +15,7 @@
       android:allowBackup="true"
       android:theme="@style/AppTheme">
       <meta-data
-            android:name="com.naver.maps.map.lxll2d6397"
+            android:name="com.naver.maps.map.CLIENT_ID"
             android:value="lxll2d6397" />
       <activity
         android:name="com.campustaxi.campustaxi.MainActivity"
