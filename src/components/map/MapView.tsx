@@ -11,6 +11,7 @@ import NaverMapView, {
 import { Button, Dimensions, InteractionManager } from "react-native";
 import { View } from "react-native";
 import { ChatRoom } from "../chat-room/ChatRoomList";
+import { myCoordProps } from "../../screens/notab/home/CreateScreen";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
@@ -22,6 +23,7 @@ type Props = {
   selectedMaker?: ChatRoom;
   onCameraChange: Dispatch<SetStateAction<any>>;
   MapRef: React.RefObject<NaverMapView>;
+  route: myCoordProps[];
 };
 
 export const MapView: React.FC<Props> = ({
@@ -32,6 +34,7 @@ export const MapView: React.FC<Props> = ({
   selectedMaker,
   onCameraChange,
   MapRef,
+  route,
 }) => {
   return (
     <NaverMapView
@@ -39,7 +42,7 @@ export const MapView: React.FC<Props> = ({
       maxZoomLevel={17} //최대 확대
       ref={MapRef}
       style={{ width: "100%", height: windowHeight - 243 }}
-      showsMyLocationButton={true}
+      showsMyLocationButton={false}
       onTouch={onTouch}
       onCameraChange={onCameraChange}
       onMapClick={onMapClick}
@@ -57,7 +60,7 @@ export const MapView: React.FC<Props> = ({
             onClick={() => onMakerClick(data)}
           />
         ) : (
-          <></>
+          <EmptyView key={i + "s"} />
         )
       )}
       {datas.map((data: ChatRoom, i) =>
@@ -70,13 +73,35 @@ export const MapView: React.FC<Props> = ({
             onClick={() => onMakerClick(data)}
           />
         ) : (
-          <></>
+          <EmptyView key={"e" + i} />
         )
       )}
+      {/* {route.map((pos: myCoordProps, i) =>
+        route.length > i + 1 ? (
+          <Path
+            key={"r" + i}
+            coordinates={[
+              { latitude: pos.latitude, longitude: pos.longitude },
+              {
+                latitude: route[i + 1].latitude,
+                longitude: route[i + 1].longitude,
+              },
+            ]}
+            width={10}
+          />
+        ) : (
+          <EmptyView key={"r" + i} />
+        )
+      )} */}
+      {console.log('route',route)}
+      {/* {route.map((pos: myCoordProps, i) =>
+        console.log(route.length, i + 1)
+          
+      )} */}
     </NaverMapView>
   );
 };
-
+const EmptyView: any = styled.View``;
 const MarkerGroup = (coord: any) => (
   <Circle coordinate={coord} radius={200} color="red"></Circle>
 );

@@ -69,8 +69,8 @@ export const SelectedBottomView: React.FC<Props> = ({ data, SetRoute }) => {
             }
           })
           .catch((e) =>
-            Alert.alert(
-              "예상금액가져오기: 데이터 처리 과정에서 에러가 발생했습니다."
+            console.warn(
+              "예상금액가져오기: 데이터 처리 과정에서 에러가 발생했습니다.",e
             )
           );
 			} else {

@@ -408,6 +408,7 @@ export const CreateScreen: React.FC<Props> = ({ }) => {
         onCameraChange={(pos: myCoordProps) => setMyCoord(pos)}
         datas={datas}
         selectedMaker={selectRoom}
+        route={route}
       />
       <SwipeableView datas={datas} onPress={SwipeableViewOnPress} />
       <SelectedRoomView>
