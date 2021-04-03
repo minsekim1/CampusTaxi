@@ -339,6 +339,8 @@ PODS:
     - React
   - RNCPicker (1.9.10):
     - React-Core
+  - RNDateTimePicker (3.4.3):
+    - React-Core
   - RNGestureHandler (1.10.3):
     - React-Core
   - RNIap (6.0.1):
@@ -412,6 +414,7 @@ DEPENDENCIES:
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
+  - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNIap (from `../node_modules/react-native-iap`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
@@ -511,6 +514,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/masked-view"
   RNCPicker:
     :path: "../node_modules/@react-native-picker/picker"
+  RNDateTimePicker:
+    :path: "../node_modules/@react-native-community/datetimepicker"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNIap:
@@ -575,6 +580,7 @@ SPEC CHECKSUMS:
   RNCClipboard: dac13db8b1ce9b998f1cbc7ca33440113602847f
   RNCMaskedView: f5c7d14d6847b7b44853f7acb6284c1da30a3459
   RNCPicker: 77183d9b1cd80ae55505322f8ad09ba0036e29ba
+  RNDateTimePicker: e1c24487ab8aa0850403bd90dba75eff8a4e9b84
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNIap: 09b4b8f994fdf7ac96def503ee144b28adca8018
   RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad

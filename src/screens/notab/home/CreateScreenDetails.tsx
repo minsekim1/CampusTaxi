@@ -12,33 +12,38 @@ import { CreateSelectedView } from '../../../components/map/CreateSelectedView';
 import { HomeStackParamList } from '../../tab/homeTab/HomeStackNavigation';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
+import { useAuthContext } from "../../../contexts/AuthContext";
+import axios from "axios";
+import { API_URL, GOOGLE_MAPAPI_URL } from "../../../constant";
+
 type HomeScreenNavigationProp = StackNavigationProp<HomeStackParamList, 'HomeScreen'>;
 
 // 타임피커 : https://github.com/react-native-datetimepicker/datetimepicker
 
 type Props = {
     navigation: HomeScreenNavigationProp;
+    selectRoom: ChatRoom;
 };
 
-export const CreateScreenDetails: React.FC<Props> = () => {
+export const CreateScreenDetails: React.FC<Props> = ({selectRoom}) => {
 
     let testRoomData = { // test code
         id: 5,
         unreadMessage: 'string',
         distance: 5.1,
-        start_address_code: 'string',
+        start_address_code: '123',
         start_address: '공릉역 2번출구',
         start_address_detail: '공릉역 2번출구',
-        start_lat: 37.625317280381715,
-        start_lon: 127.07327644534814,
-        end_address: '삼육대학교',
-        end_address_detail: '삼육대학교 분수대 앞',
-        end_lat: 37.64353854399491,
-        end_lon: 127.10579154192136,
-        boarding_dtm: 'string',
+        start_lat: 37,
+        start_lon: 127,
+        end_address: '석계역 2번출구',
+        end_address_detail: '석계역 2번출구',
+        end_lat: 37,
+        end_lon: 127,
+        boarding_dtm: '2021-04-03T16:59:56.326Z',
         personnel_limit: 3,
         gender: 1,
-        owner: 5,
+        owner: 2,
         category: 'string',
         current: '3',
     }
@@ -48,6 +53,10 @@ export const CreateScreenDetails: React.FC<Props> = () => {
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
 
+    const { token } = useAuthContext();
+    const [refetch, setRefetch] = useState<Date>();
+
+    console.log({selectRoom})
     const [createRoom, setcreateRoom] = React.useState<ChatRoom>(testRoomData);
 
     const getInputDayLabel = (day:number) => {
@@ -170,7 +179,33 @@ export const CreateScreenDetails: React.FC<Props> = () => {
 
         <BottomButton
             underlayColor={'#83ABED'}
-            onPress={() => console.log("createScreenDetails : createroom")}
+            onPress={() => {
+                console.log(token)
+                axios.post(
+                    `${API_URL}/api/v1/rooms/`,
+                    {
+                        "start_address_code": testRoomData.start_address_code,
+                        "start_address": testRoomData.start_address,
+                        "start_address_detail": testRoomData.start_address_detail,
+                        "start_lat": testRoomData.start_lat,
+                        "start_lon": testRoomData.start_lon,
+                        "end_address_code": "123",
+                        "end_address": testRoomData.end_address,
+                        "end_address_detail": testRoomData.end_address_detail,
+                        "end_lat": testRoomData.end_lat,
+                        "end_lon": testRoomData.end_lon,
+                        "boarding_dtm": testRoomData.boarding_dtm,
+                        "personnel_limit": testRoomData.personnel_limit,
+                        "gender": testRoomData.gender,
+                        "owner": testRoomData.owner
+                    },
+                    {
+                        headers:{
+                            Authorization: `Bearer ${token}`
+                        },
+                    },
+                ),[token, refetch];
+            }}
             style={{ backgroundColor: "rgb(118, 162, 235)"}}>
             <BottomBtnTitle>
                 방 만들기
