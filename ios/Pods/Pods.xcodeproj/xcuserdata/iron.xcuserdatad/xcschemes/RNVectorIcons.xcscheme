@@ -14,9 +14,9 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6A9637F1BC8154F777335A6420579C05"
-               BuildableName = "libFlipper-Glog.a"
-               BlueprintName = "Flipper-Glog"
+               BlueprintIdentifier = "96150F524B245896B800F84F369A9A5A"
+               BuildableName = "libRNVectorIcons.a"
+               BlueprintName = "RNVectorIcons"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

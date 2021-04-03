@@ -14,9 +14,9 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D63EF582C3FFEAFBF76242E9637C6E0A"
-               BuildableName = "CocoaLibEvent"
-               BlueprintName = "CocoaLibEvent"
+               BlueprintIdentifier = "F59704951CC171A39C044A8D21B34939"
+               BuildableName = "libreact-native-version-check.a"
+               BlueprintName = "react-native-version-check"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
