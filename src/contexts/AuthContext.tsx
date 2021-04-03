@@ -74,7 +74,6 @@ export const AuthProvider: React.FC = ({ children }) => {
           },
         })
         .then((response) => {
-          console.log('response.data',response.data)
           setUser(response.data);
         });
       /////////////////////

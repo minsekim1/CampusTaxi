@@ -163,11 +163,12 @@ export const list = [
   },
 ];
 
-export const CreateScreen: React.FC<Props> = ({ }) => {
-
+export const CreateScreen: React.FC<Props> = ({}) => {
   const params = useAuthContext().MoveNav.props;
   const [datas, setDatas] = React.useState<ChatRoom[]>([]);
-  const [route, SetRoute] = useState<myCoordProps[]>([{latitude:0,longitude:0}]);
+  const [route, SetRoute] = useState<myCoordProps[]>([
+    { latitude: 0, longitude: 0 },
+  ]);
   const [myCoord, setMyCoord] = React.useState<myCoordProps>({
     latitude: 0,
     longitude: 0,
@@ -185,14 +186,14 @@ export const CreateScreen: React.FC<Props> = ({ }) => {
     name: params.type != 0 ? "" : params.value,
     zoom: 0,
   };
-  const selectRoom_init:ChatRoom = {
+  const selectRoom_init: ChatRoom = {
     id: -1,
     start_lat: start_init.latitude,
     start_lon: start_init.longitude,
     end_lat: end_init.latitude,
     end_lon: end_init.longitude,
     gender: 0, //TEST CODE 사용자 성별로 바꿔야함
-  }
+  };
   const [selectRoom, setSelectRoom] = React.useState<ChatRoom>(selectRoom_init);
   const [start, setStart] = React.useState<myCoordProps>(start_init);
   const [end, setEnd] = React.useState<myCoordProps>(end_init);
@@ -210,6 +211,7 @@ export const CreateScreen: React.FC<Props> = ({ }) => {
     }
   }, [isFocused]);
   useEffect(() => {
+    console.log("rrrrrrr");
     axios
       .get<{ results: ChatRoom[] }>(
         `${API_URL}/api/v1/rooms/?category=${params.type + 1}&page=1`,
@@ -221,13 +223,22 @@ export const CreateScreen: React.FC<Props> = ({ }) => {
         }
       )
       .then((response) => {
-        if (typeof response.data.results[0].end_lat == "string")
-          for (let j = 0; j < response.data.results.length; j++) {
-            response.data.results[j].end_lat = Number(response.data.results[j].end_lat);
-            response.data.results[j].end_lon = Number(response.data.results[j].end_lon);
-            response.data.results[j].start_lat = Number(response.data.results[j].start_lat);
-            response.data.results[j].start_lon = Number(response.data.results[j].start_lon);
-          }
+        if(response.data.results[0] != undefined)
+          if (typeof response.data.results[0].end_lat == "string")
+            for (let j = 0; j < response.data.results.length; j++) {
+              response.data.results[j].end_lat = Number(
+                response.data.results[j].end_lat
+              );
+              response.data.results[j].end_lon = Number(
+                response.data.results[j].end_lon
+              );
+              response.data.results[j].start_lat = Number(
+                response.data.results[j].start_lat
+              );
+              response.data.results[j].start_lon = Number(
+                response.data.results[j].start_lon
+              );
+            }
         setDatas(response.data.results);
       });
   }, [token, refetch]);
@@ -286,7 +297,8 @@ export const CreateScreen: React.FC<Props> = ({ }) => {
         const addressName = !!r
           ? r.data.results[0].formatted_address
           : "(" + myCoord.latitude + "," + myCoord.longitude + ")";
-        let CreateRoom = !!datas[0] && datas[0].id == -1 ? datas[0] : ChatRoomDummy;
+        let CreateRoom =
+          !!datas[0] && datas[0].id == -1 ? datas[0] : ChatRoomDummy;
         //id가 -1인 경우는 CreateRoom만 유일하다.
         //value가 undefined값은 방만들때 다시 정해줘야한다.boarding_dtm gender personnel_limit
         CreateRoom =
@@ -419,9 +431,8 @@ export const CreateScreen: React.FC<Props> = ({ }) => {
           onCancelPress={onCancelPress}
         />
       </SelectedRoomView>
-      {
-        !!selectRoom?.start_lon && !!selectRoom?.end_lon ? (
-          <SelectedBottomView data={selectRoom} SetRoute={SetRoute}/>
+      {!!selectRoom?.start_lon && !!selectRoom?.end_lon ? (
+        <SelectedBottomView data={selectRoom} SetRoute={SetRoute} />
       ) : (
         <SelectBottomPosView
           type={params.type}

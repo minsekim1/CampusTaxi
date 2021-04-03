@@ -27,6 +27,7 @@ export const MessageScreen: React.FC = () => {
   const { token } = useAuthContext();
   const { setNavName } = useAuthContext();
   const navigation = useNavigation<MessageNavigation>();
+  const {User} = useAuthContext()
     //#region 뒤로가기 버튼 제어 & 더블클릭시 앱 종료
   let currentCount = 0;
   React.useEffect(() => {
@@ -38,6 +39,7 @@ export const MessageScreen: React.FC = () => {
       BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
       //console.log("blur MainScreen");
     })
+    return setDatas(undefined);
   }, []);
   const handleBackButton = () => {
     if (currentCount < 1) {
@@ -56,27 +58,30 @@ export const MessageScreen: React.FC = () => {
   //#endregion 뒤로가기 버튼 제어 & 더블클릭시 앱 종료
   useEffect(() => {
     console.log('token', token);
+    console.log('User', User.uuid);
     axios
-      .get<APIData>(`${API_URL}/api/v1/rooms/`, {
+      .get<APIData>(`${API_URL}/api/v1/rooms/${User.uuid}/memeber/`, {
         headers: {
           Authorization: `Bearer ${token}`,
+          accept: `application/json`,
         },
       })
       .then((response) => {
-        const data: any = response.data.results.map((d) => {
-          const day = (d.boarding_dtm) ? Week[new Date(d.boarding_dtm).getDay()] : '';
-          const date = (d.boarding_dtm) ? new Date(d.boarding_dtm) : '';
-          return {
-          ...d,
-            boarding_dtm: (d.boarding_dtm) ?
-              (date && date.getDate() == new Date().getDate()) ?
-                format(new Date(d.boarding_dtm), '오늘 HH:mm')
-                : format(new Date(d.boarding_dtm), 'MM/dd(' + day + ')')
-              : undefined
+        console.log('response',response)
+      //   const data: any = response.data.results.map((d) => {
+      //     const day = (d.boarding_dtm) ? Week[new Date(d.boarding_dtm).getDay()] : '';
+      //     const date = (d.boarding_dtm) ? new Date(d.boarding_dtm) : '';
+      //     return {
+      //     ...d,
+      //       boarding_dtm: (d.boarding_dtm) ?
+      //         (date && date.getDate() == new Date().getDate()) ?
+      //           format(new Date(d.boarding_dtm), '오늘 HH:mm')
+      //           : format(new Date(d.boarding_dtm), 'MM/dd(' + day + ')')
+      //         : undefined
           
-        }
-      });
-        setDatas(data);
+      //   }
+      // });
+        // setDatas(data);
       });
   }, [token]);
 
@@ -86,7 +91,7 @@ export const MessageScreen: React.FC = () => {
 
   return (
     <Container>
-      <ScrollView>
+      <ScrollView contentContainerStyle={{marginTop:10}}>
         <ChatRoomList
           datas={datas}
           onPress={(data: ChatRoom) => () => setNavName({
@@ -107,5 +112,4 @@ export const MessageScreen: React.FC = () => {
 const Container = styled.SafeAreaView`
   flex: 1;
   background-color:white;
-  padding-top:20px;
 `;

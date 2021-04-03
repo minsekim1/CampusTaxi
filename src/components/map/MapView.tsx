@@ -93,7 +93,6 @@ export const MapView: React.FC<Props> = ({
           <EmptyView key={"r" + i} />
         )
       )} */}
-      {console.log('route',route)}
       {/* {route.map((pos: myCoordProps, i) =>
         console.log(route.length, i + 1)
           
