@@ -60,7 +60,7 @@ export const MessageScreen: React.FC = () => {
     console.log('token', token);
     console.log('User', User.uuid);
     axios
-      .get<APIData>(`${API_URL}/api/v1/rooms/${User.uuid}/memeber/`, {
+      .get<APIData>(`${API_URL}/api/v1/rooms/`, {
         headers: {
           Authorization: `Bearer ${token}`,
           accept: `application/json`,
@@ -68,20 +68,20 @@ export const MessageScreen: React.FC = () => {
       })
       .then((response) => {
         console.log('response',response)
-      //   const data: any = response.data.results.map((d) => {
-      //     const day = (d.boarding_dtm) ? Week[new Date(d.boarding_dtm).getDay()] : '';
-      //     const date = (d.boarding_dtm) ? new Date(d.boarding_dtm) : '';
-      //     return {
-      //     ...d,
-      //       boarding_dtm: (d.boarding_dtm) ?
-      //         (date && date.getDate() == new Date().getDate()) ?
-      //           format(new Date(d.boarding_dtm), '오늘 HH:mm')
-      //           : format(new Date(d.boarding_dtm), 'MM/dd(' + day + ')')
-      //         : undefined
+        const data: any = response.data.results.map((d) => {
+          const day = (d.boarding_dtm) ? Week[new Date(d.boarding_dtm).getDay()] : '';
+          const date = (d.boarding_dtm) ? new Date(d.boarding_dtm) : '';
+          return {
+          ...d,
+            boarding_dtm: (d.boarding_dtm) ?
+              (date && date.getDate() == new Date().getDate()) ?
+                format(new Date(d.boarding_dtm), '오늘 HH:mm')
+                : format(new Date(d.boarding_dtm), 'MM/dd(' + day + ')')
+              : undefined
           
-      //   }
-      // });
-        // setDatas(data);
+        }
+      });
+        setDatas(data);
       });
   }, [token]);
 

@@ -8,13 +8,13 @@
   },
   "ios": {
     "bundleIdentifier": "com.campustaxi.campustaxi",
-    "buildNumber": "4.0.12",
+    "buildNumber": "4.0.13",
     "supportsTablet": true
   },
   "android": {
     "permissions": [],
     "package": "com.campustaxi.campustaxi",
-    "versionCode": 30,
+    "versionCode": 31,
     "config": {
       "googleMaps": {
         "apiKey": "AIzaSyBVIfNVsdQk6J56bD4CwZSPDyYlxF_XBe0"

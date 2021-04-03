@@ -3,19 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <application android:usesCleartextTraffic="true" tools:targetApi="28" tools:ignore="GoogleAppIndexingWarning" />
+    <application android:usesCleartextTraffic="true" tools:targetApi="28" tools:ignore="GoogleAppIndexingWarning">
       <!-- minsekim TEST CODE -->
-      <application>
-        <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
-  <intent-filter>
-      <action android:name="android.intent.action.VIEW" />
-      <category android:name="android.intent.category.DEFAULT" />
-    <category android:name="android.intent.category.BROWSABLE" />
-
-      <data android:host="oauth"
-          android:scheme="kakao2d496920342c7d6632f422d9aa6ba858" />
-  </intent-filter>
-</activity>
-</application>
 <!-- minsekim TEST CODE -->
+
+</application>
 </manifest>

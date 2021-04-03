@@ -29,20 +29,9 @@
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
-    </application>
         <!-- minsekim TEST CODE -->
-      <application>
-        <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
-  <intent-filter>
-      <action android:name="android.intent.action.VIEW" />
-      <category android:name="android.intent.category.DEFAULT" />
-      <category android:name="android.intent.category.BROWSABLE" />
 
-      <data android:host="oauth"
-          android:scheme="kakao2d496920342c7d6632f422d9aa6ba858" />
-  </intent-filter>
-</activity>
-</application>
 <!-- minsekim TEST CODE -->
+    </application>
 
 </manifest>

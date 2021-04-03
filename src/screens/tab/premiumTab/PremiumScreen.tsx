@@ -1,6 +1,6 @@
 import {
   Alert,
-	BackHandler,
+  BackHandler,
   Platform,
   ScrollView,
   StyleSheet,
@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import * as RNIap from "react-native-iap";
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 
 import NativeButton from "apsl-react-native-button";
 import { useNavigation } from "@react-navigation/native";
@@ -88,26 +88,27 @@ const styles = StyleSheet.create({
   },
 });
 
-export class PremiumScreen extends Component {
-	
-  constructor(props) {
-    super(props);
-    this.state = {
-      productList: [],
-      receipt: "",
-      availableItemsMessage: "",
+type MessageNavigation = StackNavigationProp<
+  PremiumStackParamList,
+  "PremiumScreen"
+>;
+export const PremiumScreen: React.FC = () => {
+  const [productList, setProductList] = useState<Array<any>>([]);
+  const [receipt, setReceipt] = useState<string>("");
+  const [availableItemsMessage, setAvailableItemsMessage] = useState<string>(
+    ""
+  );
+  //#region FUNCTIONS
+  useEffect(() => {
+    async () => {
+      try {
+        const result = await RNIap.initConnection();
+        console.log("result", result);
+        await RNIap.flushFailedPurchasesCachedAsPendingAndroid();
+      } catch (e) {
+        console.warn(e.code, e.message);
+      }
     };
-  }
-
-  async componentDidMount(): void {
-    try {
-      const result = await RNIap.initConnection();
-      console.log("result", result);
-      await RNIap.flushFailedPurchasesCachedAsPendingAndroid();
-    } catch (err) {
-      console.warn(err.code, err.message);
-    }
-
     purchaseUpdateSubscription = RNIap.purchaseUpdatedListener(
       async (purchase: RNIap.InAppPurchase | RNIap.SubscriptionPurchase) => {
         const receipt = purchase.transactionReceipt;
@@ -125,58 +126,52 @@ export class PremiumScreen extends Component {
           } catch (ackErr) {
             console.warn("ackErr", ackErr);
           }
-
-          this.setState({ receipt }, () => this.goNext());
+          setReceipt(receipt);
+          Alert.alert("Receipt", receipt);
         }
       }
     );
-
     purchaseErrorSubscription = RNIap.purchaseErrorListener(
       (error: RNIap.PurchaseError) => {
         console.log("purchaseErrorListener", error);
         Alert.alert("purchase error", JSON.stringify(error));
       }
     );
-  }
+    return () => {
+      if (purchaseUpdateSubscription) {
+        purchaseUpdateSubscription.remove();
+        purchaseUpdateSubscription = null;
+      }
+      if (purchaseErrorSubscription) {
+        purchaseErrorSubscription.remove();
+        purchaseErrorSubscription = null;
+      }
+      RNIap.endConnection();
+    };
+  }, []);
 
-  componentWillUnmount(): void {
-    if (purchaseUpdateSubscription) {
-      purchaseUpdateSubscription.remove();
-      purchaseUpdateSubscription = null;
-    }
-    if (purchaseErrorSubscription) {
-      purchaseErrorSubscription.remove();
-      purchaseErrorSubscription = null;
-    }
-    RNIap.endConnection();
-  }
-
-  goNext = (): void => {
-    Alert.alert("Receipt", this.state.receipt);
-  };
-
-  getItems = async (): void => {
+  const getItems = async (): Promise<void> => {
     try {
+      if (!itemSkus) return;
       const products = await RNIap.getProducts(itemSkus);
       // const products = await RNIap.getSubscriptions(itemSkus);
       console.log("Products", products);
-      this.setState({ productList: products });
+      setProductList(products);
     } catch (err) {
       console.warn(err.code, err.message);
     }
   };
-
-  getSubscriptions = async (): void => {
+  const getSubscriptions = async (): Promise<void> => {
     try {
+      if (!itemSubs) return;
       const products = await RNIap.getSubscriptions(itemSubs);
       console.log("Products", products);
-      this.setState({ productList: products });
+      setProductList(products);
     } catch (err) {
       console.warn(err.code, err.message);
     }
   };
-
-  getAvailablePurchases = async (): void => {
+  const getAvailablePurchases = async (): Promise<void> => {
     try {
       console.info(
         "Get available purchases (non-consumable or unconsumed consumable)"
@@ -184,111 +179,97 @@ export class PremiumScreen extends Component {
       const purchases = await RNIap.getAvailablePurchases();
       console.info("Available purchases :: ", purchases);
       if (purchases && purchases.length > 0) {
-        this.setState({
-          availableItemsMessage: `Got ${purchases.length} items.`,
-          receipt: purchases[0].transactionReceipt,
-        });
+        setAvailableItemsMessage(`Got ${purchases.length} items.`);
+        setReceipt(purchases[0].transactionReceipt);
       }
     } catch (err) {
       console.warn(err.code, err.message);
       Alert.alert(err.message);
     }
   };
-
-  // Version 3 apis
-  requestPurchase = async (sku): void => {
+  const requestPurchase = async (sku: string): Promise<void> => {
     try {
       RNIap.requestPurchase(sku);
     } catch (err) {
       console.warn(err.code, err.message);
     }
   };
-
-  requestSubscription = async (sku): void => {
+  const requestSubscription = async (sku: string): Promise<void> => {
     try {
       RNIap.requestSubscription(sku);
     } catch (err) {
       Alert.alert(err.message);
     }
   };
+  //#endregion
 
-	render(): React.ReactElement {
-		
-		type MessageNavigation = StackNavigationProp<PremiumStackParamList, 'PremiumScreen'>;
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTxt}>react-native-iap V3</Text>
+      </View>
+      <View style={styles.content}>
+        <ScrollView style={{ alignSelf: "stretch" }}>
+          <View style={{ height: 50 }} />
+          <NativeButton
+            onPress={() => getAvailablePurchases}
+            activeOpacity={0.5}
+            style={styles.btn}
+            textStyle={styles.txt}
+          >
+            Get available purchases
+          </NativeButton>
 
-    const { productList, receipt, availableItemsMessage } = this.state;
-		const receipt100 = receipt.substring(0, 100);
-	
-    return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.headerTxt}>react-native-iap V3</Text>
-        </View>
-        <View style={styles.content}>
-          <ScrollView style={{ alignSelf: "stretch" }}>
-            <View style={{ height: 50 }} />
-            <NativeButton
-              onPress={this.getAvailablePurchases}
-              activeOpacity={0.5}
-              style={styles.btn}
-              textStyle={styles.txt}
-            >
-              Get available purchases
-            </NativeButton>
+          <Text style={{ margin: 5, fontSize: 15, alignSelf: "center" }}>
+            {availableItemsMessage}
+          </Text>
 
-            <Text style={{ margin: 5, fontSize: 15, alignSelf: "center" }}>
-              {availableItemsMessage}
-            </Text>
+          <Text style={{ margin: 5, fontSize: 9, alignSelf: "center" }}>
+            {receipt}
+          </Text>
 
-            <Text style={{ margin: 5, fontSize: 9, alignSelf: "center" }}>
-              {receipt100}
-            </Text>
-
-            <NativeButton
-              onPress={(): void => this.getItems()}
-              activeOpacity={0.5}
-              style={styles.btn}
-              textStyle={styles.txt}
-            >
-              Get Products ({productList.length})
-            </NativeButton>
-            {productList.map((product, i) => {
-              return (
-                <View
-                  key={i}
+          <NativeButton
+            onPress={() => getItems}
+            activeOpacity={0.5}
+            style={styles.btn}
+            textStyle={styles.txt}
+          >
+            Get Products ({productList.length})
+          </NativeButton>
+          {productList.map((product, i) => {
+            return (
+              <View
+                key={i}
+                style={{
+                  flexDirection: "column",
+                }}
+              >
+                <Text
                   style={{
-                    flexDirection: "column",
+                    marginTop: 20,
+                    fontSize: 12,
+                    color: "black",
+                    minHeight: 100,
+                    alignSelf: "center",
+                    paddingHorizontal: 20,
                   }}
                 >
-                  <Text
-                    style={{
-                      marginTop: 20,
-                      fontSize: 12,
-                      color: "black",
-                      minHeight: 100,
-                      alignSelf: "center",
-                      paddingHorizontal: 20,
-                    }}
-                  >
-                    {JSON.stringify(product)}
-                  </Text>
-                  <NativeButton
-                    // onPress={(): void => this.requestPurchase(product.productId)}
-                    onPress={(): void =>
-                      this.requestSubscription(product.productId)
-                    }
-                    activeOpacity={0.5}
-                    style={styles.btn}
-                    textStyle={styles.txt}
-                  >
-                    Request purchase for above product
-                  </NativeButton>
-                </View>
-              );
-            })}
-          </ScrollView>
-        </View>
+                  {JSON.stringify(product)}
+                </Text>
+                <NativeButton
+                  // onPress={(): void => this.requestPurchase(product.productId)}
+                  onPress={() => requestSubscription(product.productId)}
+                  activeOpacity={0.5}
+                  style={styles.btn}
+                  textStyle={styles.txt}
+                >
+                  Request purchase for above product
+                </NativeButton>
+              </View>
+            );
+          })}
+        </ScrollView>
       </View>
-    );
-  }
-}
+    </View>
+  );
+};
