@@ -1,7 +1,7 @@
 import styled from '@emotion/native';
 import React, { Dispatch, SetStateAction} from 'react';
-import { Text } from 'react-native';
 import { ChatRoom } from '../chat-room/ChatRoomList';
+import { Boarding_dtmToRecently } from '../chat/date';
 import { GenderColor, GenderText } from '../color/GenderColor';
 import { CreateRoomSelectCancel} from '../icon/home/CreateRoomSelectCancel';
 
@@ -15,11 +15,9 @@ type Props = {
 export const MapRoomCard: React.FC<Props> = ({ data, onCancelPress, onPress, backgroundColor, activeCancelBtn }) => {
   if (!data)
     return <></>
-  const gender = (data) ? data.gender : 'all';
   const bgColor = GenderColor(data.gender);
   const genderText = GenderText(data.gender);
-  activeCancelBtn = (!activeCancelBtn) ? false : true;
-  if (!data)
+  if (!data || !data?.start_lon || !data?.end_lon)
     return <></>;
   if (activeCancelBtn && data?.id == -1)
     return <>
@@ -36,7 +34,7 @@ export const MapRoomCard: React.FC<Props> = ({ data, onCancelPress, onPress, bac
         <CardContainer>
           <CardHeaderContainer>
             <LeftContainer>
-              <Time>{data.boarding_dtm} 탑승</Time>
+              <Time>{Boarding_dtmToRecently(data.boarding_dtm)} 탑승</Time>
               <TitleView>
                 <Title>{data.owner}</Title>
               <TitleVip>VIP</TitleVip>
@@ -126,6 +124,7 @@ const TitleView = styled.View`
   flex: 1;
   flex-direction: row;
   margin-top:3px;
+  align-items: center;
 `;
 const Title = styled.Text`
   font-size: 13px;
@@ -143,7 +142,7 @@ const TitleVip = styled.Text`
 `;
 
 const RightContainer = styled.View`
-
+  padding-right:10px;
 `;
 
 const Count = styled.Text`
@@ -155,11 +154,10 @@ const Count = styled.Text`
 
 const Time = styled.Text`
   font-size: 8px;
-  width: 80px;
   font-weight: bold;
-  padding: 3px 8px 3px 8px;
+  padding: 1px 8px 1px 8px;
   border-radius: 7px;
-  border: solid 1px #707070;
+  border: solid 1px #D0D0D0;
   background-color: #ffffff;
   text-align:center;
 `;

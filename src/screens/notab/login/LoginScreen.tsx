@@ -3,8 +3,8 @@ import KakaoLogins, { KAKAO_AUTH_TYPES } from "@react-native-seoul/kakao-login";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import axios from "axios";
-import React, { useState } from "react";
-import { Platform, SafeAreaView } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Platform, SafeAreaView, StatusBar } from "react-native";
 import { BlankButton } from "../../../components/button/BlankButton";
 import { KakaoIcon } from "../../../components/icon/KakaoIcon";
 import { BlankBackground } from "../../../components/layout/BlankBackground";
@@ -15,6 +15,7 @@ import { LoginStackParamList } from "./LoginNavigation";
 
 import image from '../../../../images/login/bg.png';
 import styled from "@emotion/native";
+import { GenderColor } from "../../../components/color/GenderColor";
 type LoginScreenNavigation = StackNavigationProp<LoginStackParamList, 'LoginScreen'>;
 
 export const LoginScreen: React.FC = ({}) => {
@@ -23,7 +24,13 @@ export const LoginScreen: React.FC = ({}) => {
   const [id, setId] = useState('admin');
   const [password, setPassword] = useState('12');
   const { setLoggedIn } = useAuthContext();
-
+  
+  useEffect(() => {
+    if (Platform.OS === "android") {
+      StatusBar.setBackgroundColor('rgba(0,0,0,0)');
+    }
+    StatusBar.setBarStyle("dark-content");
+  }, []);
   const login = async () => {
     const { data } = await axios.post<{ access: string; refresh: string }>(
       `${API_URL}/accounts/token/`,

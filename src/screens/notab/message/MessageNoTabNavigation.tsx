@@ -14,7 +14,7 @@ export type MessageNoTabNavigationParamList = {
 };
 const MessageStack = createStackNavigator<MessageNoTabNavigationParamList>();
 export const MessageNoTabNavigation = (p:any) => {
-  const props = useAuthContext().MoveNav.props;
+  const props = useAuthContext().MoveNav;
   return (
     <MessageStack.Navigator
       initialRouteName={props?.screen ? props.screen : "ChatRoomScreen"}

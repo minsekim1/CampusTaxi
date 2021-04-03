@@ -28,19 +28,22 @@ export const SwipeableView: React.FC<Props> = ({
 					overlayStyle={overlayStyle}
 					handlePosition="inside"
 					handleStyle={handleStyle}
-					modalStyle={modalStyle}
-				>
+				modalStyle={modalStyle}
+			>
+				<HView>
 					{datas.map((data) => (
-						(data.id != -1 && data.id != -2) ?
+						(data.id != -1) ?
 							<MapRoomCard key={data.id} data={data} onPress={() => onPressMapRoomCard(data)} /> : null
 					))}
+					</HView>
 				</Modalize>
 		</Container>
   );
 };
+const HView = styled.View`width:100%;height:500px;padding:10px;padding-top:52px`
 const overlayStyle = { backgroundColor: 'rgba(0,0,0,0)' }
 const handleStyle = { backgroundColor: "#707070" }
-const modalStyle = { backgroundColor: 'rgba(255,250,240,0.9)', padding: 10, marginHorizontal: 5, paddingTop:52 }
+const modalStyle = { backgroundColor: 'rgba(255,250,240,0.9)', marginHorizontal: 5 }
 const Container = styled.View`
 	height:76%;
 	width: 100%;

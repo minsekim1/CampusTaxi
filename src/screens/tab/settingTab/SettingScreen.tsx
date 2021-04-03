@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { BackHandler, Platform, SafeAreaView } from 'react-native';
+import { EmailSend } from '../../../components/chat-room/EmailSend';
 import { RightIcon } from '../../../components/icon/RightIcon';
 import { BlankBackground } from '../../../components/layout/BlankBackground';
 import { showToast } from '../../../components/layout/Toast';
@@ -51,7 +52,11 @@ export const SettingScreen: React.FC<Props> = () => {
       <SafeAreaView>
         <Container>
           <Title>계정</Title>
-          <MenuItem>
+          <MenuItem onPress={() => setNavName({
+            istab: "NoTab",
+            tab: "SettingNoTabNavigation",
+            screen: 'AccountScreen'
+          })}>
             <MenuText>내 정보</MenuText>
             <RightIcon />
           </MenuItem>
@@ -59,21 +64,34 @@ export const SettingScreen: React.FC<Props> = () => {
             <MenuText>로그아웃</MenuText>
             <RightIcon />
           </MenuItem>
-          <MenuItem>
-            <MenuText>계좌 등록</MenuText>
+          <MenuItem onPress={() => setNavName({
+            istab: "NoTab",
+            tab: "SettingNoTabNavigation",
+            screen: 'BankScreen'
+          })}>
+            <MenuText>내 은행 계좌 목록</MenuText>
             <RightIcon />
           </MenuItem>
-          <MenuItem>
-            <MenuText>학생증 제출</MenuText>
+          <MenuItem onPress={()=>EmailSend('[캠퍼스택시문의:학생증재체출] 본인닉네임')}>
+            <MenuText>학생증 다시 제출</MenuText>
             <RightIcon />
           </MenuItem>
-          <Title>앱 설정</Title>
+          <Title>고객문의</Title>
+          <MenuItem onPress={()=>EmailSend('[캠퍼스택시문의:신고 및 문의] 본인닉네임')}>
+            <MenuText>신고 및 문의</MenuText>
+            <RightIcon />
+          </MenuItem>
+          {/* <Title>앱 설정</Title>
           <MenuItem>
             <MenuText>알림 설정</MenuText>
             <RightIcon />
-          </MenuItem>
+          </MenuItem> */}
           <Title>앱 정보</Title>
-          <MenuItem>
+          <MenuItem onPress={() => setNavName({
+            istab: "NoTab",
+            tab: "SettingNoTabNavigation",
+            screen: 'AppInfo'
+          })}>
             <MenuText>앱 버전</MenuText>
             <RightIcon />
           </MenuItem>

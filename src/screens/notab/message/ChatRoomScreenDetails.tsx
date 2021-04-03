@@ -7,6 +7,7 @@ import {
   User,
   UserDummyList,
 } from "../../../components/chat-room/ChatRoomList";
+import { EmailSend } from "../../../components/chat-room/EmailSend";
 import { ETAView } from "../../../components/chat-room/ETAView";
 import { GenderColor } from "../../../components/color/GenderColor";
 import { OutRoomSVG } from "../../../components/icon/chat/OutRoomSVG";
@@ -62,7 +63,7 @@ export const ChatRoomScreenDetails: React.FC = () => {
         <BtnTitle>방장 위임하기</BtnTitle>
       </PassHostBtn>
       {/* 신고/문의 */}
-      <QnABtn onPress={() => console.log("asd")}>
+      <QnABtn onPress={()=>EmailSend('[캠퍼스택시문의:채팅신고 및 문의] 본인닉네임')}>
         <BtnTitle>신고/문의</BtnTitle>
       </QnABtn>
       {/* 카카오택시 호출 */}

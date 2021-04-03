@@ -13,3 +13,5 @@ export const GenderText = (genderNum: number) => {
 export const GenderProfileColor = (genderNum: number) => {
 	return ((genderNum == 0) ? '#55A1EE' : ((genderNum == 1) ? '#FF6464' : '#000000'))
 }
+
+export const LogoColor = '#579FEE'

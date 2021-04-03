@@ -5,19 +5,25 @@ import { GeoScreen } from '../login/document/GeoScreen';
 import { MarketingScreen } from '../login/document/MarketingScreen';
 import { PrivacyScreen } from '../login/document/PrivacyScreen';
 import { TermsScreen } from '../login/document/TermsScreen';
+import { AccountScreen } from './AccountScreen';
+import { AppInfo } from './AppInfo';
+import { BankScreen } from './BankScreen';
 
 export type SettingNoTabNavigationParamList = {
 	GeoScreen: undefined;
 	MarketingScreen: undefined;
 	PrivacyScreen: undefined;
 	TermsScreen: undefined;
+	AccountScreen: undefined;
+	BankScreen: undefined;
+	AppInfo: undefined;
 };
 const SettingStack = createStackNavigator<SettingNoTabNavigationParamList>();
 export const SettingNoTabNavigation = () => {
-	const props = useAuthContext().MoveNav.props;
+	const props:any = useAuthContext().MoveNav;
 	const { setNavName } = useAuthContext();
 	return (
-		<SettingStack.Navigator initialRouteName={(props?.screen) ? props.screen : "ChatRoomScreen"}  >
+		<SettingStack.Navigator initialRouteName={(props?.screen) ? props.screen : "SettingTabScreen"}  >
 			<SettingStack.Screen
 				options={{
 						headerTitleAlign: 'center', title: '위치정보 이용약관',
@@ -56,6 +62,39 @@ export const SettingNoTabNavigation = () => {
 				component={TermsScreen}
 				options={{
 					headerTitleAlign: 'center', title: '서비스 이용약관',
+					headerLeft: (props) => (
+						<HeaderBackButton
+							{...props}
+							onPress={() => setNavName({ istab: 'Tab', tab: 'SettingTabScreen' })} />)
+				}}
+			/>
+			<SettingStack.Screen
+				name="AccountScreen"
+				component={AccountScreen}
+				options={{
+					headerTitleAlign: 'center', title: '내 정보',
+					headerLeft: (props) => (
+						<HeaderBackButton
+							{...props}
+							onPress={() => setNavName({ istab: 'Tab', tab: 'SettingTabScreen' })} />)
+				}}
+			/>
+			<SettingStack.Screen
+				name="BankScreen"
+				component={BankScreen}
+				options={{
+					headerTitleAlign: 'center', title: '내 은행 계좌 목록',
+					headerLeft: (props) => (
+						<HeaderBackButton
+							{...props}
+							onPress={() => setNavName({ istab: 'Tab', tab: 'SettingTabScreen' })} />)
+				}}
+			/>
+			<SettingStack.Screen
+				name="AppInfo"
+				component={AppInfo}
+				options={{
+					headerTitleAlign: 'center', title: '앱 버전',
 					headerLeft: (props) => (
 						<HeaderBackButton
 							{...props}

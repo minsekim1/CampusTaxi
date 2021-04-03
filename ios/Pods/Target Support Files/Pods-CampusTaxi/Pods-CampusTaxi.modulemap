@@ -1,6 +1,0 @@
-module Pods_CampusTaxi {
-  umbrella header "Pods-CampusTaxi-umbrella.h"
-
-  export *
-  module * { export * }
-}

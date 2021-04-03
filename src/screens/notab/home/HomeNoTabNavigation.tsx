@@ -14,7 +14,7 @@ export type HomeNoTabNavigationParamList = {
 };
 const HomeNoTabStack = createStackNavigator<HomeNoTabNavigationParamList>();
 export const HomeNoTabNavigation = () => {
-  const props = useAuthContext().MoveNav.props;
+  const props = useAuthContext().MoveNav;
   const { setNavName } = useAuthContext();
   return (
     <HomeNoTabStack.Navigator
