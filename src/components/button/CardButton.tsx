@@ -33,7 +33,7 @@ export const CardButton: React.FC<Props> = ({ onChange, children, options, icon,
                         setActiveoption(option);
                         onChange(index);
                     }}
-                    borderRadius={8}>
+                    borderRadius={"8px"}>
                     <ButtonText>{options[index]}</ButtonText>
                 </ToggleButton>
             ))}

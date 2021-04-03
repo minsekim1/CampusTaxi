@@ -1,3 +1,4 @@
+
 import styled from '@emotion/native';
 import React, { Dispatch, SetStateAction, useState, useEffect } from 'react';
 import { Platform, KeyboardTypeOptions, TouchableOpacity } from 'react-native';
@@ -13,6 +14,8 @@ type Props = {
     flex?: number;
     centered?: boolean;
     myvalue?: string;
+    border?: string;
+    iconvisible?: boolean;
     onFocus?: (option: string) => void;
 };
 export const HomeLocationTextField: React.FC<Props> = ({
@@ -22,8 +25,10 @@ export const HomeLocationTextField: React.FC<Props> = ({
     flex,
     centered,
     myvalue,
+    border,
+    iconvisible,
     onFocus,
-}) => {
+    }) => {
 
     const [value, setValue] = useState(myvalue);
 
@@ -36,19 +41,20 @@ export const HomeLocationTextField: React.FC<Props> = ({
             placeholderTextColor="#b0b0b2"
             keyboardType={keyboardType}
             centered={centered}
+            border={border}
         >
-            <TouchableOpacity>
-                <Search />
+            <TouchableOpacity style={{}}>
+                {iconvisible && <Search/>}
             </TouchableOpacity>
             <LocationInput
                 flex={flex}
-                value={myvalue == "" ? "" : myvalue}
+                value={myvalue == ""? "" : myvalue}
                 maxLength={maxLength}
                 placeholder={placeholder}
                 placeholderTextColor="#808083"
                 keyboardType={keyboardType}
                 centered={centered}
-                editable={myvalue == "" ? true : false}
+                editable={myvalue==""? true : false}
                 onFocus={onFocus}
             />
             {/* <CancleView>
@@ -67,12 +73,12 @@ export const HomeLocationTextField: React.FC<Props> = ({
     );
 };
 
-const Box = styled.View<{ flex?: number; centered?: boolean }>`
+const Box = styled.View<{ flex?: number; centered?: boolean; border?: string; }>`
   height: 33px;
   width: 243px;
   margin-left: 10px;
   margin-right: 10px;
-  border: 1px solid #B7B7BB;
+  border: ${({ border }) => border ?? `1px solid #B7B7BB`};
   border-radius: 21px;
   font-size: 11px;
   color: #B7B7BB;

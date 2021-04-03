@@ -102,6 +102,9 @@ export const HomeScreen: React.FC<Props> = () => {
                 </SubTitleView>
               <OptionButton
                 options={["2명", "3명", "4명", "무관"]}
+                backgroundColor={'#ffffff'}
+                borderColor={'#000000'}
+                color={'#000000'}
                 onChange={(option) => { setLimit(parseInt(option) + 2); }}
                 height={26} width={40}
                 defaultIndex={3}/>
@@ -112,6 +115,9 @@ export const HomeScreen: React.FC<Props> = () => {
                 </SubTitleView>
               <OptionButton
                 options={["동성만", "무관"]}
+                backgroundColor={'#ffffff'}
+                borderColor={'#000000'}
+                color={'#000000'}
                 onChange={(option) => { setGender(parseInt(option)); }}
                 height={28} width={58}
                 defaultIndex={1} />
@@ -132,7 +138,8 @@ export const HomeScreen: React.FC<Props> = () => {
                     limit: limit,
                     value: schoollocation
                   }
-                })} myvalue = {(category == 1) ? schoollocation : ""} placeholder={"출발지를 검색하세요"} centered={true}/>
+                })} 
+                iconvisible={true} myvalue = {(category == 1) ? schoollocation : ""} placeholder={"출발지를 검색하세요"} centered={true}/>
                 </SearchView>
                 <SearchView>
                   <DotlineIcon/>
@@ -150,7 +157,8 @@ export const HomeScreen: React.FC<Props> = () => {
                     limit: limit,
                     value: schoollocation
                   }
-                })} myvalue = {(category == 0) ? schoollocation : ""} placeholder={"도착지를 검색하세요"} centered={true}/>
+                })} 
+                iconvisible={true} myvalue = {(category == 0) ? schoollocation : ""} placeholder={"도착지를 검색하세요"} centered={true}/>
                 </SearchView>
               </SubContainer>
               <SubContainer>

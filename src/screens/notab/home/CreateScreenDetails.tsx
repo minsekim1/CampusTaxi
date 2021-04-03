@@ -1,6 +1,6 @@
 import styled from '@emotion/native';
 import React, { useState, useEffect} from 'react';
-import { Platform, Button, ScrollView, Text, View, TouchableOpacity} from 'react-native';
+import { Platform, Button, ScrollView, Text, View, TouchableOpacity, ListViewComponent} from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { OptionButton } from '../../../components/button/OptionButton';
 import { ChatRoom } from '../../../components/chat-room/ChatRoomList';
@@ -8,8 +8,13 @@ import { HomeLocationTextField } from '../../../components/form/HomeLocationText
 import ArriveIcon from '../../../components/icon/ArriveIcon';
 import DepartIcon from '../../../components/icon/DepartIcon';
 import DotlineIcon from '../../../components/icon/DotlineIcon';
-import { SelectedBottomView } from '../../../components/map/SelectedBottomView';
+import { CreateSelectedView } from '../../../components/map/CreateSelectedView';
 import { HomeStackParamList } from '../../tab/homeTab/HomeStackNavigation';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
+import { useAuthContext } from "../../../contexts/AuthContext";
+import axios from "axios";
+import { API_URL, GOOGLE_MAPAPI_URL } from "../../../constant";
 
 type HomeScreenNavigationProp = StackNavigationProp<HomeStackParamList, 'HomeScreen'>;
 
@@ -17,37 +22,63 @@ type HomeScreenNavigationProp = StackNavigationProp<HomeStackParamList, 'HomeScr
 
 type Props = {
     navigation: HomeScreenNavigationProp;
+    selectRoom: ChatRoom;
 };
 
-export const CreateScreenDetails: React.FC<Props> = () => {
+export const CreateScreenDetails: React.FC<Props> = ({selectRoom}) => {
 
     let testRoomData = { // test code
         id: 5,
         unreadMessage: 'string',
         distance: 5.1,
-        start_address_code: 'string',
+        start_address_code: '123',
         start_address: '공릉역 2번출구',
         start_address_detail: '공릉역 2번출구',
-        start_lat: 37.625317280381715,
-        start_lon: 127.07327644534814,
-        end_address: '삼육대학교',
-        end_address_detail: '삼육대학교 분수대 앞',
-        end_lat: 37.64353854399491,
-        end_lon: 127.10579154192136,
-        boarding_dtm: 'string',
+        start_lat: 37,
+        start_lon: 127,
+        end_address: '석계역 2번출구',
+        end_address_detail: '석계역 2번출구',
+        end_lat: 37,
+        end_lon: 127,
+        boarding_dtm: '2021-04-03T16:59:56.326Z',
         personnel_limit: 3,
         gender: 1,
-        owner: 5,
+        owner: 2,
         category: 'string',
         current: '3',
     }
-
-    const [date, setDate] = useState(new Date(1598051730000));
+    
+    const [date, setDate] = useState(new Date());
     const [timeonly, setTimeonly] = useState(date.getHours().toString() + ":" + date.getMinutes().toString());
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
 
+    const { token } = useAuthContext();
+    const [refetch, setRefetch] = useState<Date>();
+
+    console.log({selectRoom})
     const [createRoom, setcreateRoom] = React.useState<ChatRoom>(testRoomData);
+
+    const getInputDayLabel = (day:number) => {
+        const week = new Array('일', '월', '화', '수', '목', '금', '토');
+        
+        return week[day];
+    }
+
+    const OptionDateFormat = (month:number, date:number, day:number) => {
+        let korDay = getInputDayLabel(day);
+        return month.toString() + "/" + date.toString() + " (" + korDay + ")";
+    }
+
+    const getNextThreeDay = (date: Date) => {
+        let tomorrow = new Date(date.getTime() + (24 * 60 * 60 * 1000));
+        let nextTomorrow = new Date(tomorrow.getTime() + (24 * 60 * 60 * 1000));
+        return [OptionDateFormat(date.getMonth()+1,date.getDate(),date.getDay())+"\n오늘",
+        OptionDateFormat(tomorrow.getMonth()+1,tomorrow.getDate(),tomorrow.getDay())+"\n내일",
+        OptionDateFormat(nextTomorrow.getMonth()+1,nextTomorrow.getDate(),nextTomorrow.getDay())+"\n모레",]
+    }
+
+    let datelist = getNextThreeDay(date);
 
     const onChange = (event: any, selectedDate: Date) => {
         const currentDate = selectedDate || date;
@@ -65,13 +96,15 @@ export const CreateScreenDetails: React.FC<Props> = () => {
         showMode('time');
     };
 
+
     return (
+        <View style={{flex:1, backgroundColor: 'white'}}>
         <ScrollView>
         <Container>
             <SubContainer>
                 <SearchView>
                     <DepartIcon/>
-                    {/* <HomeLocationTextField onFocus={() => navigate("CreateScreen", { type: category, gender: gender, limit: limit, value: schoollocation })} myvalue = {"출발지: " + createRoom.start_address_detail} centered={true}/> */}
+                    {<HomeLocationTextField myvalue = {"출발지: " + createRoom.start_address_detail} border={"1px solid #578fee"} iconvisible={false} centered={true}/>}
                 </SearchView>
                 <SearchView>
                     <DotlineIcon/>
@@ -79,27 +112,30 @@ export const CreateScreenDetails: React.FC<Props> = () => {
                 </SearchView>
                 <SearchView>
                     <ArriveIcon/>
-                    {/* <HomeLocationTextField onFocus={() => navigate("CreateScreen", { type: category, gender: gender, limit: limit, value: schoollocation })} myvalue = {"출발지: " + createRoom.end_address_detail} placeholder={"도착지를 검색하세요"} centered={true}/> */}
+                    {<HomeLocationTextField myvalue = {"도착지: " + createRoom.end_address_detail} border={"1px solid #578fee"} iconvisible={false} centered={true}/>}
                 </SearchView>
+
+                <CreateSelectedView data={createRoom} />
+
             </SubContainer>
-
-
-            <SelectedBottomView data={createRoom} />
 
             <SelectSubContainer>
                 <SubTitle>탑승날짜</SubTitle>
                 <OptionButton
-                    options={["3/18(월)\n오늘", "3월/19(화)\n내일", "3월/20(화)\n모레"]}
+                    options={datelist}
+                    backgroundColor={'#76a2eb'}
+                    borderColor={'#76a2eb'}
+                    color={'#ffffff'}
                     onChange={(option) => { console.log(option); }}
-                    height={50} width={60}
-                    borderRadius={"13px"}
+                    height={43} width={58}
+                    borderRadius={"14px"}
                     defaultIndex={0} />
             </SelectSubContainer>
 
             <SelectSubContainer>
                 <SubTitle>탑승시각</SubTitle>
 
-                {/* <TouchableOpacity onPress={showTimepicker}>
+                {<TouchableOpacity onPress={showTimepicker}>
                     {show && (
                         <DateTimePicker
                             testID="dateTimePicker"
@@ -111,15 +147,18 @@ export const CreateScreenDetails: React.FC<Props> = () => {
                         />
                     )}
                     <Text>{timeonly}</Text>
-                </TouchableOpacity> */}
+                </TouchableOpacity>}
             </SelectSubContainer>
 
             <SelectSubContainer>
                 <SubTitle>탑승인원</SubTitle>
                 <OptionButton
                     options={["2", "3", "4"]}
+                    backgroundColor={'#76a2eb'}
+                    borderColor={'#76a2eb'}
+                    color={'#ffffff'}
                     onChange={(option) => { console.log(option); }}
-                    height={26} width={26}
+                    height={21} width={21}
                     defaultIndex={2} />
             </SelectSubContainer>
 
@@ -127,12 +166,53 @@ export const CreateScreenDetails: React.FC<Props> = () => {
                 <SubTitle>탑승 인원</SubTitle>
                 <OptionButton
                     options={["동성만", "무관"]}
+                    backgroundColor={'#76a2eb'}
+                    borderColor={'#76a2eb'}
+                    color={'#ffffff'}
                     onChange={(option) => { console.log(option); }}
                     height={28} width={58}
                     defaultIndex={1}/>
             </SelectSubContainer>
         </Container>
+
         </ScrollView>
+
+        <BottomButton
+            underlayColor={'#83ABED'}
+            onPress={() => {
+                console.log(token)
+                axios.post(
+                    `${API_URL}/api/v1/rooms/`,
+                    {
+                        "start_address_code": testRoomData.start_address_code,
+                        "start_address": testRoomData.start_address,
+                        "start_address_detail": testRoomData.start_address_detail,
+                        "start_lat": testRoomData.start_lat,
+                        "start_lon": testRoomData.start_lon,
+                        "end_address_code": "123",
+                        "end_address": testRoomData.end_address,
+                        "end_address_detail": testRoomData.end_address_detail,
+                        "end_lat": testRoomData.end_lat,
+                        "end_lon": testRoomData.end_lon,
+                        "boarding_dtm": testRoomData.boarding_dtm,
+                        "personnel_limit": testRoomData.personnel_limit,
+                        "gender": testRoomData.gender,
+                        "owner": testRoomData.owner
+                    },
+                    {
+                        headers:{
+                            Authorization: `Bearer ${token}`
+                        },
+                    },
+                ),[token, refetch];
+            }}
+            style={{ backgroundColor: "rgb(118, 162, 235)"}}>
+            <BottomBtnTitle>
+                방 만들기
+            </BottomBtnTitle> 
+        </BottomButton>
+        </View>
+        
     );
 };
 
@@ -170,3 +250,19 @@ const SubTitle = styled.Text`
   font-size: 11px;
   margin-bottom: 10px;
 `;
+
+const BottomButton = styled.TouchableHighlight`
+	position:absolute;
+	bottom:0;
+	width:100%;
+	height: 48px;
+	justify-content: center;
+	align-items: center;
+	z-index: 1;
+`;
+
+const BottomBtnTitle = styled.Text`
+	font-size: 14px;
+	font-family: bold;
+	color: #FFFFFF;
+`
