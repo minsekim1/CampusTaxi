@@ -123,7 +123,7 @@ const Col = styled.View`
   align-items: center;
 `;
 const DownText = styled.View``;
-const Row = styled.View`
+ const Row = styled.View`
   align-items: flex-end;
   flex-direction: row;
 `;

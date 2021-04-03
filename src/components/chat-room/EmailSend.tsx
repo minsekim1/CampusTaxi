@@ -23,11 +23,13 @@ export const EmailSend = (
 )=>{
     Mailer.mail(
       {
-        subject: "캠퍼스택시문의:<유저이름>/<신고 or 문의",
+        subject: (subject)? subject : "[캠퍼스택시문의]:본인닉네임",
         recipients: ["campustaxi@naver.com"],
-        ccRecipients: ["supportCC@example.com"],
-        bccRecipients: ["supportBCC@example.com"],
-        body: "<b>내용을 입력해주세요. 만약 캡쳐가 있다면 사진을 꼭 전송해주세요.</b>",
+        bccRecipients: ["tkarnrwl78627862@gmail.com"],
+        body: "<p>제목에 본인닉네임을 바꿔주세요.</p>\
+         <p>내용을 입력해주세요.</p>\
+         <p>만약 캡쳐가 있다면 사진을 꼭 전송해주세요.</p>\
+         <p>상대방 채팅 신고는 상대방의 이름을 반드시 알아야합니다.</p> ",
         isHTML: true,
       },
       (error, event) => {

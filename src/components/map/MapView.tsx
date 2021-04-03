@@ -38,7 +38,7 @@ export const MapView: React.FC<Props> = ({
 }) => {
   return (
     <NaverMapView
-      minZoomLevel={12}
+      minZoomLevel={10}
       maxZoomLevel={17} //최대 확대
       ref={MapRef}
       style={{ width: "100%", height: windowHeight - 243 }}
