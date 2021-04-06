@@ -25,29 +25,10 @@ type Props = {
     selectRoom: ChatRoom;
 };
 
-export const CreateScreenDetails: React.FC<Props> = ({selectRoom}) => {
+export const CreateScreenDetails: React.FC<Props> = (props:any) => {
 
-    let testRoomData = { // test code
-        id: 5,
-        unreadMessage: 'string',
-        distance: 5.1,
-        start_address_code: '123',
-        start_address: '공릉역 2번출구',
-        start_address_detail: '공릉역 2번출구',
-        start_lat: 37,
-        start_lon: 127,
-        end_address: '석계역 2번출구',
-        end_address_detail: '석계역 2번출구',
-        end_lat: 37,
-        end_lon: 127,
-        boarding_dtm: '2021-04-03T16:59:56.326Z',
-        personnel_limit: 3,
-        gender: 1,
-        owner: 2,
-        category: 'string',
-        current: '3',
-    }
-    
+    const selectRoom:ChatRoom = props.route.params;
+    console.log('selectRoom', selectRoom);
     const [date, setDate] = useState(new Date());
     const [timeonly, setTimeonly] = useState(date.getHours().toString() + ":" + date.getMinutes().toString());
     const [mode, setMode] = useState('date');
@@ -56,8 +37,7 @@ export const CreateScreenDetails: React.FC<Props> = ({selectRoom}) => {
     const { token } = useAuthContext();
     const [refetch, setRefetch] = useState<Date>();
 
-    console.log({selectRoom})
-    const [createRoom, setcreateRoom] = React.useState<ChatRoom>(testRoomData);
+    const [createRoom, setcreateRoom] = React.useState<ChatRoom>(selectRoom);
 
     const getInputDayLabel = (day:number) => {
         const week = new Array('일', '월', '화', '수', '목', '금', '토');
@@ -99,7 +79,7 @@ export const CreateScreenDetails: React.FC<Props> = ({selectRoom}) => {
 
     return (
         <View style={{flex:1, backgroundColor: 'white'}}>
-        <ScrollView>
+            <ScrollView contentContainerStyle={{ paddingBottom: 40}}>
         <Container>
             <SubContainer>
                 <SearchView>
@@ -184,20 +164,20 @@ export const CreateScreenDetails: React.FC<Props> = ({selectRoom}) => {
                 axios.post(
                     `${API_URL}/api/v1/rooms/`,
                     {
-                        "start_address_code": testRoomData.start_address_code,
-                        "start_address": testRoomData.start_address,
-                        "start_address_detail": testRoomData.start_address_detail,
-                        "start_lat": testRoomData.start_lat,
-                        "start_lon": testRoomData.start_lon,
+                        "start_address_code": selectRoom.start_address_code,
+                        "start_address": selectRoom.start_address,
+                        "start_address_detail": selectRoom.start_address_detail,
+                        "start_lat": selectRoom.start_lat,
+                        "start_lon": selectRoom.start_lon,
                         "end_address_code": "123",
-                        "end_address": testRoomData.end_address,
-                        "end_address_detail": testRoomData.end_address_detail,
-                        "end_lat": testRoomData.end_lat,
-                        "end_lon": testRoomData.end_lon,
-                        "boarding_dtm": testRoomData.boarding_dtm,
-                        "personnel_limit": testRoomData.personnel_limit,
-                        "gender": testRoomData.gender,
-                        "owner": testRoomData.owner
+                        "end_address": selectRoom.end_address,
+                        "end_address_detail": selectRoom.end_address_detail,
+                        "end_lat": selectRoom.end_lat,
+                        "end_lon": selectRoom.end_lon,
+                        "boarding_dtm": selectRoom.boarding_dtm,
+                        "personnel_limit": selectRoom.personnel_limit,
+                        "gender": selectRoom.gender,
+                        "owner": selectRoom.owner
                     },
                     {
                         headers:{

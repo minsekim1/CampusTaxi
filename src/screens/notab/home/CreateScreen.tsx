@@ -211,7 +211,6 @@ export const CreateScreen: React.FC<Props> = ({}) => {
     }
   }, [isFocused]);
   useEffect(() => {
-    console.log("rrrrrrr");
     axios
       .get<{ results: ChatRoom[] }>(
         `${API_URL}/api/v1/rooms/?category=${params.type + 1}&page=1`,
@@ -223,7 +222,7 @@ export const CreateScreen: React.FC<Props> = ({}) => {
         }
       )
       .then((response) => {
-        if(response.data.results[0] != undefined)
+        if (response.data.results[0] != undefined)
           if (typeof response.data.results[0].end_lat == "string")
             for (let j = 0; j < response.data.results.length; j++) {
               response.data.results[j].end_lat = Number(
@@ -311,6 +310,8 @@ export const CreateScreen: React.FC<Props> = ({}) => {
                 start_lon: myCoord.longitude,
                 end_lat: selectRoom.end_lat,
                 end_lon: selectRoom.end_lon,
+                end_address_detail: params.type != 2 ? end_init.name :selectRoom.end_address_detail,
+                end_address: params.type != 2 ? end_init.name :selectRoom.end_address,
               }
             : {
                 ...CreateRoom,
@@ -320,6 +321,8 @@ export const CreateScreen: React.FC<Props> = ({}) => {
                 start_lon: selectRoom.start_lon,
                 end_lat: myCoord.latitude,
                 end_lon: myCoord.longitude,
+                start_address_detail: params.type != 2 ? start_init.name :selectRoom.start_address_detail,
+                start_address: params.type != 2 ? start_init.name :selectRoom.start_address,
               };
         onPress({ ...myCoord, name: addressName });
         //기존 -1 방삭제하고 넣기
