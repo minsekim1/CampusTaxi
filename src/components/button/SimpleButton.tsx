@@ -7,11 +7,13 @@ type Props = {
   color?: string;
   backgroundColor?: string;
   clicked?: boolean;
+  isActive?: boolean;
 };
 
-export const SimpleButton: React.FC<Props> = ({ children, onPress, icon, clicked }) => {
+export const SimpleButton: React.FC<Props> = ({ children, onPress, icon, clicked,isActive }) => {
   return (
     <BlankButton
+      disable={!isActive}
       backgroundColor={clicked ? '#CBCED7' : '#76A2EB'}
       color="white"
       icon={icon}

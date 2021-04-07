@@ -1,8 +1,20 @@
 import styled, { css } from "@emotion/native";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { Alert, Keyboard, TouchableWithoutFeedback } from "react-native";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import {
+  Alert,
+  Keyboard,
+  ScrollView,
+  TextInput,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { launchImageLibrary } from "react-native-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 import { BottomButton } from "../../../../components/button/BottomButton";
@@ -17,7 +29,8 @@ type LoginNavigation = NavigationProp<LoginStackParamList, "RegisterScreen">;
 type pickerProps = { label: string; value: string };
 export const RegisterScreen: React.FC = () => {
   const { navigate } = useNavigation<LoginNavigation>();
-  const [code, setCode] = useState("");
+  const [isActivePhone, setIsActivePhone] = useState(false);
+  const [isActiveInfo, setIsActiveInfo] = useState(false);
   const [nickname, setNickname] = useState("");
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
@@ -28,10 +41,60 @@ export const RegisterScreen: React.FC = () => {
   const [file, setFile] = useState("");
   const [name, setName] = useState("");
   const [school, setSchool] = useState("");
+  const [focusInput, setFocusInput] = useState(-1);
+  const RefScroll = useRef<ScrollView>(null);
+  const InputRefList = [
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+  ];
+  //포커싱 : 입력후 다음으로 넘어가는 함수
+  useEffect(() => {
+    if (focusInput != -1) InputRefList[focusInput].current?.focus();
+    //닉네임
+    if (focusInput == 0)
+      RefScroll.current?.scrollTo({ x: 0, y: 310, animated: true });
+    //아이디
+    else if (focusInput == 1)
+      RefScroll.current?.scrollTo({ x: 0, y: 396, animated: true });
+    //비밀번호
+    else if (focusInput == 2)
+      RefScroll.current?.scrollTo({ x: 0, y: 478, animated: true });
+    //비밀번호 확인
+    else if (focusInput == 3)
+      RefScroll.current?.scrollTo({ x: 0, y: 560, animated: true });
+    //성별
+    else if (focusInput == 4)
+      RefScroll.current?.scrollTo({ x: 0, y: 646, animated: true });
+    //이메일(선택)
+    else if (focusInput == 5)
+      RefScroll.current?.scrollTo({ x: 0, y: 722, animated: true });
+    //주소(선택)
+    else if (focusInput == 6)
+      RefScroll.current?.scrollTo({ x: 0, y: 805, animated: true });
+    //학생증 사진
+    else if (focusInput == 7)
+      RefScroll.current?.scrollTo({ x: 0, y: 908, animated: true });
+    //이름(본명)
+    else if (focusInput == 8)
+      RefScroll.current?.scrollTo({ x: 0, y: 1160, animated: true });
+    //학교
+    else if (focusInput == 9)
+      RefScroll.current?.scrollTo({ x: 0, y: 1160, animated: true });
+  }, [focusInput]);
   const BottomButtonOnPress = (navigate: any) => {
     if (!id) Alert.alert("", "아이디가 빈 칸입니다.");
     else if (!password || !passwordCheck)
       Alert.alert("", "비밀번호를 입력해주세요.");
+    else if (password.length < 8)
+      Alert.alert("", "비밀번호는 최소 8문자 이상이여야합니다.");
     else if (password != passwordCheck)
       Alert.alert("", "비밀번호가 서로 다릅니다.");
     else if (!nickname) Alert.alert("", "닉네임이 빈 칸입니다.");
@@ -74,65 +137,133 @@ export const RegisterScreen: React.FC = () => {
     UNIV_LIST.map((univ) => result.push({ label: univ, value: univ }));
     setPickerItem(result);
   }, []);
-
+  const checkIsActiveInfo = (
+    setFunction: any,
+    t: string | number,
+    type: "id" | "password" | "passwordCheck" | "nickname" | "gender"
+  ) => {
+    setFunction;
+    // TEST CODE
+    console.log(type, t);
+    if (
+      type == "id" &&
+      !!t &&
+      password == passwordCheck &&
+      !!password &&
+      !!nickname &&
+      gender != -1
+    )
+      setIsActiveInfo(true);
+    else if (
+      type == "password" &&
+      !!id &&
+      t == passwordCheck &&
+      !!t &&
+      !!nickname &&
+      gender != -1
+    )
+      setIsActiveInfo(true);
+    else if (
+      type == "passwordCheck" &&
+      !!id &&
+      password == t &&
+      !!t &&
+      !!password &&
+      !!nickname &&
+      gender != -1
+    )
+      setIsActiveInfo(true);
+    else if (
+      type == "nickname" &&
+      !!id &&
+      password == passwordCheck &&
+      !!password &&
+      !!t &&
+      gender != -1
+    )
+      setIsActiveInfo(true);
+    else if (
+      type == "gender" &&
+      !!id &&
+      password == passwordCheck &&
+      !!password &&
+      !!nickname &&
+      t != -1
+    )
+      setIsActiveInfo(true);
+    else setIsActiveInfo(false);
+  };
   return (
     <Container>
-      <ScrollContainer>
+      <ScrollContainer ref={RefScroll}>
         <KeyboardContainer>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <ContentContainer>
-              {/* <SectionContainer>
-                <CheckboxContainer>
-                  <SimpleCheckBox value={Boolean(code)} disabled />
-                  <Content>휴대폰 인증</Content>
-                </CheckboxContainer>
-                <PhoneVerification onSend={() => {}} />
-                <CodeContainer>
-                  <Code
-                    value={code}
-                    onChangeText={setCode}
-                    maxLength={6}
-                    keyboardType="numeric"
-                  />
-                </CodeContainer>
-              </SectionContainer> */}
               <SectionContainer>
                 <CheckboxContainer>
-                  <SimpleCheckBox value={Boolean(code)} disabled />
+                  <SimpleCheckBox value={isActivePhone} disabled />
+                  <Content>휴대폰 인증</Content>
+                </CheckboxContainer>
+                <PhoneVerification
+                  setIsActivePhone={setIsActivePhone}
+                  setFocusInput={setFocusInput}
+                />
+              </SectionContainer>
+              <SectionContainer>
+                <CheckboxContainer>
+                  <SimpleCheckBox value={isActiveInfo} disabled />
                   <Content>회원 정보 입력</Content>
                 </CheckboxContainer>
                 <FormContainer>
                   <FormDescription>닉네임</FormDescription>
                   <FormInput
+                    ref={InputRefList[0]}
                     value={nickname}
-                    onChangeText={setNickname}
+                    onChangeText={(t) =>
+                      checkIsActiveInfo(setNickname(t), t, "nickname")
+                    }
                     autoCapitalize="none"
+                    returnKeyType={"next"}
+                    onEndEditing={() => setFocusInput(1)}
                   />
                 </FormContainer>
                 <FormContainer>
                   <FormDescription>아이디</FormDescription>
                   <FormInput
+                    ref={InputRefList[1]}
                     value={id}
-                    onChangeText={setId}
+                    onChangeText={(t) => checkIsActiveInfo(setId(t), t, "id")}
                     autoCapitalize="none"
+                    returnKeyType={"next"}
+                    onEndEditing={() => setFocusInput(2)}
                   />
                 </FormContainer>
                 <FormContainer>
                   <FormDescription>비밀번호</FormDescription>
                   <FormInput
+                    ref={InputRefList[2]}
                     value={password}
-                    onChangeText={setPassword}
+                    onChangeText={(t) =>
+                      checkIsActiveInfo(setPassword(t), t, "password")
+                    }
                     autoCapitalize="none"
                     textContentType="password"
+                    returnKeyType={"next"}
+                    onEndEditing={() => setFocusInput(3)}
                   />
                 </FormContainer>
                 <FormContainer>
                   <FormDescription>비밀번호 확인</FormDescription>
                   <FormInput
+                    ref={InputRefList[3]}
                     value={passwordCheck}
-                    onChangeText={setPasswordCheck}
+                    onChangeText={(t) =>
+                      checkIsActiveInfo(setPasswordCheck(t), t, "passwordCheck")
+                    }
                     autoCapitalize="none"
                     textContentType="newPassword"
+                    returnKeyType={"next"}
+                    onEndEditing={() => setFocusInput(4)}
                   />
                 </FormContainer>
                 <FormContainer>
@@ -141,7 +272,8 @@ export const RegisterScreen: React.FC = () => {
                     <SelectItem
                       active={gender === 1}
                       onPress={() => {
-                        setGender(1);
+                        checkIsActiveInfo(setGender(1), 1, "gender");
+                        setFocusInput(5);
                       }}
                     >
                       <WhiteText>남자</WhiteText>
@@ -149,7 +281,8 @@ export const RegisterScreen: React.FC = () => {
                     <SelectItem
                       active={gender === 2}
                       onPress={() => {
-                        setGender(2);
+                        checkIsActiveInfo(setGender(2), 2, "gender");
+                        setFocusInput(5);
                       }}
                     >
                       <WhiteText>여자</WhiteText>
@@ -159,35 +292,40 @@ export const RegisterScreen: React.FC = () => {
                 <FormContainer>
                   <FormDescription>이메일(선택)</FormDescription>
                   <FormInput
+                    ref={InputRefList[5]}
                     value={email}
                     onChangeText={setEmail}
                     autoCapitalize="none"
                     keyboardType="email-address"
+                    returnKeyType={"next"}
+                    onEndEditing={() => setFocusInput(6)}
                   />
                 </FormContainer>
                 <FormContainer>
                   <FormDescription>주소(선택)</FormDescription>
                   <FormInput
+                    ref={InputRefList[6]}
                     value={address}
                     onChangeText={setAddress}
                     autoCapitalize="none"
+                    returnKeyType={"next"}
+                    onEndEditing={() => setFocusInput(7)}
                   />
                 </FormContainer>
               </SectionContainer>
               <SectionContainer>
                 <CheckboxContainer>
-                  <SimpleCheckBox value={Boolean(code)} disabled />
-                  <Content>학생증 인증 {"\n"} (온라인 학생증도 가능)</Content>
+                  <Content>학생증 인증 (온라인 학생증도 가능)</Content>
                 </CheckboxContainer>
                 <SimpleButton
+                  isActive={true}
                   onPress={() => {
                     launchImageLibrary(
                       { mediaType: "photo", includeBase64: true },
                       (response) => {
-                        console.log("Response = ", response);
-
                         if (response.base64) {
                           setFile(response.base64);
+                          setFocusInput(8);
                         }
                       }
                     );
@@ -202,9 +340,12 @@ export const RegisterScreen: React.FC = () => {
                 <FormContainer>
                   <FormDescription>이름(본명)</FormDescription>
                   <FormInput
+                    ref={InputRefList[8]}
                     value={name}
                     onChangeText={setName}
                     autoCapitalize="none"
+                    returnKeyType={"next"}
+                    onEndEditing={() => setFocusInput(9)}
                   />
                 </FormContainer>
                 <FormContainer>
@@ -234,7 +375,6 @@ export const RegisterScreen: React.FC = () => {
     </Container>
   );
 };
-
 const PickerText = css`
   color: black;
 `;
@@ -243,6 +383,7 @@ const PickerViewContainer = css`
   flex: 2;
   border: 2px solid rgba(149, 149, 149, 0.09);
   border-radius: 8px;
+  margin-bottom: 80px;
 `;
 
 const PickerContainer = css`
@@ -257,7 +398,8 @@ const Container = styled.View`
   flex: 1;
 `;
 
-const ScrollContainer = styled.ScrollView`
+const ScrollContainer: any = styled.ScrollView`
+  padding: 0 20px;
   flex: 1;
 `;
 
@@ -278,19 +420,6 @@ const CheckboxContainer = styled.View`
 
 const Content = styled.Text`
   margin-left: 8px;
-`;
-
-const CodeContainer = styled.View`
-  align-items: center;
-  text-align: center;
-`;
-
-const Code = styled.TextInput`
-  width: 100px;
-  text-align: center;
-  padding: 8px;
-  border: 0px solid #646481;
-  border-bottom-width: 1px;
 `;
 
 const FormContainer = styled.View`
