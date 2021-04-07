@@ -9,10 +9,14 @@ import { CustomAlert } from "../chat-room/CustomAlert";
 type Props = {
   setIsActivePhone: Dispatch<SetStateAction<boolean>>;
   setFocusInput: Dispatch<SetStateAction<number>>;
+  setPhoneG: Dispatch<SetStateAction<string>>;
+  setPhoneCountryG: Dispatch<SetStateAction<string>>;
 };
 export const PhoneVerification: React.FC<Props> = ({
   setIsActivePhone,
   setFocusInput,
+  setPhoneG,
+  setPhoneCountryG
 }) => {
   const [sent, setSent] = useState(false);
   const [phone, setPhone] = useState("");
@@ -68,7 +72,7 @@ export const PhoneVerification: React.FC<Props> = ({
             placeholder: PickerText,
             inputAndroid: PickerText,
           }}
-          onValueChange={(value) => setPhoneCountry(value)}
+          onValueChange={(value) => { setPhoneCountry(value);setPhoneCountryG(value)}}
           items={[{ label: "+82(대한민국)", value: "82" }]}
           value={phoneCountry}
           placeholder={{ label: "+82(대한민국)", value: "82" }}
@@ -76,7 +80,7 @@ export const PhoneVerification: React.FC<Props> = ({
         <PhoneNumber
           editable={!isActive}
           value={phone}
-          onChangeText={setPhone}
+          onChangeText={(t) => { setPhone(t);setPhoneG(t)}}
           placeholder="휴대폰 번호 예)01012341234"
           placeholderTextColor="#b0b0b2"
           keyboardType="decimal-pad"

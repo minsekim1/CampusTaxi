@@ -1,11 +1,12 @@
-import styled from '@emotion/native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
-import { BottomButton } from '../../../../components/button/BottomButton';
-import { SimpleCheckBox } from '../../../../components/checkbox/SimpleCheckBox';
-import { LoginStackParamList } from '../LoginNavigation';
+import styled from "@emotion/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import React, { useState } from "react";
+import { Text } from "react-native-svg";
+import { BottomButton } from "../../../../components/button/BottomButton";
+import { SimpleCheckBox } from "../../../../components/checkbox/SimpleCheckBox";
+import { LoginStackParamList } from "../LoginNavigation";
 
-type LoginNavigation = NavigationProp<LoginStackParamList, 'AgreeScreen'>;
+type LoginNavigation = NavigationProp<LoginStackParamList, "AgreeScreen">;
 
 export const AgreeScreen: React.FC = ({}) => {
   const { navigate } = useNavigation<LoginNavigation>();
@@ -13,6 +14,9 @@ export const AgreeScreen: React.FC = ({}) => {
   const [privacy, setPrivacy] = useState(false);
   const [location, setLocation] = useState(false);
   const [marketing, setMarketing] = useState(false);
+  const [appPush, setAppPush] = useState(false);
+  const [SMS, setSMS] = useState(false);
+  const [emailMarket, setEmailMarket] = useState(false);
 
   const handleCheckAll = () => {
     if (terms && privacy && location && marketing) {
@@ -20,14 +24,35 @@ export const AgreeScreen: React.FC = ({}) => {
       setPrivacy(false);
       setLocation(false);
       setMarketing(false);
+      setAppPush(false);
+      setSMS(false);
+      setEmailMarket(false);
     } else {
       setTerms(true);
       setPrivacy(true);
       setLocation(true);
       setMarketing(true);
+      setAppPush(true);
+      setSMS(true);
+      setEmailMarket(true);
     }
   };
-
+  const handelCheckMarket = () => {
+    if (emailMarket)
+    {
+      setAppPush(false);
+      setSMS(false);
+      setEmailMarket(false);
+      setMarketing(false);
+    }
+    else {
+      setMarketing(true);
+      setAppPush(true);
+      setSMS(true);
+      setEmailMarket(true);
+    }
+    
+}
   return (
     <Container>
       <ContentContainer>
@@ -37,18 +62,21 @@ export const AgreeScreen: React.FC = ({}) => {
               value={terms && privacy && location && marketing}
               setValue={handleCheckAll}
             />
-            <Content onPress={handleCheckAll}>캠퍼스 택시의 모든 운영원칙에 동의</Content>
+            <Content onPress={handleCheckAll}>
+              캠퍼스 택시의 모든 운영원칙에 동의
+            </Content>
           </Checkbox>
         </CheckboxContainer>
-        <CheckboxContainer style={{marginLeft:20}}>
+        <CheckboxContainer style={{ marginLeft: 20 }}>
           <Checkbox>
             <SimpleCheckBox value={terms} setValue={setTerms} />
             <Content>서비스 이용약관 (필수)</Content>
           </Checkbox>
           <Description
             onPress={() => {
-              navigate('TermsScreen');
-            }}>
+              navigate("TermsScreen");
+            }}
+          >
             자세히보기
           </Description>
         </CheckboxContainer>
@@ -59,8 +87,9 @@ export const AgreeScreen: React.FC = ({}) => {
           </Checkbox>
           <Description
             onPress={() => {
-              navigate('PrivacyScreen');
-            }}>
+              navigate("PrivacyScreen");
+            }}
+          >
             자세히보기
           </Description>
         </CheckboxContainer>
@@ -71,40 +100,58 @@ export const AgreeScreen: React.FC = ({}) => {
           </Checkbox>
           <Description
             onPress={() => {
-              navigate('GeoScreen');
-            }}>
+              navigate("GeoScreen");
+            }}
+          >
             자세히보기
           </Description>
         </CheckboxContainer>
         <CheckboxContainer style={{ marginLeft: 20 }}>
-          <Checkbox >
-            <SimpleCheckBox   value={marketing} setValue={setMarketing} />
+          <Checkbox>
+            <SimpleCheckBox value={marketing} setValue={handelCheckMarket} />
             <Content>마케팅 정보 수신 (선택)</Content>
           </Checkbox>
+
           <Description
             onPress={() => {
-              navigate('MarketingScreen');
-            }}>
+              navigate("MarketingScreen");
+            }}
+          >
             자세히보기
           </Description>
         </CheckboxContainer>
+        <PushContainer>
+          <Checkbox>
+            <SimpleCheckBox value={appPush} setValue={setAppPush} />
+            <Content>앱 Push 알림</Content>
+            <SimpleCheckBox value={SMS} setValue={setSMS} />
+            <Content>SMS</Content>
+            <SimpleCheckBox value={emailMarket} setValue={setEmailMarket} />
+            <Content>이메일</Content>
+          </Checkbox>
+        </PushContainer>
         <Note>※ 선택 약관에 동의하지 않아도 회원가입이 가능합니다.</Note>
       </ContentContainer>
       <BottomButton
         disable={!(terms && privacy && location)}
         onPress={() => {
           if (terms && privacy && location) {
-            navigate('RegisterScreen');
+            navigate("RegisterScreen",{appPush:appPush,SMS:SMS,emailMarket:emailMarket});
           }
-        }}>
+        }}
+      >
         다 음
       </BottomButton>
     </Container>
   );
 };
-
+const PushContainer = styled.View`
+  align-items: flex-end;
+  padding: 0 20px 15px 0;
+`;
 const Container = styled.SafeAreaView`
   flex: 1;
+  background-color:white;
 `;
 
 const ContentContainer = styled.View`
@@ -131,7 +178,7 @@ const Checkbox = styled.View`
 const Description = styled.Text`
   color: #8b8b8b;
   border-bottom-width: 1px;
-  border-bottom-color: #BFBFBF;
+  border-bottom-color: #bfbfbf;
   padding: 3px 0px 3px 0px;
 `;
 

@@ -27,10 +27,13 @@ import RNPickerSelect from "react-native-picker-select";
 
 type LoginNavigation = NavigationProp<LoginStackParamList, "RegisterScreen">;
 type pickerProps = { label: string; value: string };
-export const RegisterScreen: React.FC = () => {
+export const RegisterScreen: React.FC = (props) => {
+  const { SMS, appPush, emailMarket } = props.route.params;
   const { navigate } = useNavigation<LoginNavigation>();
   const [isActivePhone, setIsActivePhone] = useState(false);
   const [isActiveInfo, setIsActiveInfo] = useState(false);
+  const [phone, setPhoneG] = useState("");
+  const [phoneCountry, setPhoneCountryG] = useState("");
   const [nickname, setNickname] = useState("");
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
@@ -103,30 +106,59 @@ export const RegisterScreen: React.FC = () => {
     else if (!file) Alert.alert("", "학생증을 반드시 첨부해주세요.");
     else if (school == "0") Alert.alert("", "학교를 선택해주세요.");
     else {
-      // axios({
-      //   method: "post",
-      //   url: `${API_URL}/api/v1/users/`,
-      //   data: {
-      //     username: id,
-      //     password: password,
-      //     nickname: nickname,
-      //     name: name,
-      //     email: email,
-      //     address: address,
-      //     gender: gender,
-      //     is_cert: true,
-      //     campus_name: school,
-      //     is_staff: false,
-      //     is_active: true,
-      //     phone:"",
-      //   },
-      //   headers: {
-      //     'accept': 'application/json',
-      //     'Content-Type': 'application/json'
-      //   }
-      // }).then((d) => console.log(d)).catch(e=>console.log(e));
+      // 회원가입
+      // curl -X POST "https://api.campustaxi.net/api/v1/accounts/signup/" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{  \"username\": \"string\",  \"password\": \"string\",  \"password1\": \"string\",  \"nickname\": \"string\",  \"gender\": \"NONE\",  \"phone\": \"string\",  \"name\": \"string\",  \"email\": \"user@example.com\",  \"address\": \"string\",  \"campus_name\": \"string\",  \"is_cert\": true,  \"is_accepted\": true,  \"is_geo_service\": true,  \"is_privacy\": true,  \"is_pushed_app\": true,  \"is_pushed_sms\": true,  \"is_pushed_email\": true}"
 
-      navigate("RegisterSuccessScreen");
+      // TEST CODE 추후 국가코드 phoneCountry도 전송할 것.
+      let genderToText = gender == 1 ? "MALE" : "FEMALE";
+      console.log("USER", {
+        username: id,
+        password: password,
+        password1: passwordCheck,
+        nickname: nickname,
+        gender: genderToText,
+        phone: phone,
+        name: name,
+        email: email,
+        address: address,
+        campus_name: school,
+        is_cert: true,
+        is_accepted: true,
+        is_pushed_app: appPush,
+        is_pushed_sms: SMS,
+        is_pushed_email: emailMarket,
+      });
+      axios
+        .post(
+          "https://api.campustaxi.net/api/v1/accounts/signup/",
+          {
+            username: id,
+            password: password,
+            password1: passwordCheck,
+            nickname: nickname,
+            gender: genderToText,
+            phone: phone,
+            name: name,
+            email: email,
+            address: address,
+            campus_name: school,
+            is_cert: true,
+            is_accepted: true,
+            is_pushed_app: appPush,
+            is_pushed_sms: SMS,
+            is_pushed_email: emailMarket,
+          },
+          {
+            headers: {
+              "accept": "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((d) => console.log(JSON.stringify(d)))
+      .catch(e=>Alert.alert("",JSON.stringify(e.response)))
+
+      // navigate("RegisterSuccessScreen");
     }
   };
   const [pickerItem, setPickerItem] = useState<pickerProps[]>([]);
@@ -143,8 +175,6 @@ export const RegisterScreen: React.FC = () => {
     type: "id" | "password" | "passwordCheck" | "nickname" | "gender"
   ) => {
     setFunction;
-    // TEST CODE
-    console.log(type, t);
     if (
       type == "id" &&
       !!t &&
@@ -207,6 +237,8 @@ export const RegisterScreen: React.FC = () => {
                 <PhoneVerification
                   setIsActivePhone={setIsActivePhone}
                   setFocusInput={setFocusInput}
+                  setPhoneG={setPhoneG}
+                  setPhoneCountryG={setPhoneCountryG}
                 />
               </SectionContainer>
               <SectionContainer>
@@ -224,7 +256,7 @@ export const RegisterScreen: React.FC = () => {
                     }
                     autoCapitalize="none"
                     returnKeyType={"next"}
-                    onEndEditing={() => setFocusInput(1)}
+                    onSubmitEditing={() => setFocusInput(1)}
                   />
                 </FormContainer>
                 <FormContainer>
@@ -235,7 +267,7 @@ export const RegisterScreen: React.FC = () => {
                     onChangeText={(t) => checkIsActiveInfo(setId(t), t, "id")}
                     autoCapitalize="none"
                     returnKeyType={"next"}
-                    onEndEditing={() => setFocusInput(2)}
+                    onSubmitEditing={() => setFocusInput(2)}
                   />
                 </FormContainer>
                 <FormContainer>
@@ -249,7 +281,7 @@ export const RegisterScreen: React.FC = () => {
                     autoCapitalize="none"
                     textContentType="password"
                     returnKeyType={"next"}
-                    onEndEditing={() => setFocusInput(3)}
+                    onSubmitEditing={() => setFocusInput(3)}
                   />
                 </FormContainer>
                 <FormContainer>
@@ -263,7 +295,7 @@ export const RegisterScreen: React.FC = () => {
                     autoCapitalize="none"
                     textContentType="newPassword"
                     returnKeyType={"next"}
-                    onEndEditing={() => setFocusInput(4)}
+                    onSubmitEditing={() => setFocusInput(4)}
                   />
                 </FormContainer>
                 <FormContainer>
@@ -298,7 +330,7 @@ export const RegisterScreen: React.FC = () => {
                     autoCapitalize="none"
                     keyboardType="email-address"
                     returnKeyType={"next"}
-                    onEndEditing={() => setFocusInput(6)}
+                    onSubmitEditing={() => setFocusInput(6)}
                   />
                 </FormContainer>
                 <FormContainer>
@@ -309,7 +341,7 @@ export const RegisterScreen: React.FC = () => {
                     onChangeText={setAddress}
                     autoCapitalize="none"
                     returnKeyType={"next"}
-                    onEndEditing={() => setFocusInput(7)}
+                    onSubmitEditing={() => setFocusInput(7)}
                   />
                 </FormContainer>
               </SectionContainer>
@@ -345,7 +377,7 @@ export const RegisterScreen: React.FC = () => {
                     onChangeText={setName}
                     autoCapitalize="none"
                     returnKeyType={"next"}
-                    onEndEditing={() => setFocusInput(9)}
+                    onSubmitEditing={() => setFocusInput(9)}
                   />
                 </FormContainer>
                 <FormContainer>
@@ -384,6 +416,7 @@ const PickerViewContainer = css`
   border: 2px solid rgba(149, 149, 149, 0.09);
   border-radius: 8px;
   margin-bottom: 80px;
+  margin-top: 12px;
 `;
 
 const PickerContainer = css`
@@ -396,6 +429,7 @@ const KeyboardContainer = styled(KeyboardAwareScrollView)`
 
 const Container = styled.View`
   flex: 1;
+  background-color: white;
 `;
 
 const ScrollContainer: any = styled.ScrollView`
