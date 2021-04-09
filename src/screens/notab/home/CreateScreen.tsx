@@ -21,7 +21,7 @@ import { API_URL, GOOGLE_MAPAPI_URL } from "../../../constant";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HomeNoTabNavigationParamList } from "./HomeNoTabNavigation";
-import { univPos } from "../../../contexts/univPos";
+import { univInfo } from "../../../contexts/univPos";
 
 export type CreateScreenNavigationProp = StackNavigationProp<
   HomeNoTabNavigationParamList,
@@ -168,11 +168,13 @@ type schoolPosProps = {
   name: string;
   latitude: number;
   longitude: number;
-}
+};
 export const CreateScreen: React.FC<Props> = ({}) => {
   const params = useAuthContext().MoveNav.props;
   const [datas, setDatas] = React.useState<ChatRoom[]>([]);
-  const schoolPos:schoolPosProps = univPos.find(d => d.name === params.school?.name)
+  const schoolPos: schoolPosProps = univInfo.find(
+    (d) => d.name === params.school?.name
+  );
   const [route, SetRoute] = useState<myCoordProps[]>([
     { latitude: 0, longitude: 0 },
   ]);
@@ -181,7 +183,7 @@ export const CreateScreen: React.FC<Props> = ({}) => {
     longitude: 0,
     zoom: 16,
   });
-  console.log(schoolPos)
+  console.log(schoolPos);
   const start_init: myCoordProps = {
     latitude: params.type == 1 ? schoolPos?.latitude : 0, // TEST CODE 삼육대학교 분수대앞 위치 추후 사용자학교로 변경필요
     longitude: params.type == 1 ? schoolPos?.longitude : 0,
@@ -213,9 +215,9 @@ export const CreateScreen: React.FC<Props> = ({}) => {
   useEffect(() => {
     if (isFocused) {
       if (Platform.OS === "android") {
-        StatusBar.setBackgroundColor("white");
+        StatusBar.setBackgroundColor("transparent");
       }
-      StatusBar.setBarStyle("light-content");
+      StatusBar.setBarStyle("dark-content");
     }
   }, [isFocused]);
   useEffect(() => {
@@ -304,8 +306,13 @@ export const CreateScreen: React.FC<Props> = ({}) => {
         const addressName = !!r
           ? r.data.results[0].formatted_address
           : "(" + myCoord.latitude + "," + myCoord.longitude + ")";
-        let CreateRoom =
-          !!datas[0] && datas[0].id == -1 ? datas[0] : ChatRoomDummy;
+        let CreateRoom;
+        try {
+          CreateRoom =
+            !!datas[0] && datas[0].id == -1 ? datas[0] : ChatRoomDummy;
+        } catch (e) {
+          CreateRoom = ChatRoomDummy;
+        }
         //id가 -1인 경우는 CreateRoom만 유일하다.
         //value가 undefined값은 방만들때 다시 정해줘야한다.boarding_dtm gender personnel_limit
         CreateRoom =
@@ -318,8 +325,12 @@ export const CreateScreen: React.FC<Props> = ({}) => {
                 start_lon: myCoord.longitude,
                 end_lat: selectRoom.end_lat,
                 end_lon: selectRoom.end_lon,
-                end_address_detail: params.type != 2 ? end_init.name :selectRoom.end_address_detail,
-                end_address: params.type != 2 ? end_init.name :selectRoom.end_address,
+                end_address_detail:
+                  params.type != 2
+                    ? end_init.name
+                    : selectRoom.end_address_detail,
+                end_address:
+                  params.type != 2 ? end_init.name : selectRoom.end_address,
               }
             : {
                 ...CreateRoom,
@@ -329,8 +340,12 @@ export const CreateScreen: React.FC<Props> = ({}) => {
                 start_lon: selectRoom.start_lon,
                 end_lat: myCoord.latitude,
                 end_lon: myCoord.longitude,
-                start_address_detail: params.type != 2 ? start_init.name :selectRoom.start_address_detail,
-                start_address: params.type != 2 ? start_init.name :selectRoom.start_address,
+                start_address_detail:
+                  params.type != 2
+                    ? start_init.name
+                    : selectRoom.start_address_detail,
+                start_address:
+                  params.type != 2 ? start_init.name : selectRoom.start_address,
               };
         onPress({ ...myCoord, name: addressName });
         //기존 -1 방삭제하고 넣기
@@ -344,7 +359,13 @@ export const CreateScreen: React.FC<Props> = ({}) => {
           setSelectRoom(CreateRoom);
         }
       } else if (searchData) {
-        let CreateRoom = datas[0].id == -1 ? datas[0] : ChatRoomDummy;
+        let CreateRoom;
+        try {
+          CreateRoom =
+            !!datas[0] && datas[0].id == -1 ? datas[0] : ChatRoomDummy;
+        } catch (e) {
+          CreateRoom = ChatRoomDummy;
+        }
         //id가 -1인 경우는 CreateRoom만 유일하다.
         //value가 undefined값은 방만들때 다시 정해줘야한다.boarding_dtm gender personnel_limit
         CreateRoom =

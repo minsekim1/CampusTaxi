@@ -172,6 +172,7 @@ export const PremiumScreen: React.FC = () => {
     }
   };
   const getAvailablePurchases = async (): Promise<void> => {
+    console.log("asd")
     try {
       console.info(
         "Get available purchases (non-consumable or unconsumed consumable)"
@@ -212,7 +213,7 @@ export const PremiumScreen: React.FC = () => {
         <ScrollView style={{ alignSelf: "stretch" }}>
           <View style={{ height: 50 }} />
           <NativeButton
-            onPress={() => getAvailablePurchases}
+            onPress={getAvailablePurchases}
             activeOpacity={0.5}
             style={styles.btn}
             textStyle={styles.txt}
@@ -229,7 +230,7 @@ export const PremiumScreen: React.FC = () => {
           </Text>
 
           <NativeButton
-            onPress={() => getItems}
+            onPress={getItems}
             activeOpacity={0.5}
             style={styles.btn}
             textStyle={styles.txt}
@@ -257,7 +258,6 @@ export const PremiumScreen: React.FC = () => {
                   {JSON.stringify(product)}
                 </Text>
                 <NativeButton
-                  // onPress={(): void => this.requestPurchase(product.productId)}
                   onPress={() => requestSubscription(product.productId)}
                   activeOpacity={0.5}
                   style={styles.btn}

@@ -240,8 +240,7 @@ export const RegisterScreen: React.FC = (props) => {
             <ContentContainer>
               <SectionContainer>
                 <CheckboxContainer>
-                  <SimpleCheckBox value={isActivePhone} disabled />
-                  <Content>휴대폰 인증</Content>
+                  <Content>휴대폰 인증{isActivePhone ? ' 💌' : null}</Content>
                 </CheckboxContainer>
                 <PhoneVerification
                   setIsActivePhone={setIsActivePhone}
@@ -252,8 +251,7 @@ export const RegisterScreen: React.FC = (props) => {
               </SectionContainer>
               <SectionContainer>
                 <CheckboxContainer>
-                  <SimpleCheckBox value={isActiveInfo} disabled />
-                  <Content>회원 정보 입력</Content>
+                  <Content>회원 정보 입력{isActiveInfo ? ' 🧸' : null}</Content>
                 </CheckboxContainer>
                 <FormContainer>
                   <FormDescription>닉네임</FormDescription>
@@ -317,7 +315,7 @@ export const RegisterScreen: React.FC = (props) => {
                         setFocusInput(5);
                       }}
                     >
-                      <WhiteText>남자</WhiteText>
+                      <WhiteText>{gender === 1 ? '🎉 남자 🕺' : '남자'}</WhiteText>
                     </SelectItem>
                     <SelectItem
                       active={gender === 2}
@@ -326,7 +324,7 @@ export const RegisterScreen: React.FC = (props) => {
                         setFocusInput(5);
                       }}
                     >
-                      <WhiteText>여자</WhiteText>
+                      <WhiteText>{gender === 2 ? '💃 여자 🎊' : '여자'}</WhiteText>
                     </SelectItem>
                   </FormSelect>
                 </FormContainer>

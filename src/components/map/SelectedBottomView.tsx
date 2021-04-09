@@ -91,11 +91,11 @@ export const SelectedBottomView: React.FC<Props> = ({ data, SetRoute }) => {
           <Col>
             <TitleText>예상시간</TitleText>
             <Row>
-              <BlueText>
+                <BlueText>
                 {time / 3600 >= 1.0
                   ? (time / 3600).toFixed(0) +
                     "시간 " +
-                    (time / 60).toFixed(0) +
+                    (time % 60).toFixed(0) +
                     "분 "
                   : (time / 60).toFixed(0) + "분 "}
               </BlueText>
