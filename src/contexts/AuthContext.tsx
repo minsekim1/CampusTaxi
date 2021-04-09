@@ -1,8 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { User, UserDummy } from "../components/chat-room/ChatRoomList";
 import { API_URL } from "../constant";
+import { User, UserDummy } from "./User";
 
 export type AuthState = {
   token: string | undefined;
@@ -32,6 +32,7 @@ export type MoveNavProps = {
     | "HomeNoTabNavigation"
     | "MessageNoTabNavigation"
     | "SettingNoTabNavigation"
+    | "NotificationNoTabNavigation"
     | "HomeTabScreen"
     | "MessageTabScreen"
     | "PremiumTabScreen"
@@ -64,19 +65,6 @@ export const AuthProvider: React.FC = ({ children }) => {
       AsyncStorage.setItem("@campus_taxi_auth", refreshData);
       setRefresh(refreshData);
       setToken(accessData);
-
-      // minsekim Code
-      axios
-        .get<User>(`${API_URL}/accounts/me/`, {
-          headers: {
-            Authorization: `Bearer ${accessData}`,
-            accept: "application/json",
-          },
-        })
-        .then((response) => {
-          setUser(response.data);
-        });
-      /////////////////////
     },
     [setRefresh, setToken]
   );
@@ -94,44 +82,45 @@ export const AuthProvider: React.FC = ({ children }) => {
     }
   }, [setRefresh]);
 
-  const refreshToken = useCallback(() => {
-    axios
-      .post<{ access: string }>(`${API_URL}/accounts/token/refresh/`, {
-        refresh,
-      })
-      .then((response) => {
-        if (response.data.access) {
-          setToken(response.data.access);
-        }
-        setIsLoading(false);
-      });
-  }, [refresh]);
+  // TEST CODE 왜 있는 걸까...?
+  // const refreshToken = useCallback(() => {
+  //   axios
+  //     .post<{ access: string }>(`${API_URL}/accounts/token/refresh/`, {
+  //       refresh,
+  //     })
+  //     .then((response) => {
+  //       if (response.data.access) {
+  //         setToken(response.data.access);
+  //       }
+  //       setIsLoading(false);
+  //     });
+  // }, [refresh]);ㅉ
 
   useEffect(() => {
     getRefreshToken();
   }, [getRefreshToken]);
 
-  useEffect(() => {
-    if (refresh) {
-      refreshToken();
-    }
-  }, [refresh, refreshToken]);
+  // useEffect(() => {
+  //   if (refresh) {
+  //     refreshToken();
+  //   }
+  // }, [refresh, refreshToken]);
 
-  useEffect(() => {
-    if (refresh && token) {
-      //test code
-      // const interval = setInterval(() => {
-      axios
-        .post(`${API_URL}/accounts/token/verify/`, { token })
-        .then((response) => {
-          if (response.data.code) {
-            refreshToken();
-          }
-        });
-      // }, 600000);
-      // return () => clearInterval(interval);
-    }
-  }, [token, refresh, refreshToken]);
+  // useEffect(() => {
+  //   if (refresh && token) {
+  //     //test code
+  //     // const interval = setInterval(() => {
+  //     axios
+  //       .post(`${API_URL}/accounts/token/verify/`, { token })
+  //       .then((response) => {
+  //         if (response.data.code) {
+  //           refreshToken();
+  //         }
+  //       });
+  //     // }, 600000);
+  //     // return () => clearInterval(interval);
+  //   }
+  // }, [token, refresh, refreshToken]);
 
   return (
     <AuthContext.Provider

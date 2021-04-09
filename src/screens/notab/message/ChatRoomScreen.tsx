@@ -61,7 +61,7 @@ export const ChatRoomScreen: React.FC = () => {
     if (Platform.OS === "android") {
       StatusBar.setBackgroundColor(GenderColor(room?.gender));
     }
-    StatusBar.setBarStyle("dark-content");
+    StatusBar.setBarStyle("light-content");
   }, []);
 
   useEffect(() => {

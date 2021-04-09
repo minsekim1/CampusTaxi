@@ -38,7 +38,7 @@ export const MapView: React.FC<Props> = ({
 }) => {
   return (
     <NaverMapView
-      minZoomLevel={10}
+      minZoomLevel={6}
       maxZoomLevel={17} //최대 확대
       ref={MapRef}
       style={{ width: "100%", height: windowHeight - 243 }}
@@ -76,27 +76,6 @@ export const MapView: React.FC<Props> = ({
           <EmptyView key={"e" + i} />
         )
       )}
-      {/* {route.map((pos: myCoordProps, i) =>
-        route.length > i + 1 ? (
-          <Path
-            key={"r" + i}
-            coordinates={[
-              { latitude: pos.latitude, longitude: pos.longitude },
-              {
-                latitude: route[i + 1].latitude,
-                longitude: route[i + 1].longitude,
-              },
-            ]}
-            width={10}
-          />
-        ) : (
-          <EmptyView key={"r" + i} />
-        )
-      )} */}
-      {/* {route.map((pos: myCoordProps, i) =>
-        console.log(route.length, i + 1)
-          
-      )} */}
     </NaverMapView>
   );
 };

@@ -75,7 +75,7 @@ export const HomeLocationTextField: React.FC<Props> = ({
 
 const Box = styled.View<{ flex?: number; centered?: boolean; border?: string; }>`
   height: 33px;
-  width: 243px;
+  width: 75%;
   margin-left: 10px;
   margin-right: 10px;
   border: ${({ border }) => border ?? `1px solid #B7B7BB`};

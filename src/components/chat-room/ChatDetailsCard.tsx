@@ -1,12 +1,13 @@
 import styled from "@emotion/native";
 import React from "react";
 import { Alert, Text } from "react-native";
+import { User } from "../../contexts/User";
 import { GenderColor } from "../color/GenderColor";
 import { Crown } from "../icon/chat/Crown";
 import { KickSGV } from "../icon/chat/KickSVG";
 import { ManRect } from "../icon/chat/ManRect";
 import { WomanRect } from "../icon/chat/WomanRect";
-import { ChatRoom, User } from "./ChatRoomList";
+import { ChatRoom } from "./ChatRoomList";
 import { CustomAlert } from "./CustomAlert";
 
 type Props = {
@@ -14,7 +15,7 @@ type Props = {
   room: ChatRoom;
 };
 export const ChatDatilsCard: React.FC<Props> = ({ user,room }) => {
-  const GenderRect = () => (user.gender == 1) ? <ManRect /> : <WomanRect />
+  const GenderRect = () => (user.gender == "MALE") ? <ManRect /> : <WomanRect />
   
   return (
     <Container>

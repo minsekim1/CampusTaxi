@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { ChatDatilsCard } from "../../../components/chat-room/ChatDetailsCard";
 import {
   ChatRoom,
-  User,
   UserDummyList,
 } from "../../../components/chat-room/ChatRoomList";
 import { EmailSend } from "../../../components/chat-room/EmailSend";
@@ -12,6 +11,7 @@ import { ETAView } from "../../../components/chat-room/ETAView";
 import { GenderColor } from "../../../components/color/GenderColor";
 import { OutRoomSVG } from "../../../components/icon/chat/OutRoomSVG";
 import { useAuthContext } from "../../../contexts/AuthContext";
+import { User } from "../../../contexts/User";
 import { MessageNoTabNavigationProp } from "./ChatRoomScreen";
 
 export const ChatRoomScreenDetails: React.FC = () => {

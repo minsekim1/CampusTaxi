@@ -30,6 +30,7 @@ export const HomeNoTabNavigation = () => {
             <HeaderBackButton
               {...props}
               onPress={() => setNavName({ istab: "Tab", tab: "HomeTabScreen" })}
+              tintColor="black"
             />
           ),
         })}

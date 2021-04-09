@@ -57,8 +57,8 @@ export const MessageScreen: React.FC = () => {
   }
   //#endregion 뒤로가기 버튼 제어 & 더블클릭시 앱 종료
   useEffect(() => {
-    console.log('token', token);
-    console.log('User', User.uuid);
+    // console.log('token', token);
+    // console.log('User', User.uuid);
     axios
       .get<APIData>(`${API_URL}/api/v1/rooms/`, {
         headers: {
@@ -67,7 +67,7 @@ export const MessageScreen: React.FC = () => {
         },
       })
       .then((response) => {
-        console.log('response',response)
+        // console.log('response',response)
         const data: any = response.data.results.map((d) => {
           const day = (d.boarding_dtm) ? Week[new Date(d.boarding_dtm).getDay()] : '';
           const date = (d.boarding_dtm) ? new Date(d.boarding_dtm) : '';

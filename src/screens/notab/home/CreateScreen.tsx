@@ -21,6 +21,7 @@ import { API_URL, GOOGLE_MAPAPI_URL } from "../../../constant";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HomeNoTabNavigationParamList } from "./HomeNoTabNavigation";
+import { univInfo } from "../../../contexts/univPos";
 
 export type CreateScreenNavigationProp = StackNavigationProp<
   HomeNoTabNavigationParamList,
@@ -163,9 +164,17 @@ export const list = [
   },
 ];
 
+type schoolPosProps = {
+  name: string;
+  latitude: number;
+  longitude: number;
+};
 export const CreateScreen: React.FC<Props> = ({}) => {
   const params = useAuthContext().MoveNav.props;
   const [datas, setDatas] = React.useState<ChatRoom[]>([]);
+  const schoolPos: schoolPosProps = univInfo.find(
+    (d) => d.name === params.school?.name
+  );
   const [route, SetRoute] = useState<myCoordProps[]>([
     { latitude: 0, longitude: 0 },
   ]);
@@ -174,16 +183,17 @@ export const CreateScreen: React.FC<Props> = ({}) => {
     longitude: 0,
     zoom: 16,
   });
+  console.log(schoolPos);
   const start_init: myCoordProps = {
-    latitude: params.type == 1 ? 37.64353854399491 : 0, // TEST CODE 삼육대학교 분수대앞 위치 추후 사용자학교로 변경필요
-    longitude: params.type == 1 ? 127.10579154192136 : 0,
-    name: params.type != 1 ? "" : params.value,
+    latitude: params.type == 1 ? schoolPos?.latitude : 0, // TEST CODE 삼육대학교 분수대앞 위치 추후 사용자학교로 변경필요
+    longitude: params.type == 1 ? schoolPos?.longitude : 0,
+    name: params.type != 1 ? "" : schoolPos?.name,
     zoom: 0,
   };
   const end_init: myCoordProps = {
-    latitude: params.type == 0 ? 37.64353854399491 : 0, // TEST CODE 삼육대학교 분수대앞 위치 추후 사용자학교로 변경필요
-    longitude: params.type == 0 ? 127.10579154192136 : 0,
-    name: params.type != 0 ? "" : params.value,
+    latitude: params.type == 0 ? schoolPos?.latitude : 0, // TEST CODE 삼육대학교 분수대앞 위치 추후 사용자학교로 변경필요
+    longitude: params.type == 0 ? schoolPos?.longitude : 0,
+    name: params.type != 0 ? "" : schoolPos?.name,
     zoom: 0,
   };
   const selectRoom_init: ChatRoom = {
@@ -205,13 +215,12 @@ export const CreateScreen: React.FC<Props> = ({}) => {
   useEffect(() => {
     if (isFocused) {
       if (Platform.OS === "android") {
-        StatusBar.setBackgroundColor("white");
+        StatusBar.setBackgroundColor("transparent");
       }
-      StatusBar.setBarStyle("light-content");
+      StatusBar.setBarStyle("dark-content");
     }
   }, [isFocused]);
   useEffect(() => {
-    console.log("rrrrrrr");
     axios
       .get<{ results: ChatRoom[] }>(
         `${API_URL}/api/v1/rooms/?category=${params.type + 1}&page=1`,
@@ -223,7 +232,7 @@ export const CreateScreen: React.FC<Props> = ({}) => {
         }
       )
       .then((response) => {
-        if(response.data.results[0] != undefined)
+        if (response.data.results[0] != undefined)
           if (typeof response.data.results[0].end_lat == "string")
             for (let j = 0; j < response.data.results.length; j++) {
               response.data.results[j].end_lat = Number(
@@ -249,8 +258,8 @@ export const CreateScreen: React.FC<Props> = ({}) => {
   const onCancelPress = () => {
     setSelectRoom(selectRoom_init);
     setDatas(datas.filter((d) => d.id != -1));
-    setStart(params.value != 1 ? start_init : start);
-    setEnd(params.value != 0 ? end_init : end);
+    setStart(params.type != 1 ? start_init : start);
+    setEnd(params.type != 0 ? end_init : end);
   };
   const onPressPosSetButton = async (
     type: "start" | "end" | "searchStart" | "searchEnd",
@@ -297,8 +306,13 @@ export const CreateScreen: React.FC<Props> = ({}) => {
         const addressName = !!r
           ? r.data.results[0].formatted_address
           : "(" + myCoord.latitude + "," + myCoord.longitude + ")";
-        let CreateRoom =
-          !!datas[0] && datas[0].id == -1 ? datas[0] : ChatRoomDummy;
+        let CreateRoom;
+        try {
+          CreateRoom =
+            !!datas[0] && datas[0].id == -1 ? datas[0] : ChatRoomDummy;
+        } catch (e) {
+          CreateRoom = ChatRoomDummy;
+        }
         //id가 -1인 경우는 CreateRoom만 유일하다.
         //value가 undefined값은 방만들때 다시 정해줘야한다.boarding_dtm gender personnel_limit
         CreateRoom =
@@ -311,6 +325,12 @@ export const CreateScreen: React.FC<Props> = ({}) => {
                 start_lon: myCoord.longitude,
                 end_lat: selectRoom.end_lat,
                 end_lon: selectRoom.end_lon,
+                end_address_detail:
+                  params.type != 2
+                    ? end_init.name
+                    : selectRoom.end_address_detail,
+                end_address:
+                  params.type != 2 ? end_init.name : selectRoom.end_address,
               }
             : {
                 ...CreateRoom,
@@ -320,13 +340,32 @@ export const CreateScreen: React.FC<Props> = ({}) => {
                 start_lon: selectRoom.start_lon,
                 end_lat: myCoord.latitude,
                 end_lon: myCoord.longitude,
+                start_address_detail:
+                  params.type != 2
+                    ? start_init.name
+                    : selectRoom.start_address_detail,
+                start_address:
+                  params.type != 2 ? start_init.name : selectRoom.start_address,
               };
         onPress({ ...myCoord, name: addressName });
         //기존 -1 방삭제하고 넣기
         setDatas([CreateRoom, ...datas.filter((d) => d.id != -1)]);
-        if (checkvalue) setSelectRoom(CreateRoom);
+        if (CreateRoom.start_lat && CreateRoom.end_lat)
+          MapMove([
+            { latitude: CreateRoom.start_lat, longitude: CreateRoom.start_lon },
+            { latitude: CreateRoom.end_lat, longitude: CreateRoom.end_lon },
+          ]);
+        if (checkvalue) {
+          setSelectRoom(CreateRoom);
+        }
       } else if (searchData) {
-        let CreateRoom = datas[0].id == -1 ? datas[0] : ChatRoomDummy;
+        let CreateRoom;
+        try {
+          CreateRoom =
+            !!datas[0] && datas[0].id == -1 ? datas[0] : ChatRoomDummy;
+        } catch (e) {
+          CreateRoom = ChatRoomDummy;
+        }
         //id가 -1인 경우는 CreateRoom만 유일하다.
         //value가 undefined값은 방만들때 다시 정해줘야한다.boarding_dtm gender personnel_limit
         CreateRoom =
@@ -361,7 +400,9 @@ export const CreateScreen: React.FC<Props> = ({}) => {
             { latitude: CreateRoom.start_lat, longitude: CreateRoom.start_lon },
             { latitude: CreateRoom.end_lat, longitude: CreateRoom.end_lon },
           ]);
-        if (checkvalue) setSelectRoom(CreateRoom);
+        if (checkvalue) {
+          setSelectRoom(CreateRoom);
+        }
       }
     } else Alert.alert("잘못된 위치: 대한민국 밖의 위도 경도입니다.");
   };
