@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Platform, SafeAreaView, StatusBar } from "react-native";
+import { Alert, Platform, SafeAreaView, StatusBar } from "react-native";
 import { BlankButton } from "../../../components/button/BlankButton";
 import { KakaoIcon } from "../../../components/icon/KakaoIcon";
 import { BlankBackground } from "../../../components/layout/BlankBackground";
@@ -13,35 +13,46 @@ import { API_URL } from "../../../constant";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import { LoginStackParamList } from "./LoginNavigation";
 
-import image from '../../../../images/login/bg.png';
+import image from "../../../../images/login/bg.png";
 import styled from "@emotion/native";
 import { GenderColor } from "../../../components/color/GenderColor";
-type LoginScreenNavigation = StackNavigationProp<LoginStackParamList, 'LoginScreen'>;
+type LoginScreenNavigation = StackNavigationProp<
+  LoginStackParamList,
+  "LoginScreen"
+>;
 
 export const LoginScreen: React.FC = ({}) => {
   const { navigate } = useNavigation<LoginScreenNavigation>();
   const [isSimpleLogin, setIsSimpleLogin] = useState(false);
-  const [id, setId] = useState('admin');
-  const [password, setPassword] = useState('12');
+  const [id, setId] = useState("admin");
+  const [password, setPassword] = useState("12");
   const { setLoggedIn } = useAuthContext();
-  
+
   useEffect(() => {
     if (Platform.OS === "android") {
-      StatusBar.setBackgroundColor('rgba(0,0,0,0)');
+      StatusBar.setBackgroundColor("rgba(0,0,0,0)");
     }
     StatusBar.setBarStyle("dark-content");
   }, []);
   const login = async () => {
-    const { data } = await axios.post<{ access: string; refresh: string }>(
-      `${API_URL}/accounts/token/`,
-      {
-        username: id,
-        password: password,
-      },
-    );
-    if (data.access && data.refresh) {
-      setLoggedIn(data.access, data.refresh);
-    }
+    axios
+      .post(
+        "https://api.campustaxi.net/api/v1/accounts/token/",
+        {
+          username: id,
+          password: password,
+        },
+        {
+          headers: {
+            "accept": "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+    ).then(d => {
+      if (d.data.access && d.data.refresh)
+        setLoggedIn(d.data.access, d.data.refresh);
+    })
+      .catch((e) => Alert.alert("로그인 오류", "아이디 또는 비밀번호가 일치하지 않습니다.\n"+e.response.data.detail));
   };
 
   const handleAppleLogin = async () => {
@@ -51,7 +62,7 @@ export const LoginScreen: React.FC = ({}) => {
     });
 
     const credentialState = await appleAuth.getCredentialStateForUser(
-      appleAuthRequestResponse.user,
+      appleAuthRequestResponse.user
     );
 
     // use credentialState response to ensure the user is authenticated
@@ -84,20 +95,28 @@ export const LoginScreen: React.FC = ({}) => {
                 />
                 <InputBorder />
                 <FindContainer>
-                  <FindText onPress={() => navigate('FindIdScreen')}>아이디 찾기</FindText>
+                  <FindText onPress={() => navigate("FindIdScreen")}>
+                    아이디 찾기
+                  </FindText>
                   <InputVerticalBorder />
-                  <FindText onPress={() => navigate('FindPasswordScreen')}>비밀번호 찾기</FindText>
+                  <FindText onPress={() => navigate("FindPasswordScreen")}>
+                    비밀번호 찾기
+                  </FindText>
                 </FindContainer>
                 <ButtonContainer>
                   <BlankButton
                     borderRadius={36}
                     onPress={() => login()}
-                    backgroundColor="rgb(237, 237, 237)">
+                    backgroundColor="rgb(237, 237, 237)"
+                  >
                     로그인하기
                   </BlankButton>
                 </ButtonContainer>
                 <ButtonContainer>
-                  <BlankButton onPress={() => navigate('AgreeScreen')} color="white">
+                  <BlankButton
+                    onPress={() => navigate("AgreeScreen")}
+                    color="white"
+                  >
                     회원가입
                   </BlankButton>
                 </ButtonContainer>
@@ -121,17 +140,19 @@ export const LoginScreen: React.FC = ({}) => {
                     KakaoLogins.login([KAKAO_AUTH_TYPES.Talk]);
                   }}
                   backgroundColor="#fdec00"
-                  icon={<KakaoIcon />}>
+                  icon={<KakaoIcon />}
+                >
                   카카오 로그인
                 </BlankButton>
               </ButtonContainer>
-              {Platform.OS == 'ios' && (
+              {Platform.OS == "ios" && (
                 <ButtonContainer>
                   <BlankButton
                     borderRadius={36}
                     onPress={handleAppleLogin}
                     backgroundColor="white"
-                    icon={<KakaoIcon />}>
+                    icon={<KakaoIcon />}
+                  >
                     애플 로그인
                   </BlankButton>
                 </ButtonContainer>

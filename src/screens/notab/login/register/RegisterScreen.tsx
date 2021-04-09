@@ -110,24 +110,8 @@ export const RegisterScreen: React.FC = (props) => {
       // curl -X POST "https://api.campustaxi.net/api/v1/accounts/signup/" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{  \"username\": \"string\",  \"password\": \"string\",  \"password1\": \"string\",  \"nickname\": \"string\",  \"gender\": \"NONE\",  \"phone\": \"string\",  \"name\": \"string\",  \"email\": \"user@example.com\",  \"address\": \"string\",  \"campus_name\": \"string\",  \"is_cert\": true,  \"is_accepted\": true,  \"is_geo_service\": true,  \"is_privacy\": true,  \"is_pushed_app\": true,  \"is_pushed_sms\": true,  \"is_pushed_email\": true}"
 
       // TEST CODE 추후 국가코드 phoneCountry도 전송할 것.
+      /// 추후 학생증 추가할것. 추후 닉네임 중복확인할것. 핸드폰 중복확인할것. 이메일 중복 확인할것.
       let genderToText = gender == 1 ? "MALE" : "FEMALE";
-      console.log("USER", {
-        username: id,
-        password: password,
-        password1: passwordCheck,
-        nickname: nickname,
-        gender: genderToText,
-        phone: phone,
-        name: name,
-        email: email,
-        address: address,
-        campus_name: school,
-        is_cert: true,
-        is_accepted: true,
-        is_pushed_app: appPush,
-        is_pushed_sms: SMS,
-        is_pushed_email: emailMarket,
-      });
       axios
         .post(
           "https://api.campustaxi.net/api/v1/accounts/signup/",
@@ -144,21 +128,46 @@ export const RegisterScreen: React.FC = (props) => {
             campus_name: school,
             is_cert: true,
             is_accepted: true,
+            is_geo_service: true,
+            is_privacy: true,
             is_pushed_app: appPush,
             is_pushed_sms: SMS,
             is_pushed_email: emailMarket,
           },
           {
             headers: {
-              "accept": "application/json",
+              accept: "application/json",
               "Content-Type": "application/json",
             },
           }
         )
-        .then((d) => console.log(JSON.stringify(d)))
-      .catch(e=>Alert.alert("",JSON.stringify(e.response)))
-
-      // navigate("RegisterSuccessScreen");
+        .catch((e) => {
+          if (
+            JSON.stringify(e.response.data).substring(0, 20) !=
+            '"\\n<!doctype html>\\n'
+          )
+            Alert.alert("", JSON.stringify(e.response.data));
+          else {
+            // 회원가입 완료
+            Alert.alert(
+              "",
+                "아이디:"+  id+ "\n"+
+                "비밀번호:"+  password+ "\n"+
+                "닉네임:"+  nickname+ "\n"+
+                "성별:"+  genderToText+ "\n"+
+                "휴대폰번호:"+  phone+ "\n"+
+                "실명:"+  name+ "\n"+
+                "이메일:"+  email+ "\n"+
+                "주소:"+  address+ "\n"+
+                "학교:"+  school+ "\n"+
+                "앱 푸쉬 알림:"+  appPush+ "\n"+
+                "문자 푸쉬 알림:"+  SMS+ "\n"+
+                "이메일 푸쉬 알림:"+  emailMarket+ "\n"+ "\n"
+               + "해당 정보로 회원가입이 완료되었습니다."
+            );
+            navigate("RegisterSuccessScreen",{id:id,password:password});
+          }
+        });
     }
   };
   const [pickerItem, setPickerItem] = useState<pickerProps[]>([]);

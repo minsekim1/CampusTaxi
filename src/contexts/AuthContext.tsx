@@ -1,8 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { User, UserDummy } from "../components/chat-room/ChatRoomList";
 import { API_URL } from "../constant";
+import { User, UserDummy } from "./User";
 
 export type AuthState = {
   token: string | undefined;
@@ -64,19 +64,6 @@ export const AuthProvider: React.FC = ({ children }) => {
       AsyncStorage.setItem("@campus_taxi_auth", refreshData);
       setRefresh(refreshData);
       setToken(accessData);
-
-      // minsekim Code
-      axios
-        .get<User>(`${API_URL}/accounts/me/`, {
-          headers: {
-            Authorization: `Bearer ${accessData}`,
-            accept: "application/json",
-          },
-        })
-        .then((response) => {
-          setUser(response.data);
-        });
-      /////////////////////
     },
     [setRefresh, setToken]
   );

@@ -38,7 +38,7 @@ export const AgreeScreen: React.FC = ({}) => {
     }
   };
   const handelCheckMarket = () => {
-    if (emailMarket)
+    if (marketing)
     {
       setAppPush(false);
       setSMS(false);
@@ -70,7 +70,7 @@ export const AgreeScreen: React.FC = ({}) => {
         <CheckboxContainer style={{ marginLeft: 20 }}>
           <Checkbox>
             <SimpleCheckBox value={terms} setValue={setTerms} />
-            <Content>서비스 이용약관 (필수)</Content>
+            <Content onPress={()=>setTerms(!terms)}>서비스 이용약관 (필수)</Content>
           </Checkbox>
           <Description
             onPress={() => {
@@ -83,7 +83,7 @@ export const AgreeScreen: React.FC = ({}) => {
         <CheckboxContainer style={{ marginLeft: 20 }}>
           <Checkbox>
             <SimpleCheckBox value={privacy} setValue={setPrivacy} />
-            <Content>개인정보 처리방침 (필수)</Content>
+            <Content onPress={()=>setPrivacy(!privacy)}>개인정보 처리방침 (필수)</Content>
           </Checkbox>
           <Description
             onPress={() => {
@@ -96,7 +96,7 @@ export const AgreeScreen: React.FC = ({}) => {
         <CheckboxContainer style={{ marginLeft: 20 }}>
           <Checkbox>
             <SimpleCheckBox value={location} setValue={setLocation} />
-            <Content>위치정보 이용약관 (필수)</Content>
+            <Content onPress={()=>setLocation(!location)}>위치정보 이용약관 (필수)</Content>
           </Checkbox>
           <Description
             onPress={() => {
@@ -109,7 +109,7 @@ export const AgreeScreen: React.FC = ({}) => {
         <CheckboxContainer style={{ marginLeft: 20 }}>
           <Checkbox>
             <SimpleCheckBox value={marketing} setValue={handelCheckMarket} />
-            <Content>마케팅 정보 수신 (선택)</Content>
+            <Content onPress={()=>handelCheckMarket()}>마케팅 정보 수신 (선택)</Content>
           </Checkbox>
 
           <Description
@@ -123,11 +123,11 @@ export const AgreeScreen: React.FC = ({}) => {
         <PushContainer>
           <Checkbox>
             <SimpleCheckBox value={appPush} setValue={setAppPush} />
-            <Content>앱 Push 알림</Content>
+            <Content onPress={()=>setAppPush(!appPush)}>앱 Push 알림</Content>
             <SimpleCheckBox value={SMS} setValue={setSMS} />
-            <Content>SMS</Content>
+            <Content onPress={()=>setSMS(!SMS)}>SMS</Content>
             <SimpleCheckBox value={emailMarket} setValue={setEmailMarket} />
-            <Content>이메일</Content>
+            <Content onPress={()=>setEmailMarket(!emailMarket)}>이메일</Content>
           </Checkbox>
         </PushContainer>
         <Note>※ 선택 약관에 동의하지 않아도 회원가입이 가능합니다.</Note>

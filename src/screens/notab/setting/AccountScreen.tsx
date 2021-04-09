@@ -1,8 +1,10 @@
 import styled from "@emotion/native";
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { Text } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useAuthContext } from "../../../contexts/AuthContext";
+import { User } from "../../../contexts/User";
 
 const Section = styled.View`
   padding: 14px 43px;
@@ -25,54 +27,73 @@ const Row = styled.View`
   justify-content: flex-start;
 `;
 const Col = styled.View`
-	width: 50%;
-`
+  width: 50%;
+`;
 export const AccountScreen: React.FC = () => {
-	const User = useAuthContext().User
+  //#region 유저 데이터 요청
+  // AuthContext 시용하지 않고 직접 데이터 요청함
+  const [user, setUser] = useState<User>();
+  const { token } = useAuthContext();
+  useEffect(() => { 
+    axios.get("https://api.campustaxi.net/api/v1/accounts/me/", {
+      headers: {
+        Authorization: "Bearer " + token,
+        accept: "application/json",
+      },
+    }).then(d => setUser(d.data));
+  },[])
+  //#endregion 유저 데이터 요청
   return (
     <Container>
       <Scroll>
         <Section>
           <Title>이름</Title>
-          <Input editable={false} value={User.username}></Input>
+          <Input editable={false} value={user?.name}></Input>
         </Section>
         <Section>
           <Title>학교</Title>
-          <Input editable={false} value={User.campus_name}></Input>
+          <Input editable={false} value={user?.campus_name}></Input>
         </Section>
         <Section>
           <Title>닉네임</Title>
-          <Input editable={false} value={User.nickname}></Input>
+          <Input editable={false} value={user?.nickname}></Input>
         </Section>
         <Section>
           <Row>
             <Col>
               <Title>성별</Title>
-              <Input editable={false} value={User.gender == 0 ? "여자" : "남자"}></Input>
+              <Input
+                editable={false}
+                value={user?.gender == "MALE" ? "남자" : "여자"}
+              ></Input>
             </Col>
-            <Col>
+            {/* // TEST CODE 추후에 가입일 확인할 수 있도록 바꿔야함. 현재 확인 불가*/}
+            {/* <Col>
               <Title>가입일</Title>
-              <Input editable={false} value={User.date_joined}></Input>
-            </Col>
+              <Input editable={false} value={user?.date_joined}></Input>
+            </Col> */}
           </Row>
         </Section>
         <Section>
-          <Row>
-            <Col>
               <Title>아이디</Title>
-              <Input editable={false} value={User.name}></Input>
-            </Col>
-            <Col>
+              <Input editable={false} value={user?.username}></Input>
+        <Section>
+        </Section>
               <Title>이메일</Title>
-              <Input editable={false} value={User.email}></Input>
-            </Col>
-          </Row>
+              <Input editable={false} value={user?.email}></Input>
         </Section>
         <Section>
           <Row>
             <Col>
               <Title>학생증인증</Title>
-              <Input editable={false} value={User.is_cert ? "미인증" : "인증 완료("+User.cert_dtm+")"}></Input>
+              <Input
+                editable={false}
+                value={
+                  // TEST CODE 추후에 학생증 검수 여부 확인할 수 있도록 바꿔야함. 현재 get 요청시 안줌.
+                  "검수 진행중"
+                  // user?.is_accepted ? "미인증" : "인증 완료"
+                }
+              ></Input>
             </Col>
             {/* <Col>
               <Title>프리미엄 여부</Title>

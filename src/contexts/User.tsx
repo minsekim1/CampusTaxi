@@ -1,7 +1,7 @@
 export type User = {
   uuid: string;
   username: string;
-  gender: number;
+  gender: string;
   nickname: string;
   phone: string;
   name: string;
@@ -19,7 +19,7 @@ export type User = {
 export const UserDummy = {
   uuid: 'string',
   username: 'string',
-  gender: -1,
+  gender: "NONE",
   nickname: 'string',
   phone: 'string',
   name: 'string',
@@ -66,8 +66,8 @@ export const UserDummy = {
 // minLength: 1
 // 필수입니다. 150 자 이하. 문자, 숫자 및 @ /. / + /-/ _ 만.
 
-// gender	integer
-// title: 성별
+// gender	string
+// title: [ NONE, FEMALE, MALE ]
 // 사용자 성별입니다.
 
 // Enum:
