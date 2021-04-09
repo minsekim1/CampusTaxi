@@ -5,28 +5,22 @@ import {
 import React from "react";
 import { BackIconWhite } from "../../../components/icon/chat/BackIconWhite";
 import { useAuthContext } from "../../../contexts/AuthContext";
-import { ChatRoomScreen } from "./ChatRoomScreen";
-import { ChatRoomScreenDetails } from "./ChatRoomScreenDetails";
+import { NotificationScreen } from "./NotificationScreen";
 
-export type MessageNoTabNavigationParamList = {
-  ChatRoomScreen: undefined;
-  ChatRoomScreenDetails: undefined;
+export type NotificationNoTabNavigationParamList = {
+  NotificationScreen: undefined;
 };
-const MessageStack = createStackNavigator<MessageNoTabNavigationParamList>();
+const MessageStack = createStackNavigator<NotificationNoTabNavigationParamList>();
 export const NotificationNoTabNavigation = (p:any) => {
   const props = useAuthContext().MoveNav;
   return (
     <MessageStack.Navigator
-      initialRouteName={props?.screen ? props.screen : "ChatRoomScreen"}
+      initialRouteName={props?.screen ? props.screen : "NotificationScreen"}
     >
+
       <MessageStack.Screen
-        name="ChatRoomScreen"
-        component={ChatRoomScreen}
-        options={{ headerShown: false }}
-      />
-      <MessageStack.Screen
-        name="ChatRoomScreenDetails"
-        component={ChatRoomScreenDetails}
+        name="NotificationScreen"
+        component={NotificationScreen}
         options={{
           title: "방 정보",
           headerTitleAlign: "center",

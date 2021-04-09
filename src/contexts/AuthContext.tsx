@@ -32,6 +32,7 @@ export type MoveNavProps = {
     | "HomeNoTabNavigation"
     | "MessageNoTabNavigation"
     | "SettingNoTabNavigation"
+    | "NotificationNoTabNavigation"
     | "HomeTabScreen"
     | "MessageTabScreen"
     | "PremiumTabScreen"

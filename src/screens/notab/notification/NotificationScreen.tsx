@@ -3,11 +3,11 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { ScrollView } from 'react-native-gesture-handler';
-import { NotificationMessageIcon } from '../../components/icon/notification/NotificationMessageIcon';
-import { NotificationStackParamList } from './NotificationNavigation';
+import { API_URL } from '../../../constant';
+import { NotificationNoTabNavigationParamList } from './NotificationNoTabNavigation';
 
 type NotificationScreenNavigationProp = StackNavigationProp<
-  NotificationStackParamList,
+  NotificationNoTabNavigationParamList,
   'NotificationScreen'
 >;
 
@@ -39,7 +39,6 @@ export const NotificationScreen: React.FC<Props> = () => {
             <Card>
               <CardHeaderContainer>
                 <LeftContainer>
-                  <NotificationMessageIcon />
                   <Title>{data.title}</Title>
                 </LeftContainer>
                 <Time>{data.time}</Time>
