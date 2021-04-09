@@ -3,6 +3,8 @@ import { useNavigation } from '@react-navigation/native';
 import React, { ReactNode } from 'react';
 import { CreateScreenNavigationProp, myCoordProps } from '../../screens/notab/home/CreateScreen';
 import { ChatRoom } from '../chat-room/ChatRoomList';
+import { useAuthContext } from '../../contexts/AuthContext';
+
 
 type Props = {
 	selectRoom?: ChatRoom;
@@ -14,11 +16,29 @@ export const MapBottomButton: React.FC<Props> = ({ selectRoom, end, start }) => 
 	const disabled = !(!!start.latitude && !!end.latitude);
 	const isCreateRoom = selectRoom?.id == -1 || selectRoom?.id == -2;
 	const { navigate } = useNavigation<CreateScreenNavigationProp>();
+	const { setNavName } = useAuthContext();
+	console.log(selectRoom);
 	return (
 		<BottomButton
 			underlayColor={'#83ABED'}
 			disabled={disabled}
-			onPress={() => navigate("CreateScreenDetails", selectRoom)}
+			onPress={() => {isCreateRoom? navigate("CreateScreenDetails", selectRoom) : 
+			setNavName({
+					istab: 'NoTab',
+					tab: 'NotificationNoTabNavigation',
+					screen: 'ChatRoomScreen', //CreateScreenDetails하면 기본 초기화 화면 바꿔서 바로 그쪽으로 이동. 안의 props값은 useAuthContext로 해당 페이지에서 또 읽음
+					props: {
+					  data: selectRoom,
+					}
+				  })}}
+			// onPress={() => setNavName({
+			// 	istab: 'NoTab',
+			// 	tab: 'NotificationNoTabNavigation',
+			// 	screen: 'ChatRoomScreen', //CreateScreenDetails하면 기본 초기화 화면 바꿔서 바로 그쪽으로 이동. 안의 props값은 useAuthContext로 해당 페이지에서 또 읽음
+			// 	props: {
+			// 	  data: selectRoom,
+			// 	}
+			//   })}
 			style={{ backgroundColor: disabled ? "rgb(112,112,112)" : "rgb(118, 162, 235)"}}>
 			<Title>
 				{disabled ? "채팅방 목록에서 방을 선택 또는 직접 출발지를 정해주세요." : isCreateRoom ? "새 방 만들기" :"방 입장하기"}

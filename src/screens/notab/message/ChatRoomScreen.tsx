@@ -57,6 +57,8 @@ export const ChatRoomScreen: React.FC = () => {
   const ChatScrollRef = useRef<FlatList>(null);
   const { setNavName } = useAuthContext();
 
+  console.log("intoChatRoomScreen")
+
   useEffect(() => {
     if (Platform.OS === "android") {
       StatusBar.setBackgroundColor(GenderColor(room?.gender));
