@@ -183,7 +183,6 @@ export const CreateScreen: React.FC<Props> = ({}) => {
     longitude: 0,
     zoom: 16,
   });
-  console.log(schoolPos);
   const start_init: myCoordProps = {
     latitude: params.type == 1 ? schoolPos?.latitude : 0, // TEST CODE 삼육대학교 분수대앞 위치 추후 사용자학교로 변경필요
     longitude: params.type == 1 ? schoolPos?.longitude : 0,
@@ -211,6 +210,8 @@ export const CreateScreen: React.FC<Props> = ({}) => {
   //#region 채팅방 타입별 초기 데이터 가져오기
   const { token } = useAuthContext();
   const [refetch, setRefetch] = useState<Date>();
+  
+  //#region 상태바 제어
   const isFocused = useIsFocused();
   useEffect(() => {
     if (isFocused) {
@@ -220,6 +221,8 @@ export const CreateScreen: React.FC<Props> = ({}) => {
       StatusBar.setBarStyle("dark-content");
     }
   }, [isFocused]);
+  //#endregion
+
   useEffect(() => {
     axios
       .get<{ results: ChatRoom[] }>(

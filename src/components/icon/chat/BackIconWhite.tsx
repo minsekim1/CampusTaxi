@@ -1,7 +1,7 @@
 import React from "react";
 import Svg, { Path, Circle, G, Defs, Text, Ellipse } from 'react-native-svg';
 
-export function BackIconWhite() {
+export function BackIconWhite({ color }: {color?:string}) {
 	return (
 		<Svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -11,7 +11,7 @@ export function BackIconWhite() {
 		>
 			<G
 				fill="none"
-				stroke="#fff"
+				stroke={color? color:"#fff"}
 				strokeWidth="2"
 				data-name="Return Button"
 				transform="translate(1.414 .707)"

@@ -97,15 +97,17 @@ export const HomeScreen: React.FC<Props> = () => {
   return (
     <BlankBackground color="#76A2EB">
       <Container>
-        <AlarmBell onPress={() =>
-                    setNavName({
-                      istab: "NoTab",
-                      tab: "NotificationNoTabNavigation",
-                      props: {
-                        screen: "NotificationScreen",
-                      },
-                    })
-                  }>
+        <AlarmBell
+          onPress={() =>
+            setNavName({
+              istab: "NoTab",
+              tab: "NotificationNoTabNavigation",
+              props: {
+                screen: "NotificationScreen",
+              },
+            })
+          }
+        >
           <AlarmBellIcon />
         </AlarmBell>
         <LogoContainer>

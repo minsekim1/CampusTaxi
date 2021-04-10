@@ -25,6 +25,9 @@ import axios from "axios";
 import { API_URL, GOOGLE_MAPAPI_URL } from "../../../constant";
 import { User } from "../../../contexts/User";
 import { ETAView } from "../../../components/chat-room/ETAView";
+import { StackActions, TabActions, useNavigation } from "@react-navigation/native";
+import { MessageNoTabNavigationProp } from "../message/ChatRoomScreen";
+import { NoTabNavigation } from "../NoTabNavigation";
 
 type HomeScreenNavigationProp = StackNavigationProp<
   HomeStackParamList,
@@ -39,6 +42,7 @@ type Props = {
 };
 
 export const CreateScreenDetails: React.FC<Props> = (props: any) => {
+  //#region 
   const selectRoom: ChatRoom = props.route.params;
   
 	const { setNavName } = useAuthContext();
@@ -106,7 +110,7 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
   const showTimepicker = () => {
     showMode("time");
   };
-
+//#endregion
   //#region 유저 데이터 요청
   // AuthContext 시용하지 않고 직접 데이터 요청함
   const [user, setUser] = useState<User>();
@@ -123,6 +127,7 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
   //#endregion 유저 데이터 요청
   const Create = () => {
     const room = {
+      id:1, //TEST CODE 백엔드 변경후 방에서 직접 가져오도록하고 삭제해야함 , 현재 id 값을 받아올 수 없음.
       start_address_code: "00000",
       start_address: selectRoom.start_address,
       start_address_detail: selectRoom.start_address_detail,
@@ -140,7 +145,12 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
       owner: 1,
       //   owner TEST CODE 백엔드 변경후 바꿔야함 , 현재 uuid 값을 받아올 수 없음.
     };
-    console.log(room);
+    console.log('room',room);
+    setNavName({ istab: "Tab", tab: "MessageTabScreen",props:selectRoom })
+    //   props: {
+    //     data: selectRoom,
+    // }
+    // })
     axios
       .post(`${API_URL}/api/v1/rooms/`, room, {
         headers: {
@@ -151,14 +161,6 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
       .then((r) => console.log(r))
       .catch((e) => console.log(e.response.data));
 
-    setNavName({
-    	istab: 'NoTab',
-    	tab: 'NotificationNoTabNavigation',
-    	screen: 'ChatRoomScreen', //CreateScreenDetails하면 기본 초기화 화면 바꿔서 바로 그쪽으로 이동. 안의 props값은 useAuthContext로 해당 페이지에서 또 읽음
-    	props: {
-    	  data: selectRoom,
-    }
-    })
   };
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>

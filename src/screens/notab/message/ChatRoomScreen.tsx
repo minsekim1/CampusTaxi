@@ -57,8 +57,6 @@ export const ChatRoomScreen: React.FC = () => {
   const ChatScrollRef = useRef<FlatList>(null);
   const { setNavName } = useAuthContext();
 
-  console.log("intoChatRoomScreen")
-
   useEffect(() => {
     if (Platform.OS === "android") {
       StatusBar.setBackgroundColor(GenderColor(room?.gender));
@@ -85,8 +83,6 @@ export const ChatRoomScreen: React.FC = () => {
               new Date(b.created_at)
             )
           );
-          // console.log(data);
-          // setDatas(data);
         });
     }
   }, [room.id, token, refetch]);
@@ -97,7 +93,7 @@ export const ChatRoomScreen: React.FC = () => {
         ChatScrollRef.current?.scrollToEnd({ animated: true });
       }, 500);
     }
-  }, []); //scrollView, messages
+  }, []);
 
   const sendMessage = (text: string) => {
     if (token) {
@@ -236,6 +232,8 @@ export const ChatRoomScreen: React.FC = () => {
       });
     } else showToast("다음이 없습니다.");
   };
+
+  //#region 뒤로가기 제어
   const LeftBtnOnPress = () =>
     setNavName({ istab: "Tab", tab: "MessageTabScreen" });
   const ContentContainerStyle = {
@@ -243,6 +241,8 @@ export const ChatRoomScreen: React.FC = () => {
     marginTop: 20,
     paddingBottom: 20,
   };
+  //#endregion
+
   const CancelBtnOnPress = () => {
     setSearch(false);
     setSearchResult(undefined);
@@ -251,6 +251,7 @@ export const ChatRoomScreen: React.FC = () => {
     setMessage("");
     sendMessage(e.nativeEvent.text);
   };
+  
   return (
     <BlankBackground color={GenderColor(room?.gender)}>
       <KeyboardContainer
