@@ -14,9 +14,9 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "982644B5B647690B2E4F5B3F54EB5717"
-               BuildableName = "libFlipperKit.a"
-               BlueprintName = "FlipperKit"
+               BlueprintIdentifier = "D177B476252EBB587C97A05B1A506F1B"
+               BuildableName = "libreact-native-mail.a"
+               BlueprintName = "react-native-mail"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

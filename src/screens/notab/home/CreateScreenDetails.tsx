@@ -40,6 +40,8 @@ type Props = {
 
 export const CreateScreenDetails: React.FC<Props> = (props: any) => {
   const selectRoom: ChatRoom = props.route.params;
+  
+	const { setNavName } = useAuthContext();
 
   const [date, setDate] = useState(new Date());
   const [timeonly, setTimeonly] = useState(
@@ -148,6 +150,15 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
       })
       .then((r) => console.log(r))
       .catch((e) => console.log(e.response.data));
+
+    setNavName({
+    	istab: 'NoTab',
+    	tab: 'NotificationNoTabNavigation',
+    	screen: 'ChatRoomScreen', //CreateScreenDetails하면 기본 초기화 화면 바꿔서 바로 그쪽으로 이동. 안의 props값은 useAuthContext로 해당 페이지에서 또 읽음
+    	props: {
+    	  data: selectRoom,
+    }
+    })
   };
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>

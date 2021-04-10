@@ -12,6 +12,7 @@ export type NotificationNoTabNavigationParamList = {
 };
 const MessageStack = createStackNavigator<NotificationNoTabNavigationParamList>();
 export const NotificationNoTabNavigation = (p:any) => {
+  console.log("here!");
   const props = useAuthContext().MoveNav;
   return (
     <MessageStack.Navigator

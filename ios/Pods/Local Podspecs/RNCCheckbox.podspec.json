@@ -3,7 +3,10 @@
   "version": "0.5.7",
   "summary": "React Native Checkbox native modules for Android , iOS and Windows",
   "license": "MIT",
-  "authors": "Nicholas Lee <nicholaslee119@gmail.com>",
+  "authors": {
+    "name": "Nicholas Lee",
+    "email": "nicholaslee119@gmail.com"
+  },
   "homepage": "https://github.com/react-native-community/react-native-checkbox#readme",
   "description": "React Native Checkbox native modules for Android , iOS and Windows",
   "platforms": {
