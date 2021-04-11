@@ -1,5 +1,16 @@
 import { Dimensions } from "react-native";
-
+import fb from "firebase/app"
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAUiJslfRwp0zPIOpu1I-4Xnls7xW-aKnM",
+  authDomain: "campustaxi-b0e6c.firebaseapp.com",
+  databaseURL: "https://campustaxi-b0e6c.firebaseio.com",
+  projectId: "campustaxi-b0e6c",
+  storageBucket: "campustaxi-b0e6c.appspot.com",
+  messagingSenderId: "1054249413075",
+  appId: "1:1054249413075:web:21f8f04c9933fe4cde2726",
+  measurementId: "G-LH1WFX6SNM"
+};
+export const MYfirebase = !fb.apps.length ? fb.initializeApp(FIREBASE_CONFIG) : fb.app()
 export const API_URL = "https://api.campustaxi.net";
 export const GOOGLE_MAPAPI_URL = "AIzaSyBVIfNVsdQk6J56bD4CwZSPDyYlxF_XBe0";
 export const windowWidth = Dimensions.get("window").width;
