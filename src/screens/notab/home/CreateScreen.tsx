@@ -22,6 +22,7 @@ import { useAuthContext } from "../../../contexts/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HomeNoTabNavigationParamList } from "./HomeNoTabNavigation";
 import { univInfo } from "../../../contexts/univPos";
+import { CustomAxios } from "../../../components/axios/axios";
 
 export type CreateScreenNavigationProp = StackNavigationProp<
   HomeNoTabNavigationParamList,
@@ -39,130 +40,6 @@ type Props = {
   route: any;
 };
 
-//distance 계산 필요
-export const list = [
-  {
-    // TEST CODE
-    id: 1,
-    unreadMessage: "string",
-    distance: 1.0,
-    start_address_code: "string",
-    start_address: "태릉입구역 2번출구",
-    start_address_detail: "태릉입구역 2번출구",
-    start_lat: 0,
-    start_lon: 0,
-    end_address: "삼육대학교",
-    end_address_detail: "삼육대학교 분수대 앞",
-    end_lat: 37.64353854399491,
-    end_lon: 127.10579154192136,
-    boarding_dtm: "string",
-    personnel_limit: 4,
-    gender: 0,
-    owner: 1,
-    category: "string",
-    current: "string",
-  },
-  {
-    id: 2,
-    unreadMessage: "string",
-    distance: 1.1,
-    start_address_code: "01849",
-    start_address: "태릉입구역 7번출구",
-    start_address_detail: "태릉입구역 7번출구",
-    start_lat: 37.61770651126973,
-    start_lon: 127.07611602070332,
-    end_address: "삼육대학교",
-    end_address_detail: "삼육대학교 분수대 앞",
-    end_lat: 37.64353854399491,
-    end_lon: 127.10579154192136,
-    boarding_dtm: "string",
-    personnel_limit: 4,
-    gender: 1,
-    owner: 2,
-    category: "string",
-    current: "string",
-  },
-  {
-    id: 3,
-    unreadMessage: "string",
-    distance: 2.1,
-    start_address_code: "01849",
-    start_address: "태릉입구역 7번출구",
-    start_address_detail: "태릉입구역 7번출구",
-    start_lat: 37.61770651126973,
-    start_lon: 127.07611602070332,
-    end_address: "삼육대학교",
-    end_address_detail: "삼육대학교 분수대 앞",
-    end_lat: 37.64353854399491,
-    end_lon: 127.10579154192136,
-    boarding_dtm: "string",
-    personnel_limit: 4,
-    gender: 2,
-    owner: 1,
-    category: "string",
-    current: "string",
-  },
-  {
-    id: 4,
-    unreadMessage: "string",
-    distance: 2.4,
-    start_address_code: "string",
-    start_address: "태릉입구역 7번출구",
-    start_address_detail: "태릉입구역 7번출구",
-    start_lat: 37.617753979295095,
-    start_lon: 127.07629280500707,
-    end_address: "삼육대학교",
-    end_address_detail: "삼육대학교 분수대 앞",
-    end_lat: 37.64353854399491,
-    end_lon: 127.10579154192136,
-    boarding_dtm: "string",
-    personnel_limit: 4,
-    gender: 0,
-    owner: 0,
-    category: "string",
-    current: "string",
-  },
-  {
-    id: 5,
-    unreadMessage: "string",
-    distance: 5.1,
-    start_address_code: "string",
-    start_address: "공릉역 2번출구",
-    start_address_detail: "공릉역 2번출구",
-    start_lat: 37.625317280381715,
-    start_lon: 127.07327644534814,
-    end_address: "삼육대학교",
-    end_address_detail: "삼육대학교 분수대 앞",
-    end_lat: 37.64353854399491,
-    end_lon: 127.10579154192136,
-    boarding_dtm: "string",
-    personnel_limit: 3,
-    gender: 1,
-    owner: 5,
-    category: "string",
-    current: "3",
-  },
-  {
-    id: 6,
-    unreadMessage: "string",
-    distance: 6.1,
-    start_address_code: "string",
-    start_address: "태릉입구역 2번출구",
-    start_address_detail: "태릉입구역 2번출구",
-    start_lat: 37.618404661690704,
-    start_lon: 127.07521073018373,
-    end_address: "삼육대학교",
-    end_address_detail: "삼육대학교 분수대 앞",
-    end_lat: 37.64353854399491,
-    end_lon: 127.10579154192136,
-    boarding_dtm: "string",
-    personnel_limit: 4,
-    gender: 0,
-    owner: 1,
-    category: "string",
-    current: "string",
-  },
-];
 
 type schoolPosProps = {
   name: string;
@@ -208,7 +85,6 @@ export const CreateScreen: React.FC<Props> = ({}) => {
   const [end, setEnd] = React.useState<myCoordProps>(end_init);
   const MapRef = React.useRef<NaverMapView>(null);
   //#region 채팅방 타입별 초기 데이터 가져오기
-  const { token } = useAuthContext();
   const [refetch, setRefetch] = useState<Date>();
   
   //#region 상태바 제어
@@ -223,37 +99,39 @@ export const CreateScreen: React.FC<Props> = ({}) => {
   }, [isFocused]);
   //#endregion
 
+  const { token, resetToken, refresh } = useAuthContext();
   useEffect(() => {
-    axios
-      .get<{ results: ChatRoom[] }>(
-        `${API_URL}/api/v1/rooms/?category=${params.type + 1}&page=1`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            accept: "application/json",
-          },
-        }
-      )
-      .then((response) => {
-        if (response.data.results[0] != undefined)
-          if (typeof response.data.results[0].end_lat == "string")
-            for (let j = 0; j < response.data.results.length; j++) {
-              response.data.results[j].end_lat = Number(
-                response.data.results[j].end_lat
-              );
-              response.data.results[j].end_lon = Number(
-                response.data.results[j].end_lon
-              );
-              response.data.results[j].start_lat = Number(
-                response.data.results[j].start_lat
-              );
-              response.data.results[j].start_lon = Number(
-                response.data.results[j].start_lon
-              );
-            }
-        setDatas(response.data.results);
-      });
+    //#region 카테고리별 방 가져오기
+    CustomAxios(
+      "GET",
+      `${API_URL}/v1/rooms/?category=${params.type + 1}`,
+      resetToken,
+      refresh,
+      token,
+      undefined, //"Room Category API",
+      undefined,
+      (d) => {
+        let rooms: ChatRoom[] = d.results;
+        console.log('rooms',rooms);
+        if (typeof rooms[0].end_lat == "string")
+          for (let j = 0; j < rooms.length; j++) {
+            rooms[j].end_lat = Number(
+              rooms[j].end_lat
+            );
+            rooms[j].end_lon = Number(
+              rooms[j].end_lon
+            );
+            rooms[j].start_lat = Number(
+              rooms[j].start_lat
+            );
+            rooms[j].start_lon = Number(
+              rooms[j].start_lon
+            );
+          }
+          setDatas(rooms);
+      })
   }, [token, refetch]);
+    //#endregion 카테고리별 방 가져오기
 
   // roomType : 0 1 2 순서대로 등교 하교 기타
   // value 정해진 출발이나 도착지
@@ -333,7 +211,8 @@ export const CreateScreen: React.FC<Props> = ({}) => {
                     ? end_init.name
                     : selectRoom.end_address_detail,
                 end_address:
-                  params.type != 2 ? end_init.name : selectRoom.end_address,
+                params.type != 2 ? end_init.name : selectRoom.end_address,
+                category: params.type
               }
             : {
                 ...CreateRoom,
@@ -348,7 +227,8 @@ export const CreateScreen: React.FC<Props> = ({}) => {
                     ? start_init.name
                     : selectRoom.start_address_detail,
                 start_address:
-                  params.type != 2 ? start_init.name : selectRoom.start_address,
+              params.type != 2 ? start_init.name : selectRoom.start_address,
+                category: params.type
               };
         onPress({ ...myCoord, name: addressName });
         //기존 -1 방삭제하고 넣기
@@ -383,6 +263,7 @@ export const CreateScreen: React.FC<Props> = ({}) => {
                 end_address_detail: end.name,
                 end_lat: end.latitude,
                 end_lon: end.longitude,
+                category: params.type
               }
             : {
                 ...CreateRoom,
@@ -394,6 +275,7 @@ export const CreateScreen: React.FC<Props> = ({}) => {
                 end_address_detail: searchData.name,
                 end_lat: searchData.latitude,
                 end_lon: searchData.longitude,
+                category: params.type
               };
         onPress({ ...searchData, name: searchData.name });
         //기존 -1 방삭제하고 넣기

@@ -3,20 +3,21 @@ import axios, { AxiosResponse } from "axios";
 import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Alert, TextInput } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
+import { API_URL } from "../../constant";
 import { SimpleButton } from "../button/SimpleButton";
 import { CustomAlert } from "../chat-room/CustomAlert";
 
 type Props = {
   setIsActivePhone: Dispatch<SetStateAction<boolean>>;
-  setFocusInput: Dispatch<SetStateAction<number>>;
   setPhoneG: Dispatch<SetStateAction<string>>;
   setPhoneCountryG: Dispatch<SetStateAction<string>>;
+  setFocusInput?: Dispatch<SetStateAction<number>>;
 };
 export const PhoneVerification: React.FC<Props> = ({
   setIsActivePhone,
   setFocusInput,
   setPhoneG,
-  setPhoneCountryG
+  setPhoneCountryG,
 }) => {
   const [sent, setSent] = useState(false);
   const [phone, setPhone] = useState("");
@@ -31,7 +32,7 @@ export const PhoneVerification: React.FC<Props> = ({
     if (t.length == 6)
       axios
         .post(
-          "https://api.campustaxi.net/api/v1/accounts/auth/verify/",
+          `${API_URL}/v1/accounts/auth/verify/`,
           {
             //TEST CODE 이종률로 고정임 현재 번호, 바꿔야함.
             receiver: "01022039894",
@@ -50,7 +51,9 @@ export const PhoneVerification: React.FC<Props> = ({
             setIsActive(true);
             setCodeInput(false);
             setIsActivePhone(true);
-            setFocusInput(0);
+            {
+              setFocusInput ? setFocusInput(0) : null;
+            }
           } else Alert.alert("", JSON.stringify(r.data));
         })
         .catch((e) =>
@@ -72,7 +75,10 @@ export const PhoneVerification: React.FC<Props> = ({
             placeholder: PickerText,
             inputAndroid: PickerText,
           }}
-          onValueChange={(value) => { setPhoneCountry(value);setPhoneCountryG(value)}}
+          onValueChange={(value) => {
+            setPhoneCountry(value);
+            setPhoneCountryG(value);
+          }}
           items={[{ label: "+82(대한민국)", value: "82" }]}
           value={phoneCountry}
           placeholder={{ label: "+82(대한민국)", value: "82" }}
@@ -80,7 +86,10 @@ export const PhoneVerification: React.FC<Props> = ({
         <PhoneNumber
           editable={!isActive}
           value={phone}
-          onChangeText={(t) => { setPhone(t);setPhoneG(t)}}
+          onChangeText={(t) => {
+            setPhone(t);
+            setPhoneG(t);
+          }}
           placeholder="휴대폰 번호 예)01012341234"
           placeholderTextColor="#b0b0b2"
           keyboardType="decimal-pad"
@@ -89,7 +98,7 @@ export const PhoneVerification: React.FC<Props> = ({
       {isCodeInput ? (
         <CodeContainer>
           <Code
-          ref={RefTextInputCode}
+            ref={RefTextInputCode}
             value={code}
             onChangeText={checkCode}
             maxLength={6}
@@ -114,7 +123,7 @@ export const PhoneVerification: React.FC<Props> = ({
             const onPressOk = () => {
               axios
                 .post<{ status: string }>(
-                  "https://api.campustaxi.net/api/v1/accounts/auth/",
+                  `${API_URL}/v1/accounts/auth/`,
                   { receiver: "01022039894", channel: "phone" },
                   {
                     headers: {
@@ -159,7 +168,7 @@ const CodeContainer = styled.View`
   text-align: center;
 `;
 
-const Code:any = styled.TextInput`
+const Code: any = styled.TextInput`
   width: 100px;
   text-align: center;
   padding: 2px;

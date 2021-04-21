@@ -114,7 +114,7 @@ export const RegisterScreen: React.FC = (props) => {
       let genderToText = gender == 1 ? "MALE" : "FEMALE";
       axios
         .post(
-          "https://api.campustaxi.net/api/v1/accounts/signup/",
+        `${API_URL}/v1/accounts/signup/`,
           {
             username: id,
             password: password,

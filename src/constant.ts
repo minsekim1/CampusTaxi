@@ -10,8 +10,9 @@ const FIREBASE_CONFIG = {
   appId: "1:1054249413075:web:21f8f04c9933fe4cde2726",
   measurementId: "G-LH1WFX6SNM"
 };
+
 export const MYfirebase = !fb.apps.length ? fb.initializeApp(FIREBASE_CONFIG) : fb.app()
-export const API_URL = "https://api.campustaxi.net";
+export const API_URL = "http://210.102.225.68:8000/api"; //TEST CODE minsekim Local HTTPS 말고 HTTP만 지원
 export const GOOGLE_MAPAPI_URL = "AIzaSyBVIfNVsdQk6J56bD4CwZSPDyYlxF_XBe0";
 export const windowWidth = Dimensions.get("window").width;
 export const windowHeight = Dimensions.get("window").height;

@@ -52,7 +52,7 @@ const DummyNotifiList: Data[] = [
     content: "비행기 행사.. 다 팔아요..",
     is_view: true,
     view_at: "2021-04-08T09:02:09.872Z",
-    image: "https://homepages.cae.wisc.edu/~ece533/images/airplane.png",
+    image: "https://drive.google.com/file/d/1fEyLYrEq22Etow3WqKEbscgbNj1IwXbi/view?usp=sharing",
     type: "notice",
   },
   {

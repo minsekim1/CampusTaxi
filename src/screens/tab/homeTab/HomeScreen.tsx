@@ -23,6 +23,7 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { User } from "../../../contexts/User";
 import { myCoordProps } from "../../notab/home/CreateScreen";
+import { API_URL } from "../../../constant";
 
 type HomeScreenNavigationProp = StackNavigationProp<
   HomeStackParamList,
@@ -47,7 +48,7 @@ export const HomeScreen: React.FC<Props> = () => {
   const { token } = useAuthContext();
   useEffect(() => {
     axios
-      .get("https://api.campustaxi.net/api/v1/accounts/me/", {
+      .get(`${API_URL}/v1/accounts/me/`,{
         headers: {
           Authorization: "Bearer " + token,
           accept: "application/json",

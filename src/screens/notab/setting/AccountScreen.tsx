@@ -3,6 +3,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Text } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { API_URL } from "../../../constant";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import { User } from "../../../contexts/User";
 
@@ -35,7 +36,8 @@ export const AccountScreen: React.FC = () => {
   const [user, setUser] = useState<User>();
   const { token } = useAuthContext();
   useEffect(() => { 
-    axios.get("https://api.campustaxi.net/api/v1/accounts/me/", {
+    axios.get(
+      `${API_URL}/v1/accounts/me/`,{
       headers: {
         Authorization: "Bearer " + token,
         accept: "application/json",
@@ -64,7 +66,7 @@ export const AccountScreen: React.FC = () => {
               <Title>성별</Title>
               <Input
                 editable={false}
-                value={user?.gender == "MALE" ? "남자" : "여자"}
+                value={user?.gender}
               ></Input>
             </Col>
             {/* // TEST CODE 추후에 가입일 확인할 수 있도록 바꿔야함. 현재 확인 불가*/}

@@ -4,7 +4,8 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import axios from "axios";
 import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
-import { BackHandler, Platform, ScrollView } from "react-native";
+import { Alert, BackHandler, Platform, ScrollView, Text } from "react-native";
+import { CustomAxios } from "../../../components/axios/axios";
 import {
   ChatRoom,
   ChatRoomDummyList,
@@ -13,6 +14,7 @@ import {
 import { showToast } from "../../../components/layout/Toast";
 import { API_URL } from "../../../constant";
 import { useAuthContext } from "../../../contexts/AuthContext";
+import { User } from "../../../contexts/User";
 import { MessageStackParamList } from "./MessageStackNavigation";
 
 type MessageNavigation = StackNavigationProp<
@@ -30,22 +32,23 @@ export type APIData = {
 };
 
 export const MessageScreen: React.FC = () => {
-  const [datas, setDatas] = useState<ChatRoom[]>();
-  const { token } = useAuthContext();
+  const [datas, setDatas] = useState<ChatRoom[]>(ChatRoomDummyList);
+  const { token, resetToken, refresh } = useAuthContext();
   const { setNavName } = useAuthContext();
   //#region 채팅방 입장하기:방 넘겨가기
+
   const props = useAuthContext().MoveNav.props;
-  if (props) {
-    setNavName({
-      istab: "NoTab",
-      tab: "MessageNoTabNavigation",
-      screen: "ChatRoomScreen",
-      props: {
-        data: props,
-      },
-    });
-    return <></>;
-  }
+  // if (props) {
+  //   setNavName({
+  //     istab: "NoTab",
+  //     tab: "MessageNoTabNavigation",
+  //     screen: "ChatRoomScreen",
+  //     props: {
+  //       data: props,
+  //     },
+  //   });
+  //   return <></>;
+  // }
   //#endregion
   const navigation = useNavigation<MessageNavigation>();
   // const {User} = useAuthContext()
@@ -60,7 +63,6 @@ export const MessageScreen: React.FC = () => {
       BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
       //console.log("blur MainScreen");
     });
-    return setDatas(undefined);
   }, []);
   const handleBackButton = () => {
     if (currentCount < 1) {
@@ -79,39 +81,60 @@ export const MessageScreen: React.FC = () => {
     }
   };
   //#endregion 뒤로가기 버튼 제어 & 더블클릭시 앱 종료
+  //#region 유저 데이터 요청
+  // AuthContext 시용하지 않고 직접 데이터 요청함
+  const [user, setUser] = useState<User>();
   useEffect(() => {
-    // console.log('token', token);
-    // console.log('User', User.uuid);
-    axios
-      .get<APIData>(`${API_URL}/api/v1/rooms/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          accept: `application/json`,
-        },
-      })
-      .then((response) => {
-        // console.log('response',response)
-        const data: any = response.data.results.map((d) => {
-          const day = d.boarding_dtm
-            ? Week[new Date(d.boarding_dtm).getDay()]
-            : "";
-          const date = d.boarding_dtm ? new Date(d.boarding_dtm) : "";
-          return {
-            ...d,
-            boarding_dtm: d.boarding_dtm
-              ? date && date.getDate() == new Date().getDate()
-                ? format(new Date(d.boarding_dtm), "오늘 HH:mm")
-                : format(new Date(d.boarding_dtm), "MM/dd(" + day + ")")
-              : undefined,
-          };
-        });
-        setDatas(data);
-      });
-  }, [token]);
+    //내 정보 가져오기
+    CustomAxios(
+      "GET",
+      `${API_URL}/v1/accounts/me/`,
+      resetToken,
+      refresh,
+      token,
+      undefined, //"User API",
+      undefined,
+      (d: User) => {
+        setUser(d);
+        //#region 내방목록 가져오기
+        CustomAxios(
+          "GET",
+          `${API_URL}/v1/accounts/rooms/`,
+          resetToken,
+          refresh,
+          token,
+          undefined,// "User Room",
+          undefined,
+          (d: ChatRoom[]) => setDatas(d)
+        );
+        //#endregion 내방목록 가져오기
+      }
+    );
+    // axios
+    //   .get("https://api.campustaxi.net/api/v1/accounts/me/", {
+    //     headers: {
+    //       Authorization: "Bearer " + token,
+    //       accept: "application/json",
+    //     },
+    //   })
+    //   .then((d) => {
+    //     setUser(d.data);
+    //
+    //      axios
+    //     .get(`${API_URL}/api/v1/accounts/rooms/`, { //TEST CDOE minsekim 추후 변경필요 현재 campustaxiadmin로 고정
+    //       headers: {
+    //         Authorization: `Bearer ewZe6EwgRV6wn9jR4vYIP0:APA91bHnNRaC71PhOmvSy5jCrcTYMzjPxSvN53k8gfjTeup0_cROQeIDR1a6xXSAY6Iw2UIW2mRT4elWvhz9SrY6hG6J0KJHzojz-mjE8GWUtavUj6CTR44JFkHQqnd6g_Y28IIBn13w`,
+    //         accept: `application/json`,
 
-  if (!datas || datas.length <= 0) {
-    return <></>;
-  }
+    //       },
+    //     })
+    //     .then((response) => {
+
+    //     }).catch((e) => console.log(e.message == "Request failed with status code 401"));
+    //
+    //   });
+  }, []);
+  //#endregion 유저 데이터 요청
 
   return (
     <Container>

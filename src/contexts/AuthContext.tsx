@@ -6,6 +6,7 @@ import { User, UserDummy } from "./User";
 
 export type AuthState = {
   token: string | undefined;
+  refresh: string | undefined;
   isLoading: boolean;
   isLoggedIn: boolean;
   setLoggedIn: (token: string, refresh: string) => void;
@@ -13,16 +14,19 @@ export type AuthState = {
   MoveNav: MoveNavProps;
   setNavName: (arg0: MoveNavProps) => void;
   User: User;
+  resetToken: (token:string) => void;
 };
 
 const AuthContext = React.createContext<AuthState>({
   token: undefined,
+  refresh: undefined,
   isLoading: true,
   isLoggedIn: false,
   MoveNav: { istab: "Tab", tab: "HomeTabScreen", props: undefined },
   setLoggedIn: () => {},
   setLoggedOut: () => {},
   setNavName: (MoveNavProps) => {},
+  resetToken: () => {},
   User: UserDummy,
 });
 
@@ -94,8 +98,11 @@ export const AuthProvider: React.FC = ({ children }) => {
   //       }
   //       setIsLoading(false);
   //     });
-  // }, [refresh]);ㅉ
+  // }, [refresh]);
 
+  const resetToken = useCallback((token: string) => {
+    setToken(token);
+  }, []);
   useEffect(() => {
     getRefreshToken();
   }, [getRefreshToken]);
@@ -126,6 +133,8 @@ export const AuthProvider: React.FC = ({ children }) => {
     <AuthContext.Provider
       value={{
         token,
+        refresh,
+        resetToken,
         isLoading,
         isLoggedIn: Boolean(token),
         MoveNav,

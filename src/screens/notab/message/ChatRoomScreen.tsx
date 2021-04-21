@@ -71,18 +71,19 @@ export const ChatRoomScreen: React.FC = () => {
     if (room.id == -1) console.warn("room.id 가 -1입니다.");
     else if (room.id) {
       axios
-        .get<Message[]>(`${API_URL}/api/v1/messages/?room=${room.id}`, {
+        .get<Message[]>(`${API_URL}/api/v1/chat/${room.id}`, {
           headers: {
             Authorization: `Token ${token}`,
           },
         })
         .then((response) => {
-          const data = response.data.sort((a, b) =>
-            differenceInMilliseconds(
-              new Date(a.created_at),
-              new Date(b.created_at)
-            )
-          );
+          console.log('chat',response)
+          // const data = response.data.sort((a, b) =>
+          //   differenceInMilliseconds(
+          //     new Date(a.created_at),
+          //     new Date(b.created_at)
+          //   )
+          // );
         });
     }
   }, [room.id, token, refetch]);
@@ -287,7 +288,7 @@ export const ChatRoomScreen: React.FC = () => {
                     <BackIconWhite />
                   </LeftBtn>
                   <Crown />
-                  <Title>asd</Title>
+                  <Title>{room.owner}</Title>
                   <Group>
                     <Btn onPress={() => setSearch(true)}>
                       <SearchIcon fill="white" />
