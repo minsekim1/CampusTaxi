@@ -19,6 +19,7 @@ export const ChatRoomScreenDetails: React.FC = () => {
   const navigation = useNavigation<MessageNoTabNavigationProp>();
   const [Users] = useState<User[]>(UserDummyList);
   const [room] = useState<ChatRoom>(useAuthContext().MoveNav.props.data);
+
   useEffect(() => {
     // 헤더 바탕 색변경
     navigation.setOptions({

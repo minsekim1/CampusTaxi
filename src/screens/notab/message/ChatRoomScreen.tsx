@@ -69,23 +69,45 @@ export const ChatRoomScreen: React.FC = () => {
   }, [search]);
   useEffect(() => {
     if (room.id == -1) console.warn("room.id 가 -1입니다.");
-    else if (room.id) {
-      axios
-        .get<Message[]>(`${API_URL}/api/v1/chat/${room.id}`, {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        })
-        .then((response) => {
-          console.log('chat',response)
-          // const data = response.data.sort((a, b) =>
-          //   differenceInMilliseconds(
-          //     new Date(a.created_at),
-          //     new Date(b.created_at)
-          //   )
-          // );
-        });
-    }
+
+    var ws = new WebSocket("wss://localhost:3031");
+    console.log("websoket");
+    ws.onopen = () => {
+      // connection opened
+      ws.send("something"); // send a message
+    };
+
+    ws.onmessage = (e) => {
+      // a message was received
+      console.log(e.data);
+    };
+
+    ws.onerror = (e) => {
+      // an error occurred
+      console.log(e.message);
+    };
+
+    ws.onclose = (e) => {
+      // connection closed
+      console.log(e.code, e.reason);
+    };
+    // else if (room.id) {
+    //   axios
+    //     .get<Message[]>(`${API_URL}/api/v1/chat/${room.id}`, {
+    //       headers: {
+    //         Authorization: `Token ${token}`,
+    //       },
+    //     })
+    //     .then((response) => {
+    //       console.log('chat',response)
+    //       // const data = response.data.sort((a, b) =>
+    //       //   differenceInMilliseconds(
+    //       //     new Date(a.created_at),
+    //       //     new Date(b.created_at)
+    //       //   )
+    //       // );
+    //     });
+    // }
   }, [room.id, token, refetch]);
 
   useEffect(() => {
@@ -173,7 +195,8 @@ export const ChatRoomScreen: React.FC = () => {
       // 스크롤
       ChatScrollRef.current?.scrollToItem({
         animated: true,
-        item: searchResult.result_message[searchResult.index_InResult - 1].index,
+        item:
+          searchResult.result_message[searchResult.index_InResult - 1].index,
       });
     } else if (indexInMessage != -1) {
       // 결과가 있을경우
@@ -217,7 +240,8 @@ export const ChatRoomScreen: React.FC = () => {
       // 스크롤
       ChatScrollRef.current?.scrollToItem({
         animated: true,
-        item: searchResult.result_message[searchResult.index_InResult + 1].index,
+        item:
+          searchResult.result_message[searchResult.index_InResult + 1].index,
       });
     } else if (indexInMessage != -1 && searchResult.index > -1) {
       //메세지 안에서 결과가 있을경우 강조 글씨 바꾸고 스크롤함
@@ -252,7 +276,7 @@ export const ChatRoomScreen: React.FC = () => {
     setMessage("");
     sendMessage(e.nativeEvent.text);
   };
-  
+
   return (
     <BlankBackground color={GenderColor(room?.gender)}>
       <KeyboardContainer
