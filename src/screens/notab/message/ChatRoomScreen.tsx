@@ -23,6 +23,9 @@ import { API_URL } from "../../../constant";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import { MessageNoTabNavigationParamList } from "./MessageNoTabNavigation";
 
+import io, { Socket } from "socket.io-client";
+import { User } from "../../../contexts/User";
+
 export type MessageNoTabNavigationProp = StackNavigationProp<
   MessageNoTabNavigationParamList,
   "ChatRoomScreen"
@@ -41,14 +44,29 @@ export type searchProps = {
   index_InResult: number;
 };
 export const ChatRoomScreen: React.FC = () => {
+  //#region 유저 데이터 요청
+  // AuthContext 시용하지 않고 직접 데이터 요청함
+  const [user, setUser] = useState<User>();
+  const { token } = useAuthContext();
+  useEffect(() => {
+    axios
+      .get(`${API_URL}/v1/accounts/me/`, {
+        headers: {
+          Authorization: "Bearer " + token,
+          accept: "application/json",
+        },
+      })
+      .then((d) => setUser(d.data));
+  }, []);
+  //#endregion 유저 데이터 요청
+
   const { navigate } = useNavigation<MessageNoTabNavigationProp>();
-  const [messages, setMessages] = useState<Message[]>(MessageDummy);
+  const [messages, setMessages] = useState<Message[]>([]); //MessageDummy
   const [searchResult, setSearchResult] = useState<searchProps>();
   const [message, setMessage] = useState("");
   const [room, setRoom] = useState<ChatRoom>(
     useAuthContext().MoveNav.props.data
   );
-  const { token } = useAuthContext();
   const route = useRoute<NavigationRoute>();
   const [refetch, setRefetch] = useState<Date>();
   const [search, setSearch] = useState<boolean>(false);
@@ -57,40 +75,42 @@ export const ChatRoomScreen: React.FC = () => {
   const ChatScrollRef = useRef<FlatList>(null);
   const { setNavName } = useAuthContext();
 
+  let socket: Socket = io("http://192.168.0.5:3000/");
   useEffect(() => {
-    if (Platform.OS === "android") {
+    //#region 상태바
+    if (Platform.OS === "android")
       StatusBar.setBackgroundColor(GenderColor(room?.gender));
-    }
     StatusBar.setBarStyle("light-content");
+    //#endregion 상태바
+
+    //#region 웹소켓 설정
+    console.log("socket init");
+    //채팅방 입장
+    socket.emit("enter", { room_id: room.id, username: user?.nickname });
+    //채팅 받기
+    socket.on("chat", (d) => {
+      let a:Array<Message> = messages;
+      a.unshift({
+        id: messages.length + 1,
+        message: d.msg,
+        message_type: "Message",
+        writer: d.username,
+        room: room.id,
+        created_at: new Date(),
+        updated_at: new Date(),
+        index: messages.length + 1,
+      });
+      setMessages(a);
+      //#endregion 웹소켓 설정
+    });
   }, []);
 
   useEffect(() => {
     if (search) searchRef.current?.focus();
   }, [search]);
+
   useEffect(() => {
     if (room.id == -1) console.warn("room.id 가 -1입니다.");
-
-    var ws = new WebSocket("wss://localhost:3031");
-    console.log("websoket");
-    ws.onopen = () => {
-      // connection opened
-      ws.send("something"); // send a message
-    };
-
-    ws.onmessage = (e) => {
-      // a message was received
-      console.log(e.data);
-    };
-
-    ws.onerror = (e) => {
-      // an error occurred
-      console.log(e.message);
-    };
-
-    ws.onclose = (e) => {
-      // connection closed
-      console.log(e.code, e.reason);
-    };
     // else if (room.id) {
     //   axios
     //     .get<Message[]>(`${API_URL}/api/v1/chat/${room.id}`, {
@@ -110,31 +130,24 @@ export const ChatRoomScreen: React.FC = () => {
     // }
   }, [room.id, token, refetch]);
 
-  useEffect(() => {
-    if (messages && ChatScrollRef.current) {
-      setTimeout(() => {
-        ChatScrollRef.current?.scrollToEnd({ animated: true });
-      }, 500);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (messages && ChatScrollRef.current) {
+  //     setTimeout(() => {
+  //       ChatScrollRef.current?.scrollToEnd({ animated: true });
+  //     }, 500);
+  //   }
+  // }, []);
 
+  //#region 채팅 전송
   const sendMessage = (text: string) => {
-    if (token) {
-      axios
-        .post(
-          `${API_URL}/api/v1/messages/`,
-          { message: text, message_type: "Message", writer: 1, room: room.id },
-          {
-            headers: {
-              Authorization: `Token ${token}`,
-            },
-          }
-        )
-        .then(() => {
-          setRefetch(new Date());
-        });
-    }
+    socket.emit("chat", {
+      msg: text,
+      room_id: room.id,
+      maxperson: room.personnel_limit,
+      username: user?.nickname,
+    });
   };
+  //#endregion 채팅 전송
 
   const searchOnSubmit = async () => {
     // 채팅 데이터 검색 함수
@@ -259,11 +272,13 @@ export const ChatRoomScreen: React.FC = () => {
   };
 
   //#region 뒤로가기 제어
-  const LeftBtnOnPress = () =>
+  const LeftBtnOnPress = () => {
     setNavName({ istab: "Tab", tab: "MessageTabScreen" });
+    socket.close();
+  };
   const ContentContainerStyle = {
     alignItems: "center",
-    marginTop: 20,
+    paddingTop: 20,
     paddingBottom: 20,
   };
   //#endregion
@@ -272,9 +287,9 @@ export const ChatRoomScreen: React.FC = () => {
     setSearch(false);
     setSearchResult(undefined);
   };
-  const KeyBoardOnSubmit = (e: any) => {
+  const KeyBoardOnSubmit = (text: string) => {
     setMessage("");
-    sendMessage(e.nativeEvent.text);
+    sendMessage(text);
   };
 
   return (
@@ -327,16 +342,18 @@ export const ChatRoomScreen: React.FC = () => {
             {/* 채팅 내용 */}
             <ContentContainer
               ref={ChatScrollRef}
+              inverted
               data={messages}
               contentContainerStyle={ContentContainerStyle}
+              extraData={messages}
+              keyExtractor={(item: any, index: number) => index.toString()}
               renderItem={(props: any) => (
                 <Chat
-                  key={props.index}
                   searchResult={searchResult}
                   message={props.item}
-                  gender={props.index % 3 ? 1 : 0}
-                  isLeft={props.index % 2 ? true : false}
-                  isHost={props.index % 3 ? true : false}
+                  gender={1}
+                  isLeft={props.item.username == user?.nickname}
+                  isHost={props.item.username == room.owner}
                 />
               )}
             ></ContentContainer>

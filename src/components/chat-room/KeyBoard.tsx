@@ -52,10 +52,10 @@ export const KeyBoard: React.FC<Props> = ({
               returnKeyType="none"
               multiline={true}
               onChangeText={setMessage}
-              onSubmitEditing={onSubmitEditing}
+              // onSubmitEditing={(t:string)=>onSubmitEditing(t)}
             />
           </InputView>
-          <SendView disabled={message ? false : true}>
+            <SendView disabled={message ? false : true} onPress={() => onSubmitEditing(message)}>
             <SendIcon isActive={message ? true : false} />
           </SendView>
         </>

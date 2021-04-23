@@ -1,9 +1,9 @@
-import styled from '@emotion/native';
-import React, { Dispatch, SetStateAction} from 'react';
-import { ChatRoom } from '../chat-room/ChatRoomList';
-import { Boarding_dtmToRecently } from '../chat/date';
-import { GenderColor, GenderText } from '../color/GenderColor';
-import { CreateRoomSelectCancel} from '../icon/home/CreateRoomSelectCancel';
+import styled from "@emotion/native";
+import React, { Dispatch, SetStateAction } from "react";
+import { ChatRoom } from "../chat-room/ChatRoomList";
+import { Boarding_dtmToRecently } from "../chat/date";
+import { GenderColor, GenderText } from "../color/GenderColor";
+import { CreateRoomSelectCancel } from "../icon/home/CreateRoomSelectCancel";
 
 type Props = {
   data?: ChatRoom;
@@ -11,15 +11,58 @@ type Props = {
   backgroundColor?: string;
   activeCancelBtn?: boolean;
 };
-export const ChatRoomCard: React.FC<Props> = ({ data, onPress, backgroundColor, activeCancelBtn }) => {
-  if (!data)
-    return <></>
+export const ChatRoomCard: React.FC<Props> = ({
+  data,
+  onPress,
+  backgroundColor,
+  activeCancelBtn,
+}) => {
+  if (!data) return <></>;
+  if (data.id == -2) {
+    const skeletonStyle = {
+      backgroundColor: "#C1C1C1",
+      borderRadius: 10,
+      color: "#C1C1C1",
+    };
+    return (
+      <DataContainer>
+        <Card style={{ backgroundColor: "white" }}>
+          <TempCircle style={{ backgroundColor: skeletonStyle.backgroundColor }}>
+            <CircleText />
+          </TempCircle>
+          <CardContainer>
+            <CardHeaderContainer>
+              <LeftContainer>
+                <TitleView>
+                  <Title style={skeletonStyle}>
+                    ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ
+                  </Title>
+                </TitleView>
+              </LeftContainer>
+              <Distance />
+            </CardHeaderContainer>
+            <CardBodyContainer>
+              <TextContainer>
+                <TextArea style={skeletonStyle}>ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ</TextArea>
+                <TextArea style={skeletonStyle}>ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ</TextArea>
+              </TextContainer>
+              <RightContainer>
+                <Count style={{opacity:1,...skeletonStyle}}>ㅁㅁㅁㅁ</Count>
+              </RightContainer>
+            </CardBodyContainer>
+          </CardContainer>
+        </Card>
+      </DataContainer>
+    );
+  }
   const bgColor = GenderColor(data.gender);
   const genderText = GenderText(data.gender);
   return (
-    <DataContainer onPress={()=>onPress(data)}>
-      <Card style={{ backgroundColor: backgroundColor ? backgroundColor : 'white' }}>
-        <TempCircle style={{ backgroundColor: bgColor}}>
+    <DataContainer onPress={() => onPress(data)}>
+      <Card
+        style={{ backgroundColor: backgroundColor ? backgroundColor : "white" }}
+      >
+        <TempCircle style={{ backgroundColor: bgColor }}>
           <CircleText>{genderText}</CircleText>
         </TempCircle>
         <CardContainer>
@@ -28,15 +71,15 @@ export const ChatRoomCard: React.FC<Props> = ({ data, onPress, backgroundColor, 
               <Time>{Boarding_dtmToRecently(data.boarding_dtm)} 탑승</Time>
               <TitleView>
                 <Title>{data.owner}</Title>
-              <TitleVip>VIP</TitleVip>
+                <TitleVip>VIP</TitleVip>
               </TitleView>
             </LeftContainer>
             <Distance>{data.distance}</Distance>
           </CardHeaderContainer>
           <CardBodyContainer>
             <TextContainer>
-              <TextArea>출발지 - {data.start_address_detail}</TextArea>
-              <TextArea>도착지 - {data.end_address_detail}</TextArea>
+              <TextArea style={{color:'black'}}>출발지 - {data.start_address_detail}</TextArea>
+              <TextArea style={{color:'black'}}>도착지 - {data.end_address_detail}</TextArea>
             </TextContainer>
             <RightContainer>
               <Count>
@@ -52,17 +95,17 @@ export const ChatRoomCard: React.FC<Props> = ({ data, onPress, backgroundColor, 
 const OnlyCancelView = styled.TouchableOpacity`
   position: absolute;
   right: 10px;
-  background-color: rgb(233,235,255);
-  height:28px;
-  width:28px;
+  background-color: rgb(233, 235, 255);
+  height: 28px;
+  width: 28px;
   justify-content: center;
   align-items: center;
   border-radius: 20px;
-`
+`;
 const Distance = styled.Text`
-  color: #B7B7BB;
+  color: #b7b7bb;
   font-size: 10px;
-`
+`;
 const CancelBtn = styled.TouchableOpacity`
   margin: 0 4px 4px 4px;
   padding: 2px 5px 5px 5px;
@@ -84,7 +127,7 @@ const TempCircle = styled.View`
   width: 64px;
   height: 64px;
   border-radius: 17px;
-  background-color: #F28A8A;
+  background-color: #f28a8a;
   justify-content: center;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
   margin-right: 16px;
@@ -107,19 +150,19 @@ const CardHeaderContainer = styled.View`
 `;
 
 const LeftContainer = styled.View`
-  margin-top:-1px;
+  margin-top: -1px;
 `;
 
 const TitleView = styled.View`
   flex: 1;
   flex-direction: row;
-  margin-top:3px;
+  margin-top: 3px;
   align-items: center;
 `;
 const Title = styled.Text`
   font-size: 13px;
   font-weight: bold;
-  `;
+`;
 const TitleVip = styled.Text`
   font-size: 9px;
   font-weight: bold;
@@ -132,7 +175,7 @@ const TitleVip = styled.Text`
 `;
 
 const RightContainer = styled.View`
-  padding-right:10px;
+  padding-right: 10px;
 `;
 
 const Count = styled.Text`
@@ -147,9 +190,9 @@ const Time = styled.Text`
   font-weight: bold;
   padding: 1px 8px 1px 8px;
   border-radius: 7px;
-  border: solid 1px #D0D0D0;
+  border: solid 1px #d0d0d0;
   background-color: #ffffff;
-  text-align:center;
+  text-align: center;
 `;
 
 const CardBodyContainer = styled.View`
@@ -158,7 +201,7 @@ const CardBodyContainer = styled.View`
 `;
 
 const TextContainer = styled.View`
-margin-bottom:0px;
+  margin-bottom: 0px;
 `;
 
 const TextArea = styled.Text`

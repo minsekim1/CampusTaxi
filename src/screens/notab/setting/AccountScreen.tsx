@@ -66,7 +66,7 @@ export const AccountScreen: React.FC = () => {
               <Title>성별</Title>
               <Input
                 editable={false}
-                value={user?.gender}
+                value={user?.gender == "MALE" ? "남자" : "여자"}
               ></Input>
             </Col>
             {/* // TEST CODE 추후에 가입일 확인할 수 있도록 바꿔야함. 현재 확인 불가*/}

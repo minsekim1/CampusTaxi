@@ -48,7 +48,8 @@
     "react-native-splash-screen": "^3.2.0",
     "react-native-svg": "^12.1.0",
     "react-native-vector-icons": "^8.1.0",
-    "react-native-version-check": "^3.4.2"
+    "react-native-version-check": "^3.4.2",
+    "socket.io-client": "^4.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",

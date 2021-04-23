@@ -18,11 +18,11 @@ export type ChatRoom = {
   end_lon: number;
   boarding_dtm?: string;
   personnel_limit?: number;
-  gender: 'MALE' | 'FEMALE' | 'NONE';
+  gender: "MALE" | "FEMALE" | "NONE";
   owner?: number;
   category?: string; //"등교 데이터 가져올때는 =1"
   current?: string; // 현재 페이지인듯
-  
+
   // 커스텀
   cost?: number;
   distance?: number;
@@ -30,7 +30,7 @@ export type ChatRoom = {
   costTime?: number;
 };
 
-export const UserDummyList:User[] = [
+export const UserDummyList: User[] = [
   { ...UserDummy },
   { ...UserDummy, uuid: "2", gender: "MALE" },
   { ...UserDummy, uuid: "3", gender: "FEMALE" },
@@ -56,9 +56,9 @@ export const ChatRoomDummy = {
   category: undefined,
   current: undefined,
 };
-export const ChatRoomDummyList = [
+
+export const ChatRoomDummyList: ChatRoom[] = [
   {
-    // TEST CODE
     id: 1,
     unreadMessage: "string",
     distance: 1.0,
@@ -133,7 +133,7 @@ export const ChatRoomDummyList = [
     end_lon: 127.10579154192136,
     boarding_dtm: "string",
     personnel_limit: 4,
-    gender:"MALE",
+    gender: "MALE",
     owner: 0,
     category: "string",
     current: "string",
@@ -179,6 +179,37 @@ export const ChatRoomDummyList = [
     current: "string",
   },
 ];
+
+export const ChatRoomSkeleton: ChatRoom = {
+  id: -2,
+  unreadMessage: "",
+  distance: 1.0,
+  start_address_code: "string",
+  start_address: "",
+  start_address_detail: "",
+  start_lat: 0,
+  start_lon: 0,
+  end_address: "",
+  end_address_detail: "삼육대학교 분수대 앞",
+  end_lat: 0,
+  end_lon: 0,
+  boarding_dtm: "",
+  personnel_limit: 4,
+  gender: "NONE",
+  owner: -2,
+  category: "",
+  current: "",
+};
+export const ChatRoomSkeletonList: ChatRoom[] = [
+  ChatRoomSkeleton,
+  ChatRoomSkeleton,
+  ChatRoomSkeleton,
+  ChatRoomSkeleton,
+  ChatRoomSkeleton,
+  ChatRoomSkeleton,
+  ChatRoomSkeleton,
+  ChatRoomSkeleton,
+];
 export type Props = {
   onPress: (data: ChatRoom) => () => void;
   datas?: ChatRoom[];
@@ -186,8 +217,8 @@ export type Props = {
 export const ChatRoomList: React.FC<Props> = ({ datas, onPress }) => {
   return (
     <>
-      {datas?.map((data,i) => (
-        <ChatRoomCard key={i+"r"} data={data} onPress={onPress(data)} />
+      {datas?.map((data, i) => (
+        <ChatRoomCard key={i + "r"} data={data} onPress={onPress(data)} />
       ))}
     </>
   );

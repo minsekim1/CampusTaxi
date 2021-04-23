@@ -10,6 +10,7 @@ import {
   ChatRoom,
   ChatRoomDummyList,
   ChatRoomList,
+  ChatRoomSkeletonList,
 } from "../../../components/chat-room/ChatRoomList";
 import { showToast } from "../../../components/layout/Toast";
 import { API_URL } from "../../../constant";
@@ -32,7 +33,7 @@ export type APIData = {
 };
 
 export const MessageScreen: React.FC = () => {
-  const [datas, setDatas] = useState<ChatRoom[]>(ChatRoomDummyList);
+  const [datas, setDatas] = useState<ChatRoom[]>(ChatRoomSkeletonList);
   const { token, resetToken, refresh } = useAuthContext();
   const { setNavName } = useAuthContext();
   //#region 채팅방 입장하기:방 넘겨가기

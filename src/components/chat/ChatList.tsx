@@ -30,7 +30,10 @@ export const Chat: React.FC<Props> = ({
     sliceText = [
       message.message.slice(0, searchResult.indexInMessage),
       searchResult?.searchString,
-      message.message.slice(searchResult.indexInMessage + searchResult?.searchString.length, message.message.length),
+      message.message.slice(
+        searchResult.indexInMessage + searchResult?.searchString.length,
+        message.message.length
+      ),
     ];
   }
   return (
