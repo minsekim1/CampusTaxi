@@ -149,6 +149,7 @@ export const ChatRoomScreen: React.FC = () => {
   };
   //#endregion 채팅 전송
 
+  //#region 검색
   const searchOnSubmit = async () => {
     // 채팅 데이터 검색 함수
     // 채팅 데이터가 없는 경우
@@ -185,31 +186,31 @@ export const ChatRoomScreen: React.FC = () => {
   const onPressUpSearch = () => {
     if (!searchResult) return;
     // 현재 메세지의 현재 위치 기준으로 이전 텍스트를 자름 => 현재 메세지에서 이전 문자열을 검사하기 위함
-    const cutString = messages[searchResult.index].message.slice(
+    const cutString = messages[messages.length - searchResult.index].message.slice(
       0,
       searchResult.indexInMessage
     );
     // 현재 검색결과로 보여준 전체 메세지 안에서  이전 결과 중 가장 마지막을 찾음
     let indexInMessage = cutString.lastIndexOf(searchResult.searchString);
     // 만약 결과가 없고 이전 메세지가 필터된 결과에 있을경우 이전 메세지로감
-    if (indexInMessage == -1 && 0 < searchResult.index_InResult) {
+    if (indexInMessage == -1 && searchResult.result_message.length - 1 > searchResult.index_InResult) {
       // 메세지 인덱스를 빼고 이전 메세지에서 결과를 찾고
       // 이전 결과에서 다시 찾아서 결과를 넣음
       const r: searchProps = {
         ...searchResult,
         index:
-          searchResult.result_message[searchResult.index_InResult - 1].index,
+          searchResult.result_message[searchResult.index_InResult + 1].index,
         indexInMessage: searchResult.result_message[
-          searchResult.index_InResult - 1
+          searchResult.index_InResult + 1
         ].message.lastIndexOf(searchInput),
-        index_InResult: searchResult.index_InResult - 1,
+        index_InResult: searchResult.index_InResult + 1,
       };
       setSearchResult(r);
       // 스크롤
       ChatScrollRef.current?.scrollToItem({
         animated: true,
         item:
-          searchResult.result_message[searchResult.index_InResult - 1].index,
+          searchResult.result_message[searchResult.index_InResult + 1].index,
       });
     } else if (indexInMessage != -1) {
       // 결과가 있을경우
@@ -229,32 +230,33 @@ export const ChatRoomScreen: React.FC = () => {
   const onPressDownSearch = () => {
     // 현재 검색결과로 보여준 전체 메세지 안에서 다음 결과를 찾음
     if (!searchResult) return;
-    let indexInMessage = messages[searchResult.index].message.indexOf(
+    let indexInMessage = messages[messages.length - searchResult.index].message.indexOf(
       searchInput,
       searchResult.indexInMessage + 1
-    );
+      );
+      console.log("SearchDown", searchResult.result_message.length,searchResult.index_InResult + 1);
     // 현재 메세지 안에서 결과가 없을 경우 메세지 인덱스를 더 하고 다음 메세지에 첫번째 결과로 넣음, 단, 다음 메세지가 있어야됌
     if (
       indexInMessage == -1 &&
-      searchResult.result_message.length > searchResult.index_InResult + 1
+      0 < searchResult.index_InResult
     ) {
       // 메세지 인덱스를 더하고 다음 메세지에서 결과를 찾고
       // 다음 결과에서 다시 찾아서 결과를 넣음
       const r: searchProps = {
         ...searchResult,
         index:
-          searchResult.result_message[searchResult.index_InResult + 1].index,
+          searchResult.result_message[searchResult.index_InResult - 1].index,
         indexInMessage: searchResult.result_message[
-          searchResult.index_InResult + 1
+          searchResult.index_InResult - 1
         ].message.indexOf(searchInput),
-        index_InResult: searchResult.index_InResult + 1,
+        index_InResult: searchResult.index_InResult - 1,
       };
       setSearchResult(r);
       // 스크롤
       ChatScrollRef.current?.scrollToItem({
         animated: true,
         item:
-          searchResult.result_message[searchResult.index_InResult + 1].index,
+          searchResult.result_message[searchResult.index_InResult - 1].index,
       });
     } else if (indexInMessage != -1 && searchResult.index > -1) {
       //메세지 안에서 결과가 있을경우 강조 글씨 바꾸고 스크롤함
@@ -270,6 +272,7 @@ export const ChatRoomScreen: React.FC = () => {
       });
     } else showToast("다음이 없습니다.");
   };
+  //#endregion검색
 
   //#region 뒤로가기 제어
   const LeftBtnOnPress = () => {
