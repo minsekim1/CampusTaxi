@@ -23,22 +23,26 @@ export const MapBottomButton: React.FC<Props> = ({
   const isCreateRoom = selectRoom?.id == -1 || selectRoom?.id == -2;
   const { navigate } = useNavigation<CreateScreenNavigationProp>();
   const { setNavName } = useAuthContext();
+  const EnterRoom = () =>
+  {
+    console.log('selectRoom', selectRoom);
+    setNavName({
+      istab: "Tab",
+      tab: "MessageTabScreen",
+      screen: "ChatRoomScreen",
+      props: {
+        data: selectRoom,
+      },
+    });}
   return (
     <BottomButton
       underlayColor={"#83ABED"}
       disabled={disabled}
-      onPress={() => {
+      onPress={
         isCreateRoom
-          ? navigate("CreateScreenDetails", selectRoom)
-          : setNavName({
-              istab: "NoTab",
-              tab: "NotificationNoTabNavigation",
-              screen: "ChatRoomScreen",
-              props: {
-                data: selectRoom,
-              },
-            });
-      }}
+          ? () => navigate("CreateScreenDetails", selectRoom)
+          : EnterRoom
+      }
       style={{
         backgroundColor: disabled ? "rgb(112,112,112)" : "rgb(118, 162, 235)",
       }}

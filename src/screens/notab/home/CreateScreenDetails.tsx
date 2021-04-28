@@ -34,6 +34,7 @@ import {
 } from "@react-navigation/native";
 import { MessageNoTabNavigationProp } from "../message/ChatRoomScreen";
 import { NoTabNavigation } from "../NoTabNavigation";
+import { CustomAxios } from "../../../components/axios/axios";
 
 type HomeScreenNavigationProp = StackNavigationProp<
   HomeStackParamList,
@@ -61,7 +62,6 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
 
-  const { token } = useAuthContext();
   const [refetch, setRefetch] = useState<Date>();
 
   const [personnelLimit, setPersonnelLimit] = useState(4);
@@ -114,16 +114,19 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
   //#endregion
   //#region 유저 데이터 요청
   // AuthContext 시용하지 않고 직접 데이터 요청함
+  const { token, resetToken, refresh } = useAuthContext();
   const [user, setUser] = useState<User>();
   useEffect(() => {
-    axios
-      .get(`${API_URL}/v1/accounts/me/`,{
-        headers: {
-          Authorization: "Bearer " + token,
-          accept: "application/json",
-        },
-      })
-      .then((d) => setUser(d.data));
+    CustomAxios(
+      "GET",
+      `${API_URL}/v1/accounts/me/`,
+      resetToken,
+      refresh,
+      token,
+      undefined, //"User API",
+      undefined,
+      (d: User) => setUser(d)
+    );
   }, []);
   //#endregion 유저 데이터 요청
   const Create = () => {
@@ -133,7 +136,7 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
     const date_result = new Date(
       new Date().getFullYear(),
       new Date().getMonth(),
-      date_ + 1,
+      date_,
       hour,
       min,
       0
@@ -157,7 +160,7 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
       gender: gender_Local,
       category: selectRoom.category + 1,
     };
-
+console.log('room',room)
     axios
       .post(`${API_URL}/v1/rooms/`, room, {
         headers: {
@@ -167,7 +170,7 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
       })
       .then((r) => {
         let room: ChatRoom = r.data;
-        console.log(r.data);
+        console.log('result create room:',r.data);
         setNavName({
           istab: "Tab",
           tab: "MessageTabScreen",
@@ -184,7 +187,7 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
         <Container>
           <SubContainer>
             <ETAView
-              gender={0}
+              gender={"MALE"}
               start_address={createRoom.start_address_detail}
               end_address={createRoom.end_address_detail}
             />

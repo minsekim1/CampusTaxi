@@ -35,21 +35,20 @@ export type APIData = {
 export const MessageScreen: React.FC = () => {
   const [datas, setDatas] = useState<ChatRoom[]>(ChatRoomSkeletonList);
   const { token, resetToken, refresh } = useAuthContext();
-  const { setNavName } = useAuthContext();
+  const { setNavName, MoveNav } = useAuthContext();
   //#region 채팅방 입장하기:방 넘겨가기
 
-  const props = useAuthContext().MoveNav.props;
-  // if (props) {
-  //   setNavName({
-  //     istab: "NoTab",
-  //     tab: "MessageNoTabNavigation",
-  //     screen: "ChatRoomScreen",
-  //     props: {
-  //       data: props,
-  //     },
-  //   });
-  //   return <></>;
-  // }
+  if (MoveNav.screen == "ChatRoomScreen") {
+    setNavName({
+      istab: "NoTab",
+      tab: "MessageNoTabNavigation",
+      screen: "ChatRoomScreen",
+      props: {
+        data: MoveNav.props.data,
+      },
+    });
+    return <></>;
+  }
   //#endregion
   const navigation = useNavigation<MessageNavigation>();
   // const {User} = useAuthContext()
@@ -104,36 +103,13 @@ export const MessageScreen: React.FC = () => {
           resetToken,
           refresh,
           token,
-          undefined,// "User Room",
+          undefined, // "User Room",
           undefined,
           (d: ChatRoom[]) => setDatas(d)
         );
         //#endregion 내방목록 가져오기
       }
     );
-    // axios
-    //   .get("https://api.campustaxi.net/api/v1/accounts/me/", {
-    //     headers: {
-    //       Authorization: "Bearer " + token,
-    //       accept: "application/json",
-    //     },
-    //   })
-    //   .then((d) => {
-    //     setUser(d.data);
-    //
-    //      axios
-    //     .get(`${API_URL}/api/v1/accounts/rooms/`, { //TEST CDOE minsekim 추후 변경필요 현재 campustaxiadmin로 고정
-    //       headers: {
-    //         Authorization: `Bearer ewZe6EwgRV6wn9jR4vYIP0:APA91bHnNRaC71PhOmvSy5jCrcTYMzjPxSvN53k8gfjTeup0_cROQeIDR1a6xXSAY6Iw2UIW2mRT4elWvhz9SrY6hG6J0KJHzojz-mjE8GWUtavUj6CTR44JFkHQqnd6g_Y28IIBn13w`,
-    //         accept: `application/json`,
-
-    //       },
-    //     })
-    //     .then((response) => {
-
-    //     }).catch((e) => console.log(e.message == "Request failed with status code 401"));
-    //
-    //   });
   }, []);
   //#endregion 유저 데이터 요청
 

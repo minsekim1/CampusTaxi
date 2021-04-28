@@ -60,10 +60,12 @@ export const ChatRoomScreen: React.FC = () => {
   const ChatScrollRef = useRef<FlatList>(null);
   const { setNavName } = useAuthContext();
 
-    //#region 유저 데이터 요청
+  //#region 초기 세팅
+  //#region 유저 데이터 요청
   // AuthContext 시용하지 않고 직접 데이터 요청함
   const [user, setUser] = useState<User>();
   const { token } = useAuthContext();
+  const [socket, setSocket] = useState<Socket>(io('http://192.168.0.5:3000/'));
   useEffect(() => {
     axios
       .get(`${API_URL}/v1/accounts/me/`, {
@@ -73,22 +75,18 @@ export const ChatRoomScreen: React.FC = () => {
         },
       })
       .then((d) => setUser(d.data));
+      //#region 상태바
+      if (Platform.OS === "android")
+        StatusBar.setBackgroundColor(GenderColor(room?.gender));
+      StatusBar.setBarStyle("light-content");
+      //#endregion 상태바
   }, []);
   //#endregion 유저 데이터 요청
-  //#region 상태바
-  useEffect(() => {
-    if (Platform.OS === "android")
-      StatusBar.setBackgroundColor(GenderColor(room?.gender));
-    StatusBar.setBarStyle("light-content");
-  }, []);
-  //#endregion 상태바
+  //#endregion 초기 세팅
 
-  //#region 웹소켓q
-  let socket: Socket = io('http://192.168.0.5:3000/');
-  //io("http://3.34.119.15:3000/");
+  //#region 웹소켓
   useEffect(() => {
     if (user) {
-      // console.log("socket init");
       //채팅방 입장
       socket.emit("enter", { room_id: room.id, username: user?.nickname });
       //채팅 받기
@@ -146,14 +144,6 @@ export const ChatRoomScreen: React.FC = () => {
     //     });
     // }
   }, [room.id, token, refetch]);
-
-  // useEffect(() => {
-  //   if (messages && ChatScrollRef.current) {
-  //     setTimeout(() => {
-  //       ChatScrollRef.current?.scrollToEnd({ animated: true });
-  //     }, 500);
-  //   }
-  // }, []);
 
   //#region 검색
   const searchOnSubmit = async () => {
@@ -285,7 +275,7 @@ export const ChatRoomScreen: React.FC = () => {
   //#region 뒤로가기 제어
   const LeftBtnOnPress = () => {
     setNavName({ istab: "Tab", tab: "MessageTabScreen" });
-    socket.close();
+    socket.disconnect();
   };
   const ContentContainerStyle = {
     alignItems: "center",
