@@ -44,21 +44,6 @@ export type searchProps = {
   index_InResult: number;
 };
 export const ChatRoomScreen: React.FC = () => {
-  //#region 유저 데이터 요청
-  // AuthContext 시용하지 않고 직접 데이터 요청함
-  const [user, setUser] = useState<User>();
-  const { token } = useAuthContext();
-  useEffect(() => {
-    axios
-      .get(`${API_URL}/v1/accounts/me/`, {
-        headers: {
-          Authorization: "Bearer " + token,
-          accept: "application/json",
-        },
-      })
-      .then((d) => setUser(d.data));
-  }, []);
-  //#endregion 유저 데이터 요청
 
   const { navigate } = useNavigation<MessageNoTabNavigationProp>();
   const [messages, setMessages] = useState<Message[]>([]); //MessageDummy
@@ -75,35 +60,67 @@ export const ChatRoomScreen: React.FC = () => {
   const ChatScrollRef = useRef<FlatList>(null);
   const { setNavName } = useAuthContext();
 
-  let socket: Socket = io("http://192.168.0.5:3000/");
+    //#region 유저 데이터 요청
+  // AuthContext 시용하지 않고 직접 데이터 요청함
+  const [user, setUser] = useState<User>();
+  const { token } = useAuthContext();
   useEffect(() => {
-    //#region 상태바
+    axios
+      .get(`${API_URL}/v1/accounts/me/`, {
+        headers: {
+          Authorization: "Bearer " + token,
+          accept: "application/json",
+        },
+      })
+      .then((d) => setUser(d.data));
+  }, []);
+  //#endregion 유저 데이터 요청
+  //#region 상태바
+  useEffect(() => {
     if (Platform.OS === "android")
       StatusBar.setBackgroundColor(GenderColor(room?.gender));
     StatusBar.setBarStyle("light-content");
-    //#endregion 상태바
-
-    //#region 웹소켓 설정
-    console.log("socket init");
-    //채팅방 입장
-    socket.emit("enter", { room_id: room.id, username: user?.nickname });
-    //채팅 받기
-    socket.on("chat", (d) => {
-      let a:Array<Message> = messages;
-      a.unshift({
-        id: messages.length + 1,
-        message: d.msg,
-        message_type: "Message",
-        writer: d.username,
-        room: room.id,
-        created_at: new Date(),
-        updated_at: new Date(),
-        index: messages.length + 1,
-      });
-      setMessages(a);
-      //#endregion 웹소켓 설정
-    });
   }, []);
+  //#endregion 상태바
+
+  //#region 웹소켓q
+  let socket: Socket = io('http://192.168.0.5:3000/');
+  //io("http://3.34.119.15:3000/");
+  useEffect(() => {
+    if (user) {
+      // console.log("socket init");
+      //채팅방 입장
+      socket.emit("enter", { room_id: room.id, username: user?.nickname });
+      //채팅 받기
+      socket.on("chat", (d) => {
+        console.log("chat", d.msg);
+        let a: Array<Message> = messages;
+        a.unshift({
+          id: messages.length + 1,
+          message: d.msg,
+          message_type: "Message",
+          writer: d.username,
+          room: room.id,
+          created_at: new Date(),
+          updated_at: new Date(),
+          index: messages.length + 1,
+        });
+        setMessages(a);
+        ChatScrollRef.current?.forceUpdate();
+      });
+    }
+  }, [user]);
+  //#region 채팅 전송
+  const sendMessage = (text: string) => {
+    socket.emit("chat", {
+      msg: text,
+      room_id: room.id,
+      maxperson: room.personnel_limit,
+      username: user?.nickname,
+    });
+  };
+  //#endregion 채팅 전송
+  //#endregion 웹소켓
 
   useEffect(() => {
     if (search) searchRef.current?.focus();
@@ -137,17 +154,6 @@ export const ChatRoomScreen: React.FC = () => {
   //     }, 500);
   //   }
   // }, []);
-
-  //#region 채팅 전송
-  const sendMessage = (text: string) => {
-    socket.emit("chat", {
-      msg: text,
-      room_id: room.id,
-      maxperson: room.personnel_limit,
-      username: user?.nickname,
-    });
-  };
-  //#endregion 채팅 전송
 
   //#region 검색
   const searchOnSubmit = async () => {
@@ -186,14 +192,16 @@ export const ChatRoomScreen: React.FC = () => {
   const onPressUpSearch = () => {
     if (!searchResult) return;
     // 현재 메세지의 현재 위치 기준으로 이전 텍스트를 자름 => 현재 메세지에서 이전 문자열을 검사하기 위함
-    const cutString = messages[messages.length - searchResult.index].message.slice(
-      0,
-      searchResult.indexInMessage
-    );
+    const cutString = messages[
+      messages.length - searchResult.index
+    ].message.slice(0, searchResult.indexInMessage);
     // 현재 검색결과로 보여준 전체 메세지 안에서  이전 결과 중 가장 마지막을 찾음
     let indexInMessage = cutString.lastIndexOf(searchResult.searchString);
     // 만약 결과가 없고 이전 메세지가 필터된 결과에 있을경우 이전 메세지로감
-    if (indexInMessage == -1 && searchResult.result_message.length - 1 > searchResult.index_InResult) {
+    if (
+      indexInMessage == -1 &&
+      searchResult.result_message.length - 1 > searchResult.index_InResult
+    ) {
       // 메세지 인덱스를 빼고 이전 메세지에서 결과를 찾고
       // 이전 결과에서 다시 찾아서 결과를 넣음
       const r: searchProps = {
@@ -230,16 +238,16 @@ export const ChatRoomScreen: React.FC = () => {
   const onPressDownSearch = () => {
     // 현재 검색결과로 보여준 전체 메세지 안에서 다음 결과를 찾음
     if (!searchResult) return;
-    let indexInMessage = messages[messages.length - searchResult.index].message.indexOf(
-      searchInput,
-      searchResult.indexInMessage + 1
-      );
-      console.log("SearchDown", searchResult.result_message.length,searchResult.index_InResult + 1);
+    let indexInMessage = messages[
+      messages.length - searchResult.index
+    ].message.indexOf(searchInput, searchResult.indexInMessage + 1);
+    console.log(
+      "SearchDown",
+      searchResult.result_message.length,
+      searchResult.index_InResult + 1
+    );
     // 현재 메세지 안에서 결과가 없을 경우 메세지 인덱스를 더 하고 다음 메세지에 첫번째 결과로 넣음, 단, 다음 메세지가 있어야됌
-    if (
-      indexInMessage == -1 &&
-      0 < searchResult.index_InResult
-    ) {
+    if (indexInMessage == -1 && 0 < searchResult.index_InResult) {
       // 메세지 인덱스를 더하고 다음 메세지에서 결과를 찾고
       // 다음 결과에서 다시 찾아서 결과를 넣음
       const r: searchProps = {
@@ -272,7 +280,7 @@ export const ChatRoomScreen: React.FC = () => {
       });
     } else showToast("다음이 없습니다.");
   };
-  //#endregion검색
+  //#endregion 검색
 
   //#region 뒤로가기 제어
   const LeftBtnOnPress = () => {

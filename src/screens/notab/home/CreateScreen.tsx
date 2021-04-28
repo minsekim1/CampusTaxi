@@ -40,7 +40,6 @@ type Props = {
   route: any;
 };
 
-
 type schoolPosProps = {
   name: string;
   latitude: number;
@@ -78,7 +77,7 @@ export const CreateScreen: React.FC<Props> = ({}) => {
     start_lon: start_init.longitude,
     end_lat: end_init.latitude,
     end_lon: end_init.longitude,
-    gender: 0, //TEST CODE 사용자 성별로 바꿔야함
+    gender: "NONE", //TEST CODE 사용자 성별로 바꿔야함
   };
   const [selectRoom, setSelectRoom] = React.useState<ChatRoom>(selectRoom_init);
   const [start, setStart] = React.useState<myCoordProps>(start_init);
@@ -86,7 +85,7 @@ export const CreateScreen: React.FC<Props> = ({}) => {
   const MapRef = React.useRef<NaverMapView>(null);
   //#region 채팅방 타입별 초기 데이터 가져오기
   const [refetch, setRefetch] = useState<Date>();
-  
+
   //#region 상태바 제어
   const isFocused = useIsFocused();
   useEffect(() => {
@@ -112,26 +111,18 @@ export const CreateScreen: React.FC<Props> = ({}) => {
       undefined,
       (d) => {
         let rooms: ChatRoom[] = d.results;
-        console.log('rooms',rooms);
         if (typeof rooms[0].end_lat == "string")
           for (let j = 0; j < rooms.length; j++) {
-            rooms[j].end_lat = Number(
-              rooms[j].end_lat
-            );
-            rooms[j].end_lon = Number(
-              rooms[j].end_lon
-            );
-            rooms[j].start_lat = Number(
-              rooms[j].start_lat
-            );
-            rooms[j].start_lon = Number(
-              rooms[j].start_lon
-            );
+            rooms[j].end_lat = Number(rooms[j].end_lat);
+            rooms[j].end_lon = Number(rooms[j].end_lon);
+            rooms[j].start_lat = Number(rooms[j].start_lat);
+            rooms[j].start_lon = Number(rooms[j].start_lon);
           }
-          setDatas(rooms);
-      })
+        setDatas(rooms);
+      }
+    );
   }, [token, refetch]);
-    //#endregion 카테고리별 방 가져오기
+  //#endregion 카테고리별 방 가져오기
 
   // roomType : 0 1 2 순서대로 등교 하교 기타
   // value 정해진 출발이나 도착지
@@ -187,7 +178,7 @@ export const CreateScreen: React.FC<Props> = ({}) => {
         const addressName = !!r
           ? r.data.results[0].formatted_address
           : "(" + myCoord.latitude + "," + myCoord.longitude + ")";
-        let CreateRoom;
+        let CreateRoom: ChatRoom;
         try {
           CreateRoom =
             !!datas[0] && datas[0].id == -1 ? datas[0] : ChatRoomDummy;
@@ -211,8 +202,8 @@ export const CreateScreen: React.FC<Props> = ({}) => {
                     ? end_init.name
                     : selectRoom.end_address_detail,
                 end_address:
-                params.type != 2 ? end_init.name : selectRoom.end_address,
-                category: params.type
+                  params.type != 2 ? end_init.name : selectRoom.end_address,
+                category: params.type,
               }
             : {
                 ...CreateRoom,
@@ -227,8 +218,8 @@ export const CreateScreen: React.FC<Props> = ({}) => {
                     ? start_init.name
                     : selectRoom.start_address_detail,
                 start_address:
-              params.type != 2 ? start_init.name : selectRoom.start_address,
-                category: params.type
+                  params.type != 2 ? start_init.name : selectRoom.start_address,
+                category: params.type,
               };
         onPress({ ...myCoord, name: addressName });
         //기존 -1 방삭제하고 넣기
@@ -263,7 +254,7 @@ export const CreateScreen: React.FC<Props> = ({}) => {
                 end_address_detail: end.name,
                 end_lat: end.latitude,
                 end_lon: end.longitude,
-                category: params.type
+                category: params.type,
               }
             : {
                 ...CreateRoom,
@@ -275,7 +266,7 @@ export const CreateScreen: React.FC<Props> = ({}) => {
                 end_address_detail: searchData.name,
                 end_lat: searchData.latitude,
                 end_lon: searchData.longitude,
-                category: params.type
+                category: params.type,
               };
         onPress({ ...searchData, name: searchData.name });
         //기존 -1 방삭제하고 넣기

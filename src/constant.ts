@@ -12,7 +12,7 @@ const FIREBASE_CONFIG = {
 };
 
 export const MYfirebase = !fb.apps.length ? fb.initializeApp(FIREBASE_CONFIG) : fb.app()
-export const API_URL = "http://210.102.225.68:8000/api"; //TEST CODE minsekim Local HTTPS 말고 HTTP만 지원
+export const API_URL = "https://minsekim.campustaxi.net/api"; //TEST CODE minsekim Local HTTPS 말고 HTTP만 지원
 export const GOOGLE_MAPAPI_URL = "AIzaSyBVIfNVsdQk6J56bD4CwZSPDyYlxF_XBe0";
 export const windowWidth = Dimensions.get("window").width;
 export const windowHeight = Dimensions.get("window").height;

@@ -36,7 +36,7 @@ export const UserDummyList: User[] = [
   { ...UserDummy, uuid: "3", gender: "FEMALE" },
   { ...UserDummy, uuid: "4", gender: "MALE" },
 ];
-export const ChatRoomDummy = {
+export const ChatRoomDummy:ChatRoom = {
   id: -1, //id가 -1인 경우는 Start CreateRoom만 유일하다.
   unreadMessage: undefined,
   distance: 0,

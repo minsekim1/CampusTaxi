@@ -118,9 +118,11 @@ export const PhoneVerification: React.FC<Props> = ({
           else {
             setSent(true);
             // curl -X POST "https://api.campustaxi.net/api/v1/accounts/auth/" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{  \"receiver\": \"01024419894\",  \"channel\": \"phone\"}"
+            // curl -X POST "http://13.209.251.131:8000/api/v1/accounts/auth/" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{  \"receiver\": \"01024419894\",  \"channel\": \"phone\"}"
             // 확인을 눌렀을경우
             // TEST CODE receiver 바꿨을 때 다시 봐야함 현재  의미가 없음
             const onPressOk = () => {
+              console.log("r.data.ssssss");
               axios
                 .post<{ status: string }>(
                   `${API_URL}/v1/accounts/auth/`,
@@ -133,6 +135,7 @@ export const PhoneVerification: React.FC<Props> = ({
                   }
                 )
                 .then((r) => {
+                  console.log("r.data.status", r.data.status, r,);
                   if (r.data.status == "생성") {
                     setCodeInput(true);
                     RefTextInputCode.current?.focus();
