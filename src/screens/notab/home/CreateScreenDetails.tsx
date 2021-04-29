@@ -179,7 +179,7 @@ console.log('room',room)
           },
         });
       })
-      .catch((e) => Alert.alert("", JSON.stringify(e.response.data)));
+      // .catch((e) => console.log("", JSON.stringify(e.response)));
   };
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>

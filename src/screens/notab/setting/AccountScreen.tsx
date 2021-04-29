@@ -3,6 +3,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Text } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { CustomAxios } from "../../../components/axios/axios";
 import { API_URL } from "../../../constant";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import { User } from "../../../contexts/User";

@@ -1,12 +1,12 @@
-import React from "react";
+import React, { SVGProps } from "react";
 import Svg, { Path, Circle, G, Defs, Text, Ellipse } from 'react-native-svg';
 
-export function DepartIcon() {
+type Props = SVGProps<SVGElement>;
+export const DepartIcon: React.FC<Props> = ({ width, height }) => {
     return (
         <Svg
             xmlns="http://www.w3.org/2000/svg"
-            width="17"
-            height="26"
+            width={width ?? '17'} height={height ?? '26'}
             viewBox="0 0 17 26"
         >
             <G

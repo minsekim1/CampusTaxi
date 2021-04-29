@@ -3,6 +3,8 @@ import React, { Dispatch, SetStateAction } from "react";
 import { ChatRoom } from "../chat-room/ChatRoomList";
 import { Boarding_dtmToRecently } from "../chat/date";
 import { GenderColor, GenderText } from "../color/GenderColor";
+import ArriveIcon from "../icon/ArriveIcon";
+import DepartIcon from "../icon/DepartIcon";
 import { CreateRoomSelectCancel } from "../icon/home/CreateRoomSelectCancel";
 
 type Props = {
@@ -78,8 +80,8 @@ export const ChatRoomCard: React.FC<Props> = ({
           </CardHeaderContainer>
           <CardBodyContainer>
             <TextContainer>
-              <TextArea style={{color:'black'}}>출발지 - {data.start_address_detail}</TextArea>
-              <TextArea style={{color:'black'}}>도착지 - {data.end_address_detail}</TextArea>
+              <TextArea style={{ color: 'black', marginLeft:1}}><ArriveIcon width={10} height={10} />{data.start_address}</TextArea>
+              <TextArea style={{color:'black', marginLeft:1}}><DepartIcon width={10} height={10} />{data.end_address}</TextArea>
             </TextContainer>
             <RightContainer>
               <Count>
