@@ -31,6 +31,7 @@ export const HomeNoTabNavigation = () => {
               {...props}
               onPress={() => setNavName({ istab: "Tab", tab: "HomeTabScreen" })}
               tintColor="black"
+              pressColorAndroid="gray"
             />
           ),
         })}

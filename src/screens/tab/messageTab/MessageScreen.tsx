@@ -36,9 +36,11 @@ export const MessageScreen: React.FC = () => {
   const [datas, setDatas] = useState<ChatRoom[]>(ChatRoomSkeletonList);
   const { token, resetToken, refresh } = useAuthContext();
   const { setNavName, MoveNav } = useAuthContext();
-  //#region 채팅방 입장하기:방 넘겨가기
+  const navigation = useNavigation<MessageNavigation>();
 
-  if (MoveNav.screen == "ChatRoomScreen") {
+  //#region 새 채팅방 생성 시 방 넘어가기
+
+  if (!!MoveNav?.props?.data) {
     setNavName({
       istab: "NoTab",
       tab: "MessageNoTabNavigation",
@@ -49,9 +51,8 @@ export const MessageScreen: React.FC = () => {
     });
     return <></>;
   }
-  //#endregion
-  const navigation = useNavigation<MessageNavigation>();
-  // const {User} = useAuthContext()
+  //#endregion 새 채팅방 생성 시 방 넘어가기
+
   //#region 뒤로가기 버튼 제어 & 더블클릭시 앱 종료
   let currentCount = 0;
   React.useEffect(() => {
@@ -81,6 +82,7 @@ export const MessageScreen: React.FC = () => {
     }
   };
   //#endregion 뒤로가기 버튼 제어 & 더블클릭시 앱 종료
+
   //#region 유저 데이터 요청
   // AuthContext 시용하지 않고 직접 데이터 요청함
   const [user, setUser] = useState<User>();

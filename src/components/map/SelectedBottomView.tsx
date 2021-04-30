@@ -15,73 +15,65 @@ type Props = {
   SetRoute: Dispatch<SetStateAction<myCoordProps[]>>;
 };
 
-export const SelectedBottomView: React.FC<Props> = ({ data, SetRoute }) => {
+export const SelectedBottomView: React.FC<Props> = ({ data: d, SetRoute }) => {
   const [time, setTime] = useState<number>(0);
   const [cost, setCost] = useState<number>(0);
   const [distance, setDistance] = useState<number>(0);
 
-  if (!data || !data?.start_lon || !data?.end_lon) return <></>;
+  if (!d || !d?.start_lon || !d?.end_lon) return <></>;
   useEffect(() => {
     setTime(-1);
     //캐쉬 메모리에 저장해서 있으면 씀
-    AsyncStorage.getItem(
-      "route(" +
-        data.end_lon +
-        "," +
-        data.end_lat +
-        "," +
-        data.start_lon +
-        "," +
-        data.start_lat +
-        ")"
-    ).then((r) => {
-      if (!r) {
-        axios
-          .get(
-            `${TMAP_API}endX=${data.end_lon}&endY=${data.end_lat}&startX=${data.start_lon}&startY=${data.start_lat}`,
-            {
-              headers: {
-                Accept: "application/json",
-              },
-            }
-          )
-          .then((response) => {
-            // TEST CODE Type 설정법 모르겠음..
-            if (!!response) {
-              setCost(response.data.features[0].properties.taxiFare);
-              setDistance(response.data.features[0].properties.totalDistance);
-              setTime(response.data.features[0].properties.totalTime);
-              response.data.features.map((c: any) => {
-                if (!!c) SetRoute(c.geometry.coordinates);
-                AsyncStorage.setItem(
-                  "route(" +
-                    data.end_lon +
-                    "," +
-                    data.end_lat +
-                    "," +
-                    data.start_lon +
-                    "," +
-                    data.start_lat +
-                    ")",
-                  JSON.stringify(response.data.features[0])
-                );
-              });
-            }
-          })
-          .catch((e) =>
-            console.warn(
-              "예상금액가져오기: 데이터 처리 과정에서 에러가 발생했습니다.",e
-            )
+    let a = async () => {
+      let position = await AsyncStorage.getItem(
+        "route(" +
+          d.end_lon +
+          "," +
+          d.end_lat +
+          "," +
+          d.start_lon +
+          "," +
+          d.start_lat +
+          ")"
+      );
+      if (!position) {
+        position = await axios.get(
+          `${TMAP_API}endX=${d.end_lon}&endY=${d.end_lat}&startX=${d.start_lon}&startY=${d.start_lat}`,
+          { headers: { Accept: "application/json" } }
+        );
+        if (!!position) {
+          setCost(position.data.features[0].properties.taxiFare);
+          setDistance(position.data.features[0].properties.totalDistance);
+          setTime(position.data.features[0].properties.totalTime);
+          position.data.features.map((c: any) => {
+            if (!!c) SetRoute(c.geometry.coordinates);
+            AsyncStorage.setItem(
+              "route(" +
+                d.end_lon +
+                "," +
+                d.end_lat +
+                "," +
+                d.start_lon +
+                "," +
+                d.start_lat +
+                ")",
+              JSON.stringify(position.data.features[0])
+            );
+          });
+        } else
+          console.warn(
+            "예상금액가져오기: 데이터 처리 과정에서 에러가 발생했습니다."
           );
-			} else {
-				r = JSON.parse(r)
-        setCost(r.properties.taxiFare);
-        setDistance(r.properties.totalDistance);
-        setTime(r.properties.totalTime);
-        SetRoute(r.geometry.coordinates);
+      } else {
+        position = JSON.parse(position);
+        setCost(position.properties.taxiFare);
+        setDistance(position.properties.totalDistance);
+        setTime(position.properties.totalTime);
+        SetRoute(position.geometry.coordinates);
       }
-    });
-  }, [data]);
+    };
+    a();
+  }, [d]);
   return (
     <Container>
       {time == -1 ? (
@@ -91,7 +83,7 @@ export const SelectedBottomView: React.FC<Props> = ({ data, SetRoute }) => {
           <Col>
             <TitleText>예상시간</TitleText>
             <Row>
-                <BlueText>
+              <BlueText>
                 {time / 3600 >= 1.0
                   ? (time / 3600).toFixed(0) +
                     "시간 " +
@@ -123,7 +115,7 @@ const Col = styled.View`
   align-items: center;
 `;
 const DownText = styled.View``;
- const Row = styled.View`
+const Row = styled.View`
   align-items: flex-end;
   flex-direction: row;
 `;

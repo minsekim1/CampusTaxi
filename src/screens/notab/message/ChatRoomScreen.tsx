@@ -26,6 +26,7 @@ import { MessageNoTabNavigationParamList } from "./MessageNoTabNavigation";
 import io, { Socket } from "socket.io-client";
 import { User } from "../../../contexts/User";
 
+
 export type MessageNoTabNavigationProp = StackNavigationProp<
   MessageNoTabNavigationParamList,
   "ChatRoomScreen"
@@ -59,7 +60,7 @@ export const ChatRoomScreen: React.FC = () => {
   const searchRef = React.useRef<TextInput>(null);
   const ChatScrollRef = useRef<FlatList>(null);
   const { setNavName } = useAuthContext();
-
+  
   //#region 초기 세팅
   //#region 유저 데이터 요청
   // AuthContext 시용하지 않고 직접 데이터 요청함
@@ -85,10 +86,12 @@ export const ChatRoomScreen: React.FC = () => {
   //#endregion 초기 세팅
 
   //#region 웹소켓
+  const { firebaseToken  } = useAuthContext();
   useEffect(() => {
     if (user) {
       //채팅방 입장
-      socket.emit("enter", { room_id: room.id, username: user?.nickname });
+      console.log('firebaseToken',firebaseToken)
+      socket.emit("enter", { room_id: room.id, username: user?.nickname, firebaseToken:firebaseToken });
       //채팅 받기
       socket.on("chat", (d) => {
         console.log("chat", d.msg);
@@ -115,6 +118,7 @@ export const ChatRoomScreen: React.FC = () => {
       room_id: room.id,
       maxperson: room.personnel_limit,
       username: user?.nickname,
+      firebaseToken: firebaseToken,
     });
   };
   //#endregion 채팅 전송

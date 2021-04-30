@@ -1,8 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { API_URL } from "../constant";
+import { API_URL, MYfirebase } from "../constant";
 import { User, UserDummy } from "./User";
+
+import messaging from "@react-native-firebase/messaging";
+import firebase from "firebase";
 
 export type AuthState = {
   token: string | undefined;
@@ -12,9 +15,10 @@ export type AuthState = {
   setLoggedIn: (token: string, refresh: string) => void;
   setLoggedOut: () => void;
   MoveNav: MoveNavProps;
-  setNavName: (arg0: MoveNavProps) => void;
+  setNavName: (props: MoveNavProps) => void;
   User: User;
-  resetToken: (token:string) => void;
+  resetToken: (token: string) => void;
+  firebaseToken: any;
 };
 
 const AuthContext = React.createContext<AuthState>({
@@ -25,9 +29,10 @@ const AuthContext = React.createContext<AuthState>({
   MoveNav: { istab: "Tab", tab: "HomeTabScreen", props: undefined },
   setLoggedIn: () => {},
   setLoggedOut: () => {},
-  setNavName: (MoveNavProps) => {},
+  setNavName: (props: MoveNavProps) => {},
   resetToken: () => {},
   User: UserDummy,
+  firebaseToken: undefined,
 });
 
 export type MoveNavProps = {
@@ -52,10 +57,50 @@ export const AuthProvider: React.FC = ({ children }) => {
   const [refresh, setRefresh] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [User, setUser] = useState<User>(UserDummy);
+  const [firebaseToken, setFirebaseToken] = useState<any>();
   const [MoveNav, setMoveNav] = useState<MoveNavProps>({
     istab: "Tab",
     tab: "HomeTabScreen",
   });
+
+  //#region FCM setting
+  const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
+  // Foreground
+
+  const handlePushToken = useCallback(async () => {
+    const enabled = await messaging().hasPermission();
+    if (enabled) {
+      const fcmToken = await messaging().getToken();
+      console.log("firebaseToken ", fcmToken);
+      if (fcmToken) {
+        setFBToken(fcmToken);
+      }
+    } else {
+      const authorizaed = await messaging().requestPermission();
+      if (authorizaed) setIsAuthorized(true);
+    }
+  }, []);
+
+  const saveDeviceToken = useCallback(async () => {
+    if (isAuthorized) {
+      const currentFcmToken = await firebase.messaging().getToken();
+      if (currentFcmToken !== firebaseToken) {
+        return setFBToken(currentFcmToken);
+      }
+      return messaging().onTokenRefresh((token) => setFBToken(token));
+    }
+  }, [firebaseToken, isAuthorized]);
+
+  const setFBToken = useCallback(
+    (firebaseToken: string) => {
+      setFirebaseToken(firebaseToken);
+      messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+        console.log("Message handled in the background!", remoteMessage);
+      });
+    },
+    [setFirebaseToken]
+  );
+  // #endregion FCM setting
 
   const setNavName = useCallback(
     (props: MoveNavProps) => {
@@ -69,6 +114,8 @@ export const AuthProvider: React.FC = ({ children }) => {
       AsyncStorage.setItem("@campus_taxi_auth", refreshData);
       setRefresh(refreshData);
       setToken(accessData);
+      handlePushToken();
+      saveDeviceToken();
     },
     [setRefresh, setToken]
   );
@@ -103,31 +150,10 @@ export const AuthProvider: React.FC = ({ children }) => {
   const resetToken = useCallback((token: string) => {
     setToken(token);
   }, []);
+
   useEffect(() => {
     getRefreshToken();
   }, [getRefreshToken]);
-
-  // useEffect(() => {
-  //   if (refresh) {
-  //     refreshToken();
-  //   }
-  // }, [refresh, refreshToken]);
-
-  // useEffect(() => {
-  //   if (refresh && token) {
-  //     //test code
-  //     // const interval = setInterval(() => {
-  //     axios
-  //       .post(`${API_URL}/accounts/token/verify/`, { token })
-  //       .then((response) => {
-  //         if (response.data.code) {
-  //           refreshToken();
-  //         }
-  //       });
-  //     // }, 600000);
-  //     // return () => clearInterval(interval);
-  //   }
-  // }, [token, refresh, refreshToken]);
 
   return (
     <AuthContext.Provider
@@ -142,6 +168,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         setLoggedIn,
         setNavName,
         User,
+        firebaseToken,
       }}
     >
       {children}

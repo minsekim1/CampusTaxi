@@ -25,7 +25,7 @@ export const MapBottomButton: React.FC<Props> = ({
   const { setNavName } = useAuthContext();
   const EnterRoom = () =>
   {
-    console.log('selectRoom', selectRoom);
+    // console.log('selectRoom', selectRoom);
     setNavName({
       istab: "Tab",
       tab: "MessageTabScreen",
