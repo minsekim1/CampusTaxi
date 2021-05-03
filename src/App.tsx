@@ -5,6 +5,7 @@ import SplashScreen from "react-native-splash-screen";
 import { AuthProvider, useAuthContext } from "./contexts/AuthContext";
 import { RootScreen } from "./screens/RootScreen";
 import messaging from "@react-native-firebase/messaging";
+import { InAppNotificationProvider } from "react-native-in-app-notification";
 
 const App = () => {
   const { isLoading } = useAuthContext();
@@ -17,22 +18,23 @@ const App = () => {
     }
   }, [isLoading]);
 
-  useEffect(() => { 
+  useEffect(() => {
     messaging().onMessage(async (remoteMessage) => {
       console.log("Message handled in the foreground!", remoteMessage);
     });
-
-  },[])
+  }, []);
   return (
     <AuthProvider>
-      <NavigationContainer>
-        <StatusBar
-          barStyle="light-content"
-          backgroundColor="transparent"
-          translucent={true}
-        />
-        <RootScreen />
-      </NavigationContainer>
+      <InAppNotificationProvider>
+        <NavigationContainer>
+          <StatusBar
+            barStyle="light-content"
+            backgroundColor="transparent"
+            translucent={true}
+          />
+          <RootScreen />
+        </NavigationContainer>
+      </InAppNotificationProvider>
     </AuthProvider>
   );
 };

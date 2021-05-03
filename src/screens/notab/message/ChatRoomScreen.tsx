@@ -26,7 +26,6 @@ import { MessageNoTabNavigationParamList } from "./MessageNoTabNavigation";
 import io, { Socket } from "socket.io-client";
 import { User } from "../../../contexts/User";
 
-
 export type MessageNoTabNavigationProp = StackNavigationProp<
   MessageNoTabNavigationParamList,
   "ChatRoomScreen"
@@ -45,7 +44,6 @@ export type searchProps = {
   index_InResult: number;
 };
 export const ChatRoomScreen: React.FC = () => {
-
   const { navigate } = useNavigation<MessageNoTabNavigationProp>();
   const [messages, setMessages] = useState<Message[]>([]); //MessageDummy
   const [searchResult, setSearchResult] = useState<searchProps>();
@@ -60,13 +58,13 @@ export const ChatRoomScreen: React.FC = () => {
   const searchRef = React.useRef<TextInput>(null);
   const ChatScrollRef = useRef<FlatList>(null);
   const { setNavName } = useAuthContext();
-  
+
   //#region 초기 세팅
   //#region 유저 데이터 요청
   // AuthContext 시용하지 않고 직접 데이터 요청함
   const [user, setUser] = useState<User>();
   const { token } = useAuthContext();
-  const [socket, setSocket] = useState<Socket>(io('http://192.168.0.5:3000/'));
+  const [socket, setSocket] = useState<Socket>(io("http://3.37.7.150:3000/"));
   useEffect(() => {
     axios
       .get(`${API_URL}/v1/accounts/me/`, {
@@ -76,22 +74,26 @@ export const ChatRoomScreen: React.FC = () => {
         },
       })
       .then((d) => setUser(d.data));
-      //#region 상태바
-      if (Platform.OS === "android")
-        StatusBar.setBackgroundColor(GenderColor(room?.gender));
-      StatusBar.setBarStyle("light-content");
-      //#endregion 상태바
+    //#region 상태바
+    if (Platform.OS === "android")
+      StatusBar.setBackgroundColor(GenderColor(room?.gender));
+    StatusBar.setBarStyle("light-content");
+    //#endregion 상태바
   }, []);
   //#endregion 유저 데이터 요청
   //#endregion 초기 세팅
 
   //#region 웹소켓
-  const { firebaseToken  } = useAuthContext();
+  const { firebaseToken } = useAuthContext();
   useEffect(() => {
     if (user) {
       //채팅방 입장
-      console.log('firebaseToken',firebaseToken)
-      socket.emit("enter", { room_id: room.id, username: user?.nickname, firebaseToken:firebaseToken });
+      console.log("firebaseToken", firebaseToken);
+      socket.emit("enter", {
+        room_id: room.id,
+        username: user?.nickname,
+        firebaseToken: firebaseToken,
+      });
       //채팅 받기
       socket.on("chat", (d) => {
         console.log("chat", d.msg);
@@ -113,6 +115,7 @@ export const ChatRoomScreen: React.FC = () => {
   }, [user]);
   //#region 채팅 전송
   const sendMessage = (text: string) => {
+    console.log("chat sent")
     socket.emit("chat", {
       msg: text,
       room_id: room.id,
@@ -293,7 +296,6 @@ export const ChatRoomScreen: React.FC = () => {
     setSearchResult(undefined);
   };
   const KeyBoardOnSubmit = (text: string) => {
-    setMessage("");
     sendMessage(text);
   };
 
