@@ -19,6 +19,8 @@
     "@react-native-community/checkbox": "^0.5.7",
     "@react-native-community/datetimepicker": "^3.4.3",
     "@react-native-community/masked-view": "^0.1.10",
+    "@react-native-firebase/app": "^11.2.0",
+    "@react-native-firebase/messaging": "^11.2.0",
     "@react-native-picker/picker": "^1.9.10",
     "@react-native-seoul/kakao-login": "^2.10.2",
     "@react-navigation/bottom-tabs": "^5.11.6",
@@ -27,6 +29,8 @@
     "apsl-react-native-button": "^3.1.1",
     "axios": "^0.21.1",
     "date-fns": "^2.17.0",
+    "firebase": "^8.3.3",
+    "i": "0.3.6",
     "react": "16.13.1",
     "react-native": "^0.63.4",
     "react-native-gesture-handler": "^1.10.3",
@@ -45,7 +49,8 @@
     "react-native-splash-screen": "^3.2.0",
     "react-native-svg": "^12.1.0",
     "react-native-vector-icons": "^8.1.0",
-    "react-native-version-check": "^3.4.2"
+    "react-native-version-check": "^3.4.2",
+    "socket.io-client": "^4.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",

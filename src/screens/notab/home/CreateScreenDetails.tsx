@@ -1,4 +1,5 @@
 import styled from "@emotion/native";
+import { format } from "date-fns";
 import React, { useState, useEffect } from "react";
 import {
   Platform,
@@ -8,6 +9,7 @@ import {
   View,
   TouchableOpacity,
   ListViewComponent,
+  Alert,
 } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { OptionButton } from "../../../components/button/OptionButton";
@@ -25,6 +27,14 @@ import axios from "axios";
 import { API_URL, GOOGLE_MAPAPI_URL } from "../../../constant";
 import { User } from "../../../contexts/User";
 import { ETAView } from "../../../components/chat-room/ETAView";
+import {
+  StackActions,
+  TabActions,
+  useNavigation,
+} from "@react-navigation/native";
+import { MessageNoTabNavigationProp } from "../message/ChatRoomScreen";
+import { NoTabNavigation } from "../NoTabNavigation";
+import { CustomAxios } from "../../../components/axios/axios";
 
 type HomeScreenNavigationProp = StackNavigationProp<
   HomeStackParamList,
@@ -39,10 +49,12 @@ type Props = {
 };
 
 export const CreateScreenDetails: React.FC<Props> = (props: any) => {
+  //#region
   const selectRoom: ChatRoom = props.route.params;
-  
-	const { setNavName } = useAuthContext();
 
+  const { setNavName } = useAuthContext();
+
+  const [dateBtn, setDateBtn] = useState<string>("0");
   const [date, setDate] = useState(new Date());
   const [timeonly, setTimeonly] = useState(
     date.getHours().toString() + ":" + date.getMinutes().toString()
@@ -50,11 +62,12 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
 
-  const { token } = useAuthContext();
   const [refetch, setRefetch] = useState<Date>();
 
   const [personnelLimit, setPersonnelLimit] = useState(4);
   const [createRoom, setcreateRoom] = React.useState<ChatRoom>(selectRoom);
+
+  const [gender_, setGender_] = React.useState<string>("1");
 
   const getInputDayLabel = (day: number) => {
     const week = new Array("일", "월", "화", "수", "목", "금", "토");
@@ -67,25 +80,17 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
   };
 
   const getNextThreeDay = (date: Date) => {
-    let tomorrow = new Date(date.getTime() + 24 * 60 * 60 * 1000);
-    let nextTomorrow = new Date(tomorrow.getTime() + 24 * 60 * 60 * 1000);
     return [
       OptionDateFormat(date.getMonth() + 1, date.getDate(), date.getDay()) +
         "\n오늘",
-      OptionDateFormat(
-        tomorrow.getMonth() + 1,
-        tomorrow.getDate(),
-        tomorrow.getDay()
-      ) + "\n내일",
-      OptionDateFormat(
-        nextTomorrow.getMonth() + 1,
-        nextTomorrow.getDate(),
-        nextTomorrow.getDay()
-      ) + "\n모레",
+      OptionDateFormat(date.getMonth() + 1, date.getDate() + 2, date.getDay()) +
+        "\n내일",
+      OptionDateFormat(date.getMonth() + 1, date.getDate() + 3, date.getDay()) +
+        "\n모레",
     ];
   };
 
-  let datelist = getNextThreeDay(date);
+  const datelist = getNextThreeDay(date);
 
   const onChange = (event: any, selectedDate: Date) => {
     const currentDate = selectedDate || date;
@@ -106,59 +111,75 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
   const showTimepicker = () => {
     showMode("time");
   };
-
+  //#endregion
   //#region 유저 데이터 요청
   // AuthContext 시용하지 않고 직접 데이터 요청함
+  const { token, resetToken, refresh } = useAuthContext();
   const [user, setUser] = useState<User>();
   useEffect(() => {
-    axios
-      .get("https://api.campustaxi.net/api/v1/accounts/me/", {
-        headers: {
-          Authorization: "Bearer " + token,
-          accept: "application/json",
-        },
-      })
-      .then((d) => setUser(d.data));
+    CustomAxios(
+      "GET",
+      `${API_URL}/v1/accounts/me/`,
+      resetToken,
+      refresh,
+      token,
+      undefined, //"User API",
+      undefined,
+      (d: User) => setUser(d)
+    );
   }, []);
   //#endregion 유저 데이터 요청
   const Create = () => {
-    const room = {
-      start_address_code: "00000",
+    const date_ = new Date().getDate() + Number(dateBtn);
+    const hour = Number(timeonly.split(":")[0]);
+    const min = Number(timeonly.split(":")[1]);
+    const date_result = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      date_,
+      hour,
+      min,
+      0
+    );
+    const date_string =
+      format(date_result, "yyyy-MM-dd") + "T" + hour + ":" + min + ":00";
+    //TEST CODE minsekim 백엔드 끝나면 비공개=>무관으로 변경해야함
+    let gender_Local = gender_ == "0" ? user?.gender : "NONE";
+
+    let room = {
       start_address: selectRoom.start_address,
       start_address_detail: selectRoom.start_address_detail,
-      start_lat: selectRoom.start_lat,
-      start_lon: selectRoom.start_lon,
-      end_address_code: "00000",
+      start_lat: selectRoom.start_lat.toFixed(6),
+      start_lon: selectRoom.start_lon.toFixed(6),
       end_address: selectRoom.end_address,
       end_address_detail: selectRoom.end_address_detail,
-      end_lat: selectRoom.end_lat,
-      end_lon: selectRoom.end_lon,
-      //   TEST CODE 날짜 변경 들어가야함
-      boarding_dtm: date,
+      end_lat: selectRoom.end_lat.toFixed(6),
+      end_lon: selectRoom.end_lon.toFixed(6),
+      boarding_dtm: date_string,
       personnel_limit: personnelLimit,
-      gender: selectRoom.gender == 0 ? user?.gender : "NONE",
-      owner: 1,
-      //   owner TEST CODE 백엔드 변경후 바꿔야함 , 현재 uuid 값을 받아올 수 없음.
+      gender: gender_Local,
+      category: selectRoom.category + 1,
     };
-    console.log(room);
+console.log('room',room)
     axios
-      .post(`${API_URL}/api/v1/rooms/`, room, {
+      .post(`${API_URL}/v1/rooms/`, room, {
         headers: {
           Authorization: `Bearer ${token}`,
           accept: "application/json",
         },
       })
-      .then((r) => console.log(r))
-      .catch((e) => console.log(e.response.data));
-
-    setNavName({
-    	istab: 'NoTab',
-    	tab: 'NotificationNoTabNavigation',
-    	screen: 'ChatRoomScreen', //CreateScreenDetails하면 기본 초기화 화면 바꿔서 바로 그쪽으로 이동. 안의 props값은 useAuthContext로 해당 페이지에서 또 읽음
-    	props: {
-    	  data: selectRoom,
-    }
-    })
+      .then((r) => {
+        let room: ChatRoom = r.data;
+        console.log('result create room:',r.data);
+        setNavName({
+          istab: "Tab",
+          tab: "MessageTabScreen",
+          props: {
+            data: room,
+          },
+        });
+      })
+      // .catch((e) => console.log("", JSON.stringify(e.response)));
   };
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -166,7 +187,7 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
         <Container>
           <SubContainer>
             <ETAView
-              gender={0}
+              gender={"MALE"}
               start_address={createRoom.start_address_detail}
               end_address={createRoom.end_address_detail}
             />
@@ -181,9 +202,7 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
               backgroundColor={"#76a2eb"}
               borderColor={"#76a2eb"}
               color={"#ffffff"}
-              onChange={(option) => {
-                console.log(option);
-              }}
+              onChange={(num) => setDateBtn(num)}
               height={43}
               width={70}
               borderRadius={"14px"}
@@ -202,7 +221,7 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
                     mode="time"
                     is24Hour={true}
                     display="default"
-                    onChange={onChange}
+                    onChange={() => onChange}
                   />
                 )}
                 <Text>{timeonly}</Text>
@@ -233,9 +252,7 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
               backgroundColor={"#76a2eb"}
               borderColor={"#76a2eb"}
               color={"#ffffff"}
-              onChange={(option) => {
-                console.log(option);
-              }}
+              onChange={(option) => setGender_(option)}
               height={28}
               width={58}
               defaultIndex={1}

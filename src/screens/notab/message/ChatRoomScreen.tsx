@@ -23,6 +23,9 @@ import { API_URL } from "../../../constant";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import { MessageNoTabNavigationParamList } from "./MessageNoTabNavigation";
 
+import io, { Socket } from "socket.io-client";
+import { User } from "../../../contexts/User";
+
 export type MessageNoTabNavigationProp = StackNavigationProp<
   MessageNoTabNavigationParamList,
   "ChatRoomScreen"
@@ -41,14 +44,14 @@ export type searchProps = {
   index_InResult: number;
 };
 export const ChatRoomScreen: React.FC = () => {
+
   const { navigate } = useNavigation<MessageNoTabNavigationProp>();
-  const [messages, setMessages] = useState<Message[]>(MessageDummy);
+  const [messages, setMessages] = useState<Message[]>([]); //MessageDummy
   const [searchResult, setSearchResult] = useState<searchProps>();
   const [message, setMessage] = useState("");
   const [room, setRoom] = useState<ChatRoom>(
     useAuthContext().MoveNav.props.data
   );
-  const { token } = useAuthContext();
   const route = useRoute<NavigationRoute>();
   const [refetch, setRefetch] = useState<Date>();
   const [search, setSearch] = useState<boolean>(false);
@@ -57,66 +60,92 @@ export const ChatRoomScreen: React.FC = () => {
   const ChatScrollRef = useRef<FlatList>(null);
   const { setNavName } = useAuthContext();
 
-  console.log("intoChatRoomScreen")
-
+  //#region 초기 세팅
+  //#region 유저 데이터 요청
+  // AuthContext 시용하지 않고 직접 데이터 요청함
+  const [user, setUser] = useState<User>();
+  const { token } = useAuthContext();
+  const [socket, setSocket] = useState<Socket>(io('http://192.168.0.5:3000/'));
   useEffect(() => {
-    if (Platform.OS === "android") {
-      StatusBar.setBackgroundColor(GenderColor(room?.gender));
-    }
-    StatusBar.setBarStyle("light-content");
+    axios
+      .get(`${API_URL}/v1/accounts/me/`, {
+        headers: {
+          Authorization: "Bearer " + token,
+          accept: "application/json",
+        },
+      })
+      .then((d) => setUser(d.data));
+      //#region 상태바
+      if (Platform.OS === "android")
+        StatusBar.setBackgroundColor(GenderColor(room?.gender));
+      StatusBar.setBarStyle("light-content");
+      //#endregion 상태바
   }, []);
+  //#endregion 유저 데이터 요청
+  //#endregion 초기 세팅
+
+  //#region 웹소켓
+  useEffect(() => {
+    if (user) {
+      //채팅방 입장
+      socket.emit("enter", { room_id: room.id, username: user?.nickname });
+      //채팅 받기
+      socket.on("chat", (d) => {
+        console.log("chat", d.msg);
+        let a: Array<Message> = messages;
+        a.unshift({
+          id: messages.length + 1,
+          message: d.msg,
+          message_type: "Message",
+          writer: d.username,
+          room: room.id,
+          created_at: new Date(),
+          updated_at: new Date(),
+          index: messages.length + 1,
+        });
+        setMessages(a);
+        ChatScrollRef.current?.forceUpdate();
+      });
+    }
+  }, [user]);
+  //#region 채팅 전송
+  const sendMessage = (text: string) => {
+    socket.emit("chat", {
+      msg: text,
+      room_id: room.id,
+      maxperson: room.personnel_limit,
+      username: user?.nickname,
+    });
+  };
+  //#endregion 채팅 전송
+  //#endregion 웹소켓
 
   useEffect(() => {
     if (search) searchRef.current?.focus();
   }, [search]);
+
   useEffect(() => {
     if (room.id == -1) console.warn("room.id 가 -1입니다.");
-    else if (room.id) {
-      axios
-        .get<Message[]>(`${API_URL}/api/v1/messages/?room=${room.id}`, {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        })
-        .then((response) => {
-          const data = response.data.sort((a, b) =>
-            differenceInMilliseconds(
-              new Date(a.created_at),
-              new Date(b.created_at)
-            )
-          );
-          // console.log(data);
-          // setDatas(data);
-        });
-    }
+    // else if (room.id) {
+    //   axios
+    //     .get<Message[]>(`${API_URL}/api/v1/chat/${room.id}`, {
+    //       headers: {
+    //         Authorization: `Token ${token}`,
+    //       },
+    //     })
+    //     .then((response) => {
+    //       console.log('chat',response)
+    //       // const data = response.data.sort((a, b) =>
+    //       //   differenceInMilliseconds(
+    //       //     new Date(a.created_at),
+    //       //     new Date(b.created_at)
+    //       //   )
+    //       // );
+    //     });
+    // }
   }, [room.id, token, refetch]);
 
-  useEffect(() => {
-    if (messages && ChatScrollRef.current) {
-      setTimeout(() => {
-        ChatScrollRef.current?.scrollToEnd({ animated: true });
-      }, 500);
-    }
-  }, []); //scrollView, messages
-
-  const sendMessage = (text: string) => {
-    if (token) {
-      axios
-        .post(
-          `${API_URL}/api/v1/messages/`,
-          { message: text, message_type: "Message", writer: 1, room: room.id },
-          {
-            headers: {
-              Authorization: `Token ${token}`,
-            },
-          }
-        )
-        .then(() => {
-          setRefetch(new Date());
-        });
-    }
-  };
-
+  //#region 검색
   const searchOnSubmit = async () => {
     // 채팅 데이터 검색 함수
     // 채팅 데이터가 없는 경우
@@ -153,30 +182,33 @@ export const ChatRoomScreen: React.FC = () => {
   const onPressUpSearch = () => {
     if (!searchResult) return;
     // 현재 메세지의 현재 위치 기준으로 이전 텍스트를 자름 => 현재 메세지에서 이전 문자열을 검사하기 위함
-    const cutString = messages[searchResult.index].message.slice(
-      0,
-      searchResult.indexInMessage
-    );
+    const cutString = messages[
+      messages.length - searchResult.index
+    ].message.slice(0, searchResult.indexInMessage);
     // 현재 검색결과로 보여준 전체 메세지 안에서  이전 결과 중 가장 마지막을 찾음
     let indexInMessage = cutString.lastIndexOf(searchResult.searchString);
     // 만약 결과가 없고 이전 메세지가 필터된 결과에 있을경우 이전 메세지로감
-    if (indexInMessage == -1 && 0 < searchResult.index_InResult) {
+    if (
+      indexInMessage == -1 &&
+      searchResult.result_message.length - 1 > searchResult.index_InResult
+    ) {
       // 메세지 인덱스를 빼고 이전 메세지에서 결과를 찾고
       // 이전 결과에서 다시 찾아서 결과를 넣음
       const r: searchProps = {
         ...searchResult,
         index:
-          searchResult.result_message[searchResult.index_InResult - 1].index,
+          searchResult.result_message[searchResult.index_InResult + 1].index,
         indexInMessage: searchResult.result_message[
-          searchResult.index_InResult - 1
+          searchResult.index_InResult + 1
         ].message.lastIndexOf(searchInput),
-        index_InResult: searchResult.index_InResult - 1,
+        index_InResult: searchResult.index_InResult + 1,
       };
       setSearchResult(r);
       // 스크롤
       ChatScrollRef.current?.scrollToItem({
         animated: true,
-        item: searchResult.result_message[searchResult.index_InResult - 1].index,
+        item:
+          searchResult.result_message[searchResult.index_InResult + 1].index,
       });
     } else if (indexInMessage != -1) {
       // 결과가 있을경우
@@ -196,31 +228,33 @@ export const ChatRoomScreen: React.FC = () => {
   const onPressDownSearch = () => {
     // 현재 검색결과로 보여준 전체 메세지 안에서 다음 결과를 찾음
     if (!searchResult) return;
-    let indexInMessage = messages[searchResult.index].message.indexOf(
-      searchInput,
-      searchResult.indexInMessage + 1
+    let indexInMessage = messages[
+      messages.length - searchResult.index
+    ].message.indexOf(searchInput, searchResult.indexInMessage + 1);
+    console.log(
+      "SearchDown",
+      searchResult.result_message.length,
+      searchResult.index_InResult + 1
     );
     // 현재 메세지 안에서 결과가 없을 경우 메세지 인덱스를 더 하고 다음 메세지에 첫번째 결과로 넣음, 단, 다음 메세지가 있어야됌
-    if (
-      indexInMessage == -1 &&
-      searchResult.result_message.length > searchResult.index_InResult + 1
-    ) {
+    if (indexInMessage == -1 && 0 < searchResult.index_InResult) {
       // 메세지 인덱스를 더하고 다음 메세지에서 결과를 찾고
       // 다음 결과에서 다시 찾아서 결과를 넣음
       const r: searchProps = {
         ...searchResult,
         index:
-          searchResult.result_message[searchResult.index_InResult + 1].index,
+          searchResult.result_message[searchResult.index_InResult - 1].index,
         indexInMessage: searchResult.result_message[
-          searchResult.index_InResult + 1
+          searchResult.index_InResult - 1
         ].message.indexOf(searchInput),
-        index_InResult: searchResult.index_InResult + 1,
+        index_InResult: searchResult.index_InResult - 1,
       };
       setSearchResult(r);
       // 스크롤
       ChatScrollRef.current?.scrollToItem({
         animated: true,
-        item: searchResult.result_message[searchResult.index_InResult + 1].index,
+        item:
+          searchResult.result_message[searchResult.index_InResult - 1].index,
       });
     } else if (indexInMessage != -1 && searchResult.index > -1) {
       //메세지 안에서 결과가 있을경우 강조 글씨 바꾸고 스크롤함
@@ -236,21 +270,29 @@ export const ChatRoomScreen: React.FC = () => {
       });
     } else showToast("다음이 없습니다.");
   };
-  const LeftBtnOnPress = () =>
+  //#endregion 검색
+
+  //#region 뒤로가기 제어
+  const LeftBtnOnPress = () => {
     setNavName({ istab: "Tab", tab: "MessageTabScreen" });
+    socket.disconnect();
+  };
   const ContentContainerStyle = {
     alignItems: "center",
-    marginTop: 20,
+    paddingTop: 20,
     paddingBottom: 20,
   };
+  //#endregion
+
   const CancelBtnOnPress = () => {
     setSearch(false);
     setSearchResult(undefined);
   };
-  const KeyBoardOnSubmit = (e: any) => {
+  const KeyBoardOnSubmit = (text: string) => {
     setMessage("");
-    sendMessage(e.nativeEvent.text);
+    sendMessage(text);
   };
+
   return (
     <BlankBackground color={GenderColor(room?.gender)}>
       <KeyboardContainer
@@ -286,7 +328,7 @@ export const ChatRoomScreen: React.FC = () => {
                     <BackIconWhite />
                   </LeftBtn>
                   <Crown />
-                  <Title>asd</Title>
+                  <Title>{room.owner}</Title>
                   <Group>
                     <Btn onPress={() => setSearch(true)}>
                       <SearchIcon fill="white" />
@@ -301,16 +343,18 @@ export const ChatRoomScreen: React.FC = () => {
             {/* 채팅 내용 */}
             <ContentContainer
               ref={ChatScrollRef}
+              inverted
               data={messages}
               contentContainerStyle={ContentContainerStyle}
+              extraData={messages}
+              keyExtractor={(item: any, index: number) => index.toString()}
               renderItem={(props: any) => (
                 <Chat
-                  key={props.index}
                   searchResult={searchResult}
                   message={props.item}
-                  gender={props.index % 3 ? 1 : 0}
-                  isLeft={props.index % 2 ? true : false}
-                  isHost={props.index % 3 ? true : false}
+                  gender={1}
+                  isLeft={props.item.username == user?.nickname}
+                  isHost={props.item.username == room.owner}
                 />
               )}
             ></ContentContainer>

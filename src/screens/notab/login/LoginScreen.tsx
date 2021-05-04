@@ -37,7 +37,7 @@ export const LoginScreen: React.FC = ({}) => {
   const login = async () => {
     axios
       .post(
-        "https://api.campustaxi.net/api/v1/accounts/token/",
+        `${API_URL}/v1/accounts/token/`,
         {
           username: id,
           password: password,

@@ -3,7 +3,7 @@ import { format } from "date-fns";
 export const DateToTime = (date: Date) => format(new Date(date), "HH:mm");
 export const DateToDay = (date: Date) => format(new Date(date), "MM/dd");
 export const DateToDayTime = (date: Date) =>
-  format(new Date(date), "MM/dd HH:mm");
+  format(new Date(date), "yyyy/MM/dd HH:mm");
 
 // 날짜 또는 시간으로 표기함
 export const DateToRecently = (date: Date) =>
@@ -19,9 +19,14 @@ function DateToRecentlyDayTime(date: Date) {
     return "오늘 " + DateToTime(date);
   else if (
     date.getMonth() == today.getMonth() &&
-    date.getDate() + 1 == today.getDate()
+    date.getDate() == today.getDate() + 1
   )
-    return "내일 " + DateToTime(date);;
+    return "내일 " + DateToTime(date);
+  else if (
+    date.getMonth() == today.getMonth() &&
+    date.getDate() == today.getDate() - 1
+  )
+    return "어제 " + DateToTime(date);
   return DateToDayTime(date);
 }
 export function Boarding_dtmToDate(string?: string) {
@@ -33,7 +38,7 @@ export function Boarding_dtmToDate(string?: string) {
   const sMin = Number(string.substring(14, 16));
   if (is_valid_date(sYear, sMonth, sDate, sHour, sMin))
     return new Date(sYear, sMonth, sDate, sHour, sMin);
-  else return new Date();
+  else return new Date(1970,1,1);
 }
 
 export function Boarding_dtmToRecently(string?: string) {

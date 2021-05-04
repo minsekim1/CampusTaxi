@@ -3,6 +3,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Text } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { CustomAxios } from "../../../components/axios/axios";
+import { API_URL } from "../../../constant";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import { User } from "../../../contexts/User";
 
@@ -32,16 +34,20 @@ const Col = styled.View`
 export const AccountScreen: React.FC = () => {
   //#region 유저 데이터 요청
   // AuthContext 시용하지 않고 직접 데이터 요청함
+  const { token, resetToken, refresh } = useAuthContext();
   const [user, setUser] = useState<User>();
-  const { token } = useAuthContext();
-  useEffect(() => { 
-    axios.get("https://api.campustaxi.net/api/v1/accounts/me/", {
-      headers: {
-        Authorization: "Bearer " + token,
-        accept: "application/json",
-      },
-    }).then(d => setUser(d.data));
-  },[])
+  useEffect(() => {
+    CustomAxios(
+      "GET",
+      `${API_URL}/v1/accounts/me/`,
+      resetToken,
+      refresh,
+      token,
+      undefined, //"User API",
+      undefined,
+      (d: User) => setUser(d)
+    );
+  }, []);
   //#endregion 유저 데이터 요청
   return (
     <Container>

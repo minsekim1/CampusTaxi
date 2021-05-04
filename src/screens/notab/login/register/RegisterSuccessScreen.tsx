@@ -6,6 +6,7 @@ import RNRestart from "react-native-restart";
 import { BlankButton } from "../../../../components/button/BlankButton";
 import { BlankBackground } from "../../../../components/layout/BlankBackground";
 import { RegisterLogo } from "../../../../components/logo/RegisterLogo";
+import { API_URL } from "../../../../constant";
 import { useAuthContext } from "../../../../contexts/AuthContext";
 
 export const RegisterSuccessScreen = (props: any) => {
@@ -15,7 +16,7 @@ export const RegisterSuccessScreen = (props: any) => {
   const login = async () => {
     axios
       .post(
-        "https://api.campustaxi.net/api/v1/accounts/token/",
+        `${API_URL}/v1/accounts/token/`,
         {
           username: id,
           password: password,

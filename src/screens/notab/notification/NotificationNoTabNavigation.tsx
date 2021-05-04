@@ -12,27 +12,32 @@ export type NotificationNoTabNavigationParamList = {
 };
 const MessageStack = createStackNavigator<NotificationNoTabNavigationParamList>();
 export const NotificationNoTabNavigation = (p:any) => {
-  console.log("here!");
   const props = useAuthContext().MoveNav;
+  const { setNavName } = useAuthContext();
+  
+    //#region 뒤로가기 제어
+  const LeftBtnOnPress = () =>
+    setNavName({ istab: "Tab", tab: "HomeTabScreen" });
+  //#endregion
+
   return (
     <MessageStack.Navigator
       initialRouteName={props?.screen ? props.screen : "NotificationScreen"}
     >
-
       <MessageStack.Screen
         name="NotificationScreen"
         component={NotificationScreen}
         options={{
-          title: "방 정보",
+          title: "알림",
           headerTitleAlign: "center",
           headerTitleStyle: {
             fontSize: 18,
             fontWeight: "bold",
-            color: "white",
+            color: "black",
           },
           headerLeft: () => (
-            <BackBtn onPress={() => p.navigation.goBack()}>
-              <BackIconWhite />
+            <BackBtn onPress={LeftBtnOnPress}>
+              <BackIconWhite color="black"/>
             </BackBtn>
           ),
         }}
@@ -42,5 +47,5 @@ export const NotificationNoTabNavigation = (p:any) => {
 };
 
 const BackBtn = styled.TouchableOpacity`
-  padding:0 0 0 23px;
+  padding:5px 5px 5px 23px;
 `;

@@ -6,7 +6,7 @@ import { DottedLine } from "../icon/chat/DottedLine";
 import { MarkerSVG } from "../icon/chat/MarkerSVG";
 
 type Props = {
-  gender: number;
+  gender: "MALE" | "FEMALE" | "NONE";
   start_address?: string;
   end_address?: string;
   start_time?: string;

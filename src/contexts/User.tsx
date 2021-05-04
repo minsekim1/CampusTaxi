@@ -1,7 +1,7 @@
 export type User = {
   uuid: string;
   username: string;
-  gender: string;
+  gender: "MALE" | "FEMALE" | "NONE";
   nickname: string;
   phone: string;
   name: string;
@@ -16,10 +16,10 @@ export type User = {
   is_staff: boolean;
   is_active: boolean;
 };
-export const UserDummy = {
+export const UserDummy:User = {
   uuid: 'string',
   username: 'string',
-  gender: "NONE",
+  gender: "MALE",
   nickname: 'string',
   phone: 'string',
   name: 'string',
