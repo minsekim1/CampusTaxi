@@ -195,16 +195,16 @@ const ProfileTextContainer = styled.View`
   flex: 1;
 `;
 const NicknameText = styled.Text`
-  font-size: 13px;
+  font-size: 15px;
   font-weight: bold;
 `;
 
 const CampusNameText = styled.Text`
-  font-size: 11px;
+  font-size: 13px;
 `;
 
 const EmailText = styled.Text`
-  font-size: 9px;
+  font-size: 11px;
 `;
 
 const ProfileImage = styled.Image`
