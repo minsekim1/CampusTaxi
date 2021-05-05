@@ -9,9 +9,12 @@ import { View, Text, TouchableHighlight } from "react-native";
 import FlashMessage from "react-native-flash-message";
 import { showMessage, hideMessage } from "react-native-flash-message";
 import styled from "@emotion/native";
+import { CustomAxios } from "./components/axios/axios";
+import { User } from "./contexts/User";
+import { API_URL } from "./constant";
 
 const App = () => {
-  const { isLoading } = useAuthContext();
+  const { isLoading, isLoggedIn } = useAuthContext();
 
   useEffect(() => {
     if (isLoading) {
@@ -21,15 +24,19 @@ const App = () => {
     }
   }, [isLoading]);
 
+  const [message, setMessage] = useState<FCM_message_props>();
   useEffect(() => {
     messaging().onMessage(async (remoteMessage: any) => {
-      let m: FCM_message_props = remoteMessage;
-      showMessage({
-        message: m.notification.title,
-        description: m.notification.body,
-      });
       // console.log("Message handled in the foreground!", remoteMessage);
-      // Message handled in the foreground! {"collapseKey": "com.campustaxi.campustaxi", "data": {}, "from": "1054249413075", "messageId": "0:1620109945922475%647781e1647781e1", "notification": {"android": {"clickAction": "FCM_PLUGIN_ACTIVITY", "smallIcon": "fcm_push_icon", "sound": "default"}, "body": "ㅛ", "title": "campustaxiadmin"}, "sentTime": 1620109945911, "ttl": 2419200}
+      // 유저가 로그인 되어 있는지 확인
+      if (isLoggedIn) {
+        let m: FCM_message_props = remoteMessage;
+        setMessage(m);
+        showMessage({
+          message: m.notification.title,
+          description: m.notification.body,
+        });
+      }
     });
   }, []);
   const FlashStyle = {
@@ -39,11 +46,7 @@ const App = () => {
   const FlashTextStyle = {
     color: "black",
   };
-  const renderMessage = (r: any) => (
-      <MessageText>
-        {r.description}
-      </MessageText>
-  );
+  const renderMessage = (r: any) => <MessageText>{r.description}</MessageText>;
   return (
     <AuthProvider>
       <NavigationContainer>
@@ -61,6 +64,7 @@ const App = () => {
         titleStyle={FlashTextStyle}
         statusBarHeight={10}
         renderCustomContent={renderMessage}
+        onPress={() => {console.log('r',message)}}
       />
     </AuthProvider>
   );
