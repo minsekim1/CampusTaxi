@@ -4,7 +4,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import axios from "axios";
 import { differenceInMilliseconds } from "date-fns";
 import React, { useEffect, useRef, useState } from "react";
-import { Platform, FlatList, StatusBar, Text, TextInput } from "react-native";
+import { Platform, FlatList, StatusBar, Text, TextInput, Alert } from "react-native";
 import { ChatRoom } from "../../../components/chat-room/ChatRoomList";
 import { KeyBoard } from "../../../components/chat-room/KeyBoard";
 import { Chat } from "../../../components/chat/ChatList";
@@ -19,7 +19,7 @@ import {
   showToast,
   showToastWithGravity,
 } from "../../../components/layout/Toast";
-import { API_URL } from "../../../constant";
+import { API_URL, socketURL } from "../../../constant";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import { MessageNoTabNavigationParamList } from "./MessageNoTabNavigation";
 
@@ -64,7 +64,7 @@ export const ChatRoomScreen: React.FC = () => {
   // AuthContext 시용하지 않고 직접 데이터 요청함
   const [user, setUser] = useState<User>();
   const { token } = useAuthContext();
-  const [socket, setSocket] = useState<Socket>(io("http://3.37.7.150:3000/"));
+  const [socket, setSocket] = useState<Socket>(io(socketURL));
   useEffect(() => {
     axios
       .get(`${API_URL}/v1/accounts/me/`, {

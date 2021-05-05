@@ -55,7 +55,7 @@ export const KeyBoard: React.FC<Props> = ({
               // onSubmitEditing={(t:string)=>onSubmitEditing(t)}
             />
           </InputView>
-            <SendView disabled={message ? false : true} onPress={() => { onSubmitEditing(message); setMessage(""); }}>
+            <SendView disabled={message ? false : true} onPress={() => { setMessage(""); onSubmitEditing(message); }}>
             <SendIcon isActive={message ? true : false} />
           </SendView>
         </>

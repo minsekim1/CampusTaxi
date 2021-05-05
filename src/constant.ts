@@ -10,9 +10,9 @@ const FIREBASE_CONFIG = {
   appId: "1:1054249413075:web:21f8f04c9933fe4cde2726",
   measurementId: "G-LH1WFX6SNM"
 };
-
+export const socketURL = 'https://minsekim.campustaxi.net:444/'; //http://3.37.7.150:80/
 export const MYfirebase = !fb.apps.length ? fb.initializeApp(FIREBASE_CONFIG) : fb.app()
-export const API_URL = "https://minsekim.campustaxi.net/api"; //TEST CODE minsekim Local HTTPS 말고 HTTP만 지원
+export const API_URL = "https://minsekim.campustaxi.net/api";
 export const GOOGLE_MAPAPI_URL = "AIzaSyBVIfNVsdQk6J56bD4CwZSPDyYlxF_XBe0";
 export const windowWidth = Dimensions.get("window").width;
 export const windowHeight = Dimensions.get("window").height;

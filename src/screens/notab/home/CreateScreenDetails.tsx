@@ -171,15 +171,15 @@ console.log('room',room)
       .then((r) => {
         let room: ChatRoom = r.data;
         console.log('result create room:',r.data);
-        setNavName({
-          istab: "Tab",
-          tab: "MessageTabScreen",
-          props: {
-            data: room,
-          },
-        });
+        // setNavName({
+        //   istab: "Tab",
+        //   tab: "MessageTabScreen",
+        //   props: {
+        //     data: room,
+        //   },
+        // });
       })
-      // .catch((e) => console.log("", JSON.stringify(e.response)));
+      .catch((e) => Alert.alert("", JSON.stringify(e.response)));
   };
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>

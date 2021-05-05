@@ -31,9 +31,6 @@
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
-        <!-- minsekim TEST CODE -->
-
-<!-- minsekim TEST CODE -->
     </application>
 
 </manifest>
