@@ -1,7 +1,7 @@
 import styled from '@emotion/native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import { BackHandler, Platform, SafeAreaView } from 'react-native';
 import { EmailSend } from '../../../components/chat-room/EmailSend';
 import { RightIcon } from '../../../components/icon/RightIcon';
@@ -9,6 +9,9 @@ import { BlankBackground } from '../../../components/layout/BlankBackground';
 import { showToast } from '../../../components/layout/Toast';
 import { useAuthContext } from '../../../contexts/AuthContext';
 import { SettingStackParamList } from './SettingStackNavigation';
+import { CustomAxios } from "../../../components/axios/axios";
+import { API_URL } from "../../../constant";
+import { User } from "../../../contexts/User";
 
 type SettingScreenNavigationProp = StackNavigationProp<SettingStackParamList, 'SettingScreen'>;
 
@@ -18,6 +21,22 @@ type Props = {
 export const SettingScreen: React.FC<Props> = () => {
   const { setLoggedOut } = useAuthContext();
   const { setNavName } = useAuthContext();
+
+  //프로필 화면을 위해 데이터를 요청
+  const { token, resetToken, refresh } = useAuthContext();
+  const [user, setUser] = useState<User>();
+  useEffect(() => {
+    CustomAxios(
+      "GET",
+      `${API_URL}/v1/accounts/me/`,
+      resetToken,
+      refresh,
+      token,
+      undefined, //"User API",
+      undefined,
+      (d: User) => setUser(d)
+    );
+  }, []);
 
   const navigation = useNavigation<SettingScreenNavigationProp>();
   //#region 뒤로가기 버튼 제어 & 더블클릭시 앱 종료
@@ -51,6 +70,14 @@ export const SettingScreen: React.FC<Props> = () => {
     <BlankBackground color="#fff">
       <SafeAreaView>
         <Container>
+          <ProfileContainer>
+            <ProfileImage source={{uri: 'https://reactnative.dev/img/tiny_logo.png'}}></ProfileImage>
+            <ProfileTextContainer>
+              <NicknameText>{user?.nickname}</NicknameText>
+              <CampusNameText>{user?.campus_name}</CampusNameText>
+              <EmailText>{user?.email}</EmailText>
+            </ProfileTextContainer>
+          </ProfileContainer>
           <Title>계정</Title>
           <MenuItem onPress={() => setNavName({
             istab: "NoTab",
@@ -154,4 +181,33 @@ const MenuItem = styled.TouchableOpacity`
 
 const MenuText = styled.Text`
   font-size: 15px;
+`;
+
+const ProfileContainer = styled.View`
+  margin-top: 20px;
+  margin-bottom: 20px;
+  flex-direction: row;
+  flex: 1;
+`;
+
+const ProfileTextContainer = styled.View`
+  margin-left: 20px;
+  flex: 1;
+`;
+const NicknameText = styled.Text`
+  font-size: 15px;
+  font-weight: bold;
+`;
+
+const CampusNameText = styled.Text`
+  font-size: 13px;
+`;
+
+const EmailText = styled.Text`
+  font-size: 11px;
+`;
+
+const ProfileImage = styled.Image`
+  width: 70px;
+  height: 70px;
 `;

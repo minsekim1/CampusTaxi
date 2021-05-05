@@ -1,5 +1,5 @@
 import styled from "@emotion/native";
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction,useEffect, useState } from "react";
 import { Platform, TextInput } from "react-native";
 import { searchProps } from "../../screens/notab/message/ChatRoomScreen";
 import { Message } from "../chat/Message";
@@ -26,7 +26,26 @@ export const KeyBoard: React.FC<Props> = ({
   onPressDownSearch,
   onPressUpSearch,
 }) => {
+
+  const [plusMenuHeight, setPlusMenuHeight] = useState(0);
+  const [plusIconSize, setPlusIconSize] = useState(0);
+  const [plusMenuActive, setPlusMenuActive] = useState(0);
+
+  function ActivePlusMenu(toggle: number){
+    if (toggle === 0){              
+      setPlusMenuHeight(100); setPlusIconSize(60); setPlusMenuActive(1);
+    }
+    else{
+      setPlusMenuHeight(0); setPlusIconSize(0); setPlusMenuActive(0);
+    }
+  }
+  
   return (
+    <KeyboardLayout>
+    <PlusButtonMenu style={{height: plusMenuHeight}}>
+      <SelectPicture style={{height: plusIconSize, width: plusIconSize}}/>
+      <SelectEmoticon style={{height: plusIconSize, width: plusIconSize}}/>
+    </PlusButtonMenu>
     <TextAreaContainer>
       {/* 검색 결과가 있을 떄는 위아래 화살표로 바뀜*/}
       {searchResult ? (
@@ -42,7 +61,13 @@ export const KeyBoard: React.FC<Props> = ({
       ) : (
         //검색 결과가 없으면 채팅 입력창이 뜸
         <>
-          <AddView>
+          <AddView onPress={() => {
+            //눌렀을 때 플러스 메뉴를 활성화/비활성화합니다
+            if (plusMenuActive === 0)             
+              ActivePlusMenu(0)            
+            else
+              ActivePlusMenu(1)            
+            }}> 
             <AddIcon />
           </AddView>
           <InputView>
@@ -61,6 +86,7 @@ export const KeyBoard: React.FC<Props> = ({
         </>
       )}
     </TextAreaContainer>
+    </KeyboardLayout>
   );
 };
 // 검색중
@@ -102,6 +128,18 @@ const TextAreaContainer = styled.View`
   flex-direction: row;
 `;
 
+const KeyboardLayout = styled.View`
+  background-color: #faf9f9;
+  padding: 7px 12px;
+  flex-direction: column;
+`;
+
+const PlusButtonMenu = styled.View `
+  background-color: #faf9f9;
+  height: 100px;
+  flex-direction: row;
+`;
+
 const TextArea: any = styled.TextInput`
   padding: 4px 15px;
   background-color: white;
@@ -109,4 +147,18 @@ const TextArea: any = styled.TextInput`
   margin: 0;
   border-width: 1px;
   border-color: #b7b7bb;
+`;
+
+const SelectPicture = styled.TouchableOpacity`
+  margin: 5px;
+  background-color: #00b7ff;
+  height: 70px;
+  width: 70px;
+`;
+
+const SelectEmoticon = styled.TouchableOpacity`
+  margin: 5px;
+  background-color: #b657ff;
+  height: 70px;
+  width: 70px;
 `;
