@@ -1,3 +1,4 @@
+import styled from "@emotion/native";
 import {
   Alert,
   BackHandler,
@@ -6,6 +7,7 @@ import {
   StyleSheet,
   Text,
   View,
+  Button,
 } from "react-native";
 import * as RNIap from "react-native-iap";
 import React, { Component, useEffect, useState } from "react";
@@ -28,9 +30,7 @@ const itemSubs = Platform.select({
     "com.cooni.point1000",
     "com.cooni.point5000", // dooboolab
   ],
-  android: [
-    "test.sub1", // subscription
-  ],
+  android: ["android.campustaxi.campustaxi", "regularpayment"],
 });
 
 let purchaseUpdateSubscription: any;
@@ -98,6 +98,7 @@ export const PremiumScreen: React.FC = () => {
   const [availableItemsMessage, setAvailableItemsMessage] = useState<string>(
     ""
   );
+
   //#region FUNCTIONS
   useEffect(() => {
     async () => {
@@ -127,14 +128,16 @@ export const PremiumScreen: React.FC = () => {
             console.warn("ackErr", ackErr);
           }
           setReceipt(receipt);
-          Alert.alert("Receipt", receipt);
+          Alert.alert("결제 완료", "결제가 정상적으로 처리되었습니다.");
+          //Alert.alert("Receipt", receipt);
         }
       }
     );
     purchaseErrorSubscription = RNIap.purchaseErrorListener(
       (error: RNIap.PurchaseError) => {
         console.log("purchaseErrorListener", error);
-        Alert.alert("purchase error", JSON.stringify(error));
+        Alert.alert("결제 취소", "결제가 취소되었습니다.");
+        //Alert.alert("purchase error", JSON.stringify(error));
       }
     );
     return () => {
@@ -161,6 +164,7 @@ export const PremiumScreen: React.FC = () => {
       console.warn(err.code, err.message);
     }
   };
+
   const getSubscriptions = async (): Promise<void> => {
     try {
       if (!itemSubs) return;
@@ -171,8 +175,8 @@ export const PremiumScreen: React.FC = () => {
       console.warn(err.code, err.message);
     }
   };
+  
   const getAvailablePurchases = async (): Promise<void> => {
-    console.log("asd")
     try {
       console.info(
         "Get available purchases (non-consumable or unconsumed consumable)"
@@ -181,7 +185,10 @@ export const PremiumScreen: React.FC = () => {
       console.info("Available purchases :: ", purchases);
       if (purchases && purchases.length > 0) {
         setAvailableItemsMessage(`Got ${purchases.length} items.`);
-        setReceipt(purchases[0].transactionReceipt);
+        for (let i = 0; i<purchases.length; i+=1){
+          setReceipt(purchases[i].transactionReceipt);
+          console.log(JSON.parse(purchases[i].transactionReceipt).productId);
+        }
       }
     } catch (err) {
       console.warn(err.code, err.message);
@@ -204,7 +211,17 @@ export const PremiumScreen: React.FC = () => {
   };
   //#endregion
 
+  console.log(productList.length);
+  //초기에 구독 정보를 가져옴
+  if (productList.length === 0){
+    getSubscriptions();
+    setTimeout(()=>{
+      getSubscriptions();
+    }, 100);
+  }
+
   return (
+    
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTxt}>react-native-iap V3</Text>
@@ -218,7 +235,7 @@ export const PremiumScreen: React.FC = () => {
             style={styles.btn}
             textStyle={styles.txt}
           >
-            Get available purchases
+            현재 구매한 목록 확인
           </NativeButton>
 
           <Text style={{ margin: 5, fontSize: 15, alignSelf: "center" }}>
@@ -229,14 +246,34 @@ export const PremiumScreen: React.FC = () => {
             {receipt}
           </Text>
 
-          <NativeButton
+          
+          {/* <NativeButton 
+            onPress={() => getSubscriptions()}
+            title="1개월 구독권"
+            disabled={true}
+            //onPress={getSubscriptions}
+          /> */}
+          
+          {/* <NativeButton
+            onPress={() => requestSubscription("regularpayment")}
+            activeOpacity={0.5}
+            style={styles.btn}
+            textStyle={styles.txt}
+          >
+            상품을 가져오지 않고 결제합니다
+          </NativeButton> */}
+
+          {/* <NativeButton
             onPress={getItems}
             activeOpacity={0.5}
             style={styles.btn}
             textStyle={styles.txt}
           >
             Get Products ({productList.length})
-          </NativeButton>
+          </NativeButton> */}
+
+          
+
           {productList.map((product, i) => {
             return (
               <View
@@ -245,7 +282,7 @@ export const PremiumScreen: React.FC = () => {
                   flexDirection: "column",
                 }}
               >
-                <Text
+                {/* <Text
                   style={{
                     marginTop: 20,
                     fontSize: 12,
@@ -256,14 +293,14 @@ export const PremiumScreen: React.FC = () => {
                   }}
                 >
                   {JSON.stringify(product)}
-                </Text>
+                </Text> */}
                 <NativeButton
                   onPress={() => requestSubscription(product.productId)}
                   activeOpacity={0.5}
                   style={styles.btn}
                   textStyle={styles.txt}
                 >
-                  Request purchase for above product
+                  구독하기
                 </NativeButton>
               </View>
             );
@@ -273,3 +310,8 @@ export const PremiumScreen: React.FC = () => {
     </View>
   );
 };
+
+const PurcahseButton = styled.TouchableOpacity`
+  width: 0px;
+  height: 0px;
+`;
