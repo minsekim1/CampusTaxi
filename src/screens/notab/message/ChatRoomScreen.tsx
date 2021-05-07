@@ -4,7 +4,14 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import axios from "axios";
 import { differenceInMilliseconds } from "date-fns";
 import React, { useEffect, useRef, useState } from "react";
-import { Platform, FlatList, StatusBar, Text, TextInput, Alert } from "react-native";
+import {
+  Platform,
+  FlatList,
+  StatusBar,
+  Text,
+  TextInput,
+  Alert,
+} from "react-native";
 import { ChatRoom } from "../../../components/chat-room/ChatRoomList";
 import { KeyBoard } from "../../../components/chat-room/KeyBoard";
 import { Chat } from "../../../components/chat/ChatList";
@@ -25,6 +32,7 @@ import { MessageNoTabNavigationParamList } from "./MessageNoTabNavigation";
 
 import io, { Socket } from "socket.io-client";
 import { User } from "../../../contexts/User";
+import { CustomAxios } from "../../../components/axios/axios";
 
 export type MessageNoTabNavigationProp = StackNavigationProp<
   MessageNoTabNavigationParamList,
@@ -63,17 +71,35 @@ export const ChatRoomScreen: React.FC = () => {
   //#region 유저 데이터 요청
   // AuthContext 시용하지 않고 직접 데이터 요청함
   const [user, setUser] = useState<User>();
-  const { token } = useAuthContext();
   const [socket, setSocket] = useState<Socket>(io(socketURL));
+  const { token, resetToken, refresh } = useAuthContext();
   useEffect(() => {
-    axios
-      .get(`${API_URL}/v1/accounts/me/`, {
-        headers: {
-          Authorization: "Bearer " + token,
-          accept: "application/json",
-        },
-      })
-      .then((d) => setUser(d.data));
+    //내 정보 가져오기
+    CustomAxios(
+      "GET",
+      `${API_URL}/v1/accounts/me/`,
+      resetToken,
+      refresh,
+      token,
+      undefined, //"User API",
+      undefined,
+      (d: User) => {
+        setUser(d);
+        //#region 내방목록 가져오기
+        // console.log("== NEW ==")
+        // CustomAxios(
+        //   "GET",
+        //   `${API_URL}/v1/chat/2/`,
+        //   resetToken,
+        //   refresh,
+        //   token,
+        //   'undefined', // "User Room",
+        //   undefined,
+        //   (d: any) => console.log("MESSAGE !! : ", d)
+        // );
+        //#endregion 내방목록 가져오기
+      }
+    );
     //#region 상태바
     if (Platform.OS === "android")
       StatusBar.setBackgroundColor(GenderColor(room?.gender));
@@ -87,8 +113,6 @@ export const ChatRoomScreen: React.FC = () => {
   const { firebaseToken } = useAuthContext();
   useEffect(() => {
     if (user) {
-      //채팅방 입장
-      console.log("firebaseToken", firebaseToken);
       socket.emit("enter", {
         room_id: room.id,
         username: user?.nickname,
@@ -96,7 +120,6 @@ export const ChatRoomScreen: React.FC = () => {
       });
       //채팅 받기
       socket.on("chat", (d) => {
-        console.log("chat", d.msg);
         let a: Array<Message> = messages;
         a.unshift({
           id: messages.length + 1,
@@ -111,11 +134,16 @@ export const ChatRoomScreen: React.FC = () => {
         setMessages(a);
         ChatScrollRef.current?.forceUpdate();
       });
+      //이전 채팅 받아오기
+      socket.on("enter chat",(d) => {
+        console.log(d)
+      })
+     
     }
+
   }, [user]);
   //#region 채팅 전송
   const sendMessage = (text: string) => {
-    console.log("chat sent")
     socket.emit("chat", {
       msg: text,
       room_id: room.id,
@@ -282,7 +310,7 @@ export const ChatRoomScreen: React.FC = () => {
   //#region 뒤로가기 제어
   const LeftBtnOnPress = () => {
     setNavName({ istab: "Tab", tab: "MessageTabScreen" });
-    socket.disconnect();
+    socket.disconnect(); 
   };
   const ContentContainerStyle = {
     alignItems: "center",

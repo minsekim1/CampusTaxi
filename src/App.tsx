@@ -9,12 +9,9 @@ import { View, Text, TouchableHighlight } from "react-native";
 import FlashMessage from "react-native-flash-message";
 import { showMessage, hideMessage } from "react-native-flash-message";
 import styled from "@emotion/native";
-import { CustomAxios } from "./components/axios/axios";
-import { User } from "./contexts/User";
-import { API_URL } from "./constant";
 
 const App = () => {
-  const { isLoading, isLoggedIn } = useAuthContext();
+  const { isLoading } = useAuthContext();
 
   useEffect(() => {
     if (isLoading) {
@@ -25,18 +22,17 @@ const App = () => {
   }, [isLoading]);
 
   const [message, setMessage] = useState<FCM_message_props>();
+  const { getUserName } = useAuthContext();
   useEffect(() => {
     messaging().onMessage(async (remoteMessage: any) => {
       // console.log("Message handled in the foreground!", remoteMessage);
       // 유저가 로그인 되어 있는지 확인
-      if (isLoggedIn) {
-        let m: FCM_message_props = remoteMessage;
-        setMessage(m);
-        showMessage({
-          message: m.notification.title,
-          description: m.notification.body,
-        });
-      }
+      let m: FCM_message_props = remoteMessage;
+      setMessage(m);
+      showMessage({
+        message: m.notification.title,
+        description: m.notification.body,
+      });
     });
   }, []);
   const FlashStyle = {
@@ -64,7 +60,9 @@ const App = () => {
         titleStyle={FlashTextStyle}
         statusBarHeight={10}
         renderCustomContent={renderMessage}
-        onPress={() => {console.log('r',message)}}
+        onPress={() => {
+          console.log("r", message);
+        }}
       />
     </AuthProvider>
   );
