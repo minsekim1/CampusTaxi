@@ -18,6 +18,7 @@ export type AuthState = {
   setNavName: (props: MoveNavProps) => void;
   User: User;
   resetToken: (token: string) => void;
+  getUserName: () => string;
   firebaseToken: any;
 };
 
@@ -32,6 +33,7 @@ const AuthContext = React.createContext<AuthState>({
   setNavName: (props: MoveNavProps) => {},
   resetToken: () => {},
   User: UserDummy,
+  getUserName: () => {return ""},
   firebaseToken: undefined,
 });
 
@@ -133,6 +135,9 @@ export const AuthProvider: React.FC = ({ children }) => {
     }
   }, [setRefresh]);
 
+  const getUserName  = useCallback(() => {
+    return User.nickname
+  }, []);
   // TEST CODE 왜 있는 걸까...?
   // const refreshToken = useCallback(() => {
   //   axios
@@ -168,6 +173,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         setLoggedIn,
         setNavName,
         User,
+        getUserName,
         firebaseToken,
       }}
     >

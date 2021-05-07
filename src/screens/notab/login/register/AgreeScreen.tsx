@@ -10,13 +10,13 @@ type LoginNavigation = NavigationProp<LoginStackParamList, "AgreeScreen">;
 
 export const AgreeScreen: React.FC = ({}) => {
   const { navigate } = useNavigation<LoginNavigation>();
-  const [terms, setTerms] = useState(false);
-  const [privacy, setPrivacy] = useState(false);
-  const [location, setLocation] = useState(false);
-  const [marketing, setMarketing] = useState(false);
-  const [appPush, setAppPush] = useState(false);
-  const [SMS, setSMS] = useState(false);
-  const [emailMarket, setEmailMarket] = useState(false);
+  const [terms, setTerms] = useState(true);
+  const [privacy, setPrivacy] = useState(true);
+  const [location, setLocation] = useState(true);
+  const [marketing, setMarketing] = useState(true);
+  const [appPush, setAppPush] = useState(true);
+  const [SMS, setSMS] = useState(true);
+  const [emailMarket, setEmailMarket] = useState(true);
 
   const handleCheckAll = () => {
     if (terms && privacy && location && marketing) {

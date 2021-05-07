@@ -35,6 +35,7 @@ import {
 import { MessageNoTabNavigationProp } from "../message/ChatRoomScreen";
 import { NoTabNavigation } from "../NoTabNavigation";
 import { CustomAxios } from "../../../components/axios/axios";
+import { Message } from "../../../components/chat/Message";
 
 type HomeScreenNavigationProp = StackNavigationProp<
   HomeStackParamList,
@@ -117,6 +118,7 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
   const { token, resetToken, refresh } = useAuthContext();
   const [user, setUser] = useState<User>();
   useEffect(() => {
+    //내 정보 가져오기
     CustomAxios(
       "GET",
       `${API_URL}/v1/accounts/me/`,
@@ -125,10 +127,12 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
       token,
       undefined, //"User API",
       undefined,
-      (d: User) => setUser(d)
+      (d: User) => {
+        setUser(d);
+      }
     );
   }, []);
-  //#endregion 유저 데이터 요청
+
   const Create = () => {
     const date_ = new Date().getDate() + Number(dateBtn);
     const hour = Number(timeonly.split(":")[0]);
@@ -160,7 +164,6 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
       gender: gender_Local,
       category: selectRoom.category + 1,
     };
-console.log('room',room)
     axios
       .post(`${API_URL}/v1/rooms/`, room, {
         headers: {
