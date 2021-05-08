@@ -1,5 +1,5 @@
 import styled from '@emotion/native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useEffect, useState } from "react";
 import { BackHandler, Platform, SafeAreaView } from 'react-native';
@@ -12,6 +12,12 @@ import { SettingStackParamList } from './SettingStackNavigation';
 import { CustomAxios } from "../../../components/axios/axios";
 import { API_URL } from "../../../constant";
 import { User } from "../../../contexts/User";
+import { 
+  PurchaseGoogle, 
+  getSubscriptions,
+  getAvailablePurchases,
+  requestSubscription,
+} from "../premiumTab/RNIapFunction";
 
 type SettingScreenNavigationProp = StackNavigationProp<SettingStackParamList, 'SettingScreen'>;
 
@@ -21,6 +27,7 @@ type Props = {
 export const SettingScreen: React.FC<Props> = () => {
   const { setLoggedOut } = useAuthContext();
   const { setNavName } = useAuthContext();
+  const [ispremium, setIspremium] = useState(false);
 
   //프로필 화면을 위해 데이터를 요청
   const { token, resetToken, refresh } = useAuthContext();
@@ -37,6 +44,10 @@ export const SettingScreen: React.FC<Props> = () => {
       (d: User) => setUser(d)
     );
   }, []);
+
+  useFocusEffect(() => {
+    getAvailablePurchases().then((result)=>{setIspremium(result)});
+  });
 
   const navigation = useNavigation<SettingScreenNavigationProp>();
   //#region 뒤로가기 버튼 제어 & 더블클릭시 앱 종료
@@ -76,6 +87,7 @@ export const SettingScreen: React.FC<Props> = () => {
               <NicknameText>{user?.nickname}</NicknameText>
               <CampusNameText>{user?.campus_name}</CampusNameText>
               <EmailText>{user?.email}</EmailText>
+              <MembershipGroupText>{ispremium == true ? "프리미엄 회원" : "일반 회원"}</MembershipGroupText>
             </ProfileTextContainer>
           </ProfileContainer>
           <Title>계정</Title>
@@ -204,6 +216,11 @@ const CampusNameText = styled.Text`
 `;
 
 const EmailText = styled.Text`
+  font-size: 11px;
+`;
+
+const MembershipGroupText = styled.Text`
+  margin-top: 3px;
   font-size: 11px;
 `;
 
