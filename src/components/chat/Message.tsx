@@ -2,7 +2,7 @@ export type Message = {
   id: number;
   message: string;
   index: number;
-  message_type: "Message" | "Notice" | "Enter";
+  message_type: "NORMAL" | "NOTICE";
   writer: string;
   room: number;
   created_at: Date;
@@ -13,7 +13,7 @@ export const MessageDummy: Message[] | (() => Message[]) = [
   {
     id: 1,
     message: "가나다라마바사가나다라마바사가나다라마바사가나다라마바사가나다라마바사가나다라마바사가나다라마바사",
-    message_type: "Message",
+    message_type: "NORMAL",
     writer: '1',
     room: 1,
     created_at: new Date(1617209444934),
@@ -23,7 +23,7 @@ export const MessageDummy: Message[] | (() => Message[]) = [
   {
     id: 2,
     message: "아아아아",
-    message_type: "Notice",
+    message_type: "NOTICE",
     writer: '1',
     room: 1,
     created_at: new Date(),
@@ -33,7 +33,7 @@ export const MessageDummy: Message[] | (() => Message[]) = [
   {
     id: 3,
     message: "나불렀니불렀니불렀니불렀니불렀니불렀니불렀니불렀니불렀니불렀니불렀니",
-    message_type: "Enter",
+    message_type: "NORMAL",
     writer: '2',
     room: 1,
     created_at: new Date(),
@@ -43,7 +43,7 @@ export const MessageDummy: Message[] | (() => Message[]) = [
   {
     id: 4,
     message: "아아아ㅏ",
-    message_type: "Message",
+    message_type: "NORMAL",
     writer: '1',
     room: 1,
     created_at: new Date(),
@@ -53,7 +53,7 @@ export const MessageDummy: Message[] | (() => Message[]) = [
   {
     id: 5,
     message: "ㅁㅈㅇㅁㅈㅇㅁㅈㅇㅁㅈㅇㅁㅈㅁㅇㅁㅈㅇㅁㅈㅇ",
-    message_type: "Message",
+    message_type: "NORMAL",
     writer: '2',
     room: 1,
     created_at: new Date(),
@@ -63,7 +63,7 @@ export const MessageDummy: Message[] | (() => Message[]) = [
   {
     id: 6,
     message: "ㅁㅈㅇㅁㅈㅇㅁㅈㅇㅁㅈㅇㅁㅈㅁㅇㅁㅈㅇㅁㅈㅇㅁㅈㅇㅁㅈㅇㅁㅈㅇㅁㅈㅇㅁㅈㅁㅇㅁㅈㅇㅁㅈㅇ",
-    message_type: "Message",
+    message_type: "NORMAL",
     writer: '2',
     room: 1,
     created_at: new Date(),
@@ -73,7 +73,7 @@ export const MessageDummy: Message[] | (() => Message[]) = [
   {
     id: 7,
     message: "ㅁㅈㅇㅁㅈㅇㅁㅈㅇㅁㅈㅇㅁㅈㅁㅇㅁㅈㅇㅁㅈㅇㅁㅈㅇㅁㅈㅇㅁㅈㅇㅁㅈㅇㅁㅈㅁㅇㅁㅈㅇㅁㅈㅇㅁㅈㅇㅁㅈㅇㅁㅈㅇㅁㅈㅇㅁㅈㅁㅇㅁㅈㅇㅁㅈㅇ",
-    message_type: "Message",
+    message_type: "NORMAL",
     writer: '1',
     room: 1,
     created_at: new Date(),
@@ -83,7 +83,7 @@ export const MessageDummy: Message[] | (() => Message[]) = [
   {
     id: 8,
     message: "ㅁㅈㅇㅁ",
-    message_type: "Message",
+    message_type: "NORMAL",
     writer: '1',
     room: 1,
     created_at: new Date(),
@@ -93,7 +93,7 @@ export const MessageDummy: Message[] | (() => Message[]) = [
   {
     id: 9,
     message: "짐ㅁㅁㅁㅁ",
-    message_type: "Message",
+    message_type: "NORMAL",
     writer: '1',
     room: 1,
     created_at: new Date(),
@@ -103,7 +103,7 @@ export const MessageDummy: Message[] | (() => Message[]) = [
   {
     id: 10,
     message: "ㄴㄴㄴㄴㄴㄴ",
-    message_type: "Message",
+    message_type: "NORMAL",
     writer: '1',
     room: 1,
     created_at: new Date(),
@@ -113,7 +113,7 @@ export const MessageDummy: Message[] | (() => Message[]) = [
   {
     id: 11,
     message: "hello",
-    message_type: "Message",
+    message_type: "NORMAL",
     writer: '1',
     room: 1,
     created_at: new Date(),
@@ -123,7 +123,7 @@ export const MessageDummy: Message[] | (() => Message[]) = [
   {
     id: 12,
     message: "ㅁㅈㅇ",
-    message_type: "Message",
+    message_type: "NORMAL",
     writer: '1',
     room: 1,
     created_at: new Date(),
@@ -133,7 +133,7 @@ export const MessageDummy: Message[] | (() => Message[]) = [
   {
     id: 13,
     message: "hello",
-    message_type: "Message",
+    message_type: "NORMAL",
     writer: '1',
     room: 1,
     created_at: new Date(),

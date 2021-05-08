@@ -54,6 +54,7 @@ export type searchProps = {
 export const ChatRoomScreen: React.FC = () => {
   const { navigate } = useNavigation<MessageNoTabNavigationProp>();
   const [messages, setMessages] = useState<Message[]>([]); //MessageDummy
+  
   const [searchResult, setSearchResult] = useState<searchProps>();
   const [message, setMessage] = useState("");
   const [room, setRoom] = useState<ChatRoom>(
@@ -118,30 +119,34 @@ export const ChatRoomScreen: React.FC = () => {
         username: user?.nickname,
         firebaseToken: firebaseToken,
       });
-      //채팅 받기
-      socket.on("chat", (d) => {
-        let a: Array<Message> = messages;
-        a.unshift({
-          id: messages.length + 1,
-          message: d.msg,
-          message_type: "Message",
-          writer: d.username,
-          room: room.id,
-          created_at: new Date(),
-          updated_at: new Date(),
-          index: messages.length + 1,
-        });
-        setMessages(a);
-        ChatScrollRef.current?.forceUpdate();
-      });
       //이전 채팅 받아오기
-      socket.on("enter chat",(d) => {
-        console.log(d)
-      })
-     
+      socket.on("enter chat", (response) => {
+        setMessages(response.data);
+      });
     }
-
+     //#region 채팅 받기
+    return (
+    socket.on("chat", (d) => {
+      let a: Array<Message> = messages;
+      a.unshift({
+        id: a.length + 1,
+        message: d.msg,
+        message_type: "NORMAL",
+        writer: d.username,
+        room: room.id,
+        created_at: new Date(),
+        updated_at: new Date(),
+        index: a.length + 1,
+      });
+      setMessages(a);
+      ChatScrollRef.current?.forceUpdate();
+    })
+    )
+  //#endregion 채팅 받기
   }, [user]);
+
+ 
+
   //#region 채팅 전송
   const sendMessage = (text: string) => {
     socket.emit("chat", {
@@ -310,7 +315,7 @@ export const ChatRoomScreen: React.FC = () => {
   //#region 뒤로가기 제어
   const LeftBtnOnPress = () => {
     setNavName({ istab: "Tab", tab: "MessageTabScreen" });
-    socket.disconnect(); 
+    socket.disconnect();
   };
   const ContentContainerStyle = {
     alignItems: "center",
@@ -387,8 +392,8 @@ export const ChatRoomScreen: React.FC = () => {
                   searchResult={searchResult}
                   message={props.item}
                   gender={1}
-                  isLeft={props.item.username == user?.nickname}
-                  isHost={props.item.username == room.owner}
+                  isLeft={props.item.writer != user?.nickname}
+                  isHost={props.item.writer == room.owner}
                 />
               )}
             ></ContentContainer>
