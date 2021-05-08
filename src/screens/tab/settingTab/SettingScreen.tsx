@@ -87,7 +87,9 @@ export const SettingScreen: React.FC<Props> = () => {
               <NicknameText>{user?.nickname}</NicknameText>
               <CampusNameText>{user?.campus_name}</CampusNameText>
               <EmailText>{user?.email}</EmailText>
-              <MembershipGroupText>{ispremium == true ? "프리미엄 회원" : "일반 회원"}</MembershipGroupText>
+              <MembershipGroupText style={{color: ispremium == true ? "#76A2EB" : "#000000"}}>
+                {ispremium == true ? "프리미엄 회원" : "일반 회원"}
+                </MembershipGroupText>
             </ProfileTextContainer>
           </ProfileContainer>
           <Title>계정</Title>
