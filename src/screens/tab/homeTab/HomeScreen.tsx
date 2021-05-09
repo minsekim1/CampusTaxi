@@ -248,7 +248,7 @@ export const HomeScreen: React.FC<Props> = () => {
                   })
                 }
               >
-                <SearchRoomText>방 검색하기 & 만들기</SearchRoomText>
+                <SearchRoomText>방 검색하기</SearchRoomText>
               </SearchRoom>
             </SubContainer>
           </MainContainer>
