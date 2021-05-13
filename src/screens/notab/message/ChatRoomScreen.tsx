@@ -31,7 +31,6 @@ import { useAuthContext } from "../../../contexts/AuthContext";
 import { MessageNoTabNavigationParamList } from "./MessageNoTabNavigation";
 
 import io, { Socket } from "socket.io-client";
-import { User } from "../../../contexts/User";
 import { CustomAxios } from "../../../components/axios/axios";
 
 export type MessageNoTabNavigationProp = StackNavigationProp<
@@ -61,66 +60,58 @@ export const ChatRoomScreen: React.FC = () => {
     useAuthContext().MoveNav.props.data
   );
   const route = useRoute<NavigationRoute>();
-  const [refetch, setRefetch] = useState<Date>();
+  // const [refetch, setRefetch] = useState<Date>();
   const [search, setSearch] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState<string>("");
   const searchRef = React.useRef<TextInput>(null);
   const ChatScrollRef = useRef<FlatList>(null);
-  const { setNavName } = useAuthContext();
 
   //#region 초기 세팅
-  //#region 유저 데이터 요청
-  // AuthContext 시용하지 않고 직접 데이터 요청함
-  const [user, setUser] = useState<User>();
-  const [socket, setSocket] = useState<Socket>(io(socketURL));
-  const { token, resetToken, refresh } = useAuthContext();
+  const {
+    setNavName,
+    socket,
+    User,
+    token,
+    resetToken,
+    refresh,
+  } = useAuthContext();
   const { firebaseToken } = useAuthContext();
 
   //#region 웹소켓
   useEffect(() => {
-    //내 정보 가져오기
-    CustomAxios(
-      "GET",
-      `${API_URL}/v1/accounts/me/`,
-      resetToken,
-      refresh,
-      token,
-      undefined, //"User API",
-      undefined,
-      (d: User) => {
-        setUser(d);
-        //#region 내방목록 가져오기
-        if (!!d) {
-          socket.emit("enter", {
-            room_id: room.id,
-            username: d.nickname,
-            firebaseToken: firebaseToken,
+    //#region 내방목록 가져오기
+    if (!!User && !!socket) {
+      // console.log("chatEnter", {
+      //   room_id: room.id,
+      //   nickname: User.nickname,
+      // });
+      socket.emit("chatEnter", {
+        room_id: room.id,
+        nickname: User.nickname,
+      });
+      //이전 채팅 받아오기
+      socket.on("chatEnter chat", (response) => {
+        setMessages(response.data);
+        //#region 채팅 받기
+        socket.on("chat", (chat) => {
+          let a: Array<Message> = response.data;
+          a.unshift({
+            id: a.length + 1,
+            message: chat.msg,
+            message_type: "NORMAL",
+            writer: chat.nickname,
+            room: room.id,
+            created_at: new Date(),
+            updated_at: new Date(),
+            index: a.length + 1,
           });
-          //이전 채팅 받아오기
-          socket.on("enter chat", (response) => {
-            setMessages(response.data);
-            //#region 채팅 받기
-            socket.on("chat", (chat) => {
-              let a: Array<Message> = response.data;
-              a.unshift({
-                id: a.length + 1,
-                message: chat.msg,
-                message_type: "NORMAL",
-                writer: chat.username,
-                room: room.id,
-                created_at: new Date(),
-                updated_at: new Date(),
-                index: a.length + 1,
-              });
-              setMessages(a);
-              ChatScrollRef.current?.forceUpdate();
-            });
-            //#endregion 채팅 받기
-          });
-        }
-        //#endregion 내방목록 가져오기
-      }
-    );
+          setMessages(a);
+          ChatScrollRef.current?.forceUpdate();
+        });
+        //#endregion 채팅 받기
+      });
+    }
+    //#endregion 내방목록 가져오기
     //#region 상태바
     if (Platform.OS === "android")
       StatusBar.setBackgroundColor(GenderColor(room?.gender));
@@ -130,14 +121,12 @@ export const ChatRoomScreen: React.FC = () => {
   //#endregion 유저 데이터 요청
   //#endregion 초기 세팅
 
-
   //#region 채팅 전송
   const sendMessage = (text: string) => {
-    socket.emit("chat", {
+    socket?.emit("chat", {
       msg: text,
       room_id: room.id,
-      maxperson: room.personnel_limit,
-      username: user?.nickname,
+      nickname: User?.nickname,
       firebaseToken: firebaseToken,
     });
   };
@@ -167,7 +156,7 @@ export const ChatRoomScreen: React.FC = () => {
     //       // );
     //     });
     // }
-  }, [room.id, token, refetch]);
+  }, [room.id, token]);
 
   //#region 검색
   const searchOnSubmit = async () => {
@@ -299,7 +288,7 @@ export const ChatRoomScreen: React.FC = () => {
   //#region 뒤로가기 제어
   const LeftBtnOnPress = () => {
     setNavName({ istab: "Tab", tab: "MessageTabScreen" });
-    socket.disconnect();
+     socket?.emit("chatClose");
   };
   const ContentContainerStyle = {
     alignItems: "center",
@@ -376,7 +365,7 @@ export const ChatRoomScreen: React.FC = () => {
                   searchResult={searchResult}
                   message={props.item}
                   gender={1}
-                  isLeft={props.item.writer != user?.nickname}
+                  isLeft={props.item.writer != User?.nickname}
                   isHost={props.item.writer == room.owner}
                 />
               )}

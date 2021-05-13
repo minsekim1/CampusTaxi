@@ -22,8 +22,8 @@ const App = () => {
   }, [isLoading]);
 
   const [message, setMessage] = useState<FCM_message_props>();
-  const { getUserName } = useAuthContext();
   useEffect(() => {
+    //#region FCM
     messaging().onMessage(async (remoteMessage: any) => {
       // console.log("Message handled in the foreground!", remoteMessage);
       // 유저가 로그인 되어 있는지 확인
@@ -34,6 +34,7 @@ const App = () => {
         description: m.notification.body,
       });
     });
+    //#endregion FCM
   }, []);
   const FlashStyle = {
     backgroundColor: "white",

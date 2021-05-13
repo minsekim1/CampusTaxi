@@ -19,7 +19,7 @@ type Props = {
   navigation: SettingScreenNavigationProp;
 };
 export const SettingScreen: React.FC<Props> = () => {
-  const { setLoggedOut } = useAuthContext();
+  const { setLoggedOut,socket } = useAuthContext();
   const { setNavName } = useAuthContext();
 
   //프로필 화면을 위해 데이터를 요청
@@ -37,7 +37,11 @@ export const SettingScreen: React.FC<Props> = () => {
       (d: User) => setUser(d)
     );
   }, []);
-
+  const logout = () => {
+  setLoggedOut()
+    socket?.emit("logout");
+    socket?.disconnect();
+}
   const navigation = useNavigation<SettingScreenNavigationProp>();
   //#region 뒤로가기 버튼 제어 & 더블클릭시 앱 종료
   let currentCount = 0;
@@ -87,7 +91,7 @@ export const SettingScreen: React.FC<Props> = () => {
             <MenuText>내 정보</MenuText>
             <RightIcon />
           </MenuItem>
-          <MenuItem onPress={setLoggedOut}>
+          <MenuItem onPress={logout}>
             <MenuText>로그아웃</MenuText>
             <RightIcon />
           </MenuItem>

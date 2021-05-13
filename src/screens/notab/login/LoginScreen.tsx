@@ -16,6 +16,7 @@ import { LoginStackParamList } from "./LoginNavigation";
 import image from "../../../../images/login/bg.png";
 import styled from "@emotion/native";
 import { GenderColor } from "../../../components/color/GenderColor";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 type LoginScreenNavigation = StackNavigationProp<
   LoginStackParamList,
   "LoginScreen"
@@ -44,15 +45,24 @@ export const LoginScreen: React.FC = ({}) => {
         },
         {
           headers: {
-            "accept": "application/json",
+            accept: "application/json",
             "Content-Type": "application/json",
           },
         }
-    ).then(d => {
-      if (d.data.access && d.data.refresh)
-        setLoggedIn(d.data.access, d.data.refresh);
-    })
-      .catch((e) => Alert.alert("로그인 오류", "아이디 또는 비밀번호가 일치하지 않습니다.\n"+e.response.data.detail));
+      )
+      .then((d) => {
+        if (d.data.access && d.data.refresh) {
+          setLoggedIn(d.data.access, d.data.refresh);
+          AsyncStorage.setItem("login id", id);
+          AsyncStorage.setItem("login pw", password);
+        }
+      })
+      .catch((e) =>
+        Alert.alert(
+          "로그인 오류",
+          "아이디 또는 비밀번호가 일치하지 않습니다.\n" + e.response.data.detail
+        )
+      );
   };
 
   const handleAppleLogin = async () => {

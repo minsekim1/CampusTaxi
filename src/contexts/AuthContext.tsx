@@ -1,11 +1,14 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { API_URL, MYfirebase } from "../constant";
-import { User, UserDummy } from "./User";
+import { API_URL, MYfirebase, socketURL } from "../constant";
+import { User } from "./User";
 
 import messaging from "@react-native-firebase/messaging";
 import firebase from "firebase";
+import { CustomAxios } from "../components/axios/axios";
+import { io, Socket } from "socket.io-client";
+import RNRestart from "react-native-restart";
 
 export type AuthState = {
   token: string | undefined;
@@ -16,9 +19,9 @@ export type AuthState = {
   setLoggedOut: () => void;
   MoveNav: MoveNavProps;
   setNavName: (props: MoveNavProps) => void;
-  User: User;
+  User: User | undefined;
+  socket: Socket | undefined;
   resetToken: (token: string) => void;
-  getUserName: () => string;
   firebaseToken: any;
 };
 
@@ -32,8 +35,8 @@ const AuthContext = React.createContext<AuthState>({
   setLoggedOut: () => {},
   setNavName: (props: MoveNavProps) => {},
   resetToken: () => {},
-  User: UserDummy,
-  getUserName: () => {return ""},
+  User: undefined,
+  socket: undefined,
   firebaseToken: undefined,
 });
 
@@ -58,7 +61,8 @@ export const AuthProvider: React.FC = ({ children }) => {
   const [token, setToken] = useState<string | undefined>();
   const [refresh, setRefresh] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [User, setUser] = useState<User>(UserDummy);
+  const [User, setUser] = useState<User | undefined>();
+  const [socket, setSocket] = useState<Socket | undefined>();
   const [firebaseToken, setFirebaseToken] = useState<any>();
   const [MoveNav, setMoveNav] = useState<MoveNavProps>({
     istab: "Tab",
@@ -73,7 +77,6 @@ export const AuthProvider: React.FC = ({ children }) => {
     const enabled = await messaging().hasPermission();
     if (enabled) {
       const fcmToken = await messaging().getToken();
-      console.log("firebaseToken ", fcmToken);
       if (fcmToken) {
         setFBToken(fcmToken);
       }
@@ -116,16 +119,38 @@ export const AuthProvider: React.FC = ({ children }) => {
       AsyncStorage.setItem("@campus_taxi_auth", refreshData);
       setRefresh(refreshData);
       setToken(accessData);
-      handlePushToken();
+      handlePushToken(); //OpenToken도 여기서 진행
       saveDeviceToken();
+      CustomAxios(
+        "GET",
+        `${API_URL}/v1/accounts/me/`,
+        resetToken,
+        refreshData,
+        accessData,
+        undefined, //"User API",
+        undefined,
+        (d: User) => {
+          setUser(d);
+          let data = JSON.stringify(d);
+          AsyncStorage.setItem("login user", data);
+        }
+      );
+      setSocket(io(socketURL));
     },
     [setRefresh, setToken]
   );
 
   const setLoggedOut = useCallback(() => {
+    socket?.emit("logout");
     AsyncStorage.setItem("@campus_taxi_auth", "");
+    AsyncStorage.removeItem("@login");
     setRefresh(undefined);
     setToken(undefined);
+    setUser(undefined);
+    AsyncStorage.removeItem("login id");
+    AsyncStorage.removeItem("login pw");
+    AsyncStorage.removeItem("login user")
+      RNRestart.Restart();
   }, [setRefresh, setToken]);
 
   const getRefreshToken = useCallback(async () => {
@@ -135,9 +160,6 @@ export const AuthProvider: React.FC = ({ children }) => {
     }
   }, [setRefresh]);
 
-  const getUserName  = useCallback(() => {
-    return User.nickname
-  }, []);
   // TEST CODE 왜 있는 걸까...?
   // const refreshToken = useCallback(() => {
   //   axios
@@ -172,8 +194,8 @@ export const AuthProvider: React.FC = ({ children }) => {
         setLoggedOut,
         setLoggedIn,
         setNavName,
+        socket,
         User,
-        getUserName,
         firebaseToken,
       }}
     >
