@@ -17,6 +17,7 @@ type Props = {
   searchResult?: searchProps;
 };
 
+
 export const Chat: React.FC<Props> = ({
   message,
   gender,

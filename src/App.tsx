@@ -24,8 +24,12 @@ const App = () => {
   const [message, setMessage] = useState<FCM_message_props>();
   useEffect(() => {
     //#region FCM
+    messaging().setBackgroundMessageHandler(async (remoteMessage: any) => {
+      console.log('setBackgroundMessageHandler',remoteMessage)
+    })
+
     messaging().onMessage(async (remoteMessage: any) => {
-      // console.log("Message handled in the foreground!", remoteMessage);
+      console.log("Message handled in the foreground!", remoteMessage);
       // 유저가 로그인 되어 있는지 확인
       let m: FCM_message_props = remoteMessage;
       setMessage(m);
@@ -84,6 +88,7 @@ type FCM_message_props = {
       clickAction: string; //"FCM_PLUGIN_ACTIVITY"
       smallIcon: string; //"fcm_push_icon"
       sound: "default";
+      vibration: true;
     };
     body: string; //메인 메세지 내용
     title: string; //보낸 유저 이름

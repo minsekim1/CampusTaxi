@@ -51,20 +51,21 @@ export type searchProps = {
   index_InResult: number;
 };
 export const ChatRoomScreen: React.FC = () => {
+  //#region States
   const { navigate } = useNavigation<MessageNoTabNavigationProp>();
   const [messages, setMessages] = useState<Message[]>([]); //MessageDummy
-
   const [searchResult, setSearchResult] = useState<searchProps>();
   const [message, setMessage] = useState("");
   const [room, setRoom] = useState<ChatRoom>(
     useAuthContext().MoveNav.props.data
-  );
-  const route = useRoute<NavigationRoute>();
-  // const [refetch, setRefetch] = useState<Date>();
+    );
+    const route = useRoute<NavigationRoute>();
+    // const [refetch, setRefetch] = useState<Date>();
   const [search, setSearch] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState<string>("");
   const searchRef = React.useRef<TextInput>(null);
   const ChatScrollRef = useRef<FlatList>(null);
+  //#endregion States
 
   //#region 초기 세팅
   const {
@@ -90,6 +91,7 @@ export const ChatRoomScreen: React.FC = () => {
         nickname: User.nickname,
       });
       //이전 채팅 받아오기
+      
       socket.on("chatEnter chat", (response) => {
         setMessages(response.data);
         //#region 채팅 받기
@@ -359,6 +361,7 @@ export const ChatRoomScreen: React.FC = () => {
               data={messages}
               contentContainerStyle={ContentContainerStyle}
               extraData={messages}
+              disableVirtualization={false}
               keyExtractor={(item: any, index: number) => index.toString()}
               renderItem={(props: any) => (
                 <Chat

@@ -1,23 +1,3 @@
-#import <UIKit/UIKit.h>
-
-#import "NMFFoundation.h"
-
-NS_ASSUME_NONNULL_BEGIN
-
-@class NMFMapView;
-
-/**
- 현위치 버튼 컨트롤.
- */
-NMF_EXPORT
-@interface NMFLocationButton : UIButton
-/**
- 이 컨트롤과 연결할 지도 객체. `nil`일 경우 컨트롤이 동작하지 않습니다.
- 
- 기본값은 `nil`입니다.
- */
-@property (nonatomic, weak, nullable) NMFMapView *mapView;
-
-@end
-
-NS_ASSUME_NONNULL_END
+version https://git-lfs.github.com/spec/v1
+oid sha256:1bfc2186d0c0d3904623d83f90ca45d794c340abac518a5b0d07cefaee50c9e2
+size 412

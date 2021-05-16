@@ -35,7 +35,7 @@ export type APIData = {
 export const MessageScreen: React.FC = () => {
   const [datas, setDatas] = useState<ChatRoom[]>(ChatRoomSkeletonList);
   const { token, resetToken, refresh } = useAuthContext();
-  const { setNavName, MoveNav } = useAuthContext();
+  const { setNavName, MoveNav, User,socket } = useAuthContext();
   const navigation = useNavigation<MessageNavigation>();
 
   //#region 새 채팅방 생성 시 방 넘어가기
@@ -85,7 +85,7 @@ export const MessageScreen: React.FC = () => {
 
   //#region 유저 데이터 요청
   // AuthContext 시용하지 않고 직접 데이터 요청함
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<User | undefined>(User);
   useEffect(() => {
     //내 정보 가져오기
     CustomAxios(
@@ -98,20 +98,21 @@ export const MessageScreen: React.FC = () => {
       undefined,
       (d: User) => {
         setUser(d);
-        //#region 내방목록 가져오기
-        CustomAxios(
-          "GET",
-          `${API_URL}/v1/accounts/rooms/`,
-          resetToken,
-          refresh,
-          token,
-          undefined, // "User Room",
-          undefined,
-          (d: ChatRoom[]) => setDatas(d)
-        );
-        //#endregion 내방목록 가져오기
       }
     );
+    //#region 내방목록 가져오기
+    CustomAxios(
+      "GET",
+      `${API_URL}/v1/accounts/rooms/`,
+      resetToken,
+      refresh,
+      token,
+      undefined, // "User Room",
+      undefined,
+      (d: ChatRoom[]) => setDatas(d)
+    );
+    socket?.off()
+    //#endregion 내방목록 가져오기
   }, []);
   //#endregion 유저 데이터 요청
 
@@ -120,7 +121,8 @@ export const MessageScreen: React.FC = () => {
       <ScrollView contentContainerStyle={{ marginTop: 10 }}>
         <ChatRoomList
           datas={datas}
-          onPress={(data: ChatRoom) => () =>
+          onPress={(data: ChatRoom) => () => {
+            setDatas([]);
             setNavName({
               istab: "NoTab",
               tab: "MessageNoTabNavigation",
@@ -128,7 +130,8 @@ export const MessageScreen: React.FC = () => {
               props: {
                 data: data,
               },
-            })}
+            });
+          }}
         />
       </ScrollView>
     </Container>

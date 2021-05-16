@@ -30,7 +30,7 @@ export const KeyBoard: React.FC<Props> = ({
   const [plusMenuHeight, setPlusMenuHeight] = useState(0);
   const [plusIconSize, setPlusIconSize] = useState(0);
   const [plusMenuActive, setPlusMenuActive] = useState(0);
-
+  
   function ActivePlusMenu(toggle: number){
     if (toggle === 0){              
       setPlusMenuHeight(100); setPlusIconSize(60); setPlusMenuActive(1);

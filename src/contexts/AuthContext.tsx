@@ -99,9 +99,6 @@ export const AuthProvider: React.FC = ({ children }) => {
   const setFBToken = useCallback(
     (firebaseToken: string) => {
       setFirebaseToken(firebaseToken);
-      messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-        console.log("Message handled in the background!", remoteMessage);
-      });
     },
     [setFirebaseToken]
   );
