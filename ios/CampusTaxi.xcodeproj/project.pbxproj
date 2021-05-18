@@ -185,7 +185,6 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				9A9BE8B8B398E77FF45E7249 /* [CP] Copy Pods Resources */,
 				FFEDAF3DBD1EAD9D6D98C849 /* [CP-User] [RNFB] Core Configuration */,
-				63B04018CB8D61D4D7B2542C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -255,24 +254,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
-		};
-		63B04018CB8D61D4D7B2542C /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CampusTaxi/Pods-CampusTaxi-frameworks.sh",
-				"${PODS_ROOT}/NMapsMap/framework/NMapsMap.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NMapsMap.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CampusTaxi/Pods-CampusTaxi-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
 		};
 		8511A924667AB8636D81640B /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
