@@ -131,7 +131,7 @@ export const HomeScreen: React.FC<Props> = () => {
             </MiniIconTouchable>
           </MiniIconContainer>
         </LogoContainer>
-        <ScrollView>
+        <Content>
           <MainContainer>
             <SubContainer>
               <SubTitleView>
@@ -252,12 +252,15 @@ export const HomeScreen: React.FC<Props> = () => {
               </SearchRoom>
             </SubContainer>
           </MainContainer>
-        </ScrollView>
+        </Content>
       </Container>
     </BlankBackground>
   );
 };
 
+const Content = styled.ScrollView`
+  background-color:#f2f2f2;
+`;
 const Container = styled.SafeAreaView`
   flex: 1;
   padding-top: ${Platform.OS === "android" && "30px"};

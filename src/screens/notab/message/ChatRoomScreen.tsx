@@ -290,7 +290,10 @@ export const ChatRoomScreen: React.FC = () => {
   //#region 뒤로가기 제어
   const LeftBtnOnPress = () => {
     setNavName({ istab: "Tab", tab: "MessageTabScreen" });
-     socket?.emit("chatClose");
+     socket?.emit("chatClose",{
+          nickname: User?.nickname,
+          room_id: room.id,
+        });
   };
   const ContentContainerStyle = {
     alignItems: "center",
