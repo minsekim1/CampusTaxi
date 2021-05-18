@@ -137,17 +137,20 @@ export const AuthProvider: React.FC = ({ children }) => {
     [setRefresh, setToken]
   );
 
-  const setLoggedOut = useCallback(() => {
-    socket?.emit("logout");
-    AsyncStorage.setItem("@campus_taxi_auth", "");
-    AsyncStorage.removeItem("@login");
-    setRefresh(undefined);
-    setToken(undefined);
-    setUser(undefined);
-    AsyncStorage.removeItem("login id");
-    AsyncStorage.removeItem("login pw");
-    AsyncStorage.removeItem("login user")
+  const setLoggedOut = useCallback(async () => {
+    try {
+      socket?.emit("logout");
+      AsyncStorage.setItem("@campus_taxi_auth", "");
+      AsyncStorage.removeItem("@login");
+      setRefresh(undefined);
+      setToken(undefined);
+      setUser(undefined);
+      AsyncStorage.removeItem("login id");
+      AsyncStorage.removeItem("login pw");
+      AsyncStorage.removeItem("login user");
+    } finally {
       RNRestart.Restart();
+    }
   }, [setRefresh, setToken]);
 
   const getRefreshToken = useCallback(async () => {
