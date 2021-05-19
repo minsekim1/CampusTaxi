@@ -57,11 +57,20 @@ export const RootScreen = () => {
                 setLoggedIn(d.data.access, d.data.refresh);
               }
             });
+        } else {
+          AsyncStorage.getItem("login user").then((u) => {
+            if (!!u && socket?.connected) {
+              let usr: User = JSON.parse(u);
+              console.log("logout", usr.nickname);
+              socket?.emit("logout", { nickname: usr.nickname });
+              AsyncStorage.removeItem("login user");
+            }
+          });
         }
       };
       a();
     }
-  }, [User,firebaseToken]);
+  }, [User, firebaseToken]);
   return isLoggedIn ? getNavigationObject(MoveNav) : <LoginNavigation />;
 };
 

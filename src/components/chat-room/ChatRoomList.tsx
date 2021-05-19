@@ -19,9 +19,9 @@ export type ChatRoom = {
   boarding_dtm?: string;
   personnel_limit?: number;
   gender: "MALE" | "FEMALE" | "NONE";
-  owner?: number;
+  owner?: string;
   category?: string; //"등교 데이터 가져올때는 =1"
-  current?: string; // 현재 페이지인듯
+  current?: number; // 현재 인원
 
   // 커스텀
   cost?: number;
@@ -52,7 +52,7 @@ export const ChatRoomDummy:ChatRoom = {
   boarding_dtm: undefined,
   personnel_limit: 0,
   gender: "MALE",
-  owner: 0,
+  owner: 'cam',
   category: undefined,
   current: undefined,
 };
@@ -74,9 +74,9 @@ export const ChatRoomDummyList: ChatRoom[] = [
     boarding_dtm: "string",
     personnel_limit: 4,
     gender: "FEMALE",
-    owner: 1,
+     owner: 'cam',
     category: "string",
-    current: "string",
+    current: 3,
   },
   {
     id: 2,
@@ -94,9 +94,9 @@ export const ChatRoomDummyList: ChatRoom[] = [
     boarding_dtm: "string",
     personnel_limit: 4,
     gender: "MALE",
-    owner: 2,
+    owner: 'cam',
     category: "string",
-    current: "string",
+    current: 3,
   },
   {
     id: 3,
@@ -114,9 +114,9 @@ export const ChatRoomDummyList: ChatRoom[] = [
     boarding_dtm: "string",
     personnel_limit: 4,
     gender: "NONE",
-    owner: 1,
+     owner: 'cam',
     category: "string",
-    current: "string",
+    current: 3,
   },
   {
     id: 4,
@@ -134,9 +134,9 @@ export const ChatRoomDummyList: ChatRoom[] = [
     boarding_dtm: "string",
     personnel_limit: 4,
     gender: "MALE",
-    owner: 0,
+     owner: 'cam',
     category: "string",
-    current: "string",
+    current: 3,
   },
   {
     id: 5,
@@ -154,9 +154,9 @@ export const ChatRoomDummyList: ChatRoom[] = [
     boarding_dtm: "string",
     personnel_limit: 3,
     gender: "FEMALE",
-    owner: 5,
+     owner: 'cam',
     category: "string",
-    current: "3",
+    current: 3,
   },
   {
     id: 6,
@@ -174,9 +174,9 @@ export const ChatRoomDummyList: ChatRoom[] = [
     boarding_dtm: "string",
     personnel_limit: 4,
     gender: "NONE",
-    owner: 1,
+     owner: 'cam',
     category: "string",
-    current: "string",
+    current: 3,
   },
 ];
 
@@ -196,9 +196,9 @@ export const ChatRoomSkeleton: ChatRoom = {
   boarding_dtm: "",
   personnel_limit: 4,
   gender: "NONE",
-  owner: -2,
+   owner: 'cam',
   category: "",
-  current: "",
+  current: 3,
 };
 export const ChatRoomSkeletonList: ChatRoom[] = [
   ChatRoomSkeleton,

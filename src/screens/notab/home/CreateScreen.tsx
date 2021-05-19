@@ -98,31 +98,22 @@ export const CreateScreen: React.FC<Props> = ({}) => {
   }, [isFocused]);
   //#endregion
 
-  const { token, resetToken, refresh } = useAuthContext();
+  //#region 위도/경도별 방 가져오기 : 출/도 하나라도 범위안에 있으면 가져옴
+  const { token, resetToken, refresh, socket } = useAuthContext();
   useEffect(() => {
-    //#region 카테고리별 방 가져오기
-    CustomAxios(
-      "GET",
-      `${API_URL}/v1/rooms/?category=${params.type + 1}`,
-      resetToken,
-      refresh,
-      token,
-      undefined, //"Room Category API",
-      undefined,
-      (d) => {
-        let rooms: ChatRoom[] = d.results;
-        if (typeof rooms[0].end_lat == "string")
-          for (let j = 0; j < rooms.length; j++) {
-            rooms[j].end_lat = Number(rooms[j].end_lat);
-            rooms[j].end_lon = Number(rooms[j].end_lon);
-            rooms[j].start_lat = Number(rooms[j].start_lat);
-            rooms[j].start_lon = Number(rooms[j].start_lon);
-          }
-        setDatas(rooms);
-      }
-    );
-  }, [token, refetch]);
-  //#endregion 카테고리별 방 가져오기
+    socket?.on("chatRoomsInMap", (d) => {
+      setDatas(d.chatRooms);
+    });
+  }, []);
+  useEffect(() => {
+    socket?.emit("chatRoomsInMap", {
+      minLat: 0,
+      maxLat: 200,
+      minLon: 0,
+      maxLon: 200,
+    });
+  }, [myCoord]);
+  //#endregion
 
   // roomType : 0 1 2 순서대로 등교 하교 기타
   // value 정해진 출발이나 도착지
@@ -332,7 +323,8 @@ export const CreateScreen: React.FC<Props> = ({}) => {
       <MapView
         MapRef={MapRef}
         onTouch={() => {}}
-        onMapClick={() => {}}
+        onMapClick={() => { }}
+        
         onMakerClick={SwipeableViewOnPress}
         onCameraChange={(pos: myCoordProps) => setMyCoord(pos)}
         datas={datas}
