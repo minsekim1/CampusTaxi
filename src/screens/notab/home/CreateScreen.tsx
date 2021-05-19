@@ -17,7 +17,7 @@ import {
   ChatRoom,
   ChatRoomDummy,
 } from "../../../components/chat-room/ChatRoomList";
-import { API_URL, GOOGLE_MAPAPI_URL } from "../../../constant";
+import { API_URL, GOOGLE_MAPAPI_URL, naverMapZoonLv } from "../../../constant";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HomeNoTabNavigationParamList } from "./HomeNoTabNavigation";
@@ -63,13 +63,13 @@ export const CreateScreen: React.FC<Props> = ({}) => {
     latitude: params.type == 1 ? schoolPos?.latitude : 0, // TEST CODE 삼육대학교 분수대앞 위치 추후 사용자학교로 변경필요
     longitude: params.type == 1 ? schoolPos?.longitude : 0,
     name: params.type != 1 ? "" : schoolPos?.name,
-    zoom: 0,
+    zoom: 10,
   };
   const end_init: myCoordProps = {
     latitude: params.type == 0 ? schoolPos?.latitude : 0, // TEST CODE 삼육대학교 분수대앞 위치 추후 사용자학교로 변경필요
     longitude: params.type == 0 ? schoolPos?.longitude : 0,
     name: params.type != 0 ? "" : schoolPos?.name,
-    zoom: 0,
+    zoom: 10,
   };
   const selectRoom_init: ChatRoom = {
     id: -1,
@@ -106,12 +106,27 @@ export const CreateScreen: React.FC<Props> = ({}) => {
     });
   }, []);
   useEffect(() => {
-    socket?.emit("chatRoomsInMap", {
-      minLat: 0,
-      maxLat: 200,
-      minLon: 0,
-      maxLon: 200,
-    });
+    if (!!myCoord.zoom) {
+      if (myCoord.zoom < 18 && myCoord.zoom > 5) {
+        type z = 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17;
+        let roundZoom: z = Math.floor(myCoord.zoom);
+        if (myCoord.zoom < 10)
+          socket?.emit("chatRoomsInMap", {
+            minLat: myCoord.latitude - naverMapZoonLv["10"].lat,
+            maxLat: myCoord.latitude + naverMapZoonLv["10"].lat,
+            minLon: myCoord.longitude - naverMapZoonLv["10"].lon,
+            maxLon: myCoord.longitude + naverMapZoonLv["10"].lon,
+          });
+        else {
+          socket?.emit("chatRoomsInMap", {
+            minLat: myCoord.latitude - naverMapZoonLv[roundZoom].lat,
+            maxLat: myCoord.latitude + naverMapZoonLv[roundZoom].lat,
+            minLon: myCoord.longitude - naverMapZoonLv[roundZoom].lon,
+            maxLon: myCoord.longitude + naverMapZoonLv[roundZoom].lon,
+          });
+        }
+      }
+    }
   }, [myCoord]);
   //#endregion
 
@@ -279,13 +294,13 @@ export const CreateScreen: React.FC<Props> = ({}) => {
       latitude: data.start_lat,
       longitude: data.start_lon,
       name: data.start_address_detail,
-      zoom: 0,
+      zoom: 10,
     });
     setEnd({
       latitude: data.end_lat,
       longitude: data.end_lon,
       name: data.end_address_detail,
-      zoom: 0,
+      zoom: 10,
     });
     MapMove([
       {
@@ -323,8 +338,7 @@ export const CreateScreen: React.FC<Props> = ({}) => {
       <MapView
         MapRef={MapRef}
         onTouch={() => {}}
-        onMapClick={() => { }}
-        
+        onMapClick={() => {}}
         onMakerClick={SwipeableViewOnPress}
         onCameraChange={(pos: myCoordProps) => setMyCoord(pos)}
         datas={datas}

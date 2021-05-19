@@ -257,11 +257,7 @@ export const ChatRoomScreen: React.FC = () => {
     let indexInMessage = messages[
       messages.length - searchResult.index
     ].message.indexOf(searchInput, searchResult.indexInMessage + 1);
-    console.log(
-      "SearchDown",
-      searchResult.result_message.length,
-      searchResult.index_InResult + 1
-    );
+
     // 현재 메세지 안에서 결과가 없을 경우 메세지 인덱스를 더 하고 다음 메세지에 첫번째 결과로 넣음, 단, 다음 메세지가 있어야됌
     if (indexInMessage == -1 && 0 < searchResult.index_InResult) {
       // 메세지 인덱스를 더하고 다음 메세지에서 결과를 찾고
@@ -295,6 +291,7 @@ export const ChatRoomScreen: React.FC = () => {
         item: searchResult.index,
       });
     } else showToast("다음이 없습니다.");
+    
   };
   //#endregion 검색
 

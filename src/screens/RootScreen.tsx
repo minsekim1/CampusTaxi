@@ -20,6 +20,11 @@ export const RootScreen = () => {
     setLoggedIn,
   } = useAuthContext();
   useEffect(() => {
+    console.log('socket?.connected', socket?.connected)
+    if (socket?.connected)
+      console.log("connected socket !")
+  },[socket?.connected])
+  useEffect(() => {
     if (isLoggedIn) {
       //#region 웹소켓
       //내 정보 가져오기

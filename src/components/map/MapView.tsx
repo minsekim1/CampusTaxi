@@ -46,7 +46,7 @@ export const MapView: React.FC<Props> = ({
       showsMyLocationButton={false}
       onTouch={onTouch}
       onCameraChange={onCameraChange}
-      onMapClick={(c) => { console.log(c) }}//onMapClick}
+      onMapClick={onMapClick}
       rotateGesturesEnabled={false}
     >
       {datas.map((data: ChatRoom, i) =>
