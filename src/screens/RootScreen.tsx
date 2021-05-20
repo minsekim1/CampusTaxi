@@ -34,6 +34,7 @@ export const RootScreen = () => {
           nickname: User?.nickname,
           token: firebaseToken,
         });
+        socket?.on("kicked", (c: { room_id: string,hostname:string }) => Alert.alert(c.hostname+"님의 방","("+c.room_id+"번 방)에서 강퇴당하셨습니다."))
       }
       //#endregion 내방목록 가져오기
       // console.log("Login Changed true");
@@ -66,8 +67,8 @@ export const RootScreen = () => {
           AsyncStorage.getItem("login user").then((u) => {
             if (!!u && socket?.connected) {
               let usr: User = JSON.parse(u);
-              console.log("logout", usr.nickname);
-              socket?.emit("logout", { nickname: usr.nickname });
+              console.log("logout", User?.nickname);
+              socket?.emit("logout", { nickname: User?.nickname });
               AsyncStorage.removeItem("login user");
             }
           });

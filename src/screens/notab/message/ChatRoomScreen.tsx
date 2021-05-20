@@ -80,6 +80,17 @@ export const ChatRoomScreen: React.FC = () => {
 
   //#region 웹소켓
   useEffect(() => {
+    // 강퇴시 해당방 안에있으면 내채팅으로 뒤로가기
+    socket?.on("kicked", (c: { room_id: number; hostname: string }) => {
+      if (c.room_id == room.id)
+        setNavName({
+          istab: "Tab",
+          tab: "MessageTabScreen",
+          screen: "ChatRoomScreen",
+          props: null,
+        });
+    });
+
     //#region 내방목록 가져오기
     if (!!User && !!socket) {
       socket.emit("chatEnter", {
@@ -291,7 +302,6 @@ export const ChatRoomScreen: React.FC = () => {
         item: searchResult.index,
       });
     } else showToast("다음이 없습니다.");
-    
   };
   //#endregion 검색
 
