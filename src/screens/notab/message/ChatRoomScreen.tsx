@@ -68,6 +68,8 @@ export const ChatRoomScreen: React.FC = () => {
   const ChatScrollRef = useRef<FlatList>(null);
   //#endregion States
 
+  const [ispremium, setIspremium] = useState(false);
+
   //#region 초기 세팅
   const {
     setNavName,
