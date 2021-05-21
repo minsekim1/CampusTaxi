@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { ChatRoom } from "../../../components/chat-room/ChatRoomList";
 import { KeyBoard } from "../../../components/chat-room/KeyBoard";
+import KeyBoardInput from "../../../components/chat-room/KeyBoardInput";
 import { Chat } from "../../../components/chat/ChatList";
 import { Message, MessageDummy } from "../../../components/chat/Message";
 import { GenderColor } from "../../../components/color/GenderColor";
@@ -377,7 +378,7 @@ export const ChatRoomScreen: React.FC = () => {
               )}
             ></ContentContainer>
             {/* 키보드 */}
-            <KeyBoard
+            <KeyBoardInput
               searchResult={searchResult}
               searchRef={searchRef}
               onSubmitEditing={KeyBoardOnSubmit}
@@ -386,6 +387,15 @@ export const ChatRoomScreen: React.FC = () => {
               onPressDownSearch={onPressDownSearch}
               onPressUpSearch={onPressUpSearch}
             />
+            {/* <KeyBoard
+              searchResult={searchResult}
+              searchRef={searchRef}
+              onSubmitEditing={KeyBoardOnSubmit}
+              message={message}
+              setMessage={setMessage}
+              onPressDownSearch={onPressDownSearch}
+              onPressUpSearch={onPressUpSearch}
+            /> */}
           </BlankBackground>
         </Container>
       </KeyboardContainer>
