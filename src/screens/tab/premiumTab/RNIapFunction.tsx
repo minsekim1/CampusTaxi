@@ -153,6 +153,7 @@ export const requestSubscription = async (sku: string): Promise<void> => {
   try {
     await getSubscriptions();
     RNIap.requestSubscription(sku);
+    console.log("requestSubscription",sku)
   } catch (err) {
     console.log(err.message);
   }
