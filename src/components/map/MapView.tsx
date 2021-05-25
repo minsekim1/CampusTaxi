@@ -38,14 +38,16 @@ export const MapView: React.FC<Props> = ({
 }) => {
   return (
     <NaverMapView
+      
       minZoomLevel={6}
       maxZoomLevel={17} //최대 확대
       ref={MapRef}
-      style={{ width: "100%", height: windowHeight - 243 }}
+      style={{ width: "100%", height: windowHeight - 253 }}
       showsMyLocationButton={false}
       onTouch={onTouch}
       onCameraChange={onCameraChange}
       onMapClick={onMapClick}
+      rotateGesturesEnabled={false}
     >
       {datas.map((data: ChatRoom, i) =>
         data.start_lon != 0.0 && data.start_lat != 0.0 ? (

@@ -59,9 +59,9 @@ export const ChatRoomScreen: React.FC = () => {
   const [message, setMessage] = useState("");
   const [room, setRoom] = useState<ChatRoom>(
     useAuthContext().MoveNav.props.data
-    );
-    const route = useRoute<NavigationRoute>();
-    // const [refetch, setRefetch] = useState<Date>();
+  );
+  // const route = useRoute<NavigationRoute>();
+  // const [refetch, setRefetch] = useState<Date>();
   const [search, setSearch] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState<string>("");
   const searchRef = React.useRef<TextInput>(null);
@@ -83,35 +83,44 @@ export const ChatRoomScreen: React.FC = () => {
 
   //#region 웹소켓
   useEffect(() => {
+    // 강퇴시 해당방 안에있으면 내채팅으로 뒤로가기
+    socket?.on("kicked", (c: { room_id: number; hostname: string }) => {
+      if (c.room_id == room.id)
+        setNavName({
+          istab: "Tab",
+          tab: "MessageTabScreen",
+          screen: "ChatRoomScreen",
+          props: null,
+        });
+    });
+
     //#region 내방목록 가져오기
     if (!!User && !!socket) {
-      // console.log("chatEnter", {
-      //   room_id: room.id,
-      //   nickname: User.nickname,
-      // });
       socket.emit("chatEnter", {
         room_id: room.id,
         nickname: User.nickname,
       });
       //이전 채팅 받아오기
-      
+
       socket.on("chatEnter chat", (response) => {
         setMessages(response.data);
         //#region 채팅 받기
         socket.on("chat", (chat) => {
           let a: Array<Message> = response.data;
-          a.unshift({
-            id: a.length + 1,
-            message: chat.msg,
-            message_type: "NORMAL",
-            writer: chat.nickname,
-            room: room.id,
-            created_at: new Date(),
-            updated_at: new Date(),
-            index: a.length + 1,
-          });
-          setMessages(a);
-          ChatScrollRef.current?.forceUpdate();
+          if (chat.nickname != User.nickname) {
+            a.unshift({
+              id: a.length + 1,
+              message: chat.msg,
+              message_type: "NORMAL",
+              writer: chat.nickname,
+              room: room.id,
+              created_at: new Date(),
+              updated_at: new Date(),
+              index: a.length + 1,
+            });
+            setMessages(a);
+            ChatScrollRef.current?.forceUpdate();
+          }
         });
         //#endregion 채팅 받기
       });
@@ -134,6 +143,19 @@ export const ChatRoomScreen: React.FC = () => {
       nickname: User?.nickname,
       firebaseToken: firebaseToken,
     });
+    let a: Array<Message> = messages;
+    a.unshift({
+      id: a.length + 1,
+      message: text,
+      message_type: "NORMAL",
+      writer: User ? User.nickname : "",
+      room: room.id,
+      created_at: new Date(),
+      updated_at: new Date(),
+      index: a.length + 1,
+    });
+    setMessages(a);
+    ChatScrollRef.current?.forceUpdate();
   };
   //#endregion 채팅 전송
   //#endregion 웹소켓
@@ -249,11 +271,7 @@ export const ChatRoomScreen: React.FC = () => {
     let indexInMessage = messages[
       messages.length - searchResult.index
     ].message.indexOf(searchInput, searchResult.indexInMessage + 1);
-    console.log(
-      "SearchDown",
-      searchResult.result_message.length,
-      searchResult.index_InResult + 1
-    );
+
     // 현재 메세지 안에서 결과가 없을 경우 메세지 인덱스를 더 하고 다음 메세지에 첫번째 결과로 넣음, 단, 다음 메세지가 있어야됌
     if (indexInMessage == -1 && 0 < searchResult.index_InResult) {
       // 메세지 인덱스를 더하고 다음 메세지에서 결과를 찾고
@@ -293,10 +311,10 @@ export const ChatRoomScreen: React.FC = () => {
   //#region 뒤로가기 제어
   const LeftBtnOnPress = () => {
     setNavName({ istab: "Tab", tab: "MessageTabScreen" });
-     socket?.emit("chatClose",{
-          nickname: User?.nickname,
-          room_id: room.id,
-        });
+    socket?.emit("chatClose", {
+      nickname: User?.nickname,
+      room_id: room.id,
+    });
   };
   const ContentContainerStyle = {
     alignItems: "center",

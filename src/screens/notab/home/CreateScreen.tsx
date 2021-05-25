@@ -17,7 +17,7 @@ import {
   ChatRoom,
   ChatRoomDummy,
 } from "../../../components/chat-room/ChatRoomList";
-import { API_URL, GOOGLE_MAPAPI_URL } from "../../../constant";
+import { API_URL, GOOGLE_MAPAPI_URL, naverMapZoonLv } from "../../../constant";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HomeNoTabNavigationParamList } from "./HomeNoTabNavigation";
@@ -63,13 +63,13 @@ export const CreateScreen: React.FC<Props> = ({}) => {
     latitude: params.type == 1 ? schoolPos?.latitude : 0, // TEST CODE 삼육대학교 분수대앞 위치 추후 사용자학교로 변경필요
     longitude: params.type == 1 ? schoolPos?.longitude : 0,
     name: params.type != 1 ? "" : schoolPos?.name,
-    zoom: 0,
+    zoom: 10,
   };
   const end_init: myCoordProps = {
     latitude: params.type == 0 ? schoolPos?.latitude : 0, // TEST CODE 삼육대학교 분수대앞 위치 추후 사용자학교로 변경필요
     longitude: params.type == 0 ? schoolPos?.longitude : 0,
     name: params.type != 0 ? "" : schoolPos?.name,
-    zoom: 0,
+    zoom: 10,
   };
   const selectRoom_init: ChatRoom = {
     id: -1,
@@ -98,31 +98,37 @@ export const CreateScreen: React.FC<Props> = ({}) => {
   }, [isFocused]);
   //#endregion
 
-  const { token, resetToken, refresh } = useAuthContext();
+  //#region 위도/경도별 방 가져오기 : 출/도 하나라도 범위안에 있으면 가져옴
+  const { token, resetToken, refresh, socket } = useAuthContext();
   useEffect(() => {
-    //#region 카테고리별 방 가져오기
-    CustomAxios(
-      "GET",
-      `${API_URL}/v1/rooms/?category=${params.type + 1}`,
-      resetToken,
-      refresh,
-      token,
-      undefined, //"Room Category API",
-      undefined,
-      (d) => {
-        let rooms: ChatRoom[] = d.results;
-        if (typeof rooms[0].end_lat == "string")
-          for (let j = 0; j < rooms.length; j++) {
-            rooms[j].end_lat = Number(rooms[j].end_lat);
-            rooms[j].end_lon = Number(rooms[j].end_lon);
-            rooms[j].start_lat = Number(rooms[j].start_lat);
-            rooms[j].start_lon = Number(rooms[j].start_lon);
-          }
-        setDatas(rooms);
+    socket?.on("chatRoomsInMap", (d) => {
+      setDatas(d.chatRooms);
+    });
+  }, []);
+  useEffect(() => {
+    if (!!myCoord.zoom) {
+      if (myCoord.zoom < 18 && myCoord.zoom > 5) {
+        type z = 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17;
+        let roundZoom: z = Math.floor(myCoord.zoom);
+        if (myCoord.zoom < 10)
+          socket?.emit("chatRoomsInMap", {
+            minLat: myCoord.latitude - naverMapZoonLv["10"].lat,
+            maxLat: myCoord.latitude + naverMapZoonLv["10"].lat,
+            minLon: myCoord.longitude - naverMapZoonLv["10"].lon,
+            maxLon: myCoord.longitude + naverMapZoonLv["10"].lon,
+          });
+        else {
+          socket?.emit("chatRoomsInMap", {
+            minLat: myCoord.latitude - naverMapZoonLv[roundZoom].lat,
+            maxLat: myCoord.latitude + naverMapZoonLv[roundZoom].lat,
+            minLon: myCoord.longitude - naverMapZoonLv[roundZoom].lon,
+            maxLon: myCoord.longitude + naverMapZoonLv[roundZoom].lon,
+          });
+        }
       }
-    );
-  }, [token, refetch]);
-  //#endregion 카테고리별 방 가져오기
+    }
+  }, [myCoord]);
+  //#endregion
 
   // roomType : 0 1 2 순서대로 등교 하교 기타
   // value 정해진 출발이나 도착지
@@ -288,13 +294,13 @@ export const CreateScreen: React.FC<Props> = ({}) => {
       latitude: data.start_lat,
       longitude: data.start_lon,
       name: data.start_address_detail,
-      zoom: 0,
+      zoom: 10,
     });
     setEnd({
       latitude: data.end_lat,
       longitude: data.end_lon,
       name: data.end_address_detail,
-      zoom: 0,
+      zoom: 10,
     });
     MapMove([
       {

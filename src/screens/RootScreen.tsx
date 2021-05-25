@@ -20,6 +20,11 @@ export const RootScreen = () => {
     setLoggedIn,
   } = useAuthContext();
   useEffect(() => {
+    console.log('socket?.connected', socket?.connected)
+    if (socket?.connected)
+      console.log("connected socket !")
+  },[socket?.connected])
+  useEffect(() => {
     if (isLoggedIn) {
       //#region 웹소켓
       //내 정보 가져오기
@@ -29,6 +34,7 @@ export const RootScreen = () => {
           nickname: User?.nickname,
           token: firebaseToken,
         });
+        socket?.on("kicked", (c: { room_id: string,hostname:string }) => Alert.alert(c.hostname+"님의 방","("+c.room_id+"번 방)에서 강퇴당하셨습니다."))
       }
       //#endregion 내방목록 가져오기
       // console.log("Login Changed true");
@@ -57,11 +63,20 @@ export const RootScreen = () => {
                 setLoggedIn(d.data.access, d.data.refresh);
               }
             });
+        } else {
+          AsyncStorage.getItem("login user").then((u) => {
+            if (!!u && socket?.connected) {
+              let usr: User = JSON.parse(u);
+              console.log("logout", User?.nickname);
+              socket?.emit("logout", { nickname: User?.nickname });
+              AsyncStorage.removeItem("login user");
+            }
+          });
         }
       };
       a();
     }
-  }, [User,firebaseToken]);
+  }, [User, firebaseToken]);
   return isLoggedIn ? getNavigationObject(MoveNav) : <LoginNavigation />;
 };
 

@@ -35,7 +35,7 @@ export type APIData = {
 export const MessageScreen: React.FC = () => {
   const [datas, setDatas] = useState<ChatRoom[]>(ChatRoomSkeletonList);
   const { token, resetToken, refresh } = useAuthContext();
-  const { setNavName, MoveNav, User,socket } = useAuthContext();
+  const { setNavName, MoveNav, User, socket } = useAuthContext();
   const navigation = useNavigation<MessageNavigation>();
 
   //#region 새 채팅방 생성 시 방 넘어가기
@@ -87,6 +87,7 @@ export const MessageScreen: React.FC = () => {
   // AuthContext 시용하지 않고 직접 데이터 요청함
   const [user, setUser] = useState<User | undefined>(User);
   useEffect(() => {
+    socket?.off();
     //내 정보 가져오기
     CustomAxios(
       "GET",
@@ -98,21 +99,15 @@ export const MessageScreen: React.FC = () => {
       undefined,
       (d: User) => {
         setUser(d);
+        socket?.emit("chatRooms", { nickname: d.nickname });
+        //#region 내방목록 가져오기
+        socket?.on("chatRooms", (c: { chatRooms: ChatRoom[] }) => {
+          console.log(c.chatRooms)
+          setDatas(c.chatRooms);
+        });
+        //#endregion 내방목록 가져오기
       }
     );
-    //#region 내방목록 가져오기
-    CustomAxios(
-      "GET",
-      `${API_URL}/v1/accounts/rooms/`,
-      resetToken,
-      refresh,
-      token,
-      undefined, // "User Room",
-      undefined,
-      (d: ChatRoom[]) => setDatas(d)
-    );
-    socket?.off()
-    //#endregion 내방목록 가져오기
   }, []);
   //#endregion 유저 데이터 요청
 

@@ -2,11 +2,12 @@ export type Message = {
   id: number;
   message: string;
   index: number;
-  message_type: "NORMAL" | "NOTICE";
+  message_type: "NORMAL" | "NOTICE" | "IMAGE";
   writer: string;
   room: number;
   created_at: Date;
   updated_at: Date;
+  url?: string;
 };
 
 export const MessageDummy: Message[] | (() => Message[]) = [

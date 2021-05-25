@@ -7,6 +7,7 @@ import {
   ChatRoom,
   UserDummyList,
 } from "../../../components/chat-room/ChatRoomList";
+import { CustomAlert } from "../../../components/chat-room/CustomAlert";
 import { EmailSend } from "../../../components/chat-room/EmailSend";
 import { ETAView } from "../../../components/chat-room/ETAView";
 import { GenderColor } from "../../../components/color/GenderColor";
@@ -17,9 +18,9 @@ import { MessageNoTabNavigationProp } from "./ChatRoomScreen";
 
 export const ChatRoomScreenDetails: React.FC = () => {
   const navigation = useNavigation<MessageNoTabNavigationProp>();
-  const [Users] = useState<User[]>(UserDummyList);
+  const [Users, setUsers] = useState<User[]>(UserDummyList);
   const [room] = useState<ChatRoom>(useAuthContext().MoveNav.props.data);
-
+  const { socket, User, setNavName } = useAuthContext();
   useEffect(() => {
     // 헤더 바탕 색변경
     navigation.setOptions({
@@ -27,7 +28,33 @@ export const ChatRoomScreenDetails: React.FC = () => {
     });
     // 에러 체크
     if (room.id == -1) console.warn("room.id 가 -1입니다.");
+    socket?.emit("chatRoomsInUsers", { room_id: room.id });
+    socket?.on("chatRoomsInUsers", (c: { chatUsers: User[] }) => {
+      setUsers(c.chatUsers);
+    });
+    socket?.on("kicked", (c: { room_id: number; hostname: string }) => {
+      console.log("c.room_id == room.id", c.room_id == room.id);
+      if (c.room_id == room.id)
+        setNavName({
+          istab: "Tab",
+          tab: "MessageTabScreen",
+          screen: "ChatRoomScreen",
+          props: null,
+        });
+    });
   }, []);
+  const onPressOk = () => {
+    socket?.emit("chatClose", {
+      nickname: User?.nickname,
+      room_id: room.id,
+    });
+    setNavName({
+      istab: "Tab",
+      tab: "MessageTabScreen",
+      screen: "ChatRoomScreen",
+      props: null,
+    });
+  };
   return (
     <Container contentContainerStyle={ContainerStyle}>
       {/* 대화상대 */}
@@ -40,6 +67,7 @@ export const ChatRoomScreenDetails: React.FC = () => {
           key={user.uuid}
           user={user}
           room={room}
+          isHost={User?.nickname == room.owner && user.nickname != room.owner}
         ></ChatDatilsCard>
       ))}
       {/* 기능 */}
@@ -58,9 +86,9 @@ export const ChatRoomScreenDetails: React.FC = () => {
       </BottomLine>
       {/* 방 공유하기 */}
       {/* 방장 위임 */}
-      <PassHostBtn onPress={() => console.log("asd")}>
+      {/* <PassHostBtn onPress={() => console.log("asd")}>
         <BtnTitle>방장 위임하기</BtnTitle>
-      </PassHostBtn>
+      </PassHostBtn> */}
       {/* 신고/문의 */}
       <QnABtn
         onPress={() =>
@@ -90,7 +118,17 @@ export const ChatRoomScreenDetails: React.FC = () => {
       {/* 광고 */}
       <BannerTemp />
       {/* 방나가기 */}
-      <OutRoomBtn onPress={() => console.log("asd")}>
+      <OutRoomBtn
+        onPress={() =>
+          CustomAlert(
+            "방 나가기",
+            "방을 나가시겠습니까?\n해당 채팅방은 내 채팅방에서 지워지게됩니다.",
+            true,
+            true,
+            () => onPressOk()
+          )
+        }
+      >
         <OutRoomSVG />
         <OutRoomBtnTitle>방나가기</OutRoomBtnTitle>
       </OutRoomBtn>

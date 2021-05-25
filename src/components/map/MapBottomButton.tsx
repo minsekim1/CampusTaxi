@@ -33,7 +33,8 @@ export const MapBottomButton: React.FC<Props> = ({
       props: {
         data: selectRoom,
       },
-    });}
+    });
+  }
   return (
     <BottomButton
       underlayColor={"#83ABED"}
