@@ -10,6 +10,7 @@ import {
   Platform,
   Switch,
 } from 'react-native';
+import { launchImageLibrary, launchCamera } from "react-native-image-picker";
 import PropTypes from 'prop-types';
 import {KeyboardAccessoryView, KeyboardUtils} from 'react-native-keyboard-input';
 import {KeyboardRegistry} from 'react-native-keyboard-input';
@@ -61,12 +62,32 @@ export default class KeyBoardInput extends Component {
       {
         text: 'f1',
         testID: 'f1',
-        onPress: () => this.showKeyboardView('KeyboardView', 'FIRST - 1 (passed prop)'),
+        onPress: () => {
+          console.log("aaa");
+          launchCamera(
+            { mediaType: "photo", includeBase64: true },
+            (response) => {
+              console.log(response.errorMessage);
+              if (response.base64) {
+                //setFile(response.base64);
+              }
+            }
+          );
+        },
       },
       {
         text: 'f2',
         testID: 'f2',
-        onPress: () => this.showKeyboardView('AnotherKeyboardView', 'SECOND - 2 (passed prop)'),
+        onPress: () => {
+          launchImageLibrary(
+            { mediaType: "photo", includeBase64: true },
+            (response) => {
+              if (response.base64) {
+                //setFile(response.base64);
+              }
+            }
+          );
+        },
       },
       {
         text: 'f3',

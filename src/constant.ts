@@ -10,7 +10,7 @@ const FIREBASE_CONFIG = {
   appId: "1:1054249413075:web:21f8f04c9933fe4cde2726",
   measurementId: "G-LH1WFX6SNM"
 };
-export const socketURL = 'http://124.5.120.66:3000/'//'http://210.102.225.68:3000'; //'https://minsekim.campustaxi.net:444/'
+export const socketURL = 'https://minsekim.campustaxi.net:444';//'http://124.5.120.66:3000/''http://210.102.225.68:3000'; //'https://minsekim.campustaxi.net:444/'
 export const MYfirebase = !fb.apps.length ? fb.initializeApp(FIREBASE_CONFIG) : fb.app()
 export const API_URL = "https://minsekim.campustaxi.net/api";
 export const GOOGLE_MAPAPI_URL = "AIzaSyBVIfNVsdQk6J56bD4CwZSPDyYlxF_XBe0";
