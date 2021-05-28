@@ -338,6 +338,8 @@ PODS:
     - React-Core (= 0.63.4)
     - React-cxxreact (= 0.63.4)
     - React-jsi (= 0.63.4)
+  - ReactNativeKeyboardInput (6.0.2):
+    - React
   - RNAppleAuthentication (2.1.0):
     - React-Core
   - RNCAsyncStorage (1.13.3):
@@ -409,6 +411,7 @@ DEPENDENCIES:
   - React-RCTText (from `../node_modules/react-native/Libraries/Text`)
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - ReactNativeKeyboardInput (from `../node_modules/react-native-keyboard-input`)
   - "RNAppleAuthentication (from `../node_modules/@invertase/react-native-apple-authentication`)"
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCCheckbox (from `../node_modules/@react-native-community/checkbox`)"
@@ -509,6 +512,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/Vibration"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  ReactNativeKeyboardInput:
+    :path: "../node_modules/react-native-keyboard-input"
   RNAppleAuthentication:
     :path: "../node_modules/@invertase/react-native-apple-authentication"
   RNCAsyncStorage:
@@ -589,6 +594,7 @@ SPEC CHECKSUMS:
   React-RCTText: 5c51df3f08cb9dedc6e790161195d12bac06101c
   React-RCTVibration: ae4f914cfe8de7d4de95ae1ea6cc8f6315d73d9d
   ReactCommon: 73d79c7039f473b76db6ff7c6b159c478acbbb3b
+  ReactNativeKeyboardInput: 9ba62ac1841ae8caa99d666301669bdd015e609b
   RNAppleAuthentication: 46cbc67739bae83ca229497f9b0038f3f5431443
   RNCAsyncStorage: 32c7cbe1d43dff5f03f3d0b9e9d2c44d8ec91a3a
   RNCCheckbox: 500919ac122273ea8eef93dae01431091968c14a

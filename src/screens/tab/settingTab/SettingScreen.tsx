@@ -13,6 +13,7 @@ import { CustomAxios } from "../../../components/axios/axios";
 import { API_URL } from "../../../constant";
 import { User } from "../../../contexts/User";
 import { PlusIcon } from "../../../components/icon/setting/PlusIcon"
+import { DefaultIcon } from "../../../components/icon/setting/DefaultIcon"
 import axios from "axios";
 
 import { 
@@ -43,11 +44,14 @@ export const SettingScreen: React.FC<Props> = () => {
   const [myprofilepath, setMyprofilepath] = useState<string>("default");
 
 
-  const GetProfileIconList: React.FC<{iconPath?: string}> = ({ iconPath }) => {
+  const GetProfileIconList: React.FC<{iconPath?: string, iconName?: string}> = ({ iconPath, iconName }) => {
     return(
+      <View style={{
+        justifyContent: "center",
+        alignItems: "center"}}>
       <Pressable
       style={{
-        height: 70, width: 70,
+        height: 70, width: 70
       }}
       onPress={() => {
         console.log(iconPath);
@@ -59,11 +63,19 @@ export const SettingScreen: React.FC<Props> = () => {
       >
       <Image
         style={{
-          height: 70, width: 70, position: 'absolute',
+          height: 70, width: 70, position: 'absolute', opacity: ispremium === true ? 1 : 0.3
         }}
         source={{uri: "https://s3.ap-northeast-2.amazonaws.com/api.campustaxi.net/profile_icon/"+iconPath+".png"}}
       />
     </Pressable>
+    <View style={{
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: '#E8E9F2', width: 40,      
+        borderRadius: 20}}>
+      <Text>{iconName}</Text>
+    </View>
+    </View>
     );
   }
 
@@ -170,35 +182,39 @@ export const SettingScreen: React.FC<Props> = () => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <View style={{width: 200, flexDirection: 'row'}}>
-              <GetProfileIconList iconPath="profile_icon0"/>
-              <GetProfileIconList iconPath="profile_icon1"/>
-              <GetProfileIconList iconPath="profile_icon2"/>
+            <View style={{flexDirection: 'row'}}>    
+              <View style={{
+                justifyContent: "center",
+                alignItems: "center"}}>
+                <Pressable
+                  style={{
+                    height: 70, width: 70,
+                  }}
+                  onPress={() => {
+                    setMyprofilepath("default");
+                    setModalVisible(!modalVisible);
+                  }}
+                  >
+                    <DefaultIcon/>
+                </Pressable>
+                <View style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: '#E8E9F2', width: 40,      
+                    borderRadius: 20}}>
+                  <Text>기본</Text>
+                </View>
+              </View>
+              <GetProfileIconList iconPath="profile_icon0" iconName="무무"/>
+              <GetProfileIconList iconPath="profile_icon1" iconName="교수"/>
+              <GetProfileIconList iconPath="profile_icon2" iconName="로치"/>
             </View>
-            <View style={{width: 200, flexDirection: 'row'}}>
-              <GetProfileIconList iconPath="profile_icon3"/>
-              <GetProfileIconList iconPath="profile_icon4"/>
-              <GetProfileIconList iconPath="profile_icon5"/>
+            <View style={{flexDirection: 'row'}}>
+              <GetProfileIconList iconPath="profile_icon3" iconName="샤코"/>
+              <GetProfileIconList iconPath="profile_icon4" iconName="비아"/>
+              <GetProfileIconList iconPath="profile_icon5" iconName="타코"/>
+              <GetProfileIconList iconPath="profile_icon6" iconName="유미"/>
             </View>
-            <View style={{width: 200, flexDirection: 'row'}}>
-              <Pressable
-              style={{
-                height: 70, width: 70,
-              }}
-              onPress={() => {
-                setMyprofilepath("default");
-                setModalVisible(!modalVisible);
-              }}
-              >
-                <Image style = {{ width: 70, height: 70}} source={require('../../../components/icon/setting/defaultIcon.png')}/>
-              </Pressable>
-            </View>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={styles.textStyle}>확인</Text>
-            </Pressable>
           </View>
         </View>
       </Modal>
@@ -207,8 +223,7 @@ export const SettingScreen: React.FC<Props> = () => {
             {ispremium===true && myprofilepath!=="default" ? 
             <ProfileImage source={{uri: 'https://s3.ap-northeast-2.amazonaws.com/api.campustaxi.net/profile_icon/'+myprofilepath+'.png'}}/>
             :
-            <Image style = {{ width: 70, height: 70}} source={require('../../../components/icon/setting/defaultIcon.png')}/>
-            }
+            <DefaultIcon/>            }
             <PlusButton
               onPress={() => setModalVisible(true)}>
                 <PlusIcon/>
