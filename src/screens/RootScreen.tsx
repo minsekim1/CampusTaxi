@@ -20,25 +20,32 @@ export const RootScreen = () => {
     setLoggedIn,
   } = useAuthContext();
   useEffect(() => {
-    console.log('socket?.connected', socket?.connected)
-    if (socket?.connected)
-      console.log("connected socket !")
-  },[socket?.connected])
+    if (socket?.connected) console.log("connected socket !", socket.id);
+    else console.warn("disconnected socket ?", socket?.connected);
+  }, [socket]);
+
   useEffect(() => {
     if (isLoggedIn) {
       //#region 웹소켓
       //내 정보 가져오기
       //#region Open Socket
       if (!!User && !!firebaseToken) {
+        console.log('firebaseToken',firebaseToken)
         socket?.emit("appEnter", {
           nickname: User?.nickname,
           token: firebaseToken,
         });
-        socket?.on("kicked", (c: { room_id: string,hostname:string }) => Alert.alert(c.hostname+"님의 방","("+c.room_id+"번 방)에서 강퇴당하셨습니다."))
+        socket?.on("kicked", (c: { room_id: string; hostname: string }) =>
+          Alert.alert(
+            c.hostname + "님의 방",
+            "(" + c.room_id + "번 방)에서 강퇴당하셨습니다."
+          )
+        );
       }
       //#endregion 내방목록 가져오기
       // console.log("Login Changed true");
     } else {
+      socket?.offAny();
       const a = async () => {
         // let user = await AsyncStorage.getItem("login user");
         let id = await AsyncStorage.getItem("login id");

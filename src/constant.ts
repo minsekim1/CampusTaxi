@@ -10,7 +10,7 @@ const FIREBASE_CONFIG = {
   appId: "1:1054249413075:web:21f8f04c9933fe4cde2726",
   measurementId: "G-LH1WFX6SNM",
 };
-export const socketURL = "https://minsekim.campustaxi.net:444/";
+export const socketURL = "http://124.5.120.66:3000/";
 //minsekimHome http://124.5.120.66:3000/
 //minsekimOffice'http://210.102.225.68:3000'; 
 //AWSnodejsLoadBanlancer 'https://minsekim.campustaxi.net:444/'

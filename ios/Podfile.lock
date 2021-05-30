@@ -263,7 +263,7 @@ PODS:
     - React-cxxreact (= 0.63.4)
     - React-jsi (= 0.63.4)
   - React-jsinspector (0.63.4)
-  - react-native-image-picker (3.2.1):
+  - react-native-image-picker (3.8.1):
     - React-Core
   - react-native-mail (6.1.0):
     - React-Core
@@ -577,7 +577,7 @@ SPEC CHECKSUMS:
   React-jsi: a0418934cf48f25b485631deb27c64dc40fb4c31
   React-jsiexecutor: 93bd528844ad21dc07aab1c67cb10abae6df6949
   React-jsinspector: 58aef7155bc9a9683f5b60b35eccea8722a4f53a
-  react-native-image-picker: 0c28bf3cb089cfe840bc5cc9fac3dcc10f2188d9
+  react-native-image-picker: 5a7dd93d4f9dd0d910da5dde3707fd96f70d03b3
   react-native-mail: 82d9a99b31de76084e279ed3a161dd9ed11001f0
   react-native-nmap: dce573eff53ac1e62fd536b9b27846e8d5d1ca64
   react-native-restart: 6cc683e208c080581c147d0875609e64572a9443
