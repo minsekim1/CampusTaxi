@@ -132,25 +132,22 @@ export const AuthProvider: React.FC = ({ children }) => {
           AsyncStorage.setItem("login user", data);
         }
       );
-      setSocket(io(socketURL));
+      if (!socket || socket.disconnected) setSocket(io(socketURL));
     },
     [setRefresh, setToken]
   );
 
-  const setLoggedOut = useCallback(
-    async () => {
-      AsyncStorage.setItem("@campus_taxi_auth", "");
-      AsyncStorage.removeItem("@login");
-      AsyncStorage.removeItem("login id");
-      AsyncStorage.removeItem("login pw");
-      setTimeout(() => {
-        setRefresh(undefined);
-        setToken(undefined);
-        setUser(undefined);
-      }, 100);
-    },
-    [setRefresh, setToken]
-  );
+  const setLoggedOut = useCallback(async () => {
+    AsyncStorage.setItem("@campus_taxi_auth", "");
+    AsyncStorage.removeItem("@login");
+    AsyncStorage.removeItem("login id");
+    AsyncStorage.removeItem("login pw");
+    setTimeout(() => {
+      setRefresh(undefined);
+      setToken(undefined);
+      setUser(undefined);
+    }, 100);
+  }, [setRefresh, setToken]);
 
   const getRefreshToken = useCallback(async () => {
     const data = await AsyncStorage.getItem("@campus_taxi_auth");

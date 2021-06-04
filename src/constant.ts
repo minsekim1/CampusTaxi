@@ -13,7 +13,7 @@ const FIREBASE_CONFIG = {
 export const socketURL = "https://minsekim.campustaxi.net:444/";
 //minsekimHome http://124.5.120.66:3000/
 //minsekimOffice'http://210.102.225.68:3000'; 
-//AWSnodejs1 'https://minsekim.campustaxi.net:444/'
+//AWSnodejsLoadBanlancer 'https://minsekim.campustaxi.net:444/'
 export const MYfirebase = !fb.apps.length
   ? fb.initializeApp(FIREBASE_CONFIG)
   : fb.app();
