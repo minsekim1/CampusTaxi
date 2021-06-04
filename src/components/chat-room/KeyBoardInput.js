@@ -50,6 +50,7 @@ export default class KeyBoardInput extends Component {
     const receivedKeyboardData = `onItemSelected from "${keyboardId}"\nreceived params: ${JSON.stringify(params)}`;
     console.log(receivedKeyboardData);
     this.setState({receivedKeyboardData});
+    this.props.setMessage("aaa??");
   }
 
   onKeyboardResigned() {
@@ -63,7 +64,6 @@ export default class KeyBoardInput extends Component {
         text: 'f1',
         testID: 'f1',
         onPress: () => {
-          console.log("aaa");
           launchCamera(
             { mediaType: "photo", includeBase64: true },
             (response) => {
