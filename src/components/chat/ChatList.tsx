@@ -1,5 +1,6 @@
 import styled from "@emotion/native";
 import React from "react";
+import { Image } from "react-native";
 import { proc } from "react-native-reanimated";
 import { windowWidth } from "../../constant";
 import { searchProps } from "../../screens/notab/message/ChatRoomScreen";
@@ -56,11 +57,23 @@ export const Chat: React.FC<Props> = ({
           {!isLeft ? (
             <ChatTime>{DateToRecently(message.created_at)}</ChatTime>
           ) : null}
+          {//console.log(message.message_type)
+          }
+          {
+            message.message_type !== "NORMAL" ?
+           <Image
+              style={{
+                height: 100, width: 100
+              }}
+              source={{uri: message.message}}
+            />
+          :
           <ChatText isLeft={isLeft}>
             {sliceText && searchResult ? sliceText[0] : message.message}
             {sliceText ? <SearchedText>{sliceText[1]}</SearchedText> : null}
             {sliceText && searchResult ? sliceText[2] : null}
-          </ChatText>
+          </ChatText>}
+          
           {isLeft ? (
             <ChatTime>{DateToRecently(message.created_at)}</ChatTime>
           ) : null}

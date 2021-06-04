@@ -49,8 +49,9 @@ export default class KeyBoardInput extends Component {
   onKeyboardItemSelected(keyboardId, params) {
     const receivedKeyboardData = `onItemSelected from "${keyboardId}"\nreceived params: ${JSON.stringify(params)}`;
     console.log(receivedKeyboardData);
+    this.props.setMessageType("IMAGE");
     this.setState({receivedKeyboardData});
-    this.props.setMessage("aaa??");
+    this.props.setMessage(params.message);
   }
 
   onKeyboardResigned() {
@@ -180,7 +181,11 @@ export default class KeyBoardInput extends Component {
           <TouchableOpacity 
             style={styles.sendButton}
             disabled={this.props.message ? false : true} 
-            onPress={() => { this.props.setMessage(""); this.props.onSubmitEditing(this.props.message); }}
+            onPress={() => {
+              this.props.setMessage("");
+              this.props.onSubmitEditing(this.props.message, this.props.messageType);
+              this.props.setMessageType("NORMAL");
+            }}
             >
             <Text>SEND</Text>
           </TouchableOpacity>

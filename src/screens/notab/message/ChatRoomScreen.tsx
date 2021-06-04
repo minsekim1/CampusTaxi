@@ -57,6 +57,7 @@ export const ChatRoomScreen: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]); //MessageDummy
   const [searchResult, setSearchResult] = useState<searchProps>();
   const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("NORMAL");
   const [room, setRoom] = useState<ChatRoom>(
     useAuthContext().MoveNav.props.data
   );
@@ -106,12 +107,13 @@ export const ChatRoomScreen: React.FC = () => {
         setMessages(response.data);
         //#region 채팅 받기
         socket.on("chat", (chat) => {
+          console.log(chat);
           let a: Array<Message> = response.data;
           if (chat.nickname != User.nickname) {
             a.unshift({
               id: a.length + 1,
               message: chat.msg,
-              message_type: "NORMAL",
+              message_type: chat.msg_type,
               writer: chat.nickname,
               room: room.id,
               created_at: new Date(),
@@ -136,9 +138,10 @@ export const ChatRoomScreen: React.FC = () => {
   //#endregion 초기 세팅
 
   //#region 채팅 전송
-  const sendMessage = (text: string) => {
+  const sendMessage = (text: string, textType: string) => {
     socket?.emit("chat", {
       msg: text,
+      msg_type: textType,
       room_id: room.id,
       nickname: User?.nickname,
       firebaseToken: firebaseToken,
@@ -147,7 +150,7 @@ export const ChatRoomScreen: React.FC = () => {
     a.unshift({
       id: a.length + 1,
       message: text,
-      message_type: "NORMAL",
+      message_type: textType,
       writer: User ? User.nickname : "",
       room: room.id,
       created_at: new Date(),
@@ -327,8 +330,8 @@ export const ChatRoomScreen: React.FC = () => {
     setSearch(false);
     setSearchResult(undefined);
   };
-  const KeyBoardOnSubmit = (text: string) => {
-    sendMessage(text);
+  const KeyBoardOnSubmit = (text: string, textType: string) => {
+    sendMessage(text, textType);
   };
 
   return (
@@ -403,9 +406,11 @@ export const ChatRoomScreen: React.FC = () => {
               searchRef={searchRef}
               onSubmitEditing={KeyBoardOnSubmit}
               message={message}
+              messageType={messageType}
               setMessage={setMessage}
               onPressDownSearch={onPressDownSearch}
               onPressUpSearch={onPressUpSearch}
+              setMessageType={setMessageType}
             />
             {/* <KeyBoard
               searchResult={searchResult}
