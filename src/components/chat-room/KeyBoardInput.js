@@ -15,6 +15,7 @@ import PropTypes from 'prop-types';
 import {KeyboardAccessoryView, KeyboardUtils} from 'react-native-keyboard-input';
 import {KeyboardRegistry} from 'react-native-keyboard-input';
 import {_} from 'lodash';
+import axios from "axios";
 
 import './KeyboardView';
 
@@ -84,7 +85,32 @@ export default class KeyBoardInput extends Component {
             { mediaType: "photo", includeBase64: true },
             (response) => {
               if (response.base64) {
-                //setFile(response.base64);
+                console.log(response.base64);
+
+                axios
+                  .post(
+                    `http://192.168.219.107:3003/uploadImage/`,
+                    {
+                      imageBase64: response.base64,
+                    },
+                    {
+                      headers: {
+                        accept: "application/json",
+                        "Content-Type": "application/json",
+                      },
+                    }
+                  )
+                  .then((d) => {
+                    console.log(d);
+                  });
+                    
+              //   fetch('http://192.168.219.107:3003/uploadImage/', {
+              //     method: 'POST',
+              //     headers: {Accept: 'application / json', 'Content - Type': 'application / json'},
+              //     body: JSON.stringify({
+              //       imgsource: response.base64,
+              //   }),
+              // })
               }
             }
           );
