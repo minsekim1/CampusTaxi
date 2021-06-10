@@ -11,72 +11,20 @@ import { ChatRoom } from "../chat-room/ChatRoomList";
 import { LogoColor } from "../color/GenderColor";
 const windowWidth = Dimensions.get("window").width;
 type Props = {
-  data?: ChatRoom;
-  SetRoute: Dispatch<SetStateAction<myCoordProps[]>>;
+  data?: {
+    time: number;
+    cost: string;
+    distance: number;
+  };
 };
 
-export const SelectedBottomView: React.FC<Props> = ({ data: d, SetRoute }) => {
-  const [time, setTime] = useState<number>(0);
-  const [cost, setCost] = useState<number>(0);
-  const [distance, setDistance] = useState<number>(0);
+export const SelectedBottomView: React.FC<Props> = ({ data: d  }) => {
 
-  if (!d || !d?.start_lon || !d?.end_lon) return <></>;
-  useEffect(() => {
-    setTime(-1);
-    //캐쉬 메모리에 저장해서 있으면 씀
-    let a = async () => {
-      let position = await AsyncStorage.getItem(
-        "route(" +
-          d.end_lon +
-          "," +
-          d.end_lat +
-          "," +
-          d.start_lon +
-          "," +
-          d.start_lat +
-          ")"
-      );
-      if (!position) {
-        position = await axios.get(
-          `${TMAP_API}endX=${d.end_lon}&endY=${d.end_lat}&startX=${d.start_lon}&startY=${d.start_lat}`,
-          { headers: { Accept: "application/json" } }
-        );
-        if (!!position) {
-          setCost(position.data.features[0].properties.taxiFare);
-          setDistance(position.data.features[0].properties.totalDistance);
-          setTime(position.data.features[0].properties.totalTime);
-          position.data.features.map((c: any) => {
-            if (!!c) SetRoute(c.geometry.coordinates);
-            AsyncStorage.setItem(
-              "route(" +
-                d.end_lon +
-                "," +
-                d.end_lat +
-                "," +
-                d.start_lon +
-                "," +
-                d.start_lat +
-                ")",
-              JSON.stringify(position.data.features[0])
-            );
-          });
-        } else
-          console.warn(
-            "예상금액가져오기: 데이터 처리 과정에서 에러가 발생했습니다."
-          );
-      } else {
-        position = JSON.parse(position);
-        setCost(position.properties.taxiFare);
-        setDistance(position.properties.totalDistance);
-        setTime(position.properties.totalTime);
-        SetRoute(position.geometry.coordinates);
-      }
-    };
-    a();
-  }, [d]);
+  if (!d) return <></>;
+    console.log('data seleB:',d)
   return (
     <Container>
-      {time == -1 ? (
+      {d.time == -1 ? (
         <ActivityIndicator size="large" color={LogoColor} />
       ) : (
         <>
@@ -84,20 +32,20 @@ export const SelectedBottomView: React.FC<Props> = ({ data: d, SetRoute }) => {
             <TitleText>예상시간</TitleText>
             <Row>
               <BlueText>
-                {time / 3600 >= 1.0
-                  ? (time / 3600).toFixed(0) +
+                {d.time / 3600 >= 1.0
+                  ? (d.time / 3600).toFixed(0) +
                     "시간 " +
-                    (time % 60).toFixed(0) +
+                    (d.time % 60).toFixed(0) +
                     "분 "
-                  : (time / 60).toFixed(0) + "분 "}
+                  : (d.time / 60).toFixed(0) + "분 "}
               </BlueText>
-              <TitleText>{(distance / 1000).toFixed(2)} km</TitleText>
+              <TitleText>{(d.distance / 1000).toFixed(2)} km</TitleText>
             </Row>
           </Col>
           <VerticalBar />
           <Col>
             <TitleText>예상금액</TitleText>
-            <BlueText>약 {cost}원</BlueText>
+            <BlueText>약 {d.cost}원</BlueText>
           </Col>
         </>
       )}

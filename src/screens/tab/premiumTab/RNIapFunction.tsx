@@ -41,6 +41,7 @@ export const PurchaseGoogle = () => {
     //#region 접속 시도 후 결제
     async (purchase: RNIap.InAppPurchase | RNIap.SubscriptionPurchase) => {
       const receipt = purchase.transactionReceipt;
+
       if (receipt) {
         try {
           // if (Platform.OS === 'ios') {
@@ -66,7 +67,6 @@ export const PurchaseGoogle = () => {
         //#region 접속 종료
         
         console.log("결제 완료", "결제가 정상적으로 처리되었습니다.");
-        //Alert.alert("Receipt", receipt);
 
         if (purchaseUpdateSubscription) {
           purchaseUpdateSubscription.remove();
@@ -92,17 +92,14 @@ export const PurchaseGoogle = () => {
   );
   //#endregion 에러 리스너
 };
-
 export const getSubscriptions = async (): Promise<any> => {
-  let products = null;
+  let products: any = null;
   try {
     if (!itemSubs) return;
     products = await RNIap.getSubscriptions(itemSubs);
-    console.log("Products", products);
   } catch (err) {
     console.warn(err.code, err.message);
   }
-  return products;
 };
 
 //#region 현재 구매한 목룍 확인 함수
@@ -117,21 +114,17 @@ export async function getAvailablePurchases(){
         if (purchases && purchases.length > 0) {
           //console.log(`getAvailablePurchases Got ${purchases.length} items.`);
           for (let i = 0; i < purchases.length; i += 1) {
-            //console.log("getAvailablePurchases", purchases[i].transactionReceipt);
-            /*console.log(
-              "getAvailablePurchases",
-              JSON.parse(purchases[i].transactionReceipt).productId
-            );*/
+            // console.log("getAvailablePurchases", purchases[i].transactionReceipt);
             if(JSON.parse(purchases[i].transactionReceipt).productId===appSubProductId){
               result = true;
             }
           }
+          resolve(null);
         }
       } catch (err) {
         console.warn(err.code, err.message);
         console.log(err.message);
       }
-      resolve(result);
   })
 };
 
@@ -151,9 +144,10 @@ export async function getAvailablePurchases(){
 // sku = product.id 이걸로 매개변수 넣으면됌
 export const requestSubscription = async (sku: string): Promise<void> => {
   try {
-    await getSubscriptions();
+    getSubscriptions();
     RNIap.requestSubscription(sku);
-    console.log("requestSubscription",sku)
+    
+    console.log("requestSubscription a:", "/sku:",sku)
   } catch (err) {
     console.log(err.message);
   }

@@ -17,15 +17,15 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { showToast } from "../../../components/layout/Toast";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { PremiumStackParamList } from "./PremiumStackNavigation";
-import { 
-  PurchaseGoogle, 
+import {
+  PurchaseGoogle,
   getSubscriptions,
   getAvailablePurchases,
   requestSubscription,
 } from "./RNIapFunction";
+import { useAuthContext } from "../../../contexts/AuthContext";
 
 // App Bundle > com.dooboolab.test
-
 
 const itemSkus = Platform.select({
   ios: ["com.campustaxi.campustaxi", "testinapp"],
@@ -48,29 +48,32 @@ type MessageNavigation = StackNavigationProp<
   "PremiumScreen"
 >;
 
-const BenefitItemComponent: React.FC<{title?: string, subtitle: string, subtitle2?: string}> = ({ title, subtitle, subtitle2 }) => {
-  return(
-  <BenefitItemContainer>
-    <BenefitItemIcon/>
-    <BenefitInfo>
-      <BenefitInfoTitleText>
-        {title}
-      </BenefitInfoTitleText>
-      <BenefitInfoSubText>
-        {subtitle}{"\n"}{subtitle2}
-      </BenefitInfoSubText>
-    </BenefitInfo>
-  </BenefitItemContainer>);
+const BenefitItemComponent: React.FC<{
+  title?: string;
+  subtitle: string;
+  subtitle2?: string;
+}> = ({ title, subtitle, subtitle2 }) => {
+  return (
+    <BenefitItemContainer>
+      <BenefitItemIcon />
+      <BenefitInfo>
+        <BenefitInfoTitleText>{title}</BenefitInfoTitleText>
+        <BenefitInfoSubText>
+          {subtitle}
+          {"\n"}
+          {subtitle2}
+        </BenefitInfoSubText>
+      </BenefitInfo>
+    </BenefitItemContainer>
+  );
 };
 
 export const PremiumScreen: React.FC = ({}) => {
-
+  const { socket } = useAuthContext();
   useFocusEffect(() => {
-    getAvailablePurchases().then((result)=>{console.log(result)});
+    getAvailablePurchases();
   });
-
   return (
-    
     <Container>
       <UpperView>
         <TitleText>프리미엄 멤버십</TitleText>
@@ -79,40 +82,51 @@ export const PremiumScreen: React.FC = ({}) => {
 
       <MiddleView>
         <MiddleTitleText>
-          일반 회원에선 없었던 프리미엄만의 기능!{"\n"}
-          월 5000월으로 더욱 편한 서비스를 이용하세요.
+          일반 회원에선 없었던 프리미엄만의 기능!{"\n"}월 5000월으로 더욱 편한
+          서비스를 이용하세요.
         </MiddleTitleText>
 
-
-        <BenefitListContainer>    
-          <BenefitItemComponent title="이동하는 경로를 예측!" subtitle="예상경로/예상금액/예상시간 전부 예측 가능" subtitle2="분할결제"/>
-          <GrayLine/>
-          <BenefitItemComponent title="빠른 이동을 위한 채팅목록 우선!" subtitle="채팅 목록 최상단"/>
-          <GrayLine/>
-          <BenefitItemComponent title="광고없는 이용" subtitle="팝업 광고 없음" subtitle2="앱 최하단 배너광고 없음"/>
-          <GrayLine/>
-          <BenefitItemComponent title="캠퍼스택시 이모티콘 사용 FREE!" subtitle="캠퍼스택시 캐릭터 이모티콘 및" subtitle2="캐릭터로 프로필 설정 가능"/>
-          <GrayLine/>
+        <BenefitListContainer>
+          <BenefitItemComponent
+            title="이동하는 경로를 예측!"
+            subtitle="예상경로/예상금액/예상시간 전부 예측 가능"
+            subtitle2="분할결제"
+          />
+          <GrayLine />
+          <BenefitItemComponent
+            title="빠른 이동을 위한 채팅목록 우선!"
+            subtitle="채팅 목록 최상단"
+          />
+          <GrayLine />
+          <BenefitItemComponent
+            title="광고없는 이용"
+            subtitle="팝업 광고 없음"
+            subtitle2="앱 최하단 배너광고 없음"
+          />
+          <GrayLine />
+          <BenefitItemComponent
+            title="캠퍼스택시 이모티콘 사용 FREE!"
+            subtitle="캠퍼스택시 캐릭터 이모티콘 및"
+            subtitle2="캐릭터로 프로필 설정 가능"
+          />
+          <GrayLine />
         </BenefitListContainer>
-        
+
         <MiddleSubText>
           정액제는 구글 플레이스토어{"\n"}
-          인앱 결제를 통해서 결제 됩니다.{"\n"}{"\n"}
+          인앱 결제를 통해서 결제 됩니다.{"\n"}
+          {"\n"}
           공유링크는 생성시 바로 타 유저들에게 알림이{"\n"}
           뜨기 때문에 편리하게 n 등분 결제가 가능합니다.
         </MiddleSubText>
 
-        <PurcahseButton
-          onPress={() => requestSubscription("regularpayment")}
-        >
+        <PurcahseButton onPress={() => requestSubscription("regularpayment")}>
           <PurcahseText>결제하러 가기</PurcahseText>
         </PurcahseButton>
-
       </MiddleView>
       {/* <TouchableOpacity
         onPress={()=>console.log(getSubscriptions())}
         activeOpacity={0.5}
-        style={styles.btn}
       >
         <Text>현재 구매한 목록 확인</Text>
       </TouchableOpacity> */}
@@ -124,8 +138,6 @@ export const PremiumScreen: React.FC = ({}) => {
       >
         <Text>현재 보유한 목록</Text>
       </TouchableOpacity> */}
-
-        
     </Container>
   );
 };
@@ -140,7 +152,7 @@ const PurcahseButton = styled.TouchableOpacity`
   margin-bottom: 40px;
   width: 159px;
   height: 37px;
-  background-color: #0C678E;
+  background-color: #0c678e;
   align-items: center;
   justify-content: center;
   text-align: center;
@@ -166,7 +178,7 @@ const MiddleView = styled.View`
 `;
 
 const TitleText = styled.Text`
-  color: #0C678E;
+  color: #0c678e;
   font-size: 27px;
   font-weight: bold;
 `;
@@ -226,5 +238,5 @@ const GrayLine = styled.View`
   margin-bottom: 10px;
   height: 2px;
   width: 280px;
-  background-color: #EEEEEE;
+  background-color: #eeeeee;
 `;

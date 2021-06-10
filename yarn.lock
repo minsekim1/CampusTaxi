@@ -5479,7 +5479,7 @@
   "resolved" "https://registry.npmjs.org/lodash.throttle/-/lodash.throttle-4.1.1.tgz"
   "version" "4.1.1"
 
-"lodash@^4.17.10", "lodash@^4.17.14", "lodash@^4.17.15", "lodash@^4.17.19", "lodash@^4.3.0":
+"lodash@^4.17.10", "lodash@^4.17.14", "lodash@^4.17.15", "lodash@^4.17.19", "lodash@^4.17.4", "lodash@^4.3.0":
   "integrity" "sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA=="
   "resolved" "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz"
   "version" "4.17.20"
@@ -6761,10 +6761,10 @@
   dependencies:
     "dooboolab-welcome" "^1.2.0"
 
-"react-native-image-picker@^3.2.1":
-  "integrity" "sha512-nOBZzYGmE5qZ8JBCvhWHQA+umYnQ8Jd3HGmgxBnmi0/82mU2nwCCnrzHsb29Q+DD7YasYr64rm8uWBBow8L5Fw=="
-  "resolved" "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-3.2.1.tgz"
-  "version" "3.2.1"
+"react-native-image-picker@3.8.1":
+  "integrity" "sha512-Q7qaJ7Zkt8ipIkkF+7UcuRbI0cxaNwsHBcnDLZdlpHnxuMaLhS/xp6v/om/kBYhMg6BeT+NcncynZQoKz7dQqw=="
+  "resolved" "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-3.8.1.tgz"
+  "version" "3.8.1"
 
 "react-native-iphone-x-helper@^1.3.0":
   "integrity" "sha512-HOf0jzRnq2/aFUcdCJ9w9JGzN3gdEg0zFE4FyYlp4jtidqU03D5X7ZegGKfT1EWteR0gPBGp9ye5T5FvSWi9Yg=="
@@ -6775,6 +6775,19 @@
   "integrity" "sha512-XfWozWFPhdecfxN+wuqERX3mCGDrAim5siC6TWg3Qw7wK/zlwIwe1UIsHDNOQCzf9oIh0SkZXvoOFsMrnyIVmQ=="
   "resolved" "https://registry.npmjs.org/react-native-keyboard-aware-scrollview/-/react-native-keyboard-aware-scrollview-2.1.0.tgz"
   "version" "2.1.0"
+
+"react-native-keyboard-input@6.0.2":
+  "integrity" "sha512-kqWsrkOaJPimui0NHy9Kk29bysa+94YhQKJPExB0XDSJB+Q4F4yKO+0B75W8x+wx5vEe+HgJU//YqXEiwPjzLQ=="
+  "resolved" "https://registry.npmjs.org/react-native-keyboard-input/-/react-native-keyboard-input-6.0.2.tgz"
+  "version" "6.0.2"
+  dependencies:
+    "lodash" "^4.17.4"
+    "react-native-keyboard-tracking-view" "^5.5.0"
+
+"react-native-keyboard-tracking-view@^5.5.0":
+  "integrity" "sha512-MDeEwAbn9LJDOfHq0QLCGaZirVLk2X/tHqkAqz3y6uxryTRdSl9PwleOVar5Jx2oAPEg4J9BXbUD1wwOOi+5Kg=="
+  "resolved" "https://registry.npmjs.org/react-native-keyboard-tracking-view/-/react-native-keyboard-tracking-view-5.7.0.tgz"
+  "version" "5.7.0"
 
 "react-native-mail@^6.1.0":
   "integrity" "sha512-u2JqlHe19OKbXPKx3mNhBTuF7LfM4EkpVG/DkpY5i5G+dgOz8rRtBDKvcuJfUQnMBNav3kwvcwArjOG3rZhJZQ=="
