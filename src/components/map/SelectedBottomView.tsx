@@ -21,7 +21,6 @@ type Props = {
 export const SelectedBottomView: React.FC<Props> = ({ data: d  }) => {
 
   if (!d) return <></>;
-    console.log('data seleB:',d)
   return (
     <Container>
       {d.time == -1 ? (
