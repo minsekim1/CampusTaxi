@@ -73,18 +73,15 @@ export const MessageScreen: React.FC = () => {
           socket?.emit("chatRooms", { nickname: d.nickname });
           //#region 내방목록 가져오기
           socket?.on("chatRooms", (c: { chatRooms: ChatRoom[] }) => {
-            console.log(c.chatRooms);
             if (isSubscribed) setDatas(c.chatRooms);
           });
           //#endregion 내방목록 가져오기
         }
       );
-      console.log("chatRooms on");
     });
     navigation.addListener("blur", () => {
       BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
       socket?.off("chatRooms");
-      console.log("chatRooms off");
       //console.log("blur MainScreen");
     });
     return () => isSubscribed = false
