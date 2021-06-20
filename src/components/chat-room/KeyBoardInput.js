@@ -9,6 +9,7 @@ import {
   PixelRatio,
   Platform,
   Switch,
+  Image,
 } from 'react-native';
 import { launchImageLibrary, launchCamera } from "react-native-image-picker";
 import PropTypes from 'prop-types';
@@ -16,11 +17,13 @@ import {KeyboardAccessoryView, KeyboardUtils} from 'react-native-keyboard-input'
 import {KeyboardRegistry} from 'react-native-keyboard-input';
 import {_} from 'lodash';
 import axios from "axios";
+import { premiumURL } from "../../constant";
 
 import './KeyboardView';
 
 const IsIOS = Platform.OS === 'ios';
 const TrackInteractive = true;
+const isBase64 = require('is-base64');
 
 export default class KeyBoardInput extends Component {
   static propTypes = {
@@ -71,7 +74,9 @@ export default class KeyBoardInput extends Component {
             (response) => {
               console.log(response.errorMessage);
               if (response.base64) {
-                //setFile(response.base64);
+                console.log("textinpupt photo ...");
+
+                this.onKeyboardItemSelected('f2', { "message": response.base64 });
               }
             }
           );
@@ -85,32 +90,10 @@ export default class KeyBoardInput extends Component {
             { mediaType: "photo", includeBase64: true },
             (response) => {
               if (response.base64) {
-                console.log(response.base64);
+                console.log("textinpupt photo ...");
 
-                axios
-                  .post(
-                    `http://192.168.219.107:3003/uploadImage/`,
-                    {
-                      imageBase64: response.base64,
-                    },
-                    {
-                      headers: {
-                        accept: "application/json",
-                        "Content-Type": "application/json",
-                      },
-                    }
-                  )
-                  .then((d) => {
-                    console.log(d);
-                  });
-                    
-              //   fetch('http://192.168.219.107:3003/uploadImage/', {
-              //     method: 'POST',
-              //     headers: {Accept: 'application / json', 'Content - Type': 'application / json'},
-              //     body: JSON.stringify({
-              //       imgsource: response.base64,
-              //   }),
-              // })
+                this.onKeyboardItemSelected('f2', {"message": response.base64});
+
               }
             }
           );
@@ -187,23 +170,76 @@ export default class KeyBoardInput extends Component {
       <View style={styles.keyboardContainer}>
         <View style={{borderTopWidth: StyleSheet.hairlineWidth, borderColor: '#bbb'}}/>
         <View style={styles.inputContainer}>
-          <TextInput
-            maxHeight={200}
-            style={styles.textInput}
-            ref={(r) => {
-              this.textInputRef = r;
-            }}
-            placeholder={'Message'}
-            underlineColorAndroid="transparent"
-            onFocus={() => this.resetKeyboardView()}
-            testID={'input'}
+          
+          {this.props.messageType !== "IMAGE" ? (
+            <>
+            <TextInput
+              maxHeight={200}
+              style={styles.textInput}
+              ref={(r) => {
+                this.textInputRef = r;
+              }}
+              placeholder={'Message'}
+              underlineColorAndroid="transparent"
+              onFocus={() => this.resetKeyboardView()}
+              testID={'input'}
 
-            value={this.props.message}
-            autoCapitalize="none"
-            returnKeyType="none"
-            multiline={true}
-            onChangeText={this.props.setMessage}
-          />
+              value={this.props.message}
+              autoCapitalize="none"
+              returnKeyType="none"
+              multiline={true}
+              onChangeText={this.props.setMessage}
+              />
+            </>
+          ) : (
+              isBase64(this.props.message) === true ?
+                (
+                  <View style={styles.photoInput}>
+                  <Image
+                    style={{
+                        height: 100, width: 100, margin: 10
+                      
+                    }}
+                      source={{ uri: `data:image/jpg;base64,${this.props.message}`}}
+                  />
+                  <TouchableOpacity
+                    style={{
+                      height: 20, width: 20, backgroundColor: 'black',
+                      alignItems: 'center', justifyContent: 'center'
+                    }}
+                    onPress={() => {
+                      this.props.setMessage('');
+                      this.props.setMessageType('NORMAL');
+                    }}
+                  />
+
+                  </View>
+                )
+                :
+                (
+                  <View style={styles.photoInput}>
+                    <Image
+                      style={{
+                        height: 100, width: 100
+                      }}
+                      source={{ uri: this.props.message }}
+                    />
+                    <TouchableOpacity
+                      style={{
+                        height: 20, width: 20, backgroundColor: 'black',
+                        alignItems: 'center', justifyContent: 'center'
+                      }}
+                      onPress={() => {
+                        this.props.setMessage('');
+                        this.props.setMessageType('NORMAL');
+                      }}
+                    />
+
+                  </View>
+                )
+            )}
+            
+          
           <TouchableOpacity 
             style={styles.sendButton}
             disabled={this.props.message ? false : true} 
@@ -294,6 +330,19 @@ const styles = StyleSheet.create({
         backgroundColor: COLOR,
       },
     }),
+  },
+  photoInput: {
+    flexDirection: 'row',
+    flex: 1,
+    marginLeft: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    paddingLeft: 10,
+    paddingTop: 2,
+    paddingBottom: 5,
+    backgroundColor: 'white',
+    borderWidth: 0.5 / PixelRatio.get(),
+    borderRadius: 18,
   },
   textInput: {
     flex: 1,
