@@ -19,6 +19,10 @@ import {_} from 'lodash';
 import axios from "axios";
 import { premiumURL } from "../../constant";
 import {CancleIcon} from "../../components/icon/chat-room/CancleIcon"
+import { GalleryIcon } from "../../components/icon/chat-room/GalleryIcon"
+import { SmileIcon } from "../../components/icon/chat-room/SmileIcon"
+import { SendArrowIcon } from "../../components/icon/chat-room/SendArrowIcon"
+import { CameraIcon } from "../../components/icon/chat-room/CameraIcon"
 
 import './KeyboardView';
 
@@ -67,7 +71,8 @@ export default class KeyBoardInput extends Component {
   getToolbarButtonsLeft() {
     return [
       {
-        text: 'f1',
+        text: 'camera',
+        icon: <CameraIcon/>,
         testID: 'f1',
         onPress: () => {
           launchCamera(
@@ -89,7 +94,8 @@ export default class KeyBoardInput extends Component {
   getToolbarButtonsRight() {
     return [
       {
-        text: 'f2',
+        text: 'gallery',
+        icon: <GalleryIcon />,
         testID: 'f2',
         onPress: () => {
           launchImageLibrary(
@@ -106,7 +112,8 @@ export default class KeyBoardInput extends Component {
         },
       },
       {
-        text: 'f3',
+        text: 'emoticon',
+        icon: <SmileIcon />,
         testID: 'f3',
         onPress: () => this.showKeyboardView('ImoticonKeyboardView', 'text'),
       },
@@ -185,11 +192,11 @@ export default class KeyBoardInput extends Component {
               this.getToolbarButtonsLeft().map((button, index) =>
                 <TouchableOpacity
                   onPress={button.onPress}
-                  style={{ paddingLeft: 15, paddingBottom: 10 }}
+                  style={{ paddingLeft: 15, }}
                   key={index}
                   testID={button.testID}
                 >
-                  <Text>{button.text}</Text>
+                  {button.icon}
                 </TouchableOpacity>)
             }
           </View>
@@ -267,30 +274,32 @@ export default class KeyBoardInput extends Component {
             )}
             
 
-          <TouchableOpacity 
-            style={styles.sendButton}
-            disabled={this.props.message ? false : true} 
-            onPress={() => {
-              this.props.setMessage("");
-              this.props.onSubmitEditing(this.props.message, this.props.messageType);
-              this.props.setMessageType("NORMAL");
-            }}
-            >
-            <Text>SEND</Text>
-          </TouchableOpacity>
           <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
           {
             this.getToolbarButtonsRight().map((button, index) =>
               <TouchableOpacity
                 onPress={button.onPress}
-                style={{paddingLeft: 15, paddingBottom: 10}}
+                style={{paddingLeft: 10, paddingRifht: 10}}
                 key={index}
                 testID={button.testID}
               >
-                <Text>{button.text}</Text>
+                {button.icon}
               </TouchableOpacity>)
           }
           </View>
+
+
+          <TouchableOpacity
+            style={styles.sendButton}
+            disabled={this.props.message ? false : true}
+            onPress={() => {
+              this.props.setMessage("");
+              this.props.onSubmitEditing(this.props.message, this.props.messageType);
+              this.props.setMessageType("NORMAL");
+            }}
+          >
+            <SendArrowIcon />
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -384,7 +393,7 @@ const styles = StyleSheet.create({
   },
   sendButton: {
     paddingRight: 5,
-    paddingLeft: 5,
+    paddingLeft: 10,
     alignSelf: 'center',
   },
   switch: {

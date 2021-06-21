@@ -11,7 +11,7 @@ export function BackIconWhite({ color }: {color?:string}) {
 		>
 			<G
 				fill="none"
-				stroke={color? color:"#fff"}
+				stroke={color? color:"#00567C"}
 				strokeWidth="2"
 				data-name="Return Button"
 				transform="translate(1.414 .707)"

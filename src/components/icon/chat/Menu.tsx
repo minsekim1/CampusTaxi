@@ -11,7 +11,7 @@ export function Menu() {
 		>
 			<G
 				fill="none"
-				stroke="#fff"
+				stroke="#00567C"
 				strokeLinecap="round"
 				strokeWidth="1.5"
 				data-name="그룹 213"

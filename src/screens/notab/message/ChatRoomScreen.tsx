@@ -13,6 +13,8 @@ import {
   Alert,
   ToastAndroid,
   AlertIOS,
+  ImageBackground,
+  View,
 } from "react-native";
 import { ChatRoom } from "../../../components/chat-room/ChatRoomList";
 import { KeyBoard } from "../../../components/chat-room/KeyBoard";
@@ -29,7 +31,7 @@ import {
   showToast,
   showToastWithGravity,
 } from "../../../components/layout/Toast";
-import { API_URL, socketURL, premiumURL } from "../../../constant";
+import { API_URL, socketURL, premiumURL, windowWidth } from "../../../constant";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import { MessageNoTabNavigationParamList } from "./MessageNoTabNavigation";
 
@@ -55,11 +57,26 @@ export type searchProps = {
   result_message: Message[];
   index_InResult: number;
 };
+
+export type Theme = {
+  bgimg: string;
+  dateinner: string;
+  dateouter: string;
+  revinner: string;
+  revouter: string;
+  revtext: string;
+  sendinner: string;
+  sendouter: string;
+  sendtext: string;
+  nametext: string;
+};
+
 export const ChatRoomScreen: React.FC = () => {
   //#region States
   const { navigate } = useNavigation<MessageNoTabNavigationProp>();
   const [messages, setMessages] = useState<Message[]>([]); //MessageDummy
   const [searchResult, setSearchResult] = useState<searchProps>();
+  const [theme, setTheme] = useState<Theme>();
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("NORMAL");
   const [room, setRoom] = useState<ChatRoom>(
@@ -99,6 +116,24 @@ export const ChatRoomScreen: React.FC = () => {
           props: null,
         });
     });
+
+    //방의 테마 가져오기
+    axios
+        .post(
+          `${premiumURL}getRoomTheme/`,
+          {
+            roomid: room.id,
+          },
+          {
+            headers: {
+              accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          setTheme(res.data[0])
+        });
 
     //#region 내방목록 가져오기
     if (!!User && !!socket) {
@@ -398,7 +433,7 @@ const KeyBoardOnSubmit = (text: string, textType: string) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <Container>
-          <BlankBackground color="#fff">
+          <ImageBackground source={{ uri: theme?.bgimg}} style={{flex:1, width: windowWidth}}>
             {/* 헤더 */}
             <TitleContainer room={room}>
               {search ? (
@@ -426,11 +461,16 @@ const KeyBoardOnSubmit = (text: string, textType: string) => {
                   <LeftBtn onPress={LeftBtnOnPress}>
                     <BackIconWhite />
                   </LeftBtn>
-                  <Crown />
-                  <Title>{room.owner}</Title>
+                  <HeaderTextView>
+                    <OwnerTextView>
+                        <Crown />
+                         <Title>{room.owner}</Title>
+                      </OwnerTextView>
+                    <SubTitle>{room.gender}</SubTitle>
+                  </HeaderTextView>
                   <Group>
                     <Btn onPress={() => setSearch(true)}>
-                      <SearchIcon fill="white" />
+                      <SearchIcon fill="#00567C" />
                     </Btn>
                     <Btn onPress={() => navigate("ChatRoomScreenDetails")}>
                       <Menu />
@@ -451,6 +491,7 @@ const KeyBoardOnSubmit = (text: string, textType: string) => {
               renderItem={(props: any) => (
                 <Chat
                   searchResult={searchResult}
+                  theme={theme}
                   message={props.item}
                   gender={1}
                   isLeft={props.item.writer != User?.nickname}
@@ -479,7 +520,7 @@ const KeyBoardOnSubmit = (text: string, textType: string) => {
               onPressDownSearch={onPressDownSearch}
               onPressUpSearch={onPressUpSearch}
             /> */}
-          </BlankBackground>
+          </ImageBackground>
         </Container>
       </KeyboardContainer>
     </BlankBackground>
@@ -527,10 +568,15 @@ const Group = styled.View`
   margin-right: 10px;
 `;
 const Title = styled.Text`
-  color: white;
+  color: black;
   margin: 3px 0 0 10px;
   font-size: 18px;
   font-weight: bold;
+`;
+const SubTitle = styled.Text`
+  color: black;
+  margin: 1px 0 0 10px;
+  font-size: 11px;
 `;
 const Container = styled.SafeAreaView`
   justify-content: space-around;
@@ -543,11 +589,23 @@ const KeyboardContainer = styled.KeyboardAvoidingView`
 `;
 
 const TitleContainer: any = styled.View`
-  background-color: ${(props) => GenderColor(props.room.gender)};
+  background-color: #ffffff;
   height: 55px;
   flex-direction: row;
   justify-content: center;
   align-items: center;
 `;
+
+const HeaderTextView: any = styled.View`
+  justify-content: center;
+  align-items: center;
+`;
+
+const OwnerTextView: any = styled.View`
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+`;
+
 
 const ContentContainer: any = styled.FlatList``;
