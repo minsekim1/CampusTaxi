@@ -18,6 +18,7 @@ import {KeyboardRegistry} from 'react-native-keyboard-input';
 import {_} from 'lodash';
 import axios from "axios";
 import { premiumURL } from "../../constant";
+import {CancleIcon} from "../../components/icon/chat-room/CancleIcon"
 
 import './KeyboardView';
 
@@ -63,7 +64,7 @@ export default class KeyBoardInput extends Component {
     this.resetKeyboardView();
   }
 
-  getToolbarButtons() {
+  getToolbarButtonsLeft() {
     return [
       {
         text: 'f1',
@@ -81,7 +82,12 @@ export default class KeyBoardInput extends Component {
             }
           );
         },
-      },
+      }
+    ];
+  }
+
+  getToolbarButtonsRight() {
+    return [
       {
         text: 'f2',
         testID: 'f2',
@@ -92,7 +98,7 @@ export default class KeyBoardInput extends Component {
               if (response.base64) {
                 console.log("textinpupt photo ...");
 
-                this.onKeyboardItemSelected('f2', {"message": response.base64});
+                this.onKeyboardItemSelected('f2', { "message": response.base64 });
 
               }
             }
@@ -106,6 +112,7 @@ export default class KeyBoardInput extends Component {
       },
     ];
   }
+
 
   resetKeyboardView() {
     this.setState({customKeyboard: {}});
@@ -169,7 +176,23 @@ export default class KeyBoardInput extends Component {
     return (
       <View style={styles.keyboardContainer}>
         <View style={{borderTopWidth: StyleSheet.hairlineWidth, borderColor: '#bbb'}}/>
+
+        
         <View style={styles.inputContainer}>
+
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+            {
+              this.getToolbarButtonsLeft().map((button, index) =>
+                <TouchableOpacity
+                  onPress={button.onPress}
+                  style={{ paddingLeft: 15, paddingBottom: 10 }}
+                  key={index}
+                  testID={button.testID}
+                >
+                  <Text>{button.text}</Text>
+                </TouchableOpacity>)
+            }
+          </View>
           
           {this.props.messageType !== "IMAGE" ? (
             <>
@@ -204,14 +227,16 @@ export default class KeyBoardInput extends Component {
                   />
                   <TouchableOpacity
                     style={{
-                      height: 20, width: 20, backgroundColor: 'black',
+                      height: 20, width: 20, 
                       alignItems: 'center', justifyContent: 'center'
                     }}
                     onPress={() => {
                       this.props.setMessage('');
                       this.props.setMessageType('NORMAL');
                     }}
-                  />
+                    >
+                      <CancleIcon/>
+                  </TouchableOpacity>
 
                   </View>
                 )
@@ -226,20 +251,22 @@ export default class KeyBoardInput extends Component {
                     />
                     <TouchableOpacity
                       style={{
-                        height: 20, width: 20, backgroundColor: 'black',
+                        height: 20, width: 20,
                         alignItems: 'center', justifyContent: 'center'
                       }}
                       onPress={() => {
                         this.props.setMessage('');
                         this.props.setMessageType('NORMAL');
                       }}
-                    />
+                    >
+                      <CancleIcon />
+                    </TouchableOpacity>
 
                   </View>
                 )
             )}
             
-          
+
           <TouchableOpacity 
             style={styles.sendButton}
             disabled={this.props.message ? false : true} 
@@ -253,7 +280,7 @@ export default class KeyBoardInput extends Component {
           </TouchableOpacity>
           <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
           {
-            this.getToolbarButtons().map((button, index) =>
+            this.getToolbarButtonsRight().map((button, index) =>
               <TouchableOpacity
                 onPress={button.onPress}
                 style={{paddingLeft: 15, paddingBottom: 10}}
@@ -299,7 +326,7 @@ export default class KeyBoardInput extends Component {
   }
 }
 
-const COLOR = '#F5FCFF';
+const COLOR = '#ffffff';
 
 const styles = StyleSheet.create({
   container: {
@@ -340,8 +367,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingTop: 2,
     paddingBottom: 5,
-    backgroundColor: 'white',
-    borderWidth: 0.5 / PixelRatio.get(),
+    backgroundColor: '#EbE9F2',
     borderRadius: 18,
   },
   textInput: {
@@ -353,8 +379,7 @@ const styles = StyleSheet.create({
     paddingTop: 2,
     paddingBottom: 5,
     fontSize: 16,
-    backgroundColor: 'white',
-    borderWidth: 0.5 / PixelRatio.get(),
+    backgroundColor: '#EbE9F2',
     borderRadius: 18,
   },
   sendButton: {

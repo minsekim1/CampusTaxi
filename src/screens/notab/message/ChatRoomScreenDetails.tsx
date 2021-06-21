@@ -44,7 +44,7 @@ export const ChatRoomScreenDetails: React.FC = () => {
     });
   }, []);
   const onPressOk = () => {
-    socket?.emit("chatClose", {
+    socket?.emit("chatExit", {
       nickname: User?.nickname,
       room_id: room.id,
     });
@@ -116,7 +116,7 @@ export const ChatRoomScreenDetails: React.FC = () => {
         <BtnTitle>카카오택시로 호출</BtnTitle>
       </KakaoTaxiBtn>
       {/* 광고 */}
-      <BannerTemp />
+      {/* <BannerTemp /> */}
       {/* 방나가기 */}
       <OutRoomBtn
         onPress={() =>

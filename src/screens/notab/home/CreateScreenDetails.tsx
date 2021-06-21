@@ -173,14 +173,13 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
       })
       .then((r) => {
         let room: ChatRoom = r.data;
-        console.log('result create room:',r.data);
-        // setNavName({
-        //   istab: "Tab",
-        //   tab: "MessageTabScreen",
-        //   props: {
-        //     data: room,
-        //   },
-        // });
+        setNavName({
+          istab: "Tab",
+          tab: "MessageTabScreen",
+          props: {
+            data: room,
+          },
+        });
       })
       .catch((e) => Alert.alert("", JSON.stringify(e.response)));
   };

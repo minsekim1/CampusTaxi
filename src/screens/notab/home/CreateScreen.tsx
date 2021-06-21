@@ -17,7 +17,12 @@ import {
   ChatRoom,
   ChatRoomDummy,
 } from "../../../components/chat-room/ChatRoomList";
-import { API_URL, GOOGLE_MAPAPI_URL, naverMapZoonLv } from "../../../constant";
+import {
+  API_URL,
+  GOOGLE_MAPAPI_URL,
+  naverMapZoonLv,
+  TMAP_API,
+} from "../../../constant";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HomeNoTabNavigationParamList } from "./HomeNoTabNavigation";
@@ -54,6 +59,15 @@ export const CreateScreen: React.FC<Props> = ({}) => {
   const [route, SetRoute] = useState<myCoordProps[]>([
     { latitude: 0, longitude: 0 },
   ]);
+  const [expectedRoute, SetExpectedRoute] = useState<{
+    time: number;
+    cost: string;
+    distance: number;
+  }>({
+    time: -1,
+    cost: "",
+    distance: -1,
+  });
   const [myCoord, setMyCoord] = React.useState<myCoordProps>({
     latitude: 0,
     longitude: 0,
@@ -86,7 +100,74 @@ export const CreateScreen: React.FC<Props> = ({}) => {
   //#region 채팅방 타입별 초기 데이터 가져오기
   const [refetch, setRefetch] = useState<Date>();
 
-  //#region 상태바 제어
+  //#region 예상시간/예상거리 바꾸기
+  useEffect(() => {
+    SetExpectedRoute({ time: -1, cost: "", distance: -1 });
+    // 캐쉬 메모리에 저장해서 있으면 씀
+    if (
+      !!selectRoom.end_lon &&
+      !!selectRoom.end_lat &&
+      !!selectRoom.start_lon &&
+      !!selectRoom.start_lat
+    )
+      AsyncStorage.getItem(
+        "route(" +
+          selectRoom.end_lon +
+          "," +
+          selectRoom.end_lat +
+          "," +
+          selectRoom.start_lon +
+          "," +
+          selectRoom.start_lat +
+          ")"
+      ).then((pos) => {
+        if (!pos) {
+          axios
+            .get(
+              `${TMAP_API}endX=${selectRoom.end_lon}&endY=${selectRoom.end_lat}&startX=${selectRoom.start_lon}&startY=${selectRoom.start_lat}`,
+              { headers: { Accept: "application/json" } }
+            )
+            .then((position) => {
+              if (!!position) {
+                SetExpectedRoute({
+                  time: position.data.features[0].properties.totalTime,
+                  cost: position.data.features[0].properties.taxiFare,
+                  distance: position.data.features[0].properties.totalDistance,
+                });
+                if (!!position.data.features[0])
+                  SetRoute(position.data.features[0].geometry.coordinates);
+                AsyncStorage.setItem(
+                  "route(" +
+                    selectRoom.end_lon +
+                    "," +
+                    selectRoom.end_lat +
+                    "," +
+                    selectRoom.start_lon +
+                    "," +
+                    selectRoom.start_lat +
+                    ")",
+                  JSON.stringify(position.data.features[0])
+                );
+              } else
+                console.warn(
+                  "예상금액가져오기: 데이터 처리 과정에서 에러가 발생했습니다."
+                );
+            });
+        } else {
+          let position = JSON.parse(pos);
+          SetExpectedRoute({
+            time: position.properties.totalTime,
+            cost: position.properties.taxiFare,
+            distance: position.properties.totalDistance,
+          });
+          // SetRoute(position.geometry.coordinates);
+        }
+      });
+  }, [selectRoom]);
+  //#endregion 예상시간/예상거리 바꾸기
+
+  //#region 상태바 제어 && 위도/경도별 방 가져오기 : 출/도 하나라도 범위안에 있으면 가져옴
+  const { token, resetToken, refresh, socket } = useAuthContext();
   const isFocused = useIsFocused();
   useEffect(() => {
     if (isFocused) {
@@ -98,13 +179,13 @@ export const CreateScreen: React.FC<Props> = ({}) => {
   }, [isFocused]);
   //#endregion
 
-  //#region 위도/경도별 방 가져오기 : 출/도 하나라도 범위안에 있으면 가져옴
-  const { token, resetToken, refresh, socket } = useAuthContext();
+  //#region
   useEffect(() => {
+    socket?.off("chatRoomsInMap");
     socket?.on("chatRoomsInMap", (d) => {
-      setDatas(d.chatRooms);
+      setDatas([selectRoom, ...d.chatRooms]);
     });
-  }, []);
+  }, [selectRoom]);
   useEffect(() => {
     if (!!myCoord.zoom) {
       if (myCoord.zoom < 18 && myCoord.zoom > 5) {
@@ -229,6 +310,7 @@ export const CreateScreen: React.FC<Props> = ({}) => {
               };
         onPress({ ...myCoord, name: addressName });
         //기존 -1 방삭제하고 넣기
+
         setDatas([CreateRoom, ...datas.filter((d) => d.id != -1)]);
         if (CreateRoom.start_lat && CreateRoom.end_lat)
           MapMove([
@@ -355,7 +437,7 @@ export const CreateScreen: React.FC<Props> = ({}) => {
         />
       </SelectedRoomView>
       {!!selectRoom?.start_lon && !!selectRoom?.end_lon ? (
-        <SelectedBottomView data={selectRoom} SetRoute={SetRoute} />
+        <SelectedBottomView data={expectedRoute} />
       ) : (
         <SelectBottomPosView
           type={params.type}

@@ -20,12 +20,13 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { showToast } from "../../../components/layout/Toast";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { PremiumStackParamList } from "./PremiumStackNavigation";
-import { 
-  PurchaseGoogle, 
+import {
+  PurchaseGoogle,
   getSubscriptions,
   getAvailablePurchases,
   requestSubscription,
 } from "./RNIapFunction";
+import { useAuthContext } from "../../../contexts/AuthContext";
 
 // App Bundle > com.dooboolab.test
 import {BgPremium} from "../../../components/background/BgPremium"
@@ -76,13 +77,11 @@ const BenefitItemComponent: React.FC<{title?: string, subtitle: string, subtitle
 };
 
 export const PremiumScreen: React.FC = ({}) => {
-
+  const { socket } = useAuthContext();
   useFocusEffect(() => {
-    getAvailablePurchases().then((result)=>{console.log(result)});
+    getAvailablePurchases();
   });
-
   return (
-    
     <Container>
       <View style={{
         flex: 1,
@@ -101,8 +100,8 @@ export const PremiumScreen: React.FC = ({}) => {
 
       <MiddleView>
         <MiddleTitleText>
-          일반 회원에선 없었던 프리미엄만의 기능!{"\n"}
-          월 5000월으로 더욱 편한 서비스를 이용하세요.
+          일반 회원에선 없었던 프리미엄만의 기능!{"\n"}월 5000월으로 더욱 편한
+          서비스를 이용하세요.
         </MiddleTitleText>
 
 
@@ -118,25 +117,22 @@ export const PremiumScreen: React.FC = ({}) => {
           <BenefitItemComponent title="분할 결제 가능" subtitle="택시 이용자들 간 실명정보 교환없이" subtitle2="안전하게 분할결제 가능" icon={<AdPayment/>}/>
           <GrayLine/>
         </BenefitListContainer>
-        
+
         <MiddleSubText>
           정액제는 구글 플레이스토어{"\n"}
-          인앱 결제를 통해서 결제 됩니다.{"\n"}{"\n"}
+          인앱 결제를 통해서 결제 됩니다.{"\n"}
+          {"\n"}
           공유링크는 생성시 바로 타 유저들에게 알림이{"\n"}
           뜨기 때문에 편리하게 n 등분 결제가 가능합니다.
         </MiddleSubText>
 
-        <PurcahseButton
-          onPress={() => requestSubscription("regularpayment")}
-        >
+        <PurcahseButton onPress={() => requestSubscription("regularpayment")}>
           <PurcahseText>결제하러 가기</PurcahseText>
         </PurcahseButton>
-
       </MiddleView>
       {/* <TouchableOpacity
         onPress={()=>console.log(getSubscriptions())}
         activeOpacity={0.5}
-        style={styles.btn}
       >
         <Text>현재 구매한 목록 확인</Text>
       </TouchableOpacity> */}
@@ -148,7 +144,6 @@ export const PremiumScreen: React.FC = ({}) => {
       >
         <Text>현재 보유한 목록</Text>
       </TouchableOpacity> */}
-
     </Container>
   );
 };
@@ -163,7 +158,7 @@ const PurcahseButton = styled.TouchableOpacity`
   margin-bottom: 40px;
   width: 159px;
   height: 37px;
-  background-color: #0C678E;
+  background-color: #0c678e;
   align-items: center;
   justify-content: center;
   text-align: center;
@@ -189,7 +184,7 @@ const MiddleView = styled.View`
 `;
 
 const TitleText = styled.Text`
-  color: #0C678E;
+  color: #0c678e;
   font-size: 27px;
   font-weight: bold;
 `;
@@ -250,5 +245,5 @@ const GrayLine = styled.View`
   margin-bottom: 10px;
   height: 2px;
   width: 280px;
-  background-color: #EEEEEE;
+  background-color: #eeeeee;
 `;

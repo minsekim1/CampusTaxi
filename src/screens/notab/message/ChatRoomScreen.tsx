@@ -88,6 +88,7 @@ export const ChatRoomScreen: React.FC = () => {
 
   //#region 웹소켓
   useEffect(() => {
+    let isSubscribed = true;
     // 강퇴시 해당방 안에있으면 내채팅으로 뒤로가기
     socket?.on("kicked", (c: { room_id: number; hostname: string }) => {
       if (c.room_id == room.id)
@@ -108,7 +109,7 @@ export const ChatRoomScreen: React.FC = () => {
       //이전 채팅 받아오기
 
       socket.on("chatEnter chat", (response) => {
-        setMessages(response.data);
+        if (isSubscribed) setMessages(response.data);
         //#region 채팅 받기
         socket.on("chat", (chat) => {
           console.log(chat);
@@ -124,8 +125,10 @@ export const ChatRoomScreen: React.FC = () => {
               updated_at: new Date(),
               index: a.length + 1,
             });
-            setMessages(a);
-            ChatScrollRef.current?.forceUpdate();
+            if (isSubscribed) {
+              setMessages(a);
+              ChatScrollRef.current?.forceUpdate();
+            }
           }
         });
         //#endregion 채팅 받기
@@ -137,6 +140,23 @@ export const ChatRoomScreen: React.FC = () => {
       StatusBar.setBackgroundColor(GenderColor(room?.gender));
     StatusBar.setBarStyle("light-content");
     //#endregion 상태바
+    //#region ChatRoom Info Reset
+    CustomAxios(
+      "GET",
+      `${API_URL}/v1/rooms/`,
+      resetToken,
+      refresh,
+      token,
+      undefined, //"User API",
+      undefined,
+      (d: any
+      ) => {
+        setRoom(d.results[0]);
+        // let data = JSON.stringify(d);
+      }
+    );
+    //#endregion ChatRoom Info Reset
+    return () => (isSubscribed = false);
   }, []);
   //#endregion 유저 데이터 요청
   //#endregion 초기 세팅

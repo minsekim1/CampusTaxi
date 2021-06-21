@@ -1,5 +1,5 @@
 import styled from "@emotion/native";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import axios from "axios";
 import { format } from "date-fns";
@@ -56,14 +56,35 @@ export const MessageScreen: React.FC = () => {
   //#region 뒤로가기 버튼 제어 & 더블클릭시 앱 종료
   let currentCount = 0;
   React.useEffect(() => {
+    let isSubscribed = true;
     navigation.addListener("focus", () => {
       BackHandler.addEventListener("hardwareBackPress", handleBackButton);
       //console.log("focus MainScreen");
+      CustomAxios(
+        "GET",
+        `${API_URL}/v1/accounts/me/`,
+        resetToken,
+        refresh,
+        token,
+        undefined, //"User API",
+        undefined,
+        (d: User) => {
+          setUser(d);
+          socket?.emit("chatRooms", { nickname: d.nickname });
+          //#region 내방목록 가져오기
+          socket?.on("chatRooms", (c: { chatRooms: ChatRoom[] }) => {
+            if (isSubscribed) setDatas(c.chatRooms);
+          });
+          //#endregion 내방목록 가져오기
+        }
+      );
     });
     navigation.addListener("blur", () => {
       BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
+      socket?.off("chatRooms");
       //console.log("blur MainScreen");
     });
+    return () => isSubscribed = false
   }, []);
   const handleBackButton = () => {
     if (currentCount < 1) {
@@ -86,29 +107,6 @@ export const MessageScreen: React.FC = () => {
   //#region 유저 데이터 요청
   // AuthContext 시용하지 않고 직접 데이터 요청함
   const [user, setUser] = useState<User | undefined>(User);
-  useEffect(() => {
-    socket?.off();
-    //내 정보 가져오기
-    CustomAxios(
-      "GET",
-      `${API_URL}/v1/accounts/me/`,
-      resetToken,
-      refresh,
-      token,
-      undefined, //"User API",
-      undefined,
-      (d: User) => {
-        setUser(d);
-        socket?.emit("chatRooms", { nickname: d.nickname });
-        //#region 내방목록 가져오기
-        socket?.on("chatRooms", (c: { chatRooms: ChatRoom[] }) => {
-          console.log(c.chatRooms)
-          setDatas(c.chatRooms);
-        });
-        //#endregion 내방목록 가져오기
-      }
-    );
-  }, []);
   //#endregion 유저 데이터 요청
 
   return (
