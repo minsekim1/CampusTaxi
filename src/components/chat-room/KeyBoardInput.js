@@ -9,17 +9,22 @@ import {
   PixelRatio,
   Platform,
   Switch,
+  Image,
 } from 'react-native';
 import { launchImageLibrary, launchCamera } from "react-native-image-picker";
 import PropTypes from 'prop-types';
 import {KeyboardAccessoryView, KeyboardUtils} from 'react-native-keyboard-input';
 import {KeyboardRegistry} from 'react-native-keyboard-input';
 import {_} from 'lodash';
+import axios from "axios";
+import { premiumURL } from "../../constant";
+import {CancleIcon} from "../../components/icon/chat-room/CancleIcon"
 
 import './KeyboardView';
 
 const IsIOS = Platform.OS === 'ios';
 const TrackInteractive = true;
+const isBase64 = require('is-base64');
 
 export default class KeyBoardInput extends Component {
   static propTypes = {
@@ -49,7 +54,9 @@ export default class KeyBoardInput extends Component {
   onKeyboardItemSelected(keyboardId, params) {
     const receivedKeyboardData = `onItemSelected from "${keyboardId}"\nreceived params: ${JSON.stringify(params)}`;
     console.log(receivedKeyboardData);
+    this.props.setMessageType("IMAGE");
     this.setState({receivedKeyboardData});
+    this.props.setMessage(params.message);
   }
 
   onKeyboardResigned() {
@@ -57,24 +64,30 @@ export default class KeyBoardInput extends Component {
     this.resetKeyboardView();
   }
 
-  getToolbarButtons() {
+  getToolbarButtonsLeft() {
     return [
       {
         text: 'f1',
         testID: 'f1',
         onPress: () => {
-          console.log("aaa");
           launchCamera(
             { mediaType: "photo", includeBase64: true },
             (response) => {
               console.log(response.errorMessage);
               if (response.base64) {
-                //setFile(response.base64);
+                console.log("textinpupt photo ...");
+
+                this.onKeyboardItemSelected('f2', { "message": response.base64 });
               }
             }
           );
         },
-      },
+      }
+    ];
+  }
+
+  getToolbarButtonsRight() {
+    return [
       {
         text: 'f2',
         testID: 'f2',
@@ -83,7 +96,10 @@ export default class KeyBoardInput extends Component {
             { mediaType: "photo", includeBase64: true },
             (response) => {
               if (response.base64) {
-                //setFile(response.base64);
+                console.log("textinpupt photo ...");
+
+                this.onKeyboardItemSelected('f2', { "message": response.base64 });
+
               }
             }
           );
@@ -96,6 +112,7 @@ export default class KeyBoardInput extends Component {
       },
     ];
   }
+
 
   resetKeyboardView() {
     this.setState({customKeyboard: {}});
@@ -159,34 +176,111 @@ export default class KeyBoardInput extends Component {
     return (
       <View style={styles.keyboardContainer}>
         <View style={{borderTopWidth: StyleSheet.hairlineWidth, borderColor: '#bbb'}}/>
-        <View style={styles.inputContainer}>
-          <TextInput
-            maxHeight={200}
-            style={styles.textInput}
-            ref={(r) => {
-              this.textInputRef = r;
-            }}
-            placeholder={'Message'}
-            underlineColorAndroid="transparent"
-            onFocus={() => this.resetKeyboardView()}
-            testID={'input'}
 
-            value={this.props.message}
-            autoCapitalize="none"
-            returnKeyType="none"
-            multiline={true}
-            onChangeText={this.props.setMessage}
-          />
+        
+        <View style={styles.inputContainer}>
+
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+            {
+              this.getToolbarButtonsLeft().map((button, index) =>
+                <TouchableOpacity
+                  onPress={button.onPress}
+                  style={{ paddingLeft: 15, paddingBottom: 10 }}
+                  key={index}
+                  testID={button.testID}
+                >
+                  <Text>{button.text}</Text>
+                </TouchableOpacity>)
+            }
+          </View>
+          
+          {this.props.messageType !== "IMAGE" ? (
+            <>
+            <TextInput
+              maxHeight={200}
+              style={styles.textInput}
+              ref={(r) => {
+                this.textInputRef = r;
+              }}
+              placeholder={'Message'}
+              underlineColorAndroid="transparent"
+              onFocus={() => this.resetKeyboardView()}
+              testID={'input'}
+
+              value={this.props.message}
+              autoCapitalize="none"
+              returnKeyType="none"
+              multiline={true}
+              onChangeText={this.props.setMessage}
+              />
+            </>
+          ) : (
+              isBase64(this.props.message) === true ?
+                (
+                  <View style={styles.photoInput}>
+                  <Image
+                    style={{
+                        height: 100, width: 100, margin: 10
+                      
+                    }}
+                      source={{ uri: `data:image/jpg;base64,${this.props.message}`}}
+                  />
+                  <TouchableOpacity
+                    style={{
+                      height: 20, width: 20, 
+                      alignItems: 'center', justifyContent: 'center'
+                    }}
+                    onPress={() => {
+                      this.props.setMessage('');
+                      this.props.setMessageType('NORMAL');
+                    }}
+                    >
+                      <CancleIcon/>
+                  </TouchableOpacity>
+
+                  </View>
+                )
+                :
+                (
+                  <View style={styles.photoInput}>
+                    <Image
+                      style={{
+                        height: 100, width: 100
+                      }}
+                      source={{ uri: this.props.message }}
+                    />
+                    <TouchableOpacity
+                      style={{
+                        height: 20, width: 20,
+                        alignItems: 'center', justifyContent: 'center'
+                      }}
+                      onPress={() => {
+                        this.props.setMessage('');
+                        this.props.setMessageType('NORMAL');
+                      }}
+                    >
+                      <CancleIcon />
+                    </TouchableOpacity>
+
+                  </View>
+                )
+            )}
+            
+
           <TouchableOpacity 
             style={styles.sendButton}
             disabled={this.props.message ? false : true} 
-            onPress={() => { this.props.setMessage(""); this.props.onSubmitEditing(this.props.message); }}
+            onPress={() => {
+              this.props.setMessage("");
+              this.props.onSubmitEditing(this.props.message, this.props.messageType);
+              this.props.setMessageType("NORMAL");
+            }}
             >
             <Text>SEND</Text>
           </TouchableOpacity>
           <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
           {
-            this.getToolbarButtons().map((button, index) =>
+            this.getToolbarButtonsRight().map((button, index) =>
               <TouchableOpacity
                 onPress={button.onPress}
                 style={{paddingLeft: 15, paddingBottom: 10}}
@@ -232,7 +326,7 @@ export default class KeyBoardInput extends Component {
   }
 }
 
-const COLOR = '#F5FCFF';
+const COLOR = '#ffffff';
 
 const styles = StyleSheet.create({
   container: {
@@ -264,6 +358,18 @@ const styles = StyleSheet.create({
       },
     }),
   },
+  photoInput: {
+    flexDirection: 'row',
+    flex: 1,
+    marginLeft: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    paddingLeft: 10,
+    paddingTop: 2,
+    paddingBottom: 5,
+    backgroundColor: '#EbE9F2',
+    borderRadius: 18,
+  },
   textInput: {
     flex: 1,
     marginLeft: 10,
@@ -273,8 +379,7 @@ const styles = StyleSheet.create({
     paddingTop: 2,
     paddingBottom: 5,
     fontSize: 16,
-    backgroundColor: 'white',
-    borderWidth: 0.5 / PixelRatio.get(),
+    backgroundColor: '#EbE9F2',
     borderRadius: 18,
   },
   sendButton: {

@@ -79,6 +79,12 @@ class ImoticonKeyboardView extends Component {
     title: PropTypes.string,
   };
 
+  onButtonPress(emo_url) {
+    KeyboardRegistry.onItemSelected('ImoticonKeyboardView', {
+      message: emo_url,
+    });
+  };
+
   GetOneEmoticon(props){
     return(
       <View>
@@ -87,10 +93,7 @@ class ImoticonKeyboardView extends Component {
           height: 100, width: 100
         }}
         onPress={() => {
-          console.log(props.emo_path);
-          if(true){
-
-          }
+          props.object.onButtonPress("https://s3.ap-northeast-2.amazonaws.com/api.campustaxi.net/emoticon/" + props.emo_path +".png");
         }}
         >
         <Image
@@ -104,17 +107,13 @@ class ImoticonKeyboardView extends Component {
     );
   }
 
-  onButtonPress() {
-    KeyboardRegistry.toggleExpandedKeyboard('ImoticonKeyboardView');
-  }
-
   render() {
     return (
       <ScrollView style={{flex: 1}}>
         <View style={{flexDirection: 'row'}}>
-          <this.GetOneEmoticon emo_path="emoticon_taco_1"/>
-          <this.GetOneEmoticon emo_path="emoticon_taco_2"/>
-          <this.GetOneEmoticon emo_path="emoticon_taco_3"/>
+          <this.GetOneEmoticon object={this} emo_path="emoticon_taco_1"/>
+          <this.GetOneEmoticon object={this} emo_path="emoticon_taco_2"/>
+          <this.GetOneEmoticon object={this} emo_path="emoticon_taco_3"/>
         </View>
       </ScrollView>
     );

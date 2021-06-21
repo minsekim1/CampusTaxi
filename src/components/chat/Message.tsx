@@ -2,7 +2,7 @@ export type Message = {
   id: number;
   message: string;
   index: number;
-  message_type: "NORMAL" | "NOTICE" | "IMAGE";
+  message_type: string; //"NORMAL" | "NOTICE" | "IMAGE";
   writer: string;
   room: number;
   created_at: Date;

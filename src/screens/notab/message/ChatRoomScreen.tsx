@@ -11,6 +11,8 @@ import {
   Text,
   TextInput,
   Alert,
+  ToastAndroid,
+  AlertIOS,
 } from "react-native";
 import { ChatRoom } from "../../../components/chat-room/ChatRoomList";
 import { KeyBoard } from "../../../components/chat-room/KeyBoard";
@@ -27,12 +29,14 @@ import {
   showToast,
   showToastWithGravity,
 } from "../../../components/layout/Toast";
-import { API_URL, socketURL } from "../../../constant";
+import { API_URL, socketURL, premiumURL } from "../../../constant";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import { MessageNoTabNavigationParamList } from "./MessageNoTabNavigation";
 
 import io, { Socket } from "socket.io-client";
 import { CustomAxios } from "../../../components/axios/axios";
+
+const isBase64 = require('is-base64');
 
 export type MessageNoTabNavigationProp = StackNavigationProp<
   MessageNoTabNavigationParamList,
@@ -57,6 +61,7 @@ export const ChatRoomScreen: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]); //MessageDummy
   const [searchResult, setSearchResult] = useState<searchProps>();
   const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("NORMAL");
   const [room, setRoom] = useState<ChatRoom>(
     useAuthContext().MoveNav.props.data
   );
@@ -107,12 +112,13 @@ export const ChatRoomScreen: React.FC = () => {
         if (isSubscribed) setMessages(response.data);
         //#region 채팅 받기
         socket.on("chat", (chat) => {
+          console.log(chat);
           let a: Array<Message> = response.data;
           if (chat.nickname != User.nickname) {
             a.unshift({
               id: a.length + 1,
               message: chat.msg,
-              message_type: "NORMAL",
+              message_type: chat.msg_type,
               writer: chat.nickname,
               room: room.id,
               created_at: new Date(),
@@ -156,9 +162,19 @@ export const ChatRoomScreen: React.FC = () => {
   //#endregion 초기 세팅
 
   //#region 채팅 전송
-  const sendMessage = (text: string) => {
+  function notifyMessage(msg: string) {
+    if (Platform.OS === 'android') {
+      ToastAndroid.show(msg, ToastAndroid.SHORT)
+    } else {
+      AlertIOS.alert(msg);
+    }
+  }
+  
+  const sendMessage = (text: string, textType: string) => {
+
     socket?.emit("chat", {
       msg: text,
+      msg_type: textType,
       room_id: room.id,
       nickname: User?.nickname,
       firebaseToken: firebaseToken,
@@ -167,7 +183,7 @@ export const ChatRoomScreen: React.FC = () => {
     a.unshift({
       id: a.length + 1,
       message: text,
-      message_type: "NORMAL",
+      message_type: textType,
       writer: User ? User.nickname : "",
       room: room.id,
       created_at: new Date(),
@@ -347,8 +363,33 @@ export const ChatRoomScreen: React.FC = () => {
     setSearch(false);
     setSearchResult(undefined);
   };
-  const KeyBoardOnSubmit = (text: string) => {
-    sendMessage(text);
+const KeyBoardOnSubmit = (text: string, textType: string) => {
+    
+      
+  if (isBase64(text)) {
+      
+      notifyMessage("이미지를 업로드중입니다...");
+      axios
+        .post(
+          `${premiumURL}uploadPhoto/`,
+          {
+            imageBase64: text,
+          },
+          {
+            headers: {
+              accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          console.log(res.data);
+          sendMessage(res.data, textType);
+        });
+    }
+    else {  
+      sendMessage(text, textType);
+    }
   };
 
   return (
@@ -423,9 +464,11 @@ export const ChatRoomScreen: React.FC = () => {
               searchRef={searchRef}
               onSubmitEditing={KeyBoardOnSubmit}
               message={message}
+              messageType={messageType}
               setMessage={setMessage}
               onPressDownSearch={onPressDownSearch}
               onPressUpSearch={onPressUpSearch}
+              setMessageType={setMessageType}
             />
             {/* <KeyBoard
               searchResult={searchResult}

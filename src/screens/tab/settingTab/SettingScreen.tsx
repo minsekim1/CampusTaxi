@@ -10,7 +10,7 @@ import { showToast } from '../../../components/layout/Toast';
 import { useAuthContext } from '../../../contexts/AuthContext';
 import { SettingStackParamList } from './SettingStackNavigation';
 import { CustomAxios } from "../../../components/axios/axios";
-import { API_URL } from "../../../constant";
+import { API_URL, socketURL, premiumURL} from "../../../constant";
 import { User } from "../../../contexts/User";
 import { PlusIcon } from "../../../components/icon/setting/PlusIcon"
 import { DefaultIcon } from "../../../components/icon/setting/DefaultIcon"
@@ -89,7 +89,7 @@ export const SettingScreen: React.FC<Props> = () => {
 
   const UpdateMyProfile = async ()=>{
     axios.post(
-    `http://192.168.219.142:3003/updateProfileIcon`,
+    `${premiumURL}updateProfileIcon`,
     {
       "email" : user?.email,
       "imagepath" : myprofilepath
@@ -105,7 +105,7 @@ export const SettingScreen: React.FC<Props> = () => {
 
   const GetMyProfile = async ()=>{
     axios.post(
-    `http://192.168.219.142:3003/getProfileIcon`,
+    `${premiumURL}getProfileIcon`,
     {
       "email" : user?.email
     }
