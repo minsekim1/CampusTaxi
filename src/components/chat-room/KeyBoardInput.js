@@ -192,7 +192,7 @@ export default class KeyBoardInput extends Component {
               this.getToolbarButtonsLeft().map((button, index) =>
                 <TouchableOpacity
                   onPress={button.onPress}
-                  style={{ paddingLeft: 15, paddingBottom: 10 }}
+                  style={{ paddingLeft: 15, }}
                   key={index}
                   testID={button.testID}
                 >
@@ -279,7 +279,7 @@ export default class KeyBoardInput extends Component {
             this.getToolbarButtonsRight().map((button, index) =>
               <TouchableOpacity
                 onPress={button.onPress}
-                style={{paddingLeft: 15, paddingBottom: 10}}
+                style={{paddingLeft: 10, paddingRifht: 10}}
                 key={index}
                 testID={button.testID}
               >
@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
   },
   sendButton: {
     paddingRight: 5,
-    paddingLeft: 5,
+    paddingLeft: 10,
     alignSelf: 'center',
   },
   switch: {

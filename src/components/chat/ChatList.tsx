@@ -4,6 +4,7 @@ import { Image } from "react-native";
 import { proc } from "react-native-reanimated";
 import { windowWidth } from "../../constant";
 import { searchProps } from "../../screens/notab/message/ChatRoomScreen";
+import { Theme } from "../../screens/notab/message/ChatRoomScreen";
 import { Crown } from "../icon/chat/Crown";
 import { ManRect } from "../icon/chat/ManRect";
 import { WomanRect } from "../icon/chat/WomanRect";
@@ -16,6 +17,7 @@ type Props = {
   isLeft: boolean;
   isHost: boolean;
   searchResult?: searchProps;
+  theme: Theme;
 };
 
 
@@ -25,6 +27,7 @@ export const Chat: React.FC<Props> = ({
   isLeft,
   isHost,
   searchResult,
+  theme,
 }) => {
   const GenderRect = () => (gender == 1 ? <ManRect /> : <WomanRect />);
   let sliceText = undefined;
@@ -51,8 +54,8 @@ export const Chat: React.FC<Props> = ({
           <GenderRect />
         </MessageProfile>
       ) : null}
-      <MessageConatiner isLeft={isLeft}>
-        {isLeft ? <UserName>{message.writer}</UserName> : null}
+      <MessageConatiner isLeft={isLeft} theme={theme}>
+        {isLeft ? <UserName theme={theme}>{message.writer}</UserName> : null}
         <UserChat>
           {!isLeft ? (
             <ChatTime>{DateToRecently(message.created_at)}</ChatTime>
@@ -68,7 +71,7 @@ export const Chat: React.FC<Props> = ({
               source={{uri: message.message}}
             />
           :
-          <ChatText isLeft={isLeft}>
+          <ChatText isLeft={isLeft} theme={theme}>
             {sliceText && searchResult ? sliceText[0] : message.message}
             {sliceText ? <SearchedText>{sliceText[1]}</SearchedText> : null}
             {sliceText && searchResult ? sliceText[2] : null}
@@ -98,18 +101,19 @@ const ChatTime = styled.Text`
 `;
 const ChatText: any = styled.Text`
   max-width: ${String(windowWidth * 0.8 - 60)}px;
-  color: #5c5c5d;
-  background-color: ${(props) => (props.isLeft ? "#E5E5E8" : "white")};
+  color: ${(props) => (props.isLeft ? props.theme.revtext : props.theme.sendtext)};
+  background-color: ${(props) => (props.isLeft ? props.theme.revinner : props.theme.sendinner)};
   padding: 8px 21px;
-  border-width: ${(props) => (props.isLeft ? "0" : "1")}px;
-  border-color: ${(props) => (props.isLeft ? "rgba(0,0,0,0)" : "#B7B7BB")};
+  border-width: 1px;
+  border-color: ${(props) => (props.isLeft ? props.theme.revouter : props.theme.sendouter)};
   border-radius: ${(props) => (props.isLeft ? "63px 63px 63px 0;" : "63px 63px 0 63px;")};
 `;
 const UserChat = styled.View`
   flex-direction: row;
 `;
 const UserName: any = styled.Text`
-  color: #5c5c5d;
+  color: ${(props) => props.theme.nametext};
+  margin-bottom: 5px;
 `;
 const CrownView = styled.View`
   position: absolute;

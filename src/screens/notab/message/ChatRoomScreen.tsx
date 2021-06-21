@@ -64,8 +64,11 @@ export type Theme = {
   dateouter: string;
   revinner: string;
   revouter: string;
+  revtext: string;
   sendinner: string;
   sendouter: string;
+  sendtext: string;
+  nametext: string;
 };
 
 export const ChatRoomScreen: React.FC = () => {
@@ -488,6 +491,7 @@ const KeyBoardOnSubmit = (text: string, textType: string) => {
               renderItem={(props: any) => (
                 <Chat
                   searchResult={searchResult}
+                  theme={theme}
                   message={props.item}
                   gender={1}
                   isLeft={props.item.writer != User?.nickname}
