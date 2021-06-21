@@ -103,7 +103,7 @@ const ChatText: any = styled.Text`
   padding: 8px 21px;
   border-width: ${(props) => (props.isLeft ? "0" : "1")}px;
   border-color: ${(props) => (props.isLeft ? "rgba(0,0,0,0)" : "#B7B7BB")};
-  border-radius: 9.5px;
+  border-radius: ${(props) => (props.isLeft ? "63px 63px 63px 0;" : "63px 63px 0 63px;")};
 `;
 const UserChat = styled.View`
   flex-direction: row;

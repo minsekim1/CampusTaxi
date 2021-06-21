@@ -36,7 +36,6 @@ import {AdPhoto} from "../../../components/icon/premium/AdPhoto"
 import {AdProfile} from "../../../components/icon/premium/AdProfile"
 import {AdTheme} from "../../../components/icon/premium/AdTheme"
 
-const windowWidth = Dimensions.get('window').width;
 
 const itemSkus = Platform.select({
   ios: ["com.campustaxi.campustaxi", "testinapp"],
