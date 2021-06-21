@@ -112,7 +112,7 @@ export const ChatRoomScreen: React.FC = () => {
         if (isSubscribed) setMessages(response.data);
         //#region 채팅 받기
         socket.on("chat", (chat) => {
-          console.log(chat);
+          // console.log(chat);
           let a: Array<Message> = response.data;
           if (chat.nickname != User.nickname) {
             a.unshift({
@@ -383,7 +383,7 @@ const KeyBoardOnSubmit = (text: string, textType: string) => {
           }
         )
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           sendMessage(res.data, textType);
         });
     }
