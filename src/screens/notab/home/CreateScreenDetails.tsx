@@ -84,9 +84,9 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
     return [
       OptionDateFormat(date.getMonth() + 1, date.getDate(), date.getDay()) +
         "\n오늘",
-      OptionDateFormat(date.getMonth() + 1, date.getDate() + 2, date.getDay()) +
+      OptionDateFormat(date.getMonth() + 1, date.getDate() + 1, date.getDay()+1) +
         "\n내일",
-      OptionDateFormat(date.getMonth() + 1, date.getDate() + 3, date.getDay()) +
+      OptionDateFormat(date.getMonth() + 1, date.getDate() + 2, date.getDay()+2) +
         "\n모레",
     ];
   };
@@ -224,7 +224,7 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
                     mode="time"
                     is24Hour={true}
                     display="default"
-                    onChange={() => onChange}
+                    onChange={onChange}
                   />
                 )}
                 <Text>{timeonly}</Text>

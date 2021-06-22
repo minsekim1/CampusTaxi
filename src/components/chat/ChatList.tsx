@@ -1,6 +1,6 @@
 import styled from "@emotion/native";
-import React from "react";
-import { Image } from "react-native";
+import React, {useState} from "react";
+import { Image, View } from "react-native";
 import { proc } from "react-native-reanimated";
 import { windowWidth } from "../../constant";
 import { searchProps } from "../../screens/notab/message/ChatRoomScreen";
@@ -21,6 +21,7 @@ type Props = {
 };
 
 
+
 export const Chat: React.FC<Props> = ({
   message,
   gender,
@@ -29,6 +30,7 @@ export const Chat: React.FC<Props> = ({
   searchResult,
   theme,
 }) => {
+
   const GenderRect = () => (gender == 1 ? <ManRect /> : <WomanRect />);
   let sliceText = undefined;
   if (message.index === searchResult?.index) {
@@ -64,12 +66,14 @@ export const Chat: React.FC<Props> = ({
           }
           {
             message.message_type !== "NORMAL" ?
-           <Image
-              style={{
-                height: 100, width: 100
-              }}
-              source={{uri: message.message}}
-            />
+              <ImageContainer onPress={() => { }}>
+              <Image
+                  style={{
+                    height: 100, width: 100
+                  }}
+                  source={{uri: message.message}}
+                    />
+              </ImageContainer>
           :
           <ChatText isLeft={isLeft} theme={theme}>
             {sliceText && searchResult ? sliceText[0] : message.message}
@@ -132,4 +136,7 @@ const MessageConatiner: any = styled.View`
 const Container = styled.View`
   flex-direction: row;
   margin-bottom: 15px;
+`;
+const ImageContainer = styled.TouchableWithoutFeedback`
+  margin-bottom: 5px;
 `;
