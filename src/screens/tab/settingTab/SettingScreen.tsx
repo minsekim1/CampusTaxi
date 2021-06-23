@@ -136,7 +136,7 @@ export const SettingScreen: React.FC<Props> = () => {
   }, []);
 
   useFocusEffect(() => {
-    getAvailablePurchases().then((result)=>{setIspremium(result)});
+    getAvailablePurchases().then((result:any)=>{setIspremium(result)});
   });
 
   const navigation = useNavigation<SettingScreenNavigationProp>();

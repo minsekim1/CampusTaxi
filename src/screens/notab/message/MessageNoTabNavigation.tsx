@@ -33,7 +33,6 @@ export const MessageNoTabNavigation = (p:any) => {
           headerTitleStyle: {
             fontSize: 18,
             fontWeight: "bold",
-            color: "white",
           },
           headerLeft: () => (
             <BackBtn onPress={() => p.navigation.goBack()}>

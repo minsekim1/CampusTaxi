@@ -2,10 +2,7 @@
   "name": "ReactNativeKeyboardInput",
   "version": "6.0.2",
   "summary": "React Native Custom Input Controller",
-  "authors": {
-    "name": "Leo Natan",
-    "email": "lnatan@wix.com"
-  },
+  "authors": "Leo Natan <lnatan@wix.com>",
   "homepage": "https://github.com/wix/react-native-keyboard-input",
   "license": "MIT",
   "platforms": {

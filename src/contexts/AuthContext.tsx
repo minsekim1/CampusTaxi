@@ -23,6 +23,7 @@ export type AuthState = {
   socket: Socket | undefined;
   resetToken: (token: string) => void;
   firebaseToken: any;
+  setUser: any;
 };
 
 const AuthContext = React.createContext<AuthState>({
@@ -38,6 +39,7 @@ const AuthContext = React.createContext<AuthState>({
   User: undefined,
   socket: undefined,
   firebaseToken: undefined,
+  setUser: () => { },
 });
 
 export type MoveNavProps = {
@@ -190,6 +192,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         setLoggedOut,
         setLoggedIn,
         setNavName,
+        setUser,
         socket,
         User,
         firebaseToken,

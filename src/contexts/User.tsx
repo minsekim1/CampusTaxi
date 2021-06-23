@@ -1,4 +1,5 @@
 export type User = {
+  id: string;
   uuid: string;
   username: string;
   gender: "MALE" | "FEMALE" | "NONE";
@@ -17,6 +18,7 @@ export type User = {
   is_active: boolean;
 };
 export const UserDummy:User = {
+  id: 'string',
   uuid: 'string',
   username: 'string',
   gender: "MALE",

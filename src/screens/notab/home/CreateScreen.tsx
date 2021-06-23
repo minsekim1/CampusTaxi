@@ -98,7 +98,6 @@ export const CreateScreen: React.FC<Props> = ({}) => {
   const [end, setEnd] = React.useState<myCoordProps>(end_init);
   const MapRef = React.useRef<NaverMapView>(null);
   //#region 채팅방 타입별 초기 데이터 가져오기
-  const [refetch, setRefetch] = useState<Date>();
 
   //#region 예상시간/예상거리 바꾸기
   useEffect(() => {

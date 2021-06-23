@@ -7,11 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		06551B4B2680A96D00F1A390 /* libz.1.2.5.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 06551B4A2680A96D00F1A390 /* libz.1.2.5.tbd */; };
 		069924F62650620200143205 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 069924F52650620200143205 /* Roboto-Bold.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		E216BE9EF82B81718D50BE29 /* libPods-CampusTaxi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 977F5E62C639E56D5C88FD44 /* libPods-CampusTaxi.a */; };
+		A41642D89380050F7B11AC75 /* libPods-CampusTaxi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 977F5E62C639E56D5C88FD44 /* libPods-CampusTaxi.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +20,7 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* CampusTaxiTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CampusTaxiTests.m; sourceTree = "<group>"; };
 		05B602A8B0BA467DABB4C8E1 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
+		06551B4A2680A96D00F1A390 /* libz.1.2.5.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.1.2.5.tbd; path = usr/lib/libz.1.2.5.tbd; sourceTree = SDKROOT; };
 		069924F52650620200143205 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		069924F82650EBF400143205 /* bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = bold.ttf; sourceTree = "<group>"; };
 		0F86D66E110645BCAD35B3EE /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
@@ -56,7 +58,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E216BE9EF82B81718D50BE29 /* libPods-CampusTaxi.a in Frameworks */,
+				06551B4B2680A96D00F1A390 /* libz.1.2.5.tbd in Frameworks */,
+				A41642D89380050F7B11AC75 /* libPods-CampusTaxi.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,6 +101,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				06551B4A2680A96D00F1A390 /* libz.1.2.5.tbd */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
 				977F5E62C639E56D5C88FD44 /* libPods-CampusTaxi.a */,
@@ -185,6 +189,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				9A9BE8B8B398E77FF45E7249 /* [CP] Copy Pods Resources */,
 				FFEDAF3DBD1EAD9D6D98C849 /* [CP-User] [RNFB] Core Configuration */,
+				4C7393D6A0576E6CD2A129FF /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -254,6 +259,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+		};
+		4C7393D6A0576E6CD2A129FF /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CampusTaxi/Pods-CampusTaxi-frameworks.sh",
+				"${PODS_ROOT}/NMapsMap/framework/NMapsMap.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NMapsMap.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CampusTaxi/Pods-CampusTaxi-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 		8511A924667AB8636D81640B /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
