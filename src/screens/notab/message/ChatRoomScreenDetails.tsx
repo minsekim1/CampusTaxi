@@ -126,7 +126,7 @@ export const ChatRoomScreenDetails: React.FC = () => {
       </KakaoTaxiBtn>
       {/* 광고 */}
       {/* <BannerTemp /> */}
-      {/* 방나가기 */}
+      {/* 방나가기 s*/}
       <OutRoomBtn
         onPress={() =>
           CustomAlert(
