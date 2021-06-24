@@ -16,6 +16,7 @@ export type User = {
   student_card: string;
   is_staff: boolean;
   is_active: boolean;
+  imagepath?: string;
 };
 export const UserDummy:User = {
   id: 'string',

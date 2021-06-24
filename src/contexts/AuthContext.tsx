@@ -11,6 +11,8 @@ import { io, Socket } from "socket.io-client";
 import RNRestart from "react-native-restart";
 
 export type AuthState = {
+  isPremium: boolean | undefined;
+  setPremium: (props: boolean) => void;
   token: string | undefined;
   refresh: string | undefined;
   isLoading: boolean;
@@ -27,6 +29,8 @@ export type AuthState = {
 };
 
 const AuthContext = React.createContext<AuthState>({
+  isPremium: undefined,
+  setPremium: () => { },
   token: undefined,
   refresh: undefined,
   isLoading: true,
@@ -60,6 +64,7 @@ export type MoveNavProps = {
 export const useAuthContext = () => useContext(AuthContext);
 
 export const AuthProvider: React.FC = ({ children }) => {
+  const [isPremium, setpremium] = useState<string | undefined>();
   const [token, setToken] = useState<string | undefined>();
   const [refresh, setRefresh] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState<boolean>(true);

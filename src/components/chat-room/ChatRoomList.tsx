@@ -22,6 +22,7 @@ export type ChatRoom = {
   owner?: string;
   category?: string; //"등교 데이터 가져올때는 =1"
   current?: number; // 현재 인원
+  imagepath?: string;
 
   // 커스텀
   cost?: number;

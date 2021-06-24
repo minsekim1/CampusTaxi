@@ -1,6 +1,6 @@
 import styled from "@emotion/native";
 import React from "react";
-import { Alert, Text } from "react-native";
+import { Alert, Image, Text } from "react-native";
 import { useAuthContext } from "../../contexts/AuthContext";
 import { User } from "../../contexts/User";
 import { GenderColor } from "../color/GenderColor";
@@ -15,15 +15,17 @@ type Props = {
   taker: User;
   host_id: string;
   room: ChatRoom;
-  onEnd: ()=>void
+  onEnd: () => void;
+  isHost: Boolean;
 };
 export const ChatDatilsCardMember: React.FC<Props> = ({
   taker,
   host_id,
   room,
   onEnd,
+  isHost,
 }) => {
-  if (host_id == "") return <></>;
+  if (isHost) return <></>;
   const { socket, User,setNavName } = useAuthContext();
   const GenderRect = () =>
     taker.gender == "MALE" ? <ManRect /> : <WomanRect />;
@@ -60,10 +62,17 @@ export const ChatDatilsCardMember: React.FC<Props> = ({
     <Container onPress={() => onPressPassHost(taker.id, host_id)}>
       <Left>
         {/* 프로필 */}
-        <CrownView>
-          <Crown />
-        </CrownView>
-        <GenderRect />
+        {!taker.imagepath ? (
+            <GenderRect/>
+          ): 
+            (
+              <Image
+            style={{
+              height: 50, width: 50,
+            }}
+            source={{uri: "https://s3.ap-northeast-2.amazonaws.com/api.campustaxi.net/profile_icon/"+taker.imagepath+".png"}}
+                />
+          )}
       </Left>
       <Center>
         {/* 이름/학교 */}

@@ -1,3 +1,4 @@
+import styled from "@emotion/native";
 import React, { Component } from 'react';
 import {
   StyleSheet,
@@ -23,6 +24,8 @@ import { GalleryIcon } from "../../components/icon/chat-room/GalleryIcon"
 import { SmileIcon } from "../../components/icon/chat-room/SmileIcon"
 import { SendArrowIcon } from "../../components/icon/chat-room/SendArrowIcon"
 import { CameraIcon } from "../../components/icon/chat-room/CameraIcon"
+import { DownArrowIcon } from "../icon/chat-room/DownArrowIcon";
+import { UpArrowIcon } from "../icon/chat-room/UpArrowIcon";
 
 import './KeyboardView';
 import ImageResizer from 'react-native-image-resizer';
@@ -107,7 +110,7 @@ export default class KeyBoardInput extends Component {
         icon: <GalleryIcon />,
         testID: 'f2',
         onPress: () => {
-          launchImageLibrary(
+          launchImageLibrary( 
             { mediaType: "photo", includeBase64: true, quality: 0.5, maxHeight: 2016, maxWidth: 2016 },
             (response) => {
               if (response.base64) {
@@ -195,7 +198,19 @@ export default class KeyBoardInput extends Component {
 
 
         <View style={styles.inputContainer}>
-
+          {
+            this.props.searchResult ? (
+              <>
+                <BlackView />
+                <UpArrowView onPress={this.props.onPressUpSearch}>
+                  <UpArrowIcon isActive={true} />
+                </UpArrowView>
+                <DownArrowView onPress={this.props.onPressDownSearch}>
+                  <DownArrowIcon isActive={true} />
+                </DownArrowView>
+              </>
+            ) : (
+              <>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
             {
               this.getToolbarButtonsLeft().map((button, index) =>
@@ -281,34 +296,35 @@ export default class KeyBoardInput extends Component {
                 </View>
               )
           )}
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                  {
+                    this.getToolbarButtonsRight().map((button, index) =>
+                      <TouchableOpacity
+                        onPress={button.onPress}
+                        style={{ paddingLeft: 10, paddingRifht: 10 }}
+                        key={index}
+                        testID={button.testID}
+                      >
+                        {button.icon}
+                      </TouchableOpacity>)
+                  }
+                </View>
 
 
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-            {
-              this.getToolbarButtonsRight().map((button, index) =>
                 <TouchableOpacity
-                  onPress={button.onPress}
-                  style={{ paddingLeft: 10, paddingRifht: 10 }}
-                  key={index}
-                  testID={button.testID}
+                  style={styles.sendButton}
+                  disabled={this.props.message ? false : true}
+                  onPress={() => {
+                    this.props.setMessage("");
+                    this.props.onSubmitEditing(this.props.message, this.props.messageType);
+                    this.props.setMessageType("NORMAL");
+                  }}
                 >
-                  {button.icon}
-                </TouchableOpacity>)
-            }
-          </View>
-
-
-          <TouchableOpacity
-            style={styles.sendButton}
-            disabled={this.props.message ? false : true}
-            onPress={() => {
-              this.props.setMessage("");
-              this.props.onSubmitEditing(this.props.message, this.props.messageType);
-              this.props.setMessageType("NORMAL");
-            }}
-          >
-            <SendArrowIcon />
-          </TouchableOpacity>
+                  <SendArrowIcon />
+                </TouchableOpacity>
+              </>
+            )
+          }
         </View>
       </View>
     );
@@ -414,3 +430,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+const BlackView = styled.View`
+  height: 50px;
+  flex: 8;
+  align-items: center;
+	justify-content: center;
+	`;
+const UpArrowView = styled.TouchableOpacity`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+	`;
+const DownArrowView = styled.TouchableOpacity`
+  flex: 1;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+`;

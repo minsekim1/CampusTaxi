@@ -1,9 +1,12 @@
 import styled from "@emotion/native";
 import React, { Dispatch, SetStateAction } from "react";
+import {Image} from "react-native"
 import { ChatRoom } from "../chat-room/ChatRoomList";
 import { Boarding_dtmToRecently } from "../chat/date";
 import { GenderColor, GenderText } from "../color/GenderColor";
 import ArriveIcon from "../icon/ArriveIcon";
+import { ManRect } from "../icon/chat/ManRect";
+import { WomanRect } from "../icon/chat/WomanRect";
 import DepartIcon from "../icon/DepartIcon";
 import { CreateRoomSelectCancel } from "../icon/home/CreateRoomSelectCancel";
 
@@ -57,16 +60,30 @@ export const ChatRoomCard: React.FC<Props> = ({
       </DataContainer>
     );
   }
+  
   const bgColor = GenderColor(data.gender);
   const genderText = GenderText(data.gender);
+  console.log("data:",data)
   return (
     <DataContainer onPress={() => onPress(data)}>
       <Card
         style={{ backgroundColor: backgroundColor ? backgroundColor : "white" }}
       >
-        <TempCircle style={{ backgroundColor: bgColor }}>
-          <CircleText>{genderText}</CircleText>
+        <TempCircle style={{ backgroundColor: "white" }}>
+
+          {!data.imagepath ? (
+            <ManRect/>
+          ): 
+            (
+              <Image
+                style={{
+                  height: 70, width: 70,
+                }}
+                source={{uri: "https://s3.ap-northeast-2.amazonaws.com/api.campustaxi.net/profile_icon/"+data.imagepath+".png"}}
+                    />
+          )}
         </TempCircle>
+        
         <CardContainer>
           <CardHeaderContainer>
             <LeftContainer>

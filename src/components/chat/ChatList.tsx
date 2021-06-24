@@ -46,14 +46,27 @@ export const Chat: React.FC<Props> = ({
   return (
     <Container>
       {isLeft ? (
-        <MessageProfile>
+        // {message.imagepath /*  */} 여기서 프로필 넣으십쇼. 김현아님
+        <MessageProfile> 
           {/* 프로필 */}
-          {isHost ? (
+          {/* {isHost ? (
             <CrownView>
               <Crown />
             </CrownView>
-          ) : null}
-          <GenderRect />
+          ) : null} */}
+
+          {!message.imagepath ? (
+            <GenderRect/>
+          ): 
+            (
+              <Image
+            style={{
+              height: 50, width: 50, marginRight: 15
+            }}
+            source={{uri: "https://s3.ap-northeast-2.amazonaws.com/api.campustaxi.net/profile_icon/"+message.imagepath+".png"}}
+                />
+          )}
+          
         </MessageProfile>
       ) : null}
       <MessageConatiner isLeft={isLeft} theme={theme}>
@@ -71,7 +84,8 @@ export const Chat: React.FC<Props> = ({
                   style={{
                     height: 100, width: 100
                   }}
-                  source={{uri: message.message}}
+                  onError={()=>{console.log("Error Image Load")}}
+                  source={{uri: !message.message ? "http://placehold.it/100x100" : message.message}}
                     />
               </ImageContainer>
           :

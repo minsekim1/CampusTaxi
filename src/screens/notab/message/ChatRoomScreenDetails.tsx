@@ -76,7 +76,7 @@ export const ChatRoomScreenDetails: React.FC = () => {
           key={user.uuid}
           user={user}
           room={room}
-          isHost={User?.nickname == room.owner && user.nickname != room.owner}
+          isHost={user.nickname === room.owner}
         ></ChatDatilsCard>
       ))}
       {/* 기능 */}
@@ -161,6 +161,7 @@ export const ChatRoomScreenDetails: React.FC = () => {
                         taker={user}
                         room={room}
                         onEnd={() => setModalVisible(!modalVisible)}
+                        isHost={room.owner === user.nickname}
                       ></ChatDatilsCardMember>
                     );
                 }

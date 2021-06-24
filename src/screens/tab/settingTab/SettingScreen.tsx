@@ -180,7 +180,8 @@ export const SettingScreen: React.FC<Props> = () => {
           setModalVisible(!modalVisible);
         }}
       >
-        <View style={styles.centeredView}>
+          <OuterTouchableView onPress={() => setModalVisible(!modalVisible)}/>
+          <View style={styles.centeredView} >
           <View style={styles.modalView}>
             <View style={{flexDirection: 'row'}}>    
               <View style={{
@@ -440,4 +441,10 @@ const PlusButton = styled.TouchableOpacity`
   width: 15px;
   height: 15px;
   margin-top: 60px;
+`;
+
+const OuterTouchableView = styled.TouchableOpacity`
+  height: 100%;
+  width: 100%;
+  position: absolute;
 `;

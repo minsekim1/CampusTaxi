@@ -17,7 +17,7 @@ import {
   View,
 } from "react-native";
 import { ChatRoom } from "../../../components/chat-room/ChatRoomList";
-import { KeyBoard } from "../../../components/chat-room/KeyBoard";
+import { KeyBoard } from "../../../components/chat-room/unused_KeyBoard";
 import KeyBoardInput from "../../../components/chat-room/KeyBoardInput";
 import { Chat } from "../../../components/chat/ChatList";
 import { Message, MessageDummy } from "../../../components/chat/Message";
@@ -538,7 +538,7 @@ const CancelBtn = styled.TouchableOpacity`
   padding: 10px 10px 10px 10px;
 `;
 const CancelText = styled.Text`
-  color: white;
+  color: black;
   margin: 0;
 `;
 const SearchBar = styled.View`

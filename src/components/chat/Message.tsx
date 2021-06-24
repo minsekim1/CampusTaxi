@@ -8,6 +8,7 @@ export type Message = {
   created_at: Date;
   updated_at: Date;
   url?: string;
+  imagepath?: string; //user_tb=>imagepath(profile Path)
 };
 
 export const MessageDummy: Message[] | (() => Message[]) = [

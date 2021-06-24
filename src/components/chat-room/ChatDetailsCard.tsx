@@ -1,6 +1,6 @@
 import styled from "@emotion/native";
 import React from "react";
-import { Alert, Text } from "react-native";
+import { Alert, Image, Text } from "react-native";
 import { useAuthContext } from "../../contexts/AuthContext";
 import { User } from "../../contexts/User";
 import { GenderColor } from "../color/GenderColor";
@@ -31,14 +31,29 @@ export const ChatDatilsCard: React.FC<Props> = ({
       hostname: room.owner,
     });
   };
+
+  console.log(user);
   return (
     <Container>
       <Left>
         {/* 프로필 */}
-        <CrownView>
-          <Crown />
-        </CrownView>
-        <GenderRect />
+        {isHost ? (
+            <CrownView>
+              <Crown />
+            </CrownView>
+          ) : null}
+
+          {!user.imagepath ? (
+            <GenderRect/>
+          ): 
+            (
+              <Image
+            style={{
+              height: 50, width: 50, marginRight: 15
+            }}
+            source={{uri: "https://s3.ap-northeast-2.amazonaws.com/api.campustaxi.net/profile_icon/"+user.imagepath+".png"}}
+                />
+          )}
       </Left>
       <Center>
         {/* 이름/학교 */}
@@ -47,7 +62,7 @@ export const ChatDatilsCard: React.FC<Props> = ({
       </Center>
       <Right>
         {/* 강퇴버튼 */}
-        {isHost ? (
+        {!isHost ? (
           <KickBtn
             onPress={() =>
               CustomAlert(
@@ -79,6 +94,7 @@ const CrownView = styled.View`
   position: absolute;
   z-index: 1;
   top: 10px;
+  right: 32px;
 `;
 const Title = styled.Text`
   font-size: 13px;
