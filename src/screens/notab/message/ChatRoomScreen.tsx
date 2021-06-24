@@ -583,6 +583,7 @@ const SubTitle = styled.Text`
 `;
 const Container = styled.SafeAreaView`
   justify-content: space-around;
+  margin-top: 22px;
   flex: 1;
 `;
 
