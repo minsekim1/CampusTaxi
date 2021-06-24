@@ -11,7 +11,7 @@
     "ios": "7.0"
   },
   "source": {
-    "git": "git+https://github.com/kimxogus/react-native-version-check.git"
+    "git": "https://github.com/kimxogus/react-native-version-check.git"
   },
   "source_files": "ios/RNVersionCheck.{h,m}",
   "preserve_paths": [

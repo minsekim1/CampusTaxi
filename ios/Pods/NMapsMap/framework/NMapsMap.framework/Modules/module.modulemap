@@ -1,3 +1,6 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:cb962da8796668e9483bcf1060998168aed84de64b9d69eda90ea12770936518
-size 97
+framework module NMapsMap {
+  umbrella header "NMapsMap.h"
+
+  export *
+  module * { export * }
+}

@@ -172,8 +172,8 @@ export const ChatRoomScreen: React.FC = () => {
     //#endregion 내방목록 가져오기
     //#region 상태바
     if (Platform.OS === "android")
-      StatusBar.setBackgroundColor(GenderColor(room?.gender));
-    StatusBar.setBarStyle("light-content");
+      StatusBar.setBackgroundColor('white');
+    StatusBar.setBarStyle("dark-content");
     //#endregion 상태바
     //#region ChatRoom Info Reset
     CustomAxios(
@@ -431,7 +431,7 @@ const KeyBoardOnSubmit = (text: string, textType: string) => {
   };
 
   return (
-    <BlankBackground color={GenderColor(room?.gender)}>
+    <BlankBackground color={'white'}>
       <KeyboardContainer
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >

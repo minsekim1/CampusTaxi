@@ -140,7 +140,7 @@
 		060797A28A1335418587431D80DAE042 /* UIView+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = EB73F0C6134CF07C411D2F8C2ADDCD99 /* UIView+Private.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		06337F659855F70B5A22EC98728286FD /* RCTRefreshControlManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D85547B65A8D0BB22569AA3D4D5C0E16 /* RCTRefreshControlManager.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		064977C3C862AB1CA8292466842EA8D1 /* RNAppleAuthUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = DF5DA8B2BB9E0B067B1876652E641862 /* RNAppleAuthUtils.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		07086470B99EE665660C1292301D719F /* Pods-CampusTaxi-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 79E5BFE2459B9568D4D338152207CF05 /* Pods-CampusTaxi-dummy.m */; };
+		07086470B99EE665660C1292301D719F /* Pods-CampusTaxi-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = D68EF45D5B1CC0FD200BDEF163272FDF /* Pods-CampusTaxi-dummy.m */; };
 		070AECC4993CDDDECE21930FF93B8CE9 /* RCTInspectorDevServerHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBE082F89CDB116ABF92124B21F1C2DA /* RCTInspectorDevServerHelper.mm */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation"; }; };
 		071A1428535C4B91AEFAD834799D0866 /* FIRInstanceIDAuthService.h in Headers */ = {isa = PBXBuildFile; fileRef = A44E0F6C7CF41A2E5EABA9CE1A3E35FC /* FIRInstanceIDAuthService.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		0790FCBAD04CEC8BFA03475E1DF2B7F0 /* RNSVGLineManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 543EB304D3F209AE09F4B149D3E7C63E /* RNSVGLineManager.m */; };
@@ -3160,7 +3160,6 @@
 		0BA5F56E3EFEB7013A3C0211C0F87A97 /* RNAppleAuthButtonView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RNAppleAuthButtonView.h; path = ios/RNAppleAuthentication/RNAppleAuthButtonView.h; sourceTree = "<group>"; };
 		0BEB27F96FE6606D5DACAA0BCBCEB721 /* READebugNode.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = READebugNode.h; sourceTree = "<group>"; };
 		0BFD05B38811BEDB7736F310BD615F11 /* GDTCORLifecycle.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = GDTCORLifecycle.m; path = GoogleDataTransport/GDTCORLibrary/GDTCORLifecycle.m; sourceTree = "<group>"; };
-		0C031DF72A23023D78156FEEEC2EA5A6 /* Pods-CampusTaxi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-CampusTaxi.release.xcconfig"; sourceTree = "<group>"; };
 		0C0F6B969448BC7EB8812C40246A01D7 /* PromisesObjC-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "PromisesObjC-dummy.m"; sourceTree = "<group>"; };
 		0C0F8AAE480CB16B4E4CA717065C9697 /* React-jsiexecutor.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "React-jsiexecutor.release.xcconfig"; sourceTree = "<group>"; };
 		0C193EF2B82F3CCC87EC145B985B12DE /* RNCSafeAreaProvider.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RNCSafeAreaProvider.h; path = ios/SafeAreaView/RNCSafeAreaProvider.h; sourceTree = "<group>"; };
@@ -3408,14 +3407,17 @@
 		2B4DC740A115AA96E6106B06DFCF54B9 /* RCTConvert+REATransition.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+REATransition.m"; sourceTree = "<group>"; };
 		2B6E20CC626509B181C488A47E752C77 /* CoreModulesPlugins.mm */ = {isa = PBXFileReference; includeInIndex = 1; path = CoreModulesPlugins.mm; sourceTree = "<group>"; };
 		2B97643F0B9DCDEE7BEB6F97699A37AB /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
+		2BBC5E695C0CDB8DCCA21B234391741B /* Pods-CampusTaxi-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-CampusTaxi-frameworks.sh"; sourceTree = "<group>"; };
 		2BC1ADCCF14D91E52A296A0A603D3A1C /* libRNIap.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libRNIap.a; path = libRNIap.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		2BC7F4815997082C9C3C59433F181A4C /* React-callinvoker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "React-callinvoker.debug.xcconfig"; sourceTree = "<group>"; };
 		2C2956A1007E793AD1559A1F43D69C3B /* Firebase.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Firebase.release.xcconfig; sourceTree = "<group>"; };
+		2C8EA58396F57086627F44BDEC7D8219 /* Pods-CampusTaxi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-CampusTaxi.debug.xcconfig"; sourceTree = "<group>"; };
 		2C9E573C7C7F040BB94876EEE9E4822F /* FIRLibrary.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FIRLibrary.h; path = FirebaseCore/Sources/Private/FIRLibrary.h; sourceTree = "<group>"; };
 		2CBB26E10265D7D0DD26340BA4C1AE2A /* log.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = log.h; path = yoga/log.h; sourceTree = "<group>"; };
 		2CDFE4F2E46ED74E5BDAC0903D2DF52E /* GDTCOREvent_Private.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = GDTCOREvent_Private.h; path = GoogleDataTransport/GDTCORLibrary/Private/GDTCOREvent_Private.h; sourceTree = "<group>"; };
 		2D11C30225026CE655419894A10C3396 /* RNSVGLength.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RNSVGLength.h; sourceTree = "<group>"; };
 		2D3ED4094E61FE1BB45DFC0AC6D4A941 /* RNNaverMapMarker.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RNNaverMapMarker.m; path = ios/reactNativeNMap/RNNaverMapMarker.m; sourceTree = "<group>"; };
+		2D4677EDB7FEA61C0AEBC9E039AF48D9 /* Pods-CampusTaxi-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-CampusTaxi-acknowledgements.markdown"; sourceTree = "<group>"; };
 		2D54FF7932D55AD2DBDB39C123B1B027 /* FIROptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FIROptions.h; path = FirebaseCore/Sources/Public/FirebaseCore/FIROptions.h; sourceTree = "<group>"; };
 		2D8752999ADDC4B4BC8DA8C2D48B9FD2 /* RCTProfileTrampoline-arm.S */ = {isa = PBXFileReference; includeInIndex = 1; path = "RCTProfileTrampoline-arm.S"; sourceTree = "<group>"; };
 		2DA0D814DFCB860D31D7BCD63D795858 /* libFirebaseInstanceID.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libFirebaseInstanceID.a; path = libFirebaseInstanceID.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -3582,7 +3584,6 @@
 		447B436292C34A78DD4EFC602F6ECF8A /* RNCCheckbox.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = RNCCheckbox.release.xcconfig; sourceTree = "<group>"; };
 		44B179408815189B5A09D9491437196C /* RCTSpringAnimation.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTSpringAnimation.h; sourceTree = "<group>"; };
 		44F8F314F52E27D85B6D663F80BA039D /* raw_logging.cc */ = {isa = PBXFileReference; includeInIndex = 1; name = raw_logging.cc; path = src/raw_logging.cc; sourceTree = "<group>"; };
-		45044857ACABD8C1CB81CBAF6728E8DB /* Pods-CampusTaxi-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-CampusTaxi-acknowledgements.plist"; sourceTree = "<group>"; };
 		453CBCEE1AE1F184558FA047E1E3717C /* RNScreens-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "RNScreens-dummy.m"; sourceTree = "<group>"; };
 		4587A88D00AE71C5C4BD95FC5A3A68FA /* JSCExecutorFactory.mm */ = {isa = PBXFileReference; includeInIndex = 1; path = JSCExecutorFactory.mm; sourceTree = "<group>"; };
 		45AFB2079F8614A219E1186C56B96804 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = MaterialCommunityIcons.ttf; path = Fonts/MaterialCommunityIcons.ttf; sourceTree = "<group>"; };
@@ -3946,7 +3947,6 @@
 		7969AF0175197D477093D9B353E17852 /* RCTImageDataDecoder.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RCTImageDataDecoder.h; path = Libraries/Image/RCTImageDataDecoder.h; sourceTree = "<group>"; };
 		79A3433879083F39FEA784C7A60D9CE5 /* FirebaseMessaging.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FirebaseMessaging.h; path = FirebaseMessaging/Sources/Public/FirebaseMessaging/FirebaseMessaging.h; sourceTree = "<group>"; };
 		79CD2471F8C0B383F238BB88D107BA9C /* NSError+FIRInstanceID.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "NSError+FIRInstanceID.m"; path = "Firebase/InstanceID/NSError+FIRInstanceID.m"; sourceTree = "<group>"; };
-		79E5BFE2459B9568D4D338152207CF05 /* Pods-CampusTaxi-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-CampusTaxi-dummy.m"; sourceTree = "<group>"; };
 		7A5E70C00CA25ED3BAD100E60F46A90C /* RNGestureHandlerEvents.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RNGestureHandlerEvents.h; path = ios/RNGestureHandlerEvents.h; sourceTree = "<group>"; };
 		7AEBB89A09D53B64BCDFA637C10D1EAF /* react-native-nmap.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "react-native-nmap.debug.xcconfig"; sourceTree = "<group>"; };
 		7B11C180F7D2E0A1E7E25D052D05ABA2 /* RNNaverMapPathOverlayManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RNNaverMapPathOverlayManager.m; path = ios/reactNativeNMap/RNNaverMapPathOverlayManager.m; sourceTree = "<group>"; };
@@ -4163,6 +4163,7 @@
 		99C2495FBC8B727EE1A8FAB6862364AE /* FIRComponentType.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FIRComponentType.h; path = FirebaseCore/Sources/Private/FIRComponentType.h; sourceTree = "<group>"; };
 		9A6DE5474BE008E3E4AF4F96BBA5BDFB /* RCTSegmentedControl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTSegmentedControl.h; sourceTree = "<group>"; };
 		9AA09C2E22DCBC82E2ED6AF4EA936329 /* RNNaverMapPolylineOverlay.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RNNaverMapPolylineOverlay.h; path = ios/reactNativeNMap/RNNaverMapPolylineOverlay.h; sourceTree = "<group>"; };
+		9AD62B135E5EC0A5954FB85A5C5AD598 /* Pods-CampusTaxi-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-CampusTaxi-acknowledgements.plist"; sourceTree = "<group>"; };
 		9AE02C97610A771AAE62099727DE9BA8 /* RCTModalHostViewManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTModalHostViewManager.h; sourceTree = "<group>"; };
 		9B09F38641917E6318B5C4A2ECA0B176 /* react-native-safe-area-context-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "react-native-safe-area-context-prefix.pch"; sourceTree = "<group>"; };
 		9B0B20C8559BAD194C2110F356B0D420 /* RNSVGDefsManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RNSVGDefsManager.h; sourceTree = "<group>"; };
@@ -4228,6 +4229,7 @@
 		A2C67E7B6AB21909023185FBAE728BBF /* GDTCORRegistrar_Private.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = GDTCORRegistrar_Private.h; path = GoogleDataTransport/GDTCORLibrary/Private/GDTCORRegistrar_Private.h; sourceTree = "<group>"; };
 		A2C913EDD5FB16B84B1F25BDFD04EBEF /* RCTMessageThread.mm */ = {isa = PBXFileReference; includeInIndex = 1; path = RCTMessageThread.mm; sourceTree = "<group>"; };
 		A2D551568B7E16EF414399DDB2817FEB /* React-RCTText.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "React-RCTText.debug.xcconfig"; sourceTree = "<group>"; };
+		A311F2FAAFDB06278876698C7EC46AF3 /* Pods-CampusTaxi-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-CampusTaxi-resources.sh"; sourceTree = "<group>"; };
 		A32CE1107DFEC6E5756C1CBA596D6908 /* RNFBMessaging+AppDelegate.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "RNFBMessaging+AppDelegate.h"; path = "ios/RNFBMessaging/RNFBMessaging+AppDelegate.h"; sourceTree = "<group>"; };
 		A34A0D74C5D78505AA4FEA337DC1182B /* React-RCTAnimation-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "React-RCTAnimation-prefix.pch"; sourceTree = "<group>"; };
 		A3B44A5C5DE2248B09D61E82EF3C300D /* RCTModalHostView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTModalHostView.m; sourceTree = "<group>"; };
@@ -4288,7 +4290,6 @@
 		ACF5480A4B95B8D63816FBF993CF0619 /* FBLPromise+Async.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "FBLPromise+Async.h"; path = "Sources/FBLPromises/include/FBLPromise+Async.h"; sourceTree = "<group>"; };
 		AD248BAA36D8C63A7AB59AF2E3F951A2 /* RCTLinkingManager.mm */ = {isa = PBXFileReference; includeInIndex = 1; path = RCTLinkingManager.mm; sourceTree = "<group>"; };
 		AD24F6629C58E296B13A6F0A5CCD36F1 /* JSINativeModules.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JSINativeModules.h; path = jsireact/JSINativeModules.h; sourceTree = "<group>"; };
-		AD6448BD7F7973FA93026E2DB88D5C92 /* Pods-CampusTaxi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-CampusTaxi.debug.xcconfig"; sourceTree = "<group>"; };
 		AD81DB5B85E92FE82D418857B9E6C0DC /* RCTPropsAnimatedNode.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTPropsAnimatedNode.h; sourceTree = "<group>"; };
 		AE032D050ED6C9E9366735BCDF9C6D76 /* RNAppleAuthentication.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = RNAppleAuthentication.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		AE2F839FE6DFC58BF07E26D426D7DDD3 /* RCTImageSource.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTImageSource.m; sourceTree = "<group>"; };
@@ -4431,7 +4432,6 @@
 		C111B5EEA04D1C5C41D3C49083FD865D /* React-jsinspector-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "React-jsinspector-prefix.pch"; sourceTree = "<group>"; };
 		C134234D106BCEC8DA1AA6117EAF6C03 /* RNFBAppModule.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RNFBAppModule.m; path = ios/RNFBApp/RNFBAppModule.m; sourceTree = "<group>"; };
 		C15772610CC1F3B5FDCCABEF7F200792 /* RNSVGMarkerManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RNSVGMarkerManager.m; sourceTree = "<group>"; };
-		C18A591AA6B2FD46E38B3D33C6A07B82 /* Pods-CampusTaxi-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-CampusTaxi-acknowledgements.markdown"; sourceTree = "<group>"; };
 		C1A686599E440CC0028B8BFA07FF4708 /* RCTHTTPRequestHandler.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RCTHTTPRequestHandler.h; path = Libraries/Network/RCTHTTPRequestHandler.h; sourceTree = "<group>"; };
 		C1A919103EAC9813D236486C34FC0A21 /* libReact-RCTVibration.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libReact-RCTVibration.a"; path = "libReact-RCTVibration.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1AA8817A3D589D4B961C3D6485D0CB3 /* RCTLayout.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTLayout.h; sourceTree = "<group>"; };
@@ -4484,6 +4484,7 @@
 		C729511C9488241DE1AA304F8C503775 /* RCTImageSource.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTImageSource.h; sourceTree = "<group>"; };
 		C777CF2FB1E39A45CBBDB54E8693F471 /* libRNReanimated.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libRNReanimated.a; path = libRNReanimated.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C794B833791567E711D2CA3F1E6D6D8F /* RNSVGPainter.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RNSVGPainter.m; sourceTree = "<group>"; };
+		C7E462B08246AB481C2CE00645E2CA07 /* Pods-CampusTaxi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-CampusTaxi.release.xcconfig"; sourceTree = "<group>"; };
 		C7F154A86964898621A8FBAD4006BBE2 /* RNSVGViewBox.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RNSVGViewBox.m; sourceTree = "<group>"; };
 		C806DCCD12EADB6B8F0043A970DC8267 /* RCTModuleMethod.mm */ = {isa = PBXFileReference; includeInIndex = 1; path = RCTModuleMethod.mm; sourceTree = "<group>"; };
 		C814B8B9AD1440ABDB1B731B3B341E3B /* RCTTextShadowView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTTextShadowView.h; sourceTree = "<group>"; };
@@ -4579,6 +4580,7 @@
 		D60DD2AD303E2E365BE69476B4FDDF20 /* glog.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = glog.release.xcconfig; sourceTree = "<group>"; };
 		D60E4C33559E1039F421CE23111652DE /* InspectorInterfaces.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = InspectorInterfaces.h; sourceTree = "<group>"; };
 		D65DE72688709EC996570D122866BEFD /* RNSVGMarkerPosition.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RNSVGMarkerPosition.m; sourceTree = "<group>"; };
+		D68EF45D5B1CC0FD200BDEF163272FDF /* Pods-CampusTaxi-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-CampusTaxi-dummy.m"; sourceTree = "<group>"; };
 		D6BC7ACB3D1C0778A3E4A131528D9A86 /* GDTCORTransformer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = GDTCORTransformer.h; path = GoogleDataTransport/GDTCORLibrary/Private/GDTCORTransformer.h; sourceTree = "<group>"; };
 		D6E079F99A3899CB32065C942E277BE9 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
 		D6FB4204BF0977864BB9FE4CAC0697D3 /* RCTImageShadowView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTImageShadowView.m; sourceTree = "<group>"; };
@@ -4679,7 +4681,6 @@
 		E3616FF67EE84FD5DC4348B684D7AD10 /* RNCClipboard-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "RNCClipboard-dummy.m"; sourceTree = "<group>"; };
 		E393A531207E721303FAF7EDE4420C2C /* LNInterpolable.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = LNInterpolable.h; sourceTree = "<group>"; };
 		E3BE76D086A05BD286AE82AEE9F0D8C1 /* ImagePickerUtils.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ImagePickerUtils.h; path = ios/ImagePickerUtils.h; sourceTree = "<group>"; };
-		E3C02E0EE2C07ACA09E2AC185075FFB2 /* Pods-CampusTaxi-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-CampusTaxi-resources.sh"; sourceTree = "<group>"; };
 		E3C052ECB11C5DF8E9D6834DC8045700 /* REAEventNode.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = REAEventNode.m; sourceTree = "<group>"; };
 		E442704C9A1F90F24EC94E7B54B859DC /* RCTDataRequestHandler.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RCTDataRequestHandler.h; path = Libraries/Network/RCTDataRequestHandler.h; sourceTree = "<group>"; };
 		E4666B8A685DF5BCACD57BBCC4FBFFCD /* React-jsinspector.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = "React-jsinspector.podspec"; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -7117,14 +7118,6 @@
 			path = React/CxxUtils;
 			sourceTree = "<group>";
 		};
-		79914192309E3F23CBC87EA5E3D8C3DC /* Targets Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				C6D77B42CDF9EF914FF5F4B356EAB7DA /* Pods-CampusTaxi */,
-			);
-			name = "Targets Support Files";
-			sourceTree = "<group>";
-		};
 		7A98D832AF82A672399117C650394F84 /* RNCAsyncStorage */ = {
 			isa = PBXGroup;
 			children = (
@@ -8391,20 +8384,6 @@
 			path = "../Target Support Files/Folly";
 			sourceTree = "<group>";
 		};
-		C6D77B42CDF9EF914FF5F4B356EAB7DA /* Pods-CampusTaxi */ = {
-			isa = PBXGroup;
-			children = (
-				C18A591AA6B2FD46E38B3D33C6A07B82 /* Pods-CampusTaxi-acknowledgements.markdown */,
-				45044857ACABD8C1CB81CBAF6728E8DB /* Pods-CampusTaxi-acknowledgements.plist */,
-				79E5BFE2459B9568D4D338152207CF05 /* Pods-CampusTaxi-dummy.m */,
-				E3C02E0EE2C07ACA09E2AC185075FFB2 /* Pods-CampusTaxi-resources.sh */,
-				AD6448BD7F7973FA93026E2DB88D5C92 /* Pods-CampusTaxi.debug.xcconfig */,
-				0C031DF72A23023D78156FEEEC2EA5A6 /* Pods-CampusTaxi.release.xcconfig */,
-			);
-			name = "Pods-CampusTaxi";
-			path = "Target Support Files/Pods-CampusTaxi";
-			sourceTree = "<group>";
-		};
 		C6E1DFAAF8E3411004BCFB2EE11747A3 /* Pod */ = {
 			isa = PBXGroup;
 			children = (
@@ -8702,7 +8681,7 @@
 				D89477F20FB1DE18A04690586D7808C4 /* Frameworks */,
 				CBF9A693588368B7473FD28AFDC5BBBB /* Pods */,
 				C07027EBE15808F9A67CBB9E30B17278 /* Products */,
-				79914192309E3F23CBC87EA5E3D8C3DC /* Targets Support Files */,
+				F705063B74B287F6D635B94ADD0B6275 /* Targets Support Files */,
 			);
 			sourceTree = "<group>";
 		};
@@ -9098,6 +9077,21 @@
 			path = "../../node_modules/react-native-restart";
 			sourceTree = "<group>";
 		};
+		F0BC58E8B7D7C05F024E4210AD38AAB3 /* Pods-CampusTaxi */ = {
+			isa = PBXGroup;
+			children = (
+				2D4677EDB7FEA61C0AEBC9E039AF48D9 /* Pods-CampusTaxi-acknowledgements.markdown */,
+				9AD62B135E5EC0A5954FB85A5C5AD598 /* Pods-CampusTaxi-acknowledgements.plist */,
+				D68EF45D5B1CC0FD200BDEF163272FDF /* Pods-CampusTaxi-dummy.m */,
+				2BBC5E695C0CDB8DCCA21B234391741B /* Pods-CampusTaxi-frameworks.sh */,
+				A311F2FAAFDB06278876698C7EC46AF3 /* Pods-CampusTaxi-resources.sh */,
+				2C8EA58396F57086627F44BDEC7D8219 /* Pods-CampusTaxi.debug.xcconfig */,
+				C7E462B08246AB481C2CE00645E2CA07 /* Pods-CampusTaxi.release.xcconfig */,
+			);
+			name = "Pods-CampusTaxi";
+			path = "Target Support Files/Pods-CampusTaxi";
+			sourceTree = "<group>";
+		};
 		F14799DB6830C8B5561A7E67DDA7F73F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -9186,6 +9180,14 @@
 			);
 			name = "React-jsi";
 			path = "../../node_modules/react-native/ReactCommon/jsi";
+			sourceTree = "<group>";
+		};
+		F705063B74B287F6D635B94ADD0B6275 /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				F0BC58E8B7D7C05F024E4210AD38AAB3 /* Pods-CampusTaxi */,
+			);
+			name = "Targets Support Files";
 			sourceTree = "<group>";
 		};
 		F7622EB8E25D3E2DA77F5D88F1018131 /* react-native-version-check */ = {
@@ -14558,7 +14560,7 @@
 		};
 		1EDBE76F2AECE12C80D5C3EFA80BDA7C /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0C031DF72A23023D78156FEEEC2EA5A6 /* Pods-CampusTaxi.release.xcconfig */;
+			baseConfigurationReference = C7E462B08246AB481C2CE00645E2CA07 /* Pods-CampusTaxi.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -15790,7 +15792,7 @@
 		};
 		7AC64CFB6994D4250B4AA9270AE29CB2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AD6448BD7F7973FA93026E2DB88D5C92 /* Pods-CampusTaxi.debug.xcconfig */;
+			baseConfigurationReference = 2C8EA58396F57086627F44BDEC7D8219 /* Pods-CampusTaxi.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;

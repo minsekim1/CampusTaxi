@@ -18,6 +18,7 @@ export const RootScreen = () => {
     socket,
     firebaseToken,
     setLoggedIn,
+    setUser
   } = useAuthContext();
   useEffect(() => {
     if (socket?.connected) console.log("connected socket !", socket.id);
