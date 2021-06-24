@@ -13,27 +13,30 @@ import {
 } from 'react-native';
 import { launchImageLibrary, launchCamera } from "react-native-image-picker";
 import PropTypes from 'prop-types';
-import {KeyboardAccessoryView, KeyboardUtils} from 'react-native-keyboard-input';
-import {KeyboardRegistry} from 'react-native-keyboard-input';
-import {_} from 'lodash';
+import { KeyboardAccessoryView, KeyboardUtils } from 'react-native-keyboard-input';
+import { KeyboardRegistry } from 'react-native-keyboard-input';
+import { _ } from 'lodash';
 import axios from "axios";
 import { premiumURL } from "../../constant";
-import {CancleIcon} from "../../components/icon/chat-room/CancleIcon"
+import { CancleIcon } from "../../components/icon/chat-room/CancleIcon"
 import { GalleryIcon } from "../../components/icon/chat-room/GalleryIcon"
 import { SmileIcon } from "../../components/icon/chat-room/SmileIcon"
 import { SendArrowIcon } from "../../components/icon/chat-room/SendArrowIcon"
 import { CameraIcon } from "../../components/icon/chat-room/CameraIcon"
 
 import './KeyboardView';
+import ImageResizer from 'react-native-image-resizer';
 
 const IsIOS = Platform.OS === 'ios';
 const TrackInteractive = true;
 const isBase64 = require('is-base64');
-
 export default class KeyBoardInput extends Component {
   static propTypes = {
     message: PropTypes.string,
   };
+
+
+
 
   constructor(props) {
     super(props);
@@ -57,14 +60,18 @@ export default class KeyBoardInput extends Component {
 
   onKeyboardItemSelected(keyboardId, params) {
     const receivedKeyboardData = `onItemSelected from "${keyboardId}"\nreceived params: ${JSON.stringify(params)}`;
-    console.log(receivedKeyboardData);
+    // console.log(receivedKeyboardData);
     this.props.setMessageType("IMAGE");
-    this.setState({receivedKeyboardData});
+    this.setState({ receivedKeyboardData });
+
     this.props.setMessage(params.message);
+    console.log('params.message', typeof params.message)
+    console.log(Object.keys(params));
+    console.log("siba521", isBase64(params.message))
   }
 
   onKeyboardResigned() {
-    this.setState({keyboardOpenState: false});
+    this.setState({ keyboardOpenState: false });
     this.resetKeyboardView();
   }
 
@@ -72,17 +79,19 @@ export default class KeyBoardInput extends Component {
     return [
       {
         text: 'camera',
-        icon: <CameraIcon/>,
+        icon: <CameraIcon />,
         testID: 'f1',
         onPress: () => {
           launchCamera(
-            { mediaType: "photo", includeBase64: true },
+            { mediaType: "photo", includeBase64: true, quality: 0.5, maxHeight: 2016, maxWidth: 2016 },
             (response) => {
               console.log(response.errorMessage);
               if (response.base64) {
-                console.log("textinpupt photo ...");
+                // console.log("textinpupt photo ... f1");
+                // console.log("response.base64 f1", response.base64.length)
 
-                this.onKeyboardItemSelected('f2', { "message": response.base64 });
+                this.onKeyboardItemSelected('f1', { "message": response.base64 });
+                // })
               }
             }
           );
@@ -99,11 +108,11 @@ export default class KeyBoardInput extends Component {
         testID: 'f2',
         onPress: () => {
           launchImageLibrary(
-            { mediaType: "photo", includeBase64: true },
+            { mediaType: "photo", includeBase64: true, quality: 0.5, maxHeight: 2016, maxWidth: 2016 },
             (response) => {
               if (response.base64) {
-                console.log("textinpupt photo ...");
-
+                // console.log("textinpupt photo ... f2");
+                // console.log("response.base64 f2", response.base64.length)
                 this.onKeyboardItemSelected('f2', { "message": response.base64 });
 
               }
@@ -122,7 +131,7 @@ export default class KeyBoardInput extends Component {
 
 
   resetKeyboardView() {
-    this.setState({customKeyboard: {}});
+    this.setState({ customKeyboard: {} });
   }
 
   showKeyboardView(component, title) {
@@ -130,7 +139,7 @@ export default class KeyBoardInput extends Component {
       keyboardOpenState: true,
       customKeyboard: {
         component,
-        initialProps: {title},
+        initialProps: { title },
       },
     });
   }
@@ -140,8 +149,8 @@ export default class KeyBoardInput extends Component {
   }
 
   showLastKeyboard() {
-    const {customKeyboard} = this.state;
-    this.setState({customKeyboard: {}});
+    const { customKeyboard } = this.state;
+    this.setState({ customKeyboard: {} });
 
     setTimeout(() => {
       this.setState({
@@ -152,13 +161,13 @@ export default class KeyBoardInput extends Component {
   }
 
   isCustomKeyboardOpen = () => {
-    const {keyboardOpenState, customKeyboard} = this.state;
+    const { keyboardOpenState, customKeyboard } = this.state;
     return keyboardOpenState && !_.isEmpty(customKeyboard);
   }
 
   toggleUseSafeArea = () => {
-    const {useSafeArea} = this.state;
-    this.setState({useSafeArea: !useSafeArea});
+    const { useSafeArea } = this.state;
+    this.setState({ useSafeArea: !useSafeArea });
 
     if (this.isCustomKeyboardOpen()) {
       this.dismissKeyboard();
@@ -170,11 +179,11 @@ export default class KeyBoardInput extends Component {
     if (!IsIOS) {
       return (<View />);
     }
-    const {useSafeArea} = this.state;
+    const { useSafeArea } = this.state;
     return (
       <View style={styles.safeAreaSwitchContainer}>
         <Text>Safe Area Enabled:</Text>
-        <Switch style={styles.switch} value={useSafeArea} onValueChange={this.toggleUseSafeArea}/>
+        <Switch style={styles.switch} value={useSafeArea} onValueChange={this.toggleUseSafeArea} />
       </View>
     );
   }
@@ -182,9 +191,9 @@ export default class KeyBoardInput extends Component {
   keyboardAccessoryViewContent() {
     return (
       <View style={styles.keyboardContainer}>
-        <View style={{borderTopWidth: StyleSheet.hairlineWidth, borderColor: '#bbb'}}/>
+        <View style={{ borderTopWidth: StyleSheet.hairlineWidth, borderColor: '#bbb' }} />
 
-        
+
         <View style={styles.inputContainer}>
 
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
@@ -200,92 +209,92 @@ export default class KeyBoardInput extends Component {
                 </TouchableOpacity>)
             }
           </View>
-          
+
           {this.props.messageType !== "IMAGE" ? (
             <>
-            <TextInput
-              maxHeight={200}
-              style={styles.textInput}
-              ref={(r) => {
-                this.textInputRef = r;
-              }}
-              placeholder={'Message'}
-              underlineColorAndroid="transparent"
-              onFocus={() => this.resetKeyboardView()}
-              testID={'input'}
+              <TextInput
+                maxHeight={200}
+                style={styles.textInput}
+                ref={(r) => {
+                  this.textInputRef = r;
+                }}
+                placeholder={'Message'}
+                underlineColorAndroid="transparent"
+                onFocus={() => this.resetKeyboardView()}
+                testID={'input'}
 
-              value={this.props.message}
-              autoCapitalize="none"
-              returnKeyType="none"
-              multiline={true}
-              onChangeText={this.props.setMessage}
+                value={this.props.message}
+                autoCapitalize="none"
+                returnKeyType="none"
+                multiline={true}
+                onChangeText={this.props.setMessage}
               />
             </>
           ) : (
-              isBase64(this.props.message) === true ?
-                (
-                  <View style={styles.photoInput}>
+            isBase64(this.props.message) === true ?
+              (
+                <View style={styles.photoInput}>
                   <Image
                     style={{
-                        height: 100, width: 100, margin: 10
-                      
+                      height: 100, width: 100, margin: 10
+
                     }}
-                      source={{ uri: `data:image/jpg;base64,${this.props.message}`}}
+                    source={{ uri: `data:image/jpg;base64,${this.props.message}` }}
                   />
                   <TouchableOpacity
                     style={{
-                      height: 20, width: 20, 
+                      height: 20, width: 20,
                       alignItems: 'center', justifyContent: 'center'
                     }}
                     onPress={() => {
                       this.props.setMessage('');
                       this.props.setMessageType('NORMAL');
                     }}
-                    >
-                      <CancleIcon/>
+                  >
+                    <CancleIcon />
                   </TouchableOpacity>
 
-                  </View>
-                )
-                :
-                (
-                  <View style={styles.photoInput}>
-                    <Image
-                      style={{
-                        height: 100, width: 100
-                      }}
-                      source={{ uri: this.props.message }}
-                    />
-                    <TouchableOpacity
-                      style={{
-                        height: 20, width: 20,
-                        alignItems: 'center', justifyContent: 'center'
-                      }}
-                      onPress={() => {
-                        this.props.setMessage('');
-                        this.props.setMessageType('NORMAL');
-                      }}
-                    >
-                      <CancleIcon />
-                    </TouchableOpacity>
+                </View>
+              )
+              :
+              (
+                <View style={styles.photoInput}>
+                  <Image
+                    style={{
+                      height: 100, width: 100
+                    }}
+                    source={{ uri: this.props.message }}
+                  />
+                  <TouchableOpacity
+                    style={{
+                      height: 20, width: 20,
+                      alignItems: 'center', justifyContent: 'center'
+                    }}
+                    onPress={() => {
+                      this.props.setMessage('');
+                      this.props.setMessageType('NORMAL');
+                    }}
+                  >
+                    <CancleIcon />
+                  </TouchableOpacity>
 
-                  </View>
-                )
-            )}
-            
+                </View>
+              )
+          )}
 
-          <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-          {
-            this.getToolbarButtonsRight().map((button, index) =>
-              <TouchableOpacity
-                onPress={button.onPress}
-                style={{paddingLeft: 10, paddingRifht: 10}}
-                key={index}
-                testID={button.testID}
-              >
-                {button.icon}
-              </TouchableOpacity>)
-          }
+
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+            {
+              this.getToolbarButtonsRight().map((button, index) =>
+                <TouchableOpacity
+                  onPress={button.onPress}
+                  style={{ paddingLeft: 10, paddingRifht: 10 }}
+                  key={index}
+                  testID={button.testID}
+                >
+                  {button.icon}
+                </TouchableOpacity>)
+            }
           </View>
 
 
@@ -320,7 +329,7 @@ export default class KeyBoardInput extends Component {
 
         <KeyboardAccessoryView
           renderContent={this.keyboardAccessoryViewContent}
-          onHeightChanged={height => this.setState({keyboardAccessoryViewHeight: IsIOS ? height : undefined})}
+          onHeightChanged={height => this.setState({ keyboardAccessoryViewHeight: IsIOS ? height : undefined })}
           trackInteractive={TrackInteractive}
           kbInputRef={this.textInputRef}
           kbComponent={this.state.customKeyboard.component}

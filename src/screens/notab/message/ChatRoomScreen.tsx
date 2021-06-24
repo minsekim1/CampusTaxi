@@ -206,7 +206,7 @@ export const ChatRoomScreen: React.FC = () => {
   }
   
   const sendMessage = (text: string, textType: string) => {
-
+    console.log("room.id:",room.id)
     socket?.emit("chat", {
       msg: text,
       msg_type: textType,
