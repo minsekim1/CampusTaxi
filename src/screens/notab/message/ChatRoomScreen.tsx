@@ -418,8 +418,11 @@ const KeyBoardOnSubmit = (text: string, textType: string) => {
           }
         )
         .then((res) => {
-          // console.log(res.data);
-          sendMessage(res.data, textType);
+          if (res.data === "") {           
+            notifyMessage("이미지를 업로드를 실패했습니다.\n관리자에게 문의해주세요.");
+          } else {           
+            sendMessage(res.data, textType);
+          }
         });
     }
     else {  
@@ -580,7 +583,7 @@ const SubTitle = styled.Text`
 `;
 const Container = styled.SafeAreaView`
   justify-content: space-around;
-  padding-top: 24px;
+  margin-top: 22px;
   flex: 1;
 `;
 
