@@ -186,12 +186,12 @@ export const ChatRoomScreen: React.FC = () => {
       undefined,
       (d: any
       ) => {
-        setRoom(d.results[0]);
+        setRoom({...d.results[0], id:room.id});
         // let data = JSON.stringify(d);
       }
     );
     //#endregion ChatRoom Info Reset
-    return () => (isSubscribed = false);
+    return () => {isSubscribed = false};
   }, []);
   //#endregion 유저 데이터 요청
   //#endregion 초기 세팅
@@ -206,7 +206,6 @@ export const ChatRoomScreen: React.FC = () => {
   }
   
   const sendMessage = (text: string, textType: string) => {
-    console.log("room.id:",room.id)
     socket?.emit("chat", {
       msg: text,
       msg_type: textType,
@@ -268,7 +267,9 @@ export const ChatRoomScreen: React.FC = () => {
       // 텍스트인풋에서 포커싱해제
       searchRef.current?.blur();
       // 해당 문자열이 포함된 것 반환
-      const r = messages.filter((d) => d.message.includes(searchInput));
+      console.log(messages.map((m,i)=>console.log(i+"]index:"+JSON.stringify(m))))
+      const r = messages.filter((d) => d.message.includes(searchInput) && d.message_type != "IMAGE");
+      console.log(r.map((m,i)=>console.log(i+"]r index:"+JSON.stringify(m))))
       if (r) {
         const result: searchProps = {
           index: r[0].index, //현재 찾은 메세지 인덱스

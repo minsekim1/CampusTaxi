@@ -84,7 +84,9 @@ export const MessageScreen: React.FC = () => {
       socket?.off("chatRooms");
       //console.log("blur MainScreen");
     });
-    return () => isSubscribed = false
+    return () => {
+      isSubscribed = false;
+    };
   }, []);
   const handleBackButton = () => {
     if (currentCount < 1) {

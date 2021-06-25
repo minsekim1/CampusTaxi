@@ -61,9 +61,9 @@ export const ChatRoomCard: React.FC<Props> = ({
     );
   }
   
-  const bgColor = GenderColor(data.gender);
-  const genderText = GenderText(data.gender);
-  console.log("data:",data)
+  // const bgColor = GenderColor(data.gender);
+  // const genderText = GenderText(data.gender);
+  // console.log("data:",data)
   return (
     <DataContainer onPress={() => onPress(data)}>
       <Card
