@@ -17,7 +17,7 @@ type Props = {
   isLeft: boolean;
   isHost: boolean;
   searchResult?: searchProps;
-  theme: Theme;
+  theme: Theme | undefined;
 };
 
 

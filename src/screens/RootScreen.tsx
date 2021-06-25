@@ -22,7 +22,7 @@ export const RootScreen = () => {
   } = useAuthContext();
   useEffect(() => {
     if (socket?.connected) console.log("connected socket !", socket.id);
-    else console.warn("disconnected socket ?", socket?.connected);
+    else console.log("disconnected socket ?", socket?.connected);
   }, [socket]);
 
   useEffect(() => {
