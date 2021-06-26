@@ -148,6 +148,7 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
     const date_string =
       format(date_result, "yyyy-MM-dd") + "T" + hour + ":" + min + ":00";
     //TEST CODE minsekim 백엔드 끝나면 비공개=>무관으로 변경해야함
+    console.log("date_string",date_string)
     let gender_Local = gender_ == "0" ? user?.gender : "NONE";
 
     let room = {
