@@ -144,6 +144,7 @@ export const ChatRoomScreen: React.FC = () => {
       socket.on("chatEnter chat", (response) => {
         if (isSubscribed) {
           setMessages(response.data);
+          setTimeout(() => setIsFlatListLoadEnd(true),1000)
         }
         //#region 채팅 받기
         socket.on("chat", (chat) => {
@@ -160,11 +161,8 @@ export const ChatRoomScreen: React.FC = () => {
               index: a.length + 1,
             });
             if (isSubscribed) setMessages(a);
+            ChatScrollRef.current?.forceUpdate();
           }
-          ChatScrollRef.current?.forceUpdate();
-          console.log("isLastFlatList", isLastFlatList);
-          if (isLastFlatList)
-            ChatScrollRef.current?.scrollToEnd({ animated: true });
         });
         //#endregion 채팅 받기
       });
@@ -227,6 +225,7 @@ export const ChatRoomScreen: React.FC = () => {
     setMessages(a);
     ChatScrollRef.current?.forceUpdate();
   };
+  // useEffect(() => { console.log("messages changed!",ChatScrollRef.current?.props.data)},[ChatScrollRef.current?.props.onEndReached])
   //#endregion 채팅 전송
   //#endregion 웹소켓
 
@@ -272,11 +271,11 @@ export const ChatRoomScreen: React.FC = () => {
       );
       if (r) {
         const result: searchProps = {
-          index: r[0].index, //현재 찾은 메세지 인덱스
-          indexInMessage: r[0].message.indexOf(searchInput), //한 메세지안에서 몇 글자 위치인지? 위아래 버튼 누를때 바뀜
+          index: r[r.length - 1].index, //현재 찾은 메세지 인덱스
+          indexInMessage: r[r.length - 1].message.indexOf(searchInput), //한 메세지안에서 몇 글자 위치인지? 위아래 버튼 누를때 바뀜
           searchString: searchInput,
           result_message: r,
-          index_InResult: 0,
+          index_InResult: r.length - 1,
         };
         setSearchResult(result);
         // 결과가 있을경우 첫번째로 스크롤 하고 message_searchedText로 잘라 넣음
@@ -284,6 +283,7 @@ export const ChatRoomScreen: React.FC = () => {
           ChatScrollRef.current?.scrollToItem({
             animated: true,
             item: r[r.length - 1],
+            viewPosition: 0.5, //가운데로 비춤
           });
         }
       }
@@ -322,6 +322,7 @@ export const ChatRoomScreen: React.FC = () => {
             searchResult.result_message[searchResult.index_InResult - 1].index -
               1
           ],
+        viewPosition: 0.5, //가운데로 비춤
       });
     } else if (indexInMessage != -1) {
       // 결과가 있을경우
@@ -367,8 +368,9 @@ export const ChatRoomScreen: React.FC = () => {
       // 스크롤
       ChatScrollRef.current?.scrollToItem({
         animated: true,
-        item:
-          searchResult.result_message[searchResult.index_InResult + 1].index,
+        item:messages[r.index],
+          // searchResult.result_message[searchResult.index_InResult + 1].index,
+        viewPosition: 0.5, //가운데로 비춤
       });
     } else if (indexInMessage != -1 && searchResult.index > -1) {
       //메세지 안에서 결과가 있을경우 강조 글씨 바꾸고 스크롤함
@@ -435,26 +437,21 @@ export const ChatRoomScreen: React.FC = () => {
       sendMessage(text, textType);
     }
   };
+
   //#region FlatList state & Ref
   // 현재 보고 있는 곳이 마지막 인덱스인지 여부. 마지막일 경우 채팅 받을 때 가장 아래로 내림
-  // true : 마지막 인덱스 맞음
-  // false : 마지막 인덱스 아님
-  const [isLastFlatList, setIsLastFlatList] = useState<Boolean>(false);
-  const onViewRef = React.useRef((viewableItems: any) => {
-    console.log("viewableItems:", viewableItems)
-    console.log("ChatScrollRef.current.props.data.length - 1",ChatScrollRef.current.props.data.length - 1)
-    viewableItems = viewableItems.changed.filter(
-      (item: { index: number }) =>
-        item.index == ChatScrollRef.current.props.data.length - 1
-    ).length;
-    if (viewableItems == 1) setIsLastFlatList(true);
-    else setIsLastFlatList(false);
-
-    // setMaxIndex(viewableItems)
-    // {"changed": [{"index": 16, "isViewable": false, "item": [Object], "key": "16"}], "viewabilityConfig": {"viewAreaCoveragePercentThreshold": 50}, "viewableItems": [{"index": 17, "isViewable": true, "item": [Object], "key": "17"}, {"index": 18, "isViewable": true, "item": [Object], "key": "18"}, {"index": 19, "isViewable": true, "item": [Object], "key": "19"}, {"index": 20, "isViewable": true, "item": [Object], "key": "20"}, {"index": 21, "isViewable": true, "item": [Object], "key": "21"}]}
-  });
-  const viewConfigRef = React.useRef({ viewAreaCoveragePercentThreshold: 50 });
+  const [isFlatListLoadEnd, setIsFlatListLoadEnd] = useState<boolean>(false)
+  const [isEndReachedFlatList, setIsEndReachedFlatList] = useState<boolean>(
+    false
+  );
+  const isCloseToBottom = ({
+    layoutMeasurement,
+    contentOffset,
+    contentSize,
+  }: any) =>
+    layoutMeasurement.height + contentOffset.y >= contentSize.height - 100;
   //#endregion FlatList state & Ref
+
   return (
     <BlankBackground color={"white"}>
       <KeyboardContainer
@@ -511,9 +508,17 @@ export const ChatRoomScreen: React.FC = () => {
               )}
             </TitleContainer>
             {/* 채팅 내용 */}
+
             <ContentContainer
-              onViewableItemsChanged={onViewRef.current}
-              viewabilityConfig={viewConfigRef.current}
+              onScroll={({ nativeEvent }: any) => {
+                if (isCloseToBottom(nativeEvent)) setIsEndReachedFlatList(true);
+                else setIsEndReachedFlatList(false);
+              }}
+              onContentSizeChange={(width: number, height: number) => {
+                // 가장 마지막 채팅 근처일 경우 아래로 채팅 스크롤함
+                if (isEndReachedFlatList === true || isFlatListLoadEnd === false)
+                  ChatScrollRef.current?.scrollToEnd();
+              }}
               ref={ChatScrollRef}
               data={messages}
               contentContainerStyle={ContentContainerStyle}
