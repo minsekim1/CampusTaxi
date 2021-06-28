@@ -299,6 +299,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>react-native-image-resizer.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>react-native-mail.xcscheme</key>
 		<dict>
 			<key>isShown</key>
