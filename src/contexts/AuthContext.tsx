@@ -12,7 +12,7 @@ import RNRestart from "react-native-restart";
 
 export type AuthState = {
   isPremium: boolean | undefined;
-  setPremium: (props: boolean) => void;
+  setPremium: (props: number) => void;
   token: string | undefined;
   refresh: string | undefined;
   isLoading: boolean;
@@ -64,7 +64,7 @@ export type MoveNavProps = {
 export const useAuthContext = () => useContext(AuthContext);
 
 export const AuthProvider: React.FC = ({ children }) => {
-  const [isPremium, setpremium] = useState<string | undefined>();
+  const [isPremium, setIsPremium] = useState<number>();
   const [token, setToken] = useState<string | undefined>();
   const [refresh, setRefresh] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -118,6 +118,13 @@ export const AuthProvider: React.FC = ({ children }) => {
     [setMoveNav]
   );
 
+  const setPremium = useCallback(
+  (props: number) => {
+    setIsPremium(props);
+  },
+  [setIsPremium]
+  );
+  
   const setLoggedIn = useCallback(
     (accessData: string, refreshData: string) => {
       AsyncStorage.setItem("@campus_taxi_auth", refreshData);
@@ -197,6 +204,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         setLoggedOut,
         setLoggedIn,
         setNavName,
+        setPremium,
         setUser,
         socket,
         User,
