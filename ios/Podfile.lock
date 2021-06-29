@@ -265,6 +265,8 @@ PODS:
   - React-jsinspector (0.63.4)
   - react-native-image-picker (3.8.1):
     - React-Core
+  - react-native-image-resizer (1.4.5):
+    - React-Core
   - react-native-mail (6.1.0):
     - React-Core
   - react-native-nmap (0.0.56):
@@ -395,6 +397,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
+  - react-native-image-resizer (from `../node_modules/react-native-image-resizer`)
   - react-native-mail (from `../node_modules/react-native-mail`)
   - react-native-nmap (from `../node_modules/react-native-nmap`)
   - react-native-restart (from `../node_modules/react-native-restart`)
@@ -480,6 +483,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
+  react-native-image-resizer:
+    :path: "../node_modules/react-native-image-resizer"
   react-native-mail:
     :path: "../node_modules/react-native-mail"
   react-native-nmap:
@@ -578,6 +583,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 93bd528844ad21dc07aab1c67cb10abae6df6949
   React-jsinspector: 58aef7155bc9a9683f5b60b35eccea8722a4f53a
   react-native-image-picker: 31971f6184e7c1dcb4fc1f122e1ba2c3fb11ef1e
+  react-native-image-resizer: d9fb629a867335bdc13230ac2a58702bb8c8828f
   react-native-mail: 82d9a99b31de76084e279ed3a161dd9ed11001f0
   react-native-nmap: dce573eff53ac1e62fd536b9b27846e8d5d1ca64
   react-native-restart: a01029aadfe8e71f9e8205fdb17da2f0a4472d50

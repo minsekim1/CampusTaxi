@@ -24,6 +24,12 @@ import axios from "axios";
 import { User } from "../../../contexts/User";
 import { myCoordProps } from "../../notab/home/CreateScreen";
 import { API_URL } from "../../../constant";
+import {
+  PurchaseGoogle,
+  getSubscriptions,
+  getAvailablePurchases,
+  requestSubscription,
+} from "../premiumTab/RNIapFunction";
 
 type HomeScreenNavigationProp = StackNavigationProp<
   HomeStackParamList,

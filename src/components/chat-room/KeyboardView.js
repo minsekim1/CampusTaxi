@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component, useState} from 'react';
 import PropTypes from 'prop-types';
 import {
   StyleSheet,
@@ -15,7 +15,9 @@ import {
 } from 'react-native';
 import {KeyboardRegistry} from 'react-native-keyboard-input';
 
+//각 키보드 레이아웃 화면을 그리는 부분
 class KeyboardView extends Component {
+
   static propTypes = {
     title: PropTypes.string,
   };
@@ -85,6 +87,7 @@ class ImoticonKeyboardView extends Component {
     });
   };
 
+  //이모티콘 아이콘 클릭 시 나오는 레이아웃 뷰
   GetOneEmoticon(props){
     return(
       <View>
@@ -92,7 +95,7 @@ class ImoticonKeyboardView extends Component {
         style={{
           height: 100, width: 100
         }}
-        onPress={() => {
+        onPress={() => { //누르면 해당 이모티콘의 s3 주소를 text에 넣음
           props.object.onButtonPress("https://s3.ap-northeast-2.amazonaws.com/api.campustaxi.net/emoticon/" + props.emo_path +".png");
         }}
         >
@@ -109,7 +112,10 @@ class ImoticonKeyboardView extends Component {
 
   render() {
     return (
-      <ScrollView style={{flex: 1}}>
+      <ScrollView style={{ flex: 1 }}>
+        {
+          //각각의 이모티콘을 레이아웃 뷰에 그림
+        }
         <View style={{flexDirection: 'row'}}>
           <this.GetOneEmoticon object={this} emo_path="emoticon_taco_1"/>
           <this.GetOneEmoticon object={this} emo_path="emoticon_taco_2"/>

@@ -43,7 +43,7 @@ export const SettingScreen: React.FC<Props> = () => {
   const [user, setUser] = useState<User>();
   const [myprofilepath, setMyprofilepath] = useState<string>("default");
 
-
+  //프로필로 설정 할 아이콘 목록의 각 아이템
   const GetProfileIconList: React.FC<{iconPath?: string, iconName?: string}> = ({ iconPath, iconName }) => {
     return(
       <View style={{
@@ -55,15 +55,18 @@ export const SettingScreen: React.FC<Props> = () => {
       }}
       onPress={() => {
         console.log(iconPath);
-        if(ispremium === true){
+        if(ispremium === true || iconPath === "default"){
           setMyprofilepath(iconPath);
           setModalVisible(!modalVisible);
         }
       }}
       >
+      {
+        //프리미엄이 아닌 경우, 디폴트 이미지를 제외한 나머지는 opacity 낮춤 & 눌러도 업데이트 반영하지 않음
+      }
       <Image
         style={{
-          height: 70, width: 70, position: 'absolute', opacity: ispremium === true ? 1 : 0.3
+          height: 56, width: 56, margin: 7, position: 'absolute', opacity: ispremium === true || iconPath === "default" ? 1 : 0.3
         }}
         source={{uri: "https://s3.ap-northeast-2.amazonaws.com/api.campustaxi.net/profile_icon/"+iconPath+".png"}}
       />
@@ -172,6 +175,9 @@ export const SettingScreen: React.FC<Props> = () => {
   return (
     <BlankBackground color="#fff">
       <SafeAreaView>
+        {
+          //설정할 프로필 목록 팝업으로 띄움
+        }
       <Modal
         animationType="slide"
         transparent={true}
@@ -184,28 +190,7 @@ export const SettingScreen: React.FC<Props> = () => {
           <View style={styles.centeredView} >
           <View style={styles.modalView}>
             <View style={{flexDirection: 'row'}}>    
-              <View style={{
-                justifyContent: "center",
-                alignItems: "center"}}>
-                <Pressable
-                  style={{
-                    height: 70, width: 70,
-                  }}
-                  onPress={() => {
-                    setMyprofilepath("default");
-                    setModalVisible(!modalVisible);
-                  }}
-                  >
-                    <DefaultIcon/>
-                </Pressable>
-                <View style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    backgroundColor: '#E8E9F2', width: 40,      
-                    borderRadius: 20}}>
-                  <Text>기본</Text>
-                </View>
-              </View>
+              <GetProfileIconList iconPath="default" iconName="기본"/>
               <GetProfileIconList iconPath="profile_icon0" iconName="무무"/>
               <GetProfileIconList iconPath="profile_icon1" iconName="교수"/>
               <GetProfileIconList iconPath="profile_icon2" iconName="로치"/>
@@ -220,11 +205,11 @@ export const SettingScreen: React.FC<Props> = () => {
         </View>
       </Modal>
         <Container>
+          {
+            //상단 프로필
+          }
           <ProfileContainer>
-            {ispremium===true && myprofilepath!=="default" ? 
             <ProfileImage source={{uri: 'https://s3.ap-northeast-2.amazonaws.com/api.campustaxi.net/profile_icon/'+myprofilepath+'.png'}}/>
-            :
-            <DefaultIcon/>            }
             <PlusButton
               onPress={() => setModalVisible(true)}>
                 <PlusIcon/>
