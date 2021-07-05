@@ -13,6 +13,7 @@ import {
 import { CustomAlert } from "../../../components/chat-room/CustomAlert";
 import { EmailSend } from "../../../components/chat-room/EmailSend";
 import { ETAView } from "../../../components/chat-room/ETAView";
+import { Boarding_dtmToDate, DateToRecently, DateToRecentlyDayTime } from "../../../components/chat/date";
 import { GenderColor } from "../../../components/color/GenderColor";
 import { OutRoomSVG } from "../../../components/icon/chat/OutRoomSVG";
 import { useAuthContext } from "../../../contexts/AuthContext";
@@ -90,6 +91,7 @@ export const ChatRoomScreenDetails: React.FC = () => {
         end_address={room.end_address_detail}
         start_time={room.boarding_dtm}
       />
+      {console.log(Boarding_dtmToDate(room.boarding_dtm))}
       <BottomLine gender={room.gender}>
         <Title gender={room.gender}>기능</Title>
       </BottomLine>

@@ -48,7 +48,7 @@ export const HomeScreen: React.FC<Props> = () => {
   const { token } = useAuthContext();
   useEffect(() => {
     axios
-      .get(`${API_URL}/v1/accounts/me/`,{
+      .get(`${API_URL}/v1/accounts/me/`, {
         headers: {
           Authorization: "Bearer " + token,
           accept: "application/json",
@@ -139,9 +139,7 @@ export const HomeScreen: React.FC<Props> = () => {
               </SubTitleView>
               <CardButton
                 options={["등교", "하교", "기타"]}
-                onChange={(option) => {
-                  setCategory(parseInt(option));
-                }}
+                onChange={(option) => setCategory(parseInt(option))}
                 icon={[<SchoolIcon />, <BusIcon />, <EtcIcon />]}
               />
             </SubContainer>
@@ -259,7 +257,7 @@ export const HomeScreen: React.FC<Props> = () => {
 };
 
 const Content = styled.ScrollView`
-  background-color:#f2f2f2;
+  background-color: #f2f2f2;
 `;
 const Container = styled.SafeAreaView`
   flex: 1;

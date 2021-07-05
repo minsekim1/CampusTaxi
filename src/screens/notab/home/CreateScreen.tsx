@@ -50,7 +50,8 @@ type schoolPosProps = {
   latitude: number;
   longitude: number;
 };
-export const CreateScreen: React.FC<Props> = ({}) => {
+export const CreateScreen: React.FC<Props> = ({ }) => {
+  
   const params = useAuthContext().MoveNav.props;
   const [datas, setDatas] = React.useState<ChatRoom[]>([]);
   const schoolPos: schoolPosProps = univInfo.find(
@@ -71,7 +72,7 @@ export const CreateScreen: React.FC<Props> = ({}) => {
   const [myCoord, setMyCoord] = React.useState<myCoordProps>({
     latitude: 0,
     longitude: 0,
-    zoom: 16,
+    zoom: 256,
   });
   const start_init: myCoordProps = {
     latitude: params.type == 1 ? schoolPos?.latitude : 0, // TEST CODE 삼육대학교 분수대앞 위치 추후 사용자학교로 변경필요
@@ -182,6 +183,7 @@ export const CreateScreen: React.FC<Props> = ({}) => {
   useEffect(() => {
     socket?.off("chatRoomsInMap");
     socket?.on("chatRoomsInMap", (d) => {
+      if(d !== [] && !!d)
       setDatas([selectRoom, ...d.chatRooms]);
     });
   }, [selectRoom]);
@@ -190,7 +192,9 @@ export const CreateScreen: React.FC<Props> = ({}) => {
       if (myCoord.zoom < 18 && myCoord.zoom > 5) {
         type z = 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17;
         let roundZoom: z = Math.floor(myCoord.zoom);
-        if (myCoord.zoom < 10)
+        if (myCoord.zoom === 256)
+          return;
+        else if (myCoord.zoom < 10)
           socket?.emit("chatRoomsInMap", {
             minLat: myCoord.latitude - naverMapZoonLv["10"].lat,
             maxLat: myCoord.latitude + naverMapZoonLv["10"].lat,
@@ -205,6 +209,7 @@ export const CreateScreen: React.FC<Props> = ({}) => {
             maxLon: myCoord.longitude + naverMapZoonLv[roundZoom].lon,
           });
         }
+        return;
       }
     }
   }, [myCoord]);
@@ -233,6 +238,7 @@ export const CreateScreen: React.FC<Props> = ({}) => {
       myCoord.longitude < 130 &&
       myCoord.longitude > 125
     ) {
+      
       if (type == "start" || type == "end") {
         //데이터를 로컬에 저장해놓고 쓴다.(과도사용방지)
         //android / gradle.properties에 100MB로 설정해놨다.
@@ -261,6 +267,13 @@ export const CreateScreen: React.FC<Props> = ({}) => {
             JSON.stringify(r)
           );
         } else r = JSON.parse(r);
+        // console.log("resultsZ",`https://maps.googleapis.com/maps/api/geocode/json?latlng=` +
+        //       myCoord.latitude +
+        //       `,` +
+        //       myCoord.longitude +
+        //       `&key=${GOOGLE_MAPAPI_URL}` +
+        //   `&language=ko`)
+        
         const addressName = !!r
           ? r.data.results[0].formatted_address
           : "(" + myCoord.latitude + "," + myCoord.longitude + ")";
@@ -370,7 +383,7 @@ export const CreateScreen: React.FC<Props> = ({}) => {
     } else Alert.alert("잘못된 위치: 대한민국 밖의 위도 경도입니다.");
   };
   const SwipeableViewOnPress = (data: ChatRoom) => {
-    setSelectRoom(data);
+    setSelectRoom({...data, id:-1});
     setStart({
       latitude: data.start_lat,
       longitude: data.start_lon,

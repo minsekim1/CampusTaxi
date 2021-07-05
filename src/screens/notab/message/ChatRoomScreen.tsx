@@ -101,6 +101,14 @@ export const ChatRoomScreen: React.FC = () => {
   } = useAuthContext();
   const { firebaseToken } = useAuthContext();
 
+  useEffect(() => {
+    console.log("room:",room)
+    if (room.id !== undefined && room.id !== null)
+      socket?.emit("chatEnter", {
+        room_id: room.id,
+        nickname: User?.nickname,
+      });
+  }, [room]);
   //#region 웹소켓
   useEffect(() => {
     let isSubscribed = true;
@@ -135,16 +143,11 @@ export const ChatRoomScreen: React.FC = () => {
 
     //#region 내방목록 가져오기
     if (!!User && !!socket) {
-      socket.emit("chatEnter", {
-        room_id: room.id,
-        nickname: User.nickname,
-      });
       //이전 채팅 받아오기
-
       socket.on("chatEnter chat", (response) => {
         if (isSubscribed) {
           setMessages(response.data);
-          setTimeout(() => setIsFlatListLoadEnd(true),1000)
+          setTimeout(() => setIsFlatListLoadEnd(true), 1000);
         }
         //#region 채팅 받기
         socket.on("chat", (chat) => {
@@ -182,7 +185,8 @@ export const ChatRoomScreen: React.FC = () => {
       undefined, //"User API",
       undefined,
       (d: any) => {
-        setRoom({ ...d.results[0], id: room.id });
+        console.log("d:",d)
+        setRoom({ ...d.results[0] });
         // let data = JSON.stringify(d);
       }
     );
@@ -225,34 +229,12 @@ export const ChatRoomScreen: React.FC = () => {
     setMessages(a);
     ChatScrollRef.current?.forceUpdate();
   };
-  // useEffect(() => { console.log("messages changed!",ChatScrollRef.current?.props.data)},[ChatScrollRef.current?.props.onEndReached])
   //#endregion 채팅 전송
   //#endregion 웹소켓
 
   useEffect(() => {
     if (search) searchRef.current?.focus();
   }, [search]);
-
-  useEffect(() => {
-    if (room.id == -1) console.warn("room.id 가 -1입니다.");
-    // else if (room.id) {
-    //   axios
-    //     .get<Message[]>(`${API_URL}/api/v1/chat/${room.id}`, {
-    //       headers: {
-    //         Authorization: `Token ${token}`,
-    //       },
-    //     })
-    //     .then((response) => {
-    //       console.log('chat',response)
-    //       // const data = response.data.sort((a, b) =>
-    //       //   differenceInMilliseconds(
-    //       //     new Date(a.created_at),
-    //       //     new Date(b.created_at)
-    //       //   )
-    //       // );
-    //     });
-    // }
-  }, [room.id, token]);
 
   //#region 검색
   const searchOnSubmit = async () => {
@@ -368,8 +350,8 @@ export const ChatRoomScreen: React.FC = () => {
       // 스크롤
       ChatScrollRef.current?.scrollToItem({
         animated: true,
-        item:messages[r.index],
-          // searchResult.result_message[searchResult.index_InResult + 1].index,
+        item: messages[r.index],
+        // searchResult.result_message[searchResult.index_InResult + 1].index,
         viewPosition: 0.5, //가운데로 비춤
       });
     } else if (indexInMessage != -1 && searchResult.index > -1) {
@@ -440,7 +422,7 @@ export const ChatRoomScreen: React.FC = () => {
 
   //#region FlatList state & Ref
   // 현재 보고 있는 곳이 마지막 인덱스인지 여부. 마지막일 경우 채팅 받을 때 가장 아래로 내림
-  const [isFlatListLoadEnd, setIsFlatListLoadEnd] = useState<boolean>(false)
+  const [isFlatListLoadEnd, setIsFlatListLoadEnd] = useState<boolean>(false);
   const [isEndReachedFlatList, setIsEndReachedFlatList] = useState<boolean>(
     false
   );
@@ -516,7 +498,10 @@ export const ChatRoomScreen: React.FC = () => {
               }}
               onContentSizeChange={(width: number, height: number) => {
                 // 가장 마지막 채팅 근처일 경우 아래로 채팅 스크롤함
-                if (isEndReachedFlatList === true || isFlatListLoadEnd === false)
+                if (
+                  isEndReachedFlatList === true ||
+                  isFlatListLoadEnd === false
+                )
                   ChatScrollRef.current?.scrollToEnd();
               }}
               ref={ChatScrollRef}

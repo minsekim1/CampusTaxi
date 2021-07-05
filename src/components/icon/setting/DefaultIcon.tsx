@@ -5,8 +5,8 @@ export function DefaultIcon() {
   return (
     <Svg
       xmlns="http://www.w3.org/2000/svg"
-      width="52"
-      height="52"
+      width="72"
+      height="72"
       viewBox="0 0 52 52"
     >
       <G data-name="그룹 728" transform="translate(-53 -251)">

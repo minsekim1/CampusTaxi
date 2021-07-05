@@ -9,10 +9,14 @@ import firebase from "firebase";
 import { CustomAxios } from "../components/axios/axios";
 import { io, Socket } from "socket.io-client";
 import RNRestart from "react-native-restart";
+import {
+  getAvailablePurchases,
+  itemSubs,
+} from "../screens/tab/premiumTab/RNIapFunction";
+import { getSubscriptions } from "react-native-iap";
 
 export type AuthState = {
-  isPremium: boolean | undefined;
-  setPremium: (props: boolean) => void;
+  getPremium: () => Promise<any>;
   token: string | undefined;
   refresh: string | undefined;
   isLoading: boolean;
@@ -29,8 +33,7 @@ export type AuthState = {
 };
 
 const AuthContext = React.createContext<AuthState>({
-  isPremium: undefined,
-  setPremium: () => { },
+  getPremium: ()=>{return new Promise((resolve)=>resolve(false))},
   token: undefined,
   refresh: undefined,
   isLoading: true,
@@ -43,7 +46,7 @@ const AuthContext = React.createContext<AuthState>({
   User: undefined,
   socket: undefined,
   firebaseToken: undefined,
-  setUser: () => { },
+  setUser: () => {},
 });
 
 export type MoveNavProps = {
@@ -75,6 +78,34 @@ export const AuthProvider: React.FC = ({ children }) => {
     istab: "Tab",
     tab: "HomeTabScreen",
   });
+
+  // ispremium set & get
+  const getPremium = useCallback(async () => {
+    return new Promise(async(resolve) => {
+      const receipts:Array<any> = await getAvailablePurchases();
+      if (receipts !== null || receipts !== undefined) {
+        if (receipts[receipts.length - 1].autoRenewingAndroid === true) {
+          console.log("getPremium true");
+          resolve(true);
+          return;
+        }
+      }
+      console.log("getPremium false");
+      resolve(false);
+      return;
+    });
+
+    // 구매 안함
+    // {"developerPayloadAndroid": "", "isAcknowledgedAndroid": true, "obfuscatedAccountIdAndroid": "", "obfuscatedProfileIdAndroid": "", "orderId": "GPA.3311-4807-0804-93496", "packageNameAndroid": "com.campustaxi.campustaxi", "productId": "testinapp", "purchaseStateAndroid": 1, "purchaseToken": "pjhfkjpiglhfimdalmlbmacj.AO-J1OwcQDXR5dx0z7EeNtRvJPid4e1zd0_ZBzBQ5-rnRIlG29kDAV5NpcHwhJsIGgCEgcFfsLap1U-qzcDCx_3JIiksqFUgJ4A23S_dj7skQ0nh00d70dM", "signatureAndroid": "jXklnbgyBEDH3UG5xJrhrSoRMLVr3F7i06skpc0h1H5Z2gfaiM70AJWo/S0S7pAcdAv7z4Q0ET3RlLOLWv3YVJ5vwUDP7vuXS8GMDetUAZuYyljMpvAl786GSE6+8C2loQHJB0Aaujj8IUYSDS9sIeNv+H4GOPhjGTZLOmioQKQrDlNNoc8irmeDJaNkwj150kK+pPEk1GKMPc3QVjCOHDmZDu44RKCxDum4DWNCIQDWEA820Kj+p5eEATBNM86+pJFvqHPKlOsHuvAbLLvgN2PN2fk+ZPs4i3kDyvyzU5Pbfu11z+XteSZ6B6Ihqm1Cyegnp7Zuc8DXAIyOoUdWqg==", "transactionDate": 1616486006928, "transactionId": "GPA.3311-4807-0804-93496", "transactionReceipt": "{\"orderId\":\"GPA.3311-4807-0804-93496\",\"packageName\":\"com.campustaxi.campustaxi\",\"productId\":\"testinapp\",\"purchaseTime\":1616486006928,\"purchaseState\":0,\"purchaseToken\":\"pjhfkjpiglhfimdalmlbmacj.AO-J1OwcQDXR5dx0z7EeNtRvJPid4e1zd0_ZBzBQ5-rnRIlG29kDAV5NpcHwhJsIGgCEgcFfsLap1U-qzcDCx_3JIiksqFUgJ4A23S_dj7skQ0nh00d70dM\",\"acknowledged\":true}"}
+    // 구매함
+    // {"developerPayloadAndroid": "", "isAcknowledgedAndroid": true, "obfuscatedAccountIdAndroid": "", "obfuscatedProfileIdAndroid": "", "orderId": "GPA.3311-4807-0804-93496", "packageNameAndroid": "com.campustaxi.campustaxi", "productId": "testinapp", "purchaseStateAndroid": 1, "purchaseToken": "pjhfkjpiglhfimdalmlbmacj.AO-J1OwcQDXR5dx0z7EeNtRvJPid4e1zd0_ZBzBQ5-rnRIlG29kDAV5NpcHwhJsIGgCEgcFfsLap1U-qzcDCx_3JIiksqFUgJ4A23S_dj7skQ0nh00d70dM", "signatureAndroid": "jXklnbgyBEDH3UG5xJrhrSoRMLVr3F7i06skpc0h1H5Z2gfaiM70AJWo/S0S7pAcdAv7z4Q0ET3RlLOLWv3YVJ5vwUDP7vuXS8GMDetUAZuYyljMpvAl786GSE6+8C2loQHJB0Aaujj8IUYSDS9sIeNv+H4GOPhjGTZLOmioQKQrDlNNoc8irmeDJaNkwj150kK+pPEk1GKMPc3QVjCOHDmZDu44RKCxDum4DWNCIQDWEA820Kj+p5eEATBNM86+pJFvqHPKlOsHuvAbLLvgN2PN2fk+ZPs4i3kDyvyzU5Pbfu11z+XteSZ6B6Ihqm1Cyegnp7Zuc8DXAIyOoUdWqg==", "transactionDate": 1616486006928, "transactionId": "GPA.3311-4807-0804-93496", "transactionReceipt": "{\"orderId\":\"GPA.3311-4807-0804-93496\",\"packageName\":\"com.campustaxi.campustaxi\",\"productId\":\"testinapp\",\"purchaseTime\":1616486006928,\"purchaseState\":0,\"purchaseToken\":\"pjhfkjpiglhfimdalmlbmacj.AO-J1OwcQDXR5dx0z7EeNtRvJPid4e1zd0_ZBzBQ5-rnRIlG29kDAV5NpcHwhJsIGgCEgcFfsLap1U-qzcDCx_3JIiksqFUgJ4A23S_dj7skQ0nh00d70dM\",\"acknowledged\":true}"}
+    // {"autoRenewingAndroid": true, "developerPayloadAndroid": "", "isAcknowledgedAndroid": false, "obfuscatedAccountIdAndroid": "", "obfuscatedProfileIdAndroid": "", "orderId": "GPA.3327-6090-5979-20169", "packageNameAndroid": "com.campustaxi.campustaxi", "productId": "regularpayment", "purchaseStateAndroid": 1, "purchaseToken": "fcdcfiajkcmalmljgecjcjbf.AO-J1Oza47Q16pawaMf2gY8jMTvKjfGRW7Frv4qNhnyubrS8PdmFgoLdToUv-iIZUu4qIGBz0HjITCXKfKnHhTISyppUg7F3zrJHvvyDbB4owKxLcPpePyw", "signatureAndroid": "FwjAc8w8CGAp+mZwarj/NCpaogMk5cQ0jJXPXz1juPIQrv6AV9FzqyFbngJojbNqvoNgHX/8FK1Bav3k/DNs2VA4uH4wJtV+2/fsoGMvdaUGyJd/kxMKJXYLUkZUnWULI1TGS0XnZ7YoyzdrWz7uzthZSM4YFyXmJZqTwKOlaxqxumtU0nDhQG34y3C9ejMR6jeefadFiRpEBqWQOqU5q00fJQ94I9lPj1qFEjoDV7vWr5XAYRmw+o8g4FC8X9lYCNjfpczdDRJ/ctWJMvqnpSqvG9AgkpauFFQW5qpDd04Sw3yD0qc4Ru1nRg2juM2pnyISLZoTmYfZJJBPVZeDyw==", "transactionDate": 1625480809640, "transactionId": "GPA.3327-6090-5979-20169", "transactionReceipt": "{\"orderId\":\"GPA.3327-6090-5979-20169\",\"packageName\":\"com.campustaxi.campustaxi\",\"productId\":\"regularpayment\",\"purchaseTime\":1625480809640,\"purchaseState\":0,\"purchaseToken\":\"fcdcfiajkcmalmljgecjcjbf.AO-J1Oza47Q16pawaMf2gY8jMTvKjfGRW7Frv4qNhnyubrS8PdmFgoLdToUv-iIZUu4qIGBz0HjITCXKfKnHhTISyppUg7F3zrJHvvyDbB4owKxLcPpePyw\",\"autoRenewing\":true,\"acknowledged\":false}"}
+    // 구매 취소함
+    //   i: 0 r: {"developerPayloadAndroid": "", "isAcknowledgedAndroid": true, "obfuscatedAccountIdAndroid": "", "obfuscatedProfileIdAndroid": "", "orderId": "GPA.3311-4807-0804-93496", "packageNameAndroid": "com.campustaxi.campustaxi", "productId": "testinapp", "purchaseStateAndroid": 1, "purchaseToken": "pjhfkjpiglhfimdalmlbmacj.AO-J1OwcQDXR5dx0z7EeNtRvJPid4e1zd0_ZBzBQ5-rnRIlG29kDAV5NpcHwhJsIGgCEgcFfsLap1U-qzcDCx_3JIiksqFUgJ4A23S_dj7skQ0nh00d70dM", "signatureAndroid": "jXklnbgyBEDH3UG5xJrhrSoRMLVr3F7i06skpc0h1H5Z2gfaiM70AJWo/S0S7pAcdAv7z4Q0ET3RlLOLWv3YVJ5vwUDP7vuXS8GMDetUAZuYyljMpvAl786GSE6+8C2loQHJB0Aaujj8IUYSDS9sIeNv+H4GOPhjGTZLOmioQKQrDlNNoc8irmeDJaNkwj150kK+pPEk1GKMPc3QVjCOHDmZDu44RKCxDum4DWNCIQDWEA820Kj+p5eEATBNM86+pJFvqHPKlOsHuvAbLLvgN2PN2fk+ZPs4i3kDyvyzU5Pbfu11z+XteSZ6B6Ihqm1Cyegnp7Zuc8DXAIyOoUdWqg==", "transactionDate": 1616486006928, "transactionId": "GPA.3311-4807-0804-93496", "transactionReceipt": "{\"orderId\":\"GPA.3311-4807-0804-93496\",\"packageName\":\"com.campustaxi.campustaxi\",\"productId\":\"testinapp\",\"purchaseTime\":1616486006928,\"purchaseState\":0,\"purchaseToken\":\"pjhfkjpiglhfimdalmlbmacj.AO-J1OwcQDXR5dx0z7EeNtRvJPid4e1zd0_ZBzBQ5-rnRIlG29kDAV5NpcHwhJsIGgCEgcFfsLap1U-qzcDCx_3JIiksqFUgJ4A23S_dj7skQ0nh00d70dM\",\"acknowledged\":true}"}
+    // [Mon Jul 05 2021 19:30:00.868]  LOG      i: 1 r: {"autoRenewingAndroid": false, "developerPayloadAndroid": "", "isAcknowledgedAndroid": false, "obfuscatedAccountIdAndroid": "", "obfuscatedProfileIdAndroid": "", "orderId": "GPA.3327-6090-5979-20169", "packageNameAndroid": "com.campustaxi.campustaxi", "productId": "regularpayment", "purchaseStateAndroid": 1, "purchaseToken": "fcdcfiajkcmalmljgecjcjbf.AO-J1Oza47Q16pawaMf2gY8jMTvKjfGRW7Frv4qNhnyubrS8PdmFgoLdToUv-iIZUu4qIGBz0HjITCXKfKnHhTISyppUg7F3zrJHvvyDbB4owKxLcPpePyw", "signatureAndroid": "aXEPSQ3Uto3uGl81h62aRN4m6vuNgSm+opJaC+aTAKkFzfALtbEkonTtPFs/6H4PYQ/yNp2T7aHtwXsydFEz5JQvb5ypXkM798mwDsg1IR+vB4GgqWNErVZcyf1w6xUr43mU4S50CHgQYLcy+SDy7UOEJSZdf+0IYdmmxXoLZK0rh80kWT6VdMeTfZRzBL2NYoQMP88Xhy57A1TnENJn6CTv7KlCzmIEBW75QhNshPkxgBih7hS8NM2RciEJ2c2xNoyFATVY7+Lb4pLZRMla0rUI6Qf8ZwyqT8FgkFHbc2ZppKLZgoU497W17gN1aQZgUL357J+OHVJulQtQk2kb9g==", "transactionDate": 1625480809640, "transactionId": "GPA.3327-6090-5979-20169", "transactionReceipt": "{\"orderId\":\"GPA.3327-6090-5979-20169\",\"packageName\":\"com.campustaxi.campustaxi\",\"productId\":\"regularpayment\",\"purchaseTime\":1625480809640,\"purchaseState\":0,\"purchaseToken\":\"fcdcfiajkcmalmljgecjcjbf.AO-J1Oza47Q16pawaMf2gY8jMTvKjfGRW7Frv4qNhnyubrS8PdmFgoLdToUv-iIZUu4qIGBz0HjITCXKfKnHhTISyppUg7F3zrJHvvyDbB4owKxLcPpePyw\",\"autoRenewing\":false,\"acknowledged\":false}"}
+  }, []);
+
+  //
 
   //#region FCM setting
   const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
@@ -201,6 +232,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         socket,
         User,
         firebaseToken,
+        getPremium,
       }}
     >
       {children}

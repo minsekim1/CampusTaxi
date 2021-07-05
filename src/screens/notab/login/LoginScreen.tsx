@@ -26,7 +26,7 @@ export const LoginScreen: React.FC = ({}) => {
   const { navigate } = useNavigation<LoginScreenNavigation>();
   const [isSimpleLogin, setIsSimpleLogin] = useState(false);
   const [id, setId] = useState("campustaxiadmin");
-  const [password, setPassword] = useState("tkarnr78^@");
+  const [password, setPassword] = useState("12");
   const { setLoggedIn } = useAuthContext();
 
   useEffect(() => {

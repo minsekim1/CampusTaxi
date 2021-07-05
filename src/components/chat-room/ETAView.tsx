@@ -1,6 +1,7 @@
 import styled from "@emotion/native";
 import React from "react";
 import { copyToClipboard } from "../button/CopyToClipboard";
+import { Boarding_dtmToDate, DateToRecentlyDayTime } from "../chat/date";
 import { GenderColor } from "../color/GenderColor";
 import { DottedLine } from "../icon/chat/DottedLine";
 import { MarkerSVG } from "../icon/chat/MarkerSVG";
@@ -17,6 +18,13 @@ export const ETAView: React.FC<Props> = ({
   end_address,
   start_time,
 }) => {
+  if (!start_time)
+    return <></>
+  // 한국 시계로 뺴고 넣음 TEST CODE
+  let tmp_date = Boarding_dtmToDate(start_time)
+  tmp_date.setHours(tmp_date.getHours() - 9)
+  start_time = DateToRecentlyDayTime(tmp_date)
+
   const ClipeboardOnPressStart = () =>
     copyToClipboard(start_address, "출발지가 클립보드에 복사되었습니다.");
   const ClipeboardOnPressEnd = () =>

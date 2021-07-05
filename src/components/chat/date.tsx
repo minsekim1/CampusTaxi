@@ -13,7 +13,7 @@ export const DateToRecently = (date: Date) =>
     : DateToDay(date);
 
 // 날짜 + 시간으로 표기함
-function DateToRecentlyDayTime(date: Date) {
+export function DateToRecentlyDayTime(date: Date) {
   const today = new Date();
   if (date.getMonth() == today.getMonth() && date.getDate() == today.getDate())
     return "오늘 " + DateToTime(date);

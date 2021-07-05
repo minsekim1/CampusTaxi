@@ -20,6 +20,7 @@ export const RootScreen = () => {
     setLoggedIn,
     setUser
   } = useAuthContext();
+  
   useEffect(() => {
     if (socket?.connected) console.log("connected socket !", socket.id);
     else console.log("disconnected socket ?", socket?.connected);
@@ -75,8 +76,8 @@ export const RootScreen = () => {
           AsyncStorage.getItem("login user").then((u) => {
             if (!!u && socket?.connected) {
               let usr: User = JSON.parse(u);
-              console.log("logout", User?.nickname);
-              socket?.emit("logout", { nickname: User?.nickname });
+              console.log("logout", usr);
+              socket?.emit("logout", { nickname: usr.nickname });
               AsyncStorage.removeItem("login user");
             }
           });

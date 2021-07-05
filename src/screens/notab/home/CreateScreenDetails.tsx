@@ -141,16 +141,22 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
       new Date().getFullYear(),
       new Date().getMonth(),
       date_,
-      hour,
+      hour + 9, //KOREA TIME TEST CODE
       min,
       0
     );
     const date_string =
-      format(date_result, "yyyy-MM-dd") + "T" + hour + ":" + min + ":00";
+      format(date_result, "yyyy-MM-dd") + "T"+format(date_result,"HH:mm");
     //TEST CODE minsekim 백엔드 끝나면 비공개=>무관으로 변경해야함
-    console.log("date_string",date_string)
     let gender_Local = gender_ == "0" ? user?.gender : "NONE";
 
+    if (selectRoom.category == "0")
+    selectRoom.category  = "97"
+    else if (selectRoom.category == "1")
+    selectRoom.category  = "98"
+    else if (selectRoom.category == "2")
+    selectRoom.category  = "486" // 공용코드로 업데이트됌 20210630       
+    
     let room = {
       start_address: selectRoom.start_address,
       start_address_detail: selectRoom.start_address_detail,
@@ -163,7 +169,7 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
       boarding_dtm: date_string,
       personnel_limit: personnelLimit,
       gender: gender_Local,
-      category: selectRoom.category + 1,
+      category: selectRoom.category,
     };
     axios
       .post(`${API_URL}/v1/rooms/`, room, {
@@ -174,16 +180,16 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
       })
       .then((r) => {
         let room: ChatRoom = r.data;
-        console.log(r.data);
-        setNavName({
-          istab: "Tab",
-          tab: "MessageTabScreen",
-          props: {
-            data: room,
-          },
-        });
+        console.log("r.data",r.data);
+        // setNavName({
+        //   istab: "Tab",
+        //   tab: "MessageTabScreen",
+        //   props: {
+        //     data: room,
+        //   },
+        // });
       })
-      .catch((e) => Alert.alert("", JSON.stringify(e.response)));
+      .catch((e) => console.log(JSON.stringify(e.response)));
   };
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>

@@ -60,7 +60,7 @@ export const ChatRoomDummy:ChatRoom = {
 
 export const ChatRoomDummyList: ChatRoom[] = [
   {
-    id: 1,
+    id: -1,
     unreadMessage: "string",
     distance: 1.0,
     start_address_code: "string",

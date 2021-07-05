@@ -19,7 +19,7 @@ const itemSkus = Platform.select({
   android: ["android.campustaxi.campustaxi", appSubProductId],
 });
 
-const itemSubs = Platform.select({
+export const itemSubs = Platform.select({
   ios: [
     "com.cooni.point1000",
     "com.cooni.point5000", // dooboolab
@@ -56,16 +56,13 @@ export const PurchaseGoogle = () => {
         } catch (ackErr) {
           console.warn("ackErr", ackErr);
         }
-				// setReceipt(receipt);
-				//#region 결제 데이터 저장하기(AWS EC2)
+        // setReceipt(receipt);
+        //#region 결제 데이터 저장하기(AWS EC2)
 
-
-
-
-				//#endregion 결제 데이터 저장하기(AWS EC2)
+        //#endregion 결제 데이터 저장하기(AWS EC2)
 
         //#region 접속 종료
-        
+
         console.log("결제 완료", "결제가 정상적으로 처리되었습니다.");
 
         if (purchaseUpdateSubscription) {
@@ -97,36 +94,49 @@ export const getSubscriptions = async (): Promise<any> => {
   try {
     if (!itemSubs) return;
     products = await RNIap.getSubscriptions(itemSubs);
+    return new Promise(async (resolve) => {
+      resolve(products);
+    });
   } catch (err) {
     console.warn(err.code, err.message);
   }
+  return new Promise(async (resolve) => {
+    resolve(null);
+  });
 };
 
 //#region 현재 구매한 목룍 확인 함수
 
-export async function getAvailablePurchases(){
-  return new Promise(async resolve => {
+export async function getAvailablePurchases() {
+  return new Promise(
+    async (resolve): Promise<any> => {
       //현재 구매한 목룍 확인 함수
       let result = false;
       try {
-        const purchases = await RNIap.getAvailablePurchases();
+        const purchases: Array<any> = await RNIap.getAvailablePurchases();
         //console.info("Available purchases :: ", purchases);
         if (purchases && purchases.length > 0) {
           //console.log(`getAvailablePurchases Got ${purchases.length} items.`);
           for (let i = 0; i < purchases.length; i += 1) {
             // console.log("getAvailablePurchases", purchases[i].transactionReceipt);
-            if(JSON.parse(purchases[i].transactionReceipt).productId===appSubProductId){
+            if (
+              JSON.parse(purchases[i].transactionReceipt).productId ===
+              appSubProductId
+            ) {
               result = true;
             }
           }
-          resolve(null);
+          resolve(purchases);
         }
       } catch (err) {
         console.warn(err.code, err.message);
         console.log(err.message);
+        resolve([]);
       }
-  })
-};
+      resolve([]);
+    }
+  );
+}
 
 //#endregion 현재 구매한 목룍 확인 함수
 
@@ -142,14 +152,18 @@ export async function getAvailablePurchases(){
 
 //#region 구독하기 구매
 // sku = product.id 이걸로 매개변수 넣으면됌
-export const requestSubscription = async (sku: string): Promise<void> => {
-  try {
-    getSubscriptions();
-    RNIap.requestSubscription(sku);
-    
-    console.log("requestSubscription a:", "/sku:",sku)
-  } catch (err) {
-    console.log(err.message);
-  }
+export const requestSubscription = async (sku: string): Promise<boolean> => {
+  return new Promise(async (resolve) => {
+    if (!sku) { resolve(false); return};
+    try {
+      await getSubscriptions()
+      await RNIap.requestSubscription(sku).then(v => resolve(v.autoRenewingAndroid === true));
+      return;
+    } catch (err) {
+      console.log('requestSubscription',err.message);
+    }
+    resolve(false)
+    return;
+  });
 };
 //#endregion 구독하기 구매

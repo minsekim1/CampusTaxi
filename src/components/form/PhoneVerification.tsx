@@ -122,7 +122,6 @@ export const PhoneVerification: React.FC<Props> = ({
             // 확인을 눌렀을경우
             // TEST CODE receiver 바꿨을 때 다시 봐야함 현재  의미가 없음
             const onPressOk = () => {
-              console.log("r.data.ssssss");
               axios
                 .post<{ status: string }>(
                   `${API_URL}/v1/accounts/auth/`,
@@ -135,7 +134,7 @@ export const PhoneVerification: React.FC<Props> = ({
                   }
                 )
                 .then((r) => {
-                  console.log("r.data.status", r.data.status, r,);
+                  
                   if (r.data.status == "생성") {
                     setCodeInput(true);
                     RefTextInputCode.current?.focus();
@@ -143,7 +142,7 @@ export const PhoneVerification: React.FC<Props> = ({
                     Alert.alert(
                       "인증번호 생성에 실패하였습니다. 잠시 뒤에 다시 이용해주세요. 해당 상황이 지속적으로 반복된다면, campustaxi@naver.com로 이메일을 남겨주세요."
                     );
-                });
+                }).catch(err=>console.log("phone verification: ", err));
             };
             CustomAlert(
               "",

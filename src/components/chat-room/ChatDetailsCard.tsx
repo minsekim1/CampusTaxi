@@ -32,7 +32,7 @@ export const ChatDatilsCard: React.FC<Props> = ({
     });
   };
 
-  console.log(user);
+  // console.log(user);
   return (
     <Container>
       <Left>

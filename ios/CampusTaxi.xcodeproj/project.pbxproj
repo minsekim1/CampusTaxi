@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0630A18826886270001D7FA5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0630A18726886270001D7FA5 /* GoogleService-Info.plist */; };
 		06551B4B2680A96D00F1A390 /* libz.1.2.5.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 06551B4A2680A96D00F1A390 /* libz.1.2.5.tbd */; };
 		069924F62650620200143205 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 069924F52650620200143205 /* Roboto-Bold.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -20,6 +21,7 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* CampusTaxiTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CampusTaxiTests.m; sourceTree = "<group>"; };
 		05B602A8B0BA467DABB4C8E1 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
+		0630A18726886270001D7FA5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Desktop/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		06551B4A2680A96D00F1A390 /* libz.1.2.5.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.1.2.5.tbd; path = usr/lib/libz.1.2.5.tbd; sourceTree = SDKROOT; };
 		069924F52650620200143205 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		069924F82650EBF400143205 /* bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = bold.ttf; sourceTree = "<group>"; };
@@ -86,6 +88,7 @@
 		13B07FAE1A68108700A75B9A /* CampusTaxi */ = {
 			isa = PBXGroup;
 			children = (
+				0630A18726886270001D7FA5 /* GoogleService-Info.plist */,
 				5ABC616825BDD6FE00D23728 /* CampusTaxi.entitlements */,
 				5AFCCDA725BD72F4009F8E95 /* SplashScreen.storyboard */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
@@ -240,6 +243,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				069924F62650620200143205 /* Roboto-Bold.ttf in Resources */,
+				0630A18826886270001D7FA5 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

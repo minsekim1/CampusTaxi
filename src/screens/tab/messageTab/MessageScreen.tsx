@@ -39,54 +39,52 @@ export const MessageScreen: React.FC = () => {
   const navigation = useNavigation<MessageNavigation>();
 
   //#region 새 채팅방 생성 시 방 넘어가기
-
-  if (!!MoveNav?.props?.data) {
-    setNavName({
-      istab: "NoTab",
-      tab: "MessageNoTabNavigation",
-      screen: "ChatRoomScreen",
-      props: {
-        data: MoveNav.props.data,
-      },
-    });
-    return <></>;
-  }
   //#endregion 새 채팅방 생성 시 방 넘어가기
 
   //#region 뒤로가기 버튼 제어 & 더블클릭시 앱 종료
   let currentCount = 0;
   React.useEffect(() => {
-    let isSubscribed = true;
+
+    // 채팅방으로 방생성후 바로 이동
+    if (!!MoveNav?.props?.data) {
+      setNavName({
+        istab: "NoTab",
+        tab: "MessageNoTabNavigation",
+        screen: "ChatRoomScreen",
+        props: {
+          data: MoveNav.props.data,
+        },
+      });
+    }
+
     navigation.addListener("focus", () => {
       BackHandler.addEventListener("hardwareBackPress", handleBackButton);
       //console.log("focus MainScreen");
-      CustomAxios(
-        "GET",
-        `${API_URL}/v1/accounts/me/`,
-        resetToken,
-        refresh,
-        token,
-        undefined, //"User API",
-        undefined,
-        (d: User) => {
-          setUser(d);
-          socket?.emit("chatRooms", { nickname: d.nickname });
-          //#region 내방목록 가져오기
-          socket?.on("chatRooms", (c: { chatRooms: ChatRoom[] }) => {
-            if (isSubscribed) setDatas(c.chatRooms);
-          });
-          //#endregion 내방목록 가져오기
-        }
-      );
+      if (!MoveNav?.props?.data)
+        CustomAxios(
+          "GET",
+          `${API_URL}/v1/accounts/me/`,
+          resetToken,
+          refresh,
+          token,
+          undefined, //"User API",
+          undefined,
+          (d: User) => {
+            setUser(d);
+            socket?.emit("chatRooms", { nickname: d.nickname });
+            //#region 내방목록 가져오기
+            socket?.on("chatRooms", (c: { chatRooms: ChatRoom[] }) => {
+              setDatas(c.chatRooms);
+            });
+            //#endregion 내방목록 가져오기
+          }
+        );
     });
     navigation.addListener("blur", () => {
       BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
       socket?.off("chatRooms");
       //console.log("blur MainScreen");
     });
-    return () => {
-      isSubscribed = false;
-    };
   }, []);
   const handleBackButton = () => {
     if (currentCount < 1) {

@@ -119,7 +119,7 @@ const ChatTime = styled.Text`
 `;
 const ChatText: any = styled.Text`
   max-width: ${String(windowWidth * 0.8 - 60)}px;
-  color: ${(props) => (props.isLeft ? props.theme.revtext : props.theme.sendtext)};
+  color: ${(props:any) => (props.isLeft ? props.theme.revtext : props.theme.sendtext)};
   background-color: ${(props) => (props.isLeft ? props.theme.revinner : props.theme.sendinner)};
   padding: 8px 21px;
   border-width: 1px;
@@ -130,7 +130,7 @@ const UserChat = styled.View`
   flex-direction: row;
 `;
 const UserName: any = styled.Text`
-  color: ${(props) => props.theme.nametext};
+  color: ${(props:any) => props.theme.nametext};
   margin-bottom: 5px;
 `;
 const CrownView = styled.View`
@@ -145,7 +145,7 @@ const MessageProfile = styled.View`
 `;
 const MessageConatiner: any = styled.View`
   width: ${String(windowWidth * 0.9 - 40)}px;
-  align-items: ${(props) => (props.isLeft ? "flex-start" : "flex-end")};
+  align-items: ${(props:any) => (props.isLeft ? "flex-start" : "flex-end")};
 `;
 const Container = styled.View`
   flex-direction: row;
