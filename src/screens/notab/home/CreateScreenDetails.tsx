@@ -170,6 +170,7 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
       personnel_limit: personnelLimit,
       gender: gender_Local,
       category: selectRoom.category,
+      owner: user?.nickname
     };
     axios
       .post(`${API_URL}/v1/rooms/`, room, {
@@ -181,13 +182,13 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
       .then((r) => {
         let room: ChatRoom = r.data;
         console.log("r.data",r.data);
-        // setNavName({
-        //   istab: "Tab",
-        //   tab: "MessageTabScreen",
-        //   props: {
-        //     data: room,
-        //   },
-        // });
+        setNavName({
+          istab: "Tab",
+          tab: "MessageTabScreen",
+          props: {
+            data: room,
+          },
+        });
       })
       .catch((e) => console.log(JSON.stringify(e.response)));
   };

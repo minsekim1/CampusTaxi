@@ -17,7 +17,7 @@ import {
   View,
 } from "react-native";
 import { ChatRoom } from "../../../components/chat-room/ChatRoomList";
-import { KeyBoard } from "../../../components/chat-room/KeyBoard";
+import { KeyBoard } from "../../../components/chat-room/unused_KeyBoard";
 import KeyBoardInput from "../../../components/chat-room/KeyBoardInput";
 import { Chat } from "../../../components/chat/ChatList";
 import { Message, MessageDummy } from "../../../components/chat/Message";
@@ -38,7 +38,7 @@ import { MessageNoTabNavigationParamList } from "./MessageNoTabNavigation";
 import io, { Socket } from "socket.io-client";
 import { CustomAxios } from "../../../components/axios/axios";
 
-const isBase64 = require('is-base64');
+const isBase64 = require("is-base64");
 
 export type MessageNoTabNavigationProp = StackNavigationProp<
   MessageNoTabNavigationParamList,
@@ -90,8 +90,6 @@ export const ChatRoomScreen: React.FC = () => {
   const ChatScrollRef = useRef<FlatList>(null);
   //#endregion States
 
-  const [ispremium, setIspremium] = useState(false);
-
   //#region 초기 세팅
   const {
     setNavName,
@@ -103,14 +101,6 @@ export const ChatRoomScreen: React.FC = () => {
   } = useAuthContext();
   const { firebaseToken } = useAuthContext();
 
-  useEffect(() => {
-    console.log("room:",room)
-    if (room.id !== undefined && room.id !== null)
-      socket?.emit("chatEnter", {
-        room_id: room.id,
-        nickname: User?.nickname,
-      });
-  }, [room]);
   //#region 웹소켓
   useEffect(() => {
     let isSubscribed = true;
@@ -127,36 +117,40 @@ export const ChatRoomScreen: React.FC = () => {
 
     //방의 테마 가져오기
     axios
-        .post(
-          `${premiumURL}getRoomTheme/`,
-          {
-            roomid: room.id,
+      .post(
+        `${premiumURL}getRoomTheme/`,
+        {
+          roomid: room.id,
+        },
+        {
+          headers: {
+            accept: "application/json",
+            "Content-Type": "application/json",
           },
-          {
-            headers: {
-              accept: "application/json",
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((res) => {
-          setTheme(res.data[0])
-        });
+        }
+      )
+      .then((res) => {
+        setTheme(res.data[0]);
+      });
 
     //#region 내방목록 가져오기
     if (!!User && !!socket) {
+      socket.emit("chatEnter", {
+        room_id: room.id,
+        nickname: User.nickname,
+      });
       //이전 채팅 받아오기
+
       socket.on("chatEnter chat", (response) => {
         if (isSubscribed) {
           setMessages(response.data);
-          setTimeout(() => setIsFlatListLoadEnd(true), 1000);
+          setTimeout(() => setIsFlatListLoadEnd(true),1000)
         }
         //#region 채팅 받기
         socket.on("chat", (chat) => {
-          // console.log(chat);
           let a: Array<Message> = response.data;
           if (chat.nickname != User.nickname) {
-            a.unshift({
+            a.push({
               id: a.length + 1,
               message: chat.msg,
               message_type: chat.msg_type,
@@ -166,10 +160,8 @@ export const ChatRoomScreen: React.FC = () => {
               updated_at: new Date(),
               index: a.length + 1,
             });
-            if (isSubscribed) {
-              setMessages(a);
-              ChatScrollRef.current?.forceUpdate();
-            }
+            if (isSubscribed) setMessages(a);
+            ChatScrollRef.current?.forceUpdate();
           }
         });
         //#endregion 채팅 받기
@@ -177,8 +169,7 @@ export const ChatRoomScreen: React.FC = () => {
     }
     //#endregion 내방목록 가져오기
     //#region 상태바
-    if (Platform.OS === "android")
-      StatusBar.setBackgroundColor('white');
+    if (Platform.OS === "android") StatusBar.setBackgroundColor("white");
     StatusBar.setBarStyle("dark-content");
     //#endregion 상태바
     //#region ChatRoom Info Reset
@@ -191,28 +182,28 @@ export const ChatRoomScreen: React.FC = () => {
       undefined, //"User API",
       undefined,
       (d: any) => {
-        console.log("d:",d)
-        setRoom({ ...d.results[0] });
+        setRoom({ ...d.results[0], id: room.id });
         // let data = JSON.stringify(d);
       }
     );
     //#endregion ChatRoom Info Reset
-    return () => (isSubscribed = false);
+    return () => {
+      isSubscribed = false;
+    };
   }, []);
   //#endregion 유저 데이터 요청
   //#endregion 초기 세팅
 
   //#region 채팅 전송
   function notifyMessage(msg: string) {
-    if (Platform.OS === 'android') {
-      ToastAndroid.show(msg, ToastAndroid.SHORT)
+    if (Platform.OS === "android") {
+      ToastAndroid.show(msg, ToastAndroid.SHORT);
     } else {
       AlertIOS.alert(msg);
     }
   }
-  
+
   const sendMessage = (text: string, textType: string) => {
-    console.log("room.id:",room.id)
     socket?.emit("chat", {
       msg: text,
       msg_type: textType,
@@ -221,7 +212,7 @@ export const ChatRoomScreen: React.FC = () => {
       firebaseToken: firebaseToken,
     });
     let a: Array<Message> = messages;
-    a.unshift({
+    a.push({
       id: a.length + 1,
       message: text,
       message_type: textType,
@@ -234,12 +225,34 @@ export const ChatRoomScreen: React.FC = () => {
     setMessages(a);
     ChatScrollRef.current?.forceUpdate();
   };
+  // useEffect(() => { console.log("messages changed!",ChatScrollRef.current?.props.data)},[ChatScrollRef.current?.props.onEndReached])
   //#endregion 채팅 전송
   //#endregion 웹소켓
 
   useEffect(() => {
     if (search) searchRef.current?.focus();
   }, [search]);
+
+  useEffect(() => {
+    if (room.id == -1) console.warn("room.id 가 -1입니다.");
+    // else if (room.id) {
+    //   axios
+    //     .get<Message[]>(`${API_URL}/api/v1/chat/${room.id}`, {
+    //       headers: {
+    //         Authorization: `Token ${token}`,
+    //       },
+    //     })
+    //     .then((response) => {
+    //       console.log('chat',response)
+    //       // const data = response.data.sort((a, b) =>
+    //       //   differenceInMilliseconds(
+    //       //     new Date(a.created_at),
+    //       //     new Date(b.created_at)
+    //       //   )
+    //       // );
+    //     });
+    // }
+  }, [room.id, token]);
 
   //#region 검색
   const searchOnSubmit = async () => {
@@ -253,21 +266,24 @@ export const ChatRoomScreen: React.FC = () => {
       // 텍스트인풋에서 포커싱해제
       searchRef.current?.blur();
       // 해당 문자열이 포함된 것 반환
-      const r = messages.filter((d) => d.message.includes(searchInput));
+      const r = messages.filter(
+        (d) => d.message.includes(searchInput) && d.message_type != "IMAGE"
+      );
       if (r) {
         const result: searchProps = {
-          index: r[0].index, //현재 찾은 메세지 인덱스
-          indexInMessage: r[0].message.indexOf(searchInput), //한 메세지안에서 몇 글자 위치인지? 위아래 버튼 누를때 바뀜
+          index: r[r.length - 1].index, //현재 찾은 메세지 인덱스
+          indexInMessage: r[r.length - 1].message.indexOf(searchInput), //한 메세지안에서 몇 글자 위치인지? 위아래 버튼 누를때 바뀜
           searchString: searchInput,
           result_message: r,
-          index_InResult: 0,
+          index_InResult: r.length - 1,
         };
         setSearchResult(result);
         // 결과가 있을경우 첫번째로 스크롤 하고 message_searchedText로 잘라 넣음
-        if (result.result_message[0]) {
+        if (!!r[0]) {
           ChatScrollRef.current?.scrollToItem({
             animated: true,
-            item: result.result_message[0],
+            item: r[r.length - 1],
+            viewPosition: 0.5, //가운데로 비춤
           });
         }
       }
@@ -278,33 +294,35 @@ export const ChatRoomScreen: React.FC = () => {
   const onPressUpSearch = () => {
     if (!searchResult) return;
     // 현재 메세지의 현재 위치 기준으로 이전 텍스트를 자름 => 현재 메세지에서 이전 문자열을 검사하기 위함
-    const cutString = messages[
-      messages.length - searchResult.index
-    ].message.slice(0, searchResult.indexInMessage);
+    const cutString = messages[searchResult.index - 1].message.slice(
+      0,
+      searchResult.indexInMessage
+    );
     // 현재 검색결과로 보여준 전체 메세지 안에서  이전 결과 중 가장 마지막을 찾음
     let indexInMessage = cutString.lastIndexOf(searchResult.searchString);
     // 만약 결과가 없고 이전 메세지가 필터된 결과에 있을경우 이전 메세지로감
-    if (
-      indexInMessage == -1 &&
-      searchResult.result_message.length - 1 > searchResult.index_InResult
-    ) {
+    if (indexInMessage == -1 && 0 < searchResult.index_InResult) {
       // 메세지 인덱스를 빼고 이전 메세지에서 결과를 찾고
       // 이전 결과에서 다시 찾아서 결과를 넣음
       const r: searchProps = {
         ...searchResult,
         index:
-          searchResult.result_message[searchResult.index_InResult + 1].index,
+          searchResult.result_message[searchResult.index_InResult - 1].index,
         indexInMessage: searchResult.result_message[
-          searchResult.index_InResult + 1
+          searchResult.index_InResult - 1
         ].message.lastIndexOf(searchInput),
-        index_InResult: searchResult.index_InResult + 1,
+        index_InResult: searchResult.index_InResult - 1,
       };
       setSearchResult(r);
       // 스크롤
       ChatScrollRef.current?.scrollToItem({
         animated: true,
         item:
-          searchResult.result_message[searchResult.index_InResult + 1].index,
+          messages[
+            searchResult.result_message[searchResult.index_InResult - 1].index -
+              1
+          ],
+        viewPosition: 0.5, //가운데로 비춤
       });
     } else if (indexInMessage != -1) {
       // 결과가 있을경우
@@ -317,36 +335,41 @@ export const ChatRoomScreen: React.FC = () => {
       // 스크롤
       ChatScrollRef.current?.scrollToItem({
         animated: true,
-        item: searchResult.index,
+        item: messages[searchResult.index - 1],
+        viewPosition: 0.5, //가운데로 비춤
       });
     } else showToast("이전이 없습니다.");
   };
   const onPressDownSearch = () => {
     // 현재 검색결과로 보여준 전체 메세지 안에서 다음 결과를 찾음
     if (!searchResult) return;
-    let indexInMessage = messages[
-      messages.length - searchResult.index
-    ].message.indexOf(searchInput, searchResult.indexInMessage + 1);
+    let indexInMessage = messages[searchResult.index - 1].message.indexOf(
+      searchInput,
+      searchResult.indexInMessage + 1
+    );
 
     // 현재 메세지 안에서 결과가 없을 경우 메세지 인덱스를 더 하고 다음 메세지에 첫번째 결과로 넣음, 단, 다음 메세지가 있어야됌
-    if (indexInMessage == -1 && 0 < searchResult.index_InResult) {
+    if (
+      indexInMessage == -1 &&
+      searchResult.result_message.length - 1 > searchResult.index_InResult
+    ) {
       // 메세지 인덱스를 더하고 다음 메세지에서 결과를 찾고
       // 다음 결과에서 다시 찾아서 결과를 넣음
       const r: searchProps = {
         ...searchResult,
         index:
-          searchResult.result_message[searchResult.index_InResult - 1].index,
+          searchResult.result_message[searchResult.index_InResult + 1].index,
         indexInMessage: searchResult.result_message[
-          searchResult.index_InResult - 1
+          searchResult.index_InResult + 1
         ].message.indexOf(searchInput),
-        index_InResult: searchResult.index_InResult - 1,
+        index_InResult: searchResult.index_InResult + 1,
       };
       setSearchResult(r);
       // 스크롤
       ChatScrollRef.current?.scrollToItem({
         animated: true,
-        item: messages[r.index],
-        // searchResult.result_message[searchResult.index_InResult + 1].index,
+        item:messages[r.index],
+          // searchResult.result_message[searchResult.index_InResult + 1].index,
         viewPosition: 0.5, //가운데로 비춤
       });
     } else if (indexInMessage != -1 && searchResult.index > -1) {
@@ -359,7 +382,8 @@ export const ChatRoomScreen: React.FC = () => {
       // 스크롤
       ChatScrollRef.current?.scrollToItem({
         animated: true,
-        item: searchResult.index,
+        item: messages[searchResult.index],
+        viewPosition: 0.5, //가운데로 비춤
       });
     } else showToast("다음이 없습니다.");
   };
@@ -384,11 +408,8 @@ export const ChatRoomScreen: React.FC = () => {
     setSearch(false);
     setSearchResult(undefined);
   };
-const KeyBoardOnSubmit = (text: string, textType: string) => {
-    
-      
-  if (isBase64(text)) {
-      
+  const KeyBoardOnSubmit = (text: string, textType: string) => {
+    if (isBase64(text)) {
       notifyMessage("이미지를 업로드중입니다...");
       axios
         .post(
@@ -404,21 +425,22 @@ const KeyBoardOnSubmit = (text: string, textType: string) => {
           }
         )
         .then((res) => {
-          if (res.data === "") {           
-            notifyMessage("이미지를 업로드를 실패했습니다.\n관리자에게 문의해주세요.");
-          } else {           
+          if (res.data === "") {
+            notifyMessage(
+              "이미지를 업로드를 실패했습니다.\n관리자에게 문의해주세요."
+            );
+          } else {
             sendMessage(res.data, textType);
           }
         });
-    }
-    else {  
+    } else {
       sendMessage(text, textType);
     }
   };
 
   //#region FlatList state & Ref
   // 현재 보고 있는 곳이 마지막 인덱스인지 여부. 마지막일 경우 채팅 받을 때 가장 아래로 내림
-  const [isFlatListLoadEnd, setIsFlatListLoadEnd] = useState<boolean>(false);
+  const [isFlatListLoadEnd, setIsFlatListLoadEnd] = useState<boolean>(false)
   const [isEndReachedFlatList, setIsEndReachedFlatList] = useState<boolean>(
     false
   );
@@ -431,12 +453,15 @@ const KeyBoardOnSubmit = (text: string, textType: string) => {
   //#endregion FlatList state & Ref
 
   return (
-    <BlankBackground color={'white'}>
+    <BlankBackground color={"white"}>
       <KeyboardContainer
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <Container>
-          <ImageBackground source={{ uri: theme?.bgimg}} style={{flex:1, width: windowWidth}}>
+          <ImageBackground
+            source={{ uri: theme?.bgimg }}
+            style={{ flex: 1, width: windowWidth }}
+          >
             {/* 헤더 */}
             <TitleContainer room={room}>
               {search ? (
@@ -466,9 +491,9 @@ const KeyBoardOnSubmit = (text: string, textType: string) => {
                   </LeftBtn>
                   <HeaderTextView>
                     <OwnerTextView>
-                        <Crown />
-                         <Title>{room.owner}</Title>
-                      </OwnerTextView>
+                      <Crown />
+                      <Title>{room.owner}</Title>
+                    </OwnerTextView>
                     <SubTitle>{room.gender}</SubTitle>
                   </HeaderTextView>
                   <Group>
@@ -483,6 +508,7 @@ const KeyBoardOnSubmit = (text: string, textType: string) => {
               )}
             </TitleContainer>
             {/* 채팅 내용 */}
+
             <ContentContainer
               onScroll={({ nativeEvent }: any) => {
                 if (isCloseToBottom(nativeEvent)) setIsEndReachedFlatList(true);
@@ -490,17 +516,14 @@ const KeyBoardOnSubmit = (text: string, textType: string) => {
               }}
               onContentSizeChange={(width: number, height: number) => {
                 // 가장 마지막 채팅 근처일 경우 아래로 채팅 스크롤함
-                if (
-                  isEndReachedFlatList === true ||
-                  isFlatListLoadEnd === false
-                )
+                if (isEndReachedFlatList === true || isFlatListLoadEnd === false)
                   ChatScrollRef.current?.scrollToEnd();
               }}
               ref={ChatScrollRef}
-              inverted
               data={messages}
               contentContainerStyle={ContentContainerStyle}
               extraData={messages}
+              initialNumToRender={20}
               disableVirtualization={false}
               keyExtractor={(item: any, index: number) => index.toString()}
               renderItem={(props: any) => (
@@ -526,15 +549,6 @@ const KeyBoardOnSubmit = (text: string, textType: string) => {
               onPressUpSearch={onPressUpSearch}
               setMessageType={setMessageType}
             />
-            {/* <KeyBoard
-              searchResult={searchResult}
-              searchRef={searchRef}
-              onSubmitEditing={KeyBoardOnSubmit}
-              message={message}
-              setMessage={setMessage}
-              onPressDownSearch={onPressDownSearch}
-              onPressUpSearch={onPressUpSearch}
-            /> */}
           </ImageBackground>
         </Container>
       </KeyboardContainer>
@@ -550,7 +564,7 @@ const CancelBtn = styled.TouchableOpacity`
   padding: 10px 10px 10px 10px;
 `;
 const CancelText = styled.Text`
-  color: white;
+  color: black;
   margin: 0;
 `;
 const SearchBar = styled.View`
@@ -621,6 +635,5 @@ const OwnerTextView: any = styled.View`
   justify-content: center;
   align-items: center;
 `;
-
 
 const ContentContainer: any = styled.FlatList``;

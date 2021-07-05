@@ -14,7 +14,7 @@ export const socketURL = "http://210.102.225.68:3000";
 //minsekimHome http://124.5.120.66:3000/
 //minsekimOffice'http://210.102.225.68:3000'; 
 //AWSnodejsLoadBanlancer 'https://minsekim.campustaxi.net:444/'
-export const premiumURL = "http://210.102.225.68:3000/";
+export const premiumURL = "http://210.102.225.68:3000";
 export const MYfirebase = !fb.apps.length
   ? fb.initializeApp(FIREBASE_CONFIG)
   : fb.app();

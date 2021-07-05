@@ -11,6 +11,7 @@
     "postinstall": "npx pod-install"
   },
   "dependencies": {
+    "stacktrace-parser": "0.1.4",
     "@emotion/native": "^11.0.0",
     "@emotion/react": "^11.1.4",
     "@invertase/react-native-apple-authentication": "^2.1.0",

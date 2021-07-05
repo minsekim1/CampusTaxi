@@ -184,7 +184,7 @@ export const CreateScreen: React.FC<Props> = ({ }) => {
     socket?.off("chatRoomsInMap");
     socket?.on("chatRoomsInMap", (d) => {
       if(d !== [] && !!d)
-      setDatas([selectRoom, ...d.chatRooms]);
+      setDatas([...d.chatRooms]);
     });
   }, [selectRoom]);
   useEffect(() => {
@@ -383,7 +383,7 @@ export const CreateScreen: React.FC<Props> = ({ }) => {
     } else Alert.alert("잘못된 위치: 대한민국 밖의 위도 경도입니다.");
   };
   const SwipeableViewOnPress = (data: ChatRoom) => {
-    setSelectRoom({...data, id:-1});
+    setSelectRoom({...data});
     setStart({
       latitude: data.start_lat,
       longitude: data.start_lon,

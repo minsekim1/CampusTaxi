@@ -1,5 +1,7 @@
 import { format } from "date-fns";
 
+export const addHour = (date: Date, hour: number) => { let hours = date.getHours() + hour; return new Date(date.setHours(hours))};
+
 export const DateToTime = (date: Date) => format(new Date(date), "HH:mm");
 export const DateToDay = (date: Date) => format(new Date(date), "MM/dd");
 export const DateToDayTime = (date: Date) =>

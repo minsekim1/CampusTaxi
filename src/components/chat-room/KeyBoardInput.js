@@ -69,9 +69,9 @@ export default class KeyBoardInput extends Component {
     this.setState({ receivedKeyboardData });
 
     this.props.setMessage(params.message);
-    console.log('params.message', typeof params.message)
-    console.log(Object.keys(params));
-    console.log("siba521", isBase64(params.message))
+    // console.log('params.message', typeof params.message)
+    // console.log(Object.keys(params));
+    // console.log("siba521", isBase64(params.message))
   }
 
   onKeyboardResigned() {
@@ -441,18 +441,19 @@ const styles = StyleSheet.create({
 
 const BlackView = styled.View`
   height: 50px;
-  flex: 8;
+  flex: 7;
   align-items: center;
 	justify-content: center;
 	`;
 const UpArrowView = styled.TouchableOpacity`
+height: 50px;
   flex: 1;
   align-items: center;
   justify-content: center;
 	`;
 const DownArrowView = styled.TouchableOpacity`
   flex: 1;
-  height: 38px;
+  height: 50px;
   align-items: center;
   justify-content: center;
 `;

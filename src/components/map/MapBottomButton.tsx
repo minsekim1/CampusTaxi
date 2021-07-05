@@ -20,7 +20,7 @@ export const MapBottomButton: React.FC<Props> = ({
   start,
 }) => {
   const disabled = !(!!start.latitude && !!end.latitude);
-  const isCreateRoom = selectRoom?.id == -1 || selectRoom?.id == -2;
+  const isCreateRoom = selectRoom?.id === -1;
   const { navigate } = useNavigation<CreateScreenNavigationProp>();
   const { setNavName } = useAuthContext();
   const EnterRoom = () =>
