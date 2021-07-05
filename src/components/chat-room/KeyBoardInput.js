@@ -1,5 +1,5 @@
 import styled from "@emotion/native";
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -61,6 +61,7 @@ export default class KeyBoardInput extends Component {
     };
   }
 
+  //키보드 레이아웃에서 무언가 행동했을 때 처리
   onKeyboardItemSelected(keyboardId, params) {
     const receivedKeyboardData = `onItemSelected from "${keyboardId}"\nreceived params: ${JSON.stringify(params)}`;
     // console.log(receivedKeyboardData);
@@ -78,6 +79,7 @@ export default class KeyBoardInput extends Component {
     this.resetKeyboardView();
   }
 
+  //텍스트 입력 기준 왼쪽 기능 정의
   getToolbarButtonsLeft() {
     return [
       {
@@ -103,6 +105,7 @@ export default class KeyBoardInput extends Component {
     ];
   }
 
+  //텍스트 기준 오른쪽 기능 정의 (갤러리, 이모티콘)
   getToolbarButtonsRight() {
     return [
       {
@@ -225,6 +228,11 @@ export default class KeyBoardInput extends Component {
             }
           </View>
 
+                  {
+                    //이미지일 때 텍스트 인풋에 이미지
+                    //이모티콘 일 때 텍스트 인풋에 s3 객체를 uri로 한 이미지
+                    //텍스트 일 때 텍스트 인풋에 텍스트
+                  }
           {this.props.messageType !== "IMAGE" ? (
             <>
               <TextInput
@@ -256,7 +264,7 @@ export default class KeyBoardInput extends Component {
                     }}
                     source={{ uri: `data:image/jpg;base64,${this.props.message}` }}
                   />
-                  <TouchableOpacity
+                  <TouchableOpacity //선택된 이미지 삭제
                     style={{
                       height: 20, width: 20,
                       alignItems: 'center', justifyContent: 'center'
@@ -280,7 +288,7 @@ export default class KeyBoardInput extends Component {
                     }}
                     source={{ uri: this.props.message }}
                   />
-                  <TouchableOpacity
+                  <TouchableOpacity //선택된 이미지를 삭제
                     style={{
                       height: 20, width: 20,
                       alignItems: 'center', justifyContent: 'center'

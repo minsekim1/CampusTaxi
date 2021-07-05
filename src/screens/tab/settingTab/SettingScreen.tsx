@@ -269,6 +269,9 @@ export const SettingScreen: React.FC<Props> = () => {
           </View>
         </Modal>
         <Container>
+          {
+            //상단 프로필
+          }
           <ProfileContainer>
             {isPremium === true ? (
               <ProfileImage

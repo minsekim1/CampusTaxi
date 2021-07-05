@@ -59,7 +59,8 @@ let purchaseErrorSubscription: any;
 type MessageNavigation = StackNavigationProp<
   PremiumStackParamList,
   "PremiumScreen"
->;
+  >;
+
 
 const BenefitItemComponent: React.FC<{
   title?: string;
