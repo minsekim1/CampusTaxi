@@ -12,9 +12,9 @@ const FIREBASE_CONFIG = {
 };
 export const socketURL = {
   minsekimHome: "http://124.5.120.66:3000/",
-  minsekimOffice: "http://210.102.225.68:3000",
+  minsekimOffice: "http://210.102.225.68:3000/",
   AWSnodejsLoadBanlancer: "https://minsekim.campustaxi.net:444/",
-}["minsekimOffice"];
+}["AWSnodejsLoadBanlancer"];
 export const premiumURL = socketURL;
 export const MYfirebase = !fb.apps.length
   ? fb.initializeApp(FIREBASE_CONFIG)

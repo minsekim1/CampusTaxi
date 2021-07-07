@@ -36,7 +36,6 @@ export const ChatRoomScreenDetails: React.FC = () => {
     console.log("useEffect:")
     socket?.emit("chatRoomsInUsers", { room_id: room.id });
     socket?.on("chatRoomsInUsers", (c: { chatUsers: User[] }) => {
-      console.log("chatRoomsInUsers:")
       setUsers(c.chatUsers);
     });
     socket?.on("kicked", (c: { room_id: number; hostname: string }) => {
