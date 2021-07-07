@@ -181,7 +181,6 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
       })
       .then((r) => {
         let room: ChatRoom = r.data;
-        console.log("r.data",r.data);
         setNavName({
           istab: "Tab",
           tab: "MessageTabScreen",

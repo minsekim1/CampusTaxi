@@ -22,7 +22,7 @@ import { MessageNoTabNavigationProp } from "./ChatRoomScreen";
 
 export const ChatRoomScreenDetails: React.FC = () => {
   const navigation = useNavigation<MessageNoTabNavigationProp>();
-  const [Users, setUsers] = useState<User[]>(UserDummyList);
+  const [Users, setUsers] = useState<User[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [room] = useState<ChatRoom>(useAuthContext().MoveNav.props.data);
   const { socket, User, setNavName } = useAuthContext();
@@ -33,12 +33,13 @@ export const ChatRoomScreenDetails: React.FC = () => {
     // });
     // 에러 체크
     if (room.id == -1) console.warn("room.id 가 -1입니다.");
+    console.log("useEffect:")
     socket?.emit("chatRoomsInUsers", { room_id: room.id });
     socket?.on("chatRoomsInUsers", (c: { chatUsers: User[] }) => {
+      console.log("chatRoomsInUsers:")
       setUsers(c.chatUsers);
     });
     socket?.on("kicked", (c: { room_id: number; hostname: string }) => {
-      console.log("c.room_id == room.id", c.room_id == room.id);
       if (c.room_id == room.id)
         setNavName({
           istab: "Tab",
@@ -91,7 +92,6 @@ export const ChatRoomScreenDetails: React.FC = () => {
         end_address={room.end_address_detail}
         start_time={room.boarding_dtm}
       />
-      {console.log(Boarding_dtmToDate(room.boarding_dtm))}
       <BottomLine gender={room.gender}>
         <Title gender={room.gender}>기능</Title>
       </BottomLine>

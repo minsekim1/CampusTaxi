@@ -18,6 +18,7 @@ type Props = {
 
 export const OptionButton: React.FC<Props> = ({ onChange, children, options, icon, borderColor, clicked, height, width, color, backgroundColor, borderRadius, defaultIndex }) => {
 
+    if(defaultIndex === (null || undefined)) return <></>
     const [activeoption, setActiveoption] = useState(options[defaultIndex]);
 
     return (

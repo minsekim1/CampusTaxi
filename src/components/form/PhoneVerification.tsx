@@ -32,12 +32,12 @@ export const PhoneVerification: React.FC<Props> = ({
     if (t.length == 6)
       axios
         .post(
-          `${API_URL}/v1/accounts/auth/verify/`,
+          `${API_URL}/v1/auth/send/`,
           {
             //TEST CODE 이종률로 고정임 현재 번호, 바꿔야함.
-            receiver: "01022039894",
+            receiver: phone,
             channel: "phone",
-            code: t,
+            // code: t,
           },
           {
             headers: {
@@ -86,7 +86,7 @@ export const PhoneVerification: React.FC<Props> = ({
         <PhoneNumber
           editable={!isActive}
           value={phone}
-          onChangeText={(t) => {
+          onChangeText={(t:any) => {
             setPhone(t);
             setPhoneG(t);
           }}
@@ -124,7 +124,8 @@ export const PhoneVerification: React.FC<Props> = ({
             const onPressOk = () => {
               axios
                 .post<{ status: string }>(
-                  `${API_URL}/v1/accounts/auth/`,
+                  // https://api.campustaxi.net/api/v1/auth/send/
+                  `${API_URL}/v1/auth/send/`,
                   { receiver: "01022039894", channel: "phone" },
                   {
                     headers: {
@@ -134,7 +135,6 @@ export const PhoneVerification: React.FC<Props> = ({
                   }
                 )
                 .then((r) => {
-                  
                   if (r.data.status == "생성") {
                     setCodeInput(true);
                     RefTextInputCode.current?.focus();
@@ -142,7 +142,8 @@ export const PhoneVerification: React.FC<Props> = ({
                     Alert.alert(
                       "인증번호 생성에 실패하였습니다. 잠시 뒤에 다시 이용해주세요. 해당 상황이 지속적으로 반복된다면, campustaxi@naver.com로 이메일을 남겨주세요."
                     );
-                }).catch(err=>console.log("phone verification: ", err));
+                })
+                .catch((err) => console.log("phone verification: ", err));
             };
             CustomAlert(
               "",

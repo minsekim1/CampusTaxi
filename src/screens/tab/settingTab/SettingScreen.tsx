@@ -73,10 +73,10 @@ export const SettingScreen: React.FC<Props> = () => {
   const [myprofilepath, setMyprofilepath] = useState<string>("default");
 
   const GetProfileIconList: React.FC<{
-    email?: string;
+    nickname?: string;
     iconPath?: string;
     iconName?: string;
-  }> = ({ email,iconPath, iconName }) => {
+  }> = ({ nickname,iconPath, iconName }) => {
     if (!iconPath) return <></>;
     return (
       <View
@@ -91,9 +91,9 @@ export const SettingScreen: React.FC<Props> = () => {
             width: 70,
           }}
           onPress={() => {
-            if (isPremium === true && email) {
+            if (isPremium === true && nickname) {
               setMyprofilepath(iconPath);
-              UpdateMyProfile(email,iconPath)
+              UpdateMyProfile(nickname,iconPath)
               setModalVisible(!modalVisible);
             }
           }}
@@ -129,22 +129,22 @@ export const SettingScreen: React.FC<Props> = () => {
   };
 
 
-  const UpdateMyProfile = (email: string, imagepath: string) => {
+  const UpdateMyProfile = (nickname: string, imagepath: string) => {
     axios
       .post(`${premiumURL}updateProfileIcon`, {
-        email: email,
+        nickname: nickname,
         imagepath: imagepath,
       })
-      .then((response) => {console.log(response)})
+      .then((response) => {console.log("updateProfileIcon:",response)})
       .catch((error) => {
-        console.log(error);
+        console.log("updateProfileIcon",error);
       });
   };
 
-  const GetMyProfile = (email: string) => {
+  const GetMyProfile = (nickname: string) => {
     axios
       .post(`${premiumURL}getProfileIcon`, {
-        email: email,
+        nickname: nickname,
       })
       .then((dbProfilepath) => {
         try {
@@ -255,15 +255,15 @@ export const SettingScreen: React.FC<Props> = () => {
                     <Text>기본</Text>
                   </View>
                 </View>
-                <GetProfileIconList email={user?.email}iconPath="profile_icon0" iconName="무무" />
-                <GetProfileIconList email={user?.email} iconPath="profile_icon1" iconName="교수" />
-                <GetProfileIconList email={user?.email} iconPath="profile_icon2" iconName="로치" />
+                <GetProfileIconList nickname={user?.nickname}iconPath="profile_icon0" iconName="무무" />
+                <GetProfileIconList nickname={user?.nickname} iconPath="profile_icon1" iconName="교수" />
+                <GetProfileIconList nickname={user?.nickname} iconPath="profile_icon2" iconName="로치" />
               </View>
               <View style={{ flexDirection: "row" }}>
-                <GetProfileIconList email={user?.email} iconPath="profile_icon3" iconName="샤코" />
-                <GetProfileIconList email={user?.email} iconPath="profile_icon4" iconName="비아" />
-                <GetProfileIconList email={user?.email} iconPath="profile_icon5" iconName="타코" />
-                <GetProfileIconList email={user?.email} iconPath="profile_icon6" iconName="유미" />
+                <GetProfileIconList nickname={user?.nickname} iconPath="profile_icon3" iconName="샤코" />
+                <GetProfileIconList nickname={user?.nickname} iconPath="profile_icon4" iconName="비아" />
+                <GetProfileIconList nickname={user?.nickname} iconPath="profile_icon5" iconName="타코" />
+                <GetProfileIconList nickname={user?.nickname} iconPath="profile_icon6" iconName="유미" />
               </View>
             </View>
           </View>
