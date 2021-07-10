@@ -131,6 +131,7 @@ export const ChatRoomScreen: React.FC = () => {
       )
       .then((res) => {
         setTheme(res.data[0]);
+        console.log("res:",res.data)
       });
 
     //#region 내방목록 가져오기
@@ -459,7 +460,7 @@ export const ChatRoomScreen: React.FC = () => {
       >
         <Container>
           <ImageBackground
-            source={{ uri: theme?.bgimg }}
+            source={{ uri: theme?.bgimg ? theme.bgimg : undefined }}
             style={{ flex: 1, width: windowWidth }}
           >
             {/* 헤더 */}

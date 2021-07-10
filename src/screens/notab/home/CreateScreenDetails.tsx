@@ -10,6 +10,9 @@ import {
   TouchableOpacity,
   ListViewComponent,
   Alert,
+  Modal,
+  StyleSheet,
+  Image,
 } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { OptionButton } from "../../../components/button/OptionButton";
@@ -24,12 +27,13 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 
 import { useAuthContext } from "../../../contexts/AuthContext";
 import axios from "axios";
-import { API_URL, GOOGLE_MAPAPI_URL } from "../../../constant";
+import { API_URL, GOOGLE_MAPAPI_URL, premiumURL } from "../../../constant";
 import { User } from "../../../contexts/User";
 import { ETAView } from "../../../components/chat-room/ETAView";
 import {
   StackActions,
   TabActions,
+  useIsFocused,
   useNavigation,
 } from "@react-navigation/native";
 import { MessageNoTabNavigationProp } from "../message/ChatRoomScreen";
@@ -53,7 +57,7 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
   //#region
   const selectRoom: ChatRoom = props.route.params;
 
-  const { setNavName } = useAuthContext();
+  const { setNavName, getPremium } = useAuthContext();
 
   const [dateBtn, setDateBtn] = useState<string>("0");
   const [date, setDate] = useState(new Date());
@@ -70,6 +74,29 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
 
   const [gender_, setGender_] = React.useState<string>("1");
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [previewImg, setPreviewImg] = useState<string>(
+    "https://s3.ap-northeast-2.amazonaws.com/api.campustaxi.net/theme/previewDefault.png"
+  );
+  const [previewList, setPreviewList] = useState<Array<any>>([]);
+  const [isPremium, setIsPremium] = useState(false);
+
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused) getPremium().then((isP) => setIsPremium(isP));
+  }, [isFocused]);
+
+  // get preview list
+  useEffect(() => {
+    axios
+      .post(`${premiumURL}getThemePreview`)
+      .then((response) => {
+        console.log("response",response.data.length,response.data.length != undefined && response.data.length != null)
+        if (response.data.length != undefined && response.data.length != null) setPreviewList(response.data);
+      })
+      .catch((error) => console.log("getThemePreview Err", error));
+  }, []);
+
   const getInputDayLabel = (day: number) => {
     const week = new Array("일", "월", "화", "수", "목", "금", "토");
     return week[day % 7];
@@ -84,10 +111,16 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
     return [
       OptionDateFormat(date.getMonth() + 1, date.getDate(), date.getDay()) +
         "\n오늘",
-      OptionDateFormat(date.getMonth() + 1, date.getDate() + 1, date.getDay()+1) +
-        "\n내일",
-      OptionDateFormat(date.getMonth() + 1, date.getDate() + 2, date.getDay()+2) +
-        "\n모레",
+      OptionDateFormat(
+        date.getMonth() + 1,
+        date.getDate() + 1,
+        date.getDay() + 1
+      ) + "\n내일",
+      OptionDateFormat(
+        date.getMonth() + 1,
+        date.getDate() + 2,
+        date.getDay() + 2
+      ) + "\n모레",
     ];
   };
 
@@ -146,17 +179,14 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
       0
     );
     const date_string =
-      format(date_result, "yyyy-MM-dd") + "T"+format(date_result,"HH:mm");
+      format(date_result, "yyyy-MM-dd") + "T" + format(date_result, "HH:mm");
     //TEST CODE minsekim 백엔드 끝나면 비공개=>무관으로 변경해야함
     let gender_Local = gender_ == "0" ? user?.gender : "NONE";
 
-    if (selectRoom.category == "0")
-    selectRoom.category  = "97"
-    else if (selectRoom.category == "1")
-    selectRoom.category  = "98"
-    else if (selectRoom.category == "2")
-    selectRoom.category  = "486" // 공용코드로 업데이트됌 20210630       
-    
+    if (selectRoom.category == "0") selectRoom.category = "97";
+    else if (selectRoom.category == "1") selectRoom.category = "98";
+    else if (selectRoom.category == "2") selectRoom.category = "486"; // 공용코드로 업데이트됌 20210630
+
     let room = {
       start_address: selectRoom.start_address,
       start_address_detail: selectRoom.start_address_detail,
@@ -170,7 +200,8 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
       personnel_limit: personnelLimit,
       gender: gender_Local,
       category: selectRoom.category,
-      owner: user?.nickname
+      owner: user?.nickname,
+      theme: previewImg.split('/')[5].split('.')[0].split('bg')[1]
     };
     axios
       .post(`${API_URL}/v1/rooms/`, room, {
@@ -188,8 +219,36 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
             data: room,
           },
         });
+        // console.log("room",room,r)
       })
       .catch((e) => console.log(JSON.stringify(e.response)));
+  };
+  const PreviewImgComponent = (props: {
+    uri: string;
+    resize?: "center" | "contain" | "cover" | "repeat";
+    width?: number;
+    height?: number;
+  }) => {
+    return (
+      <Image
+        source={{
+          uri: props.uri,
+          width: props.width ? props.width : 100,
+          height: props.height ? props.height : 100,
+        }}
+        resizeMode={props.resize ? props.resize : "center"}
+      />
+    );
+  };
+  const setPreview = (previewimg: string) => {
+    if (isPremium === true) {
+      setPreviewImg(previewimg);
+      setModalVisible(!modalVisible);
+    } else
+      Alert.alert(
+        "프리미엄 결제가 필요합니다.",
+        "홈 탭 -> 프리미엄 에서 먼저 결제 후 이요해주세요."
+      );
   };
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -268,6 +327,69 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
               defaultIndex={1}
             />
           </SelectSubContainer>
+          <SelectSubContainer>
+            <SubTitle>적용된 테마 (프리미엄)</SubTitle>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                setModalVisible(!modalVisible);
+              }}
+            >
+              <OuterTouchableView
+                onPress={() => setModalVisible(!modalVisible)}
+              />
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <View style={{ flexDirection: "row" }}>
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      {previewList.map((preview: any, i: number) => {
+                        if (i % 2 == 0)
+                          return (
+                            <View style={{ flexDirection: "row" }}>
+                              <TouchableOpacity
+                                onPress={() => setPreview(preview.previewimg)}
+                              >
+                                <PreviewImgComponent
+                                  key={i}
+                                  uri={preview.previewimg}
+                                />
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                onPress={() =>
+                                  setPreview(previewList[i + 1].previewimg)
+                                }
+                              >
+                                <PreviewImgComponent
+                                  key={i + 1}
+                                  uri={previewList[i + 1].previewimg}
+                                />
+                              </TouchableOpacity>
+                            </View>
+                          );
+                      })}
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </Modal>
+            <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
+              <CenterView>
+                <PreviewImgComponent
+                  uri={previewImg}
+                  resize={"cover"}
+                  width={200}
+                  height={200}
+                />
+              </CenterView>
+            </TouchableOpacity>
+          </SelectSubContainer>
         </Container>
       </ScrollView>
 
@@ -331,3 +453,39 @@ const BottomBtnTitle = styled.Text`
   font-family: bold;
   color: #ffffff;
 `;
+
+const OuterTouchableView = styled.TouchableOpacity`
+  height: 100%;
+  width: 100%;
+  position: absolute;
+`;
+
+const CenterView = styled.View`
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: gray;
+`;
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+});
