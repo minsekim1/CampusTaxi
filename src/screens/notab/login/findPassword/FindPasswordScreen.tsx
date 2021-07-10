@@ -1,34 +1,41 @@
-import styled from '@emotion/native';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useState } from 'react';
+import styled from "@emotion/native";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import React, { useState } from "react";
 import RadioForm, {
   RadioButton,
   RadioButtonInput,
   RadioButtonLabel,
-} from 'react-native-simple-radio-button';
-import { SimpleButton } from '../../../../components/button/SimpleButton';
-import { PhoneVerification } from '../../../../components/form/PhoneVerification';
-import { TextField } from '../../../../components/form/TextField';
-import { BlankBackground } from '../../../../components/layout/BlankBackground';
-import { SimpleText } from '../../../../components/text/SImpleText';
-import { Title } from '../../../../components/text/Title';
-import { LoginStackParamList } from '../LoginNavigation';
+} from "react-native-simple-radio-button";
+import { SimpleButton } from "../../../../components/button/SimpleButton";
+import { PhoneVerification } from "../../../../components/form/PhoneVerification";
+import { TextField } from "../../../../components/form/TextField";
+import { BlankBackground } from "../../../../components/layout/BlankBackground";
+import { SimpleText } from "../../../../components/text/SImpleText";
+import { Title } from "../../../../components/text/Title";
+import { LoginStackParamList } from "../LoginNavigation";
 
-type LoginNavigation = StackNavigationProp<LoginStackParamList, 'FindPasswordScreen'>;
+type LoginNavigation = StackNavigationProp<
+  LoginStackParamList,
+  "FindPasswordScreen"
+>;
 
 enum FindMethod {
-  PHONE = 'phone',
+  PHONE = "phone",
 }
 
 export const FindPasswordScreen: React.FC = ({}) => {
   const { navigate } = useNavigation<LoginNavigation>();
-  const [id, setId] = useState('');
+  const [id, setId] = useState("");
   const [hasId, setHasId] = useState(false);
   const [method, setMethod] = useState<FindMethod>();
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const [sent, setSent] = useState(false);
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState("");
+
+  const [isActivePhone, setIsActivePhone] = useState(false);
+  const [phone, setPhoneG] = useState("");
+  const [phoneCountry, setPhoneCountryG] = useState("");
 
   return !hasId ? (
     <BlankBackground>
@@ -36,22 +43,31 @@ export const FindPasswordScreen: React.FC = ({}) => {
         <Container>
           <HeadContainer>
             <Title>비밀번호 찾기</Title>
-            <Description>비밀번호를 찾고자하는 아이디를 입력해 주세요.</Description>
+            <Description>
+              비밀번호를 찾고자하는 아이디를 입력해 주세요.
+            </Description>
           </HeadContainer>
-          <TextField value={id} setValue={setId} placeholder="아이디 입력하기" />
+          <TextField
+            value={id}
+            setValue={setId}
+            placeholder="아이디 입력하기"
+          />
           <DescriptionContainer>
             <Description>아이디가 기억나지 않는다면?</Description>
             <IdText
               onPress={() => {
-                navigate('FindIdScreen');
-              }}>
+                navigate("FindIdScreen");
+              }}
+            >
               아이디 찾기
             </IdText>
           </DescriptionContainer>
           <SimpleButton
+            isActive={true}
             onPress={() => {
               setHasId(true);
-            }}>
+            }}
+          >
             다음으로
           </SimpleButton>
         </Container>
@@ -66,19 +82,21 @@ export const FindPasswordScreen: React.FC = ({}) => {
             <RadioForm formHorizontal={true} animation={true}>
               <RadioButton labelHorizontal={true}>
                 <RadioButtonInput
-                  obj={{ label: '휴대전화로 인증', value: FindMethod.PHONE }}
+                  obj={{ label: "휴대전화로 인증", value: FindMethod.PHONE }}
                   index={0}
                   isSelected={method === FindMethod.PHONE}
                   onPress={() => {
                     setMethod(FindMethod.PHONE);
                   }}
-                  buttonInnerColor={'#707070'}
-                  buttonOuterColor={method === FindMethod.PHONE ? '#707070' : '#707070'}
+                  buttonInnerColor={"#707070"}
+                  buttonOuterColor={
+                    method === FindMethod.PHONE ? "#707070" : "#707070"
+                  }
                   buttonSize={12}
                   buttonOuterSize={24}
                 />
                 <RadioButtonLabel
-                  obj={{ label: '휴대전화로 인증', value: FindMethod.PHONE }}
+                  obj={{ label: "휴대전화로 인증", value: FindMethod.PHONE }}
                   index={0}
                   labelHorizontal={true}
                   onPress={() => {
@@ -90,38 +108,47 @@ export const FindPasswordScreen: React.FC = ({}) => {
             <Description
               onPress={() => {
                 setMethod(FindMethod.PHONE);
-              }}>
-              회원정보에 등록한 휴대전화 번호와 입력한 휴대전화 번호가 같아야, 인증번호를 받을 수
-              있습니다.
+              }}
+            >
+              회원정보에 등록한 휴대전화 번호와 입력한 휴대전화 번호가 같아야,
+              인증번호를 받을 수 있습니다.
             </Description>
             <RadioLine />
             {method === FindMethod.PHONE && (
               <PhoneContainer>
                 <Description>사용자 아이디</Description>
                 <SimpleText align="left">{id}</SimpleText>
-                <TextField value={name} setValue={setName} placeholder="이름(본명)" />
-                <PhoneVerification
-                  onSend={() => {
-                    setSent(true);
-                  }}
+                <TextField
+                  value={name}
+                  setValue={setName}
+                  placeholder="이름(본명)"
                 />
-                {sent && (
-                  <SentContainer>
-                    <TextField
-                      value={code}
-                      setValue={setCode}
-                      maxLength={6}
-                      placeholder="인증번호 숫자 6자리"
-                      keyboardType="numeric"
-                    />
+                <PhoneVerification
+                  setIsActivePhone={setIsActivePhone}
+                  setPhoneG={setPhoneG}
+                  setPhoneCountryG={setPhoneCountryG}
+                  // setSent(true)
+                />
+                {isActivePhone && (
+                  // <SentContainer>
+                  //   <TextField
+                  //     value={code}
+                  //     setValue={setCode}
+                  //     maxLength={6}
+                  //     placeholder="인증번호 숫자 6자리"
+                  //     keyboardType="numeric"
+                  //   />
+                  <>
                     <Description>인증번호가 오지 않나요?</Description>
                     <SimpleButton
                       onPress={() => {
-                        navigate('ResetScreen');
-                      }}>
+                        navigate("ResetScreen");
+                      }}
+                    >
                       확인
                     </SimpleButton>
-                  </SentContainer>
+                  </>
+                  // </SentContainer>
                 )}
               </PhoneContainer>
             )}

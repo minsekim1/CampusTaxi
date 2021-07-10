@@ -135,7 +135,7 @@ export const SettingScreen: React.FC<Props> = () => {
         nickname: nickname,
         imagepath: imagepath,
       })
-      .then((response) => {console.log("updateProfileIcon:",response)})
+      .then((response) => {console.log("updateProfileIcon:")})
       .catch((error) => {
         console.log("updateProfileIcon",error);
       });

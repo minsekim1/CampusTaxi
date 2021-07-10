@@ -2,7 +2,8 @@ import styled from "@emotion/native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import React, { useState } from "react";
-import { SafeAreaView } from "react-native";
+import { SafeAreaView, Text } from "react-native";
+import { TouchableHighlight } from "react-native-gesture-handler";
 import RadioForm, {
   RadioButton,
   RadioButtonInput,
@@ -57,7 +58,9 @@ export const FindIdScreen: React.FC = ({}) => {
                 />
                 <RadioButtonLabel
                   obj={{
-                    label:  isActivePhone ? "휴대전화로 인증 💌" : "휴대전화로 인증",
+                    label: isActivePhone
+                      ? "휴대전화로 인증 💌"
+                      : "휴대전화로 인증",
                     value: FindMethod.PHONE,
                   }}
                   index={0}
@@ -82,24 +85,25 @@ export const FindIdScreen: React.FC = ({}) => {
                   setValue={setName}
                   placeholder="이름(본명)"
                 />
-                <PhoneVerification
-                  setIsActivePhone={setIsActivePhone}
-                  setPhoneG={setPhoneG}
-                  setPhoneCountryG={setPhoneCountryG}
-                />
+                  <PhoneVerification
+                    setIsActivePhone={setIsActivePhone}
+                    setPhoneG={setPhoneG}
+                    setPhoneCountryG={setPhoneCountryG}
+                  />
                 {isActivePhone && (
-                  <SentContainer>
-                    <SimpleButton
-                      onPress={() => {
-                        navigate("FoundScreen", {
-                          id: "hw6110",
-                        });
-                      }}
-                    >
-                      확인
-                    </SimpleButton>
-                  </SentContainer>
+                  <SimpleButton
+                    isActive={true}
+                    onPress={() =>
+                      navigate("FoundScreen", {
+                        name: name,
+                        phone: phone,
+                      })
+                    }
+                  >
+                    확인
+                  </SimpleButton>
                 )}
+                <TouchableHighlight></TouchableHighlight>
               </>
             )}
           </RadioContainer>

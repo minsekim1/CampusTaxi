@@ -33,7 +33,6 @@ export const ChatRoomScreenDetails: React.FC = () => {
     // });
     // 에러 체크
     if (room.id == -1) console.warn("room.id 가 -1입니다.");
-    console.log("useEffect:")
     socket?.emit("chatRoomsInUsers", { room_id: room.id });
     socket?.on("chatRoomsInUsers", (c: { chatUsers: User[] }) => {
       setUsers(c.chatUsers);

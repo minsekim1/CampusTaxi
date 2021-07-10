@@ -72,7 +72,7 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
 
   const getInputDayLabel = (day: number) => {
     const week = new Array("일", "월", "화", "수", "목", "금", "토");
-    return week[day];
+    return week[day % 7];
   };
 
   const OptionDateFormat = (month: number, date: number, day: number) => {

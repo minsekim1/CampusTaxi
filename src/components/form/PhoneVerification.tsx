@@ -32,12 +32,12 @@ export const PhoneVerification: React.FC<Props> = ({
     if (t.length == 6)
       axios
         .post(
-          `${API_URL}/v1/auth/send/`,
+          `${API_URL}/v1/auth/verify/`,
           {
             //TEST CODE 이종률로 고정임 현재 번호, 바꿔야함.
             receiver: phone,
             channel: "phone",
-            // code: t,
+            code: t,
           },
           {
             headers: {
@@ -47,19 +47,20 @@ export const PhoneVerification: React.FC<Props> = ({
           }
         )
         .then((r) => {
-          if (r.data) {
-            setIsActive(true);
-            setCodeInput(false);
-            setIsActivePhone(true);
-            {
-              setFocusInput ? setFocusInput(0) : null;
-            }
-          } else Alert.alert("", JSON.stringify(r.data));
+          console.log("verify : ", r)
+          // if (r.data) {
+          //   setIsActive(true);
+          //   setCodeInput(false);
+          //   setIsActivePhone(true);
+          //   {
+          //     setFocusInput ? setFocusInput(0) : null;
+          //   }
+          // } else Alert.alert("", JSON.stringify(r.data));
         })
         .catch((e) =>
           Alert.alert(
             e.toString(),
-            "\n잘못된 인증번호입니다. \n다시확인해주세요."
+            "잘못된 인증번호입니다. \n다시확인해주세요."
           )
         );
   };
@@ -126,7 +127,7 @@ export const PhoneVerification: React.FC<Props> = ({
                 .post<{ status: string }>(
                   // https://api.campustaxi.net/api/v1/auth/send/
                   `${API_URL}/v1/auth/send/`,
-                  { receiver: "01022039894", channel: "phone" },
+                  { receiver: phone, channel: "phone" },
                   {
                     headers: {
                       accept: "application/json",

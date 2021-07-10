@@ -20,7 +20,7 @@ export type LoginStackParamList = {
   FindPasswordScreen: undefined;
   ResetScreen: undefined;
   FindIdScreen: undefined;
-  FoundScreen: { id: string };
+  FoundScreen: { name: string, phone: string };
   GeoScreen: undefined;
   MarketingScreen: undefined;
   PrivacyScreen: undefined;

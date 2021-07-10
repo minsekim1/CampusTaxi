@@ -104,7 +104,7 @@ export const HomeScreen: React.FC<Props> = () => {
   return (
     <BlankBackground color="#76A2EB">
       <Container>
-        <AlarmBell
+        {/* <AlarmBell
           onPress={() =>
             setNavName({
               istab: "NoTab",
@@ -116,7 +116,7 @@ export const HomeScreen: React.FC<Props> = () => {
           }
         >
           <AlarmBellIcon />
-        </AlarmBell>
+        </AlarmBell> */}
         <LogoContainer>
           <MainLogo fill="#fff" />
           <MyCampusInfo>
