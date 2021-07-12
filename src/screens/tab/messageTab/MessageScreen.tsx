@@ -80,11 +80,6 @@ export const MessageScreen: React.FC = () => {
           }
         );
     });
-    navigation.addListener("blur", () => {
-      BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
-      socket?.off("chatRooms");
-      //console.log("blur MainScreen");
-    });
   }, []);
   const handleBackButton = () => {
     if (currentCount < 1) {

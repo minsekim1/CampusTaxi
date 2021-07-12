@@ -6,7 +6,7 @@ import { NoTabNavigation } from "./notab/NoTabNavigation";
 import { CustomAxios } from "../components/axios/axios";
 import { API_URL } from "../constant";
 import { User } from "../contexts/User";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-community/async-storage';
 import axios from "axios";
 import { Alert } from "react-native";
 

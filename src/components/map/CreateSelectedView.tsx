@@ -1,5 +1,5 @@
 import styled from "@emotion/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-community/async-storage';
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { View, Text, Dimensions } from "react-native";
 import { ChatRoom } from "../chat-room/ChatRoomList";

@@ -21,19 +21,20 @@ import { BottomButton } from "../../../../components/button/BottomButton";
 import { SimpleButton } from "../../../../components/button/SimpleButton";
 import { SimpleCheckBox } from "../../../../components/checkbox/SimpleCheckBox";
 import { PhoneVerification } from "../../../../components/form/PhoneVerification";
-import { API_URL, UNIV_LIST } from "../../../../constant";
+import { API_URL, isDev, UNIV_LIST } from "../../../../constant";
 import { LoginStackParamList } from "../LoginNavigation";
 import RNPickerSelect from "react-native-picker-select";
+import { isCorrectCharacter } from "../LoginScreen";
 
 type LoginNavigation = NavigationProp<LoginStackParamList, "RegisterScreen">;
 type pickerProps = { label: string; value: string };
 export const RegisterScreen: React.FC = (props) => {
   const { SMS, appPush, emailMarket } = props.route.params;
   const { navigate } = useNavigation<LoginNavigation>();
-  const [isActivePhone, setIsActivePhone] = useState(false);
+  const [isActivePhone, setIsActivePhone] = useState(isDev ? true : false); // TEST CODE
   const [isActiveInfo, setIsActiveInfo] = useState(false);
-  const [phone, setPhoneG] = useState("");
-  const [phoneCountry, setPhoneCountryG] = useState("");
+  const [phone, setPhoneG] = useState(isDev ? "01022039894" : ""); //TEST CODE ""
+  const [phoneCountry, setPhoneCountryG] = useState(isDev ? "82" : ""); //TEST CODE ""
   const [nickname, setNickname] = useState("");
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
@@ -114,7 +115,7 @@ export const RegisterScreen: React.FC = (props) => {
       let genderToText = gender == 1 ? "MALE" : "FEMALE";
       axios
         .post(
-        `${API_URL}/v1/accounts/signup/`,
+          `${API_URL}/v1/accounts/signup/`,
           {
             username: id,
             password: password,
@@ -151,21 +152,46 @@ export const RegisterScreen: React.FC = (props) => {
             // 회원가입 완료
             Alert.alert(
               "",
-                "아이디:"+  id+ "\n"+
-                "비밀번호:"+  password+ "\n"+
-                "닉네임:"+  nickname+ "\n"+
-                "성별:"+  genderToText+ "\n"+
-                "휴대폰번호:"+  phone+ "\n"+
-                "실명:"+  name+ "\n"+
-                "이메일:"+  email+ "\n"+
-                "주소:"+  address+ "\n"+
-                "학교:"+  school+ "\n"+
-                "앱 푸쉬 알림:"+  appPush+ "\n"+
-                "문자 푸쉬 알림:"+  SMS+ "\n"+
-                "이메일 푸쉬 알림:"+  emailMarket+ "\n"+ "\n"
-               + "해당 정보로 회원가입이 완료되었습니다."
+              "아이디:" +
+                id +
+                "\n" +
+                "비밀번호:" +
+                password +
+                "\n" +
+                "닉네임:" +
+                nickname +
+                "\n" +
+                "성별:" +
+                genderToText +
+                "\n" +
+                "휴대폰번호:" +
+                phone +
+                "\n" +
+                "실명:" +
+                name +
+                "\n" +
+                "이메일:" +
+                email +
+                "\n" +
+                "주소:" +
+                address +
+                "\n" +
+                "학교:" +
+                school +
+                "\n" +
+                "앱 푸쉬 알림:" +
+                appPush +
+                "\n" +
+                "문자 푸쉬 알림:" +
+                SMS +
+                "\n" +
+                "이메일 푸쉬 알림:" +
+                emailMarket +
+                "\n" +
+                "\n" +
+                "해당 정보로 회원가입이 완료되었습니다."
             );
-            navigate("RegisterSuccessScreen",{id:id,password:password});
+            navigate("RegisterSuccessScreen", { id: id, password: password });
           }
         });
     }
@@ -240,7 +266,7 @@ export const RegisterScreen: React.FC = (props) => {
             <ContentContainer>
               <SectionContainer>
                 <CheckboxContainer>
-                  <Content>휴대폰 인증{isActivePhone ? ' 💌' : null}</Content>
+                  <Content>휴대폰 인증{isActivePhone ? " 💌" : null}</Content>
                 </CheckboxContainer>
                 <PhoneVerification
                   setIsActivePhone={setIsActivePhone}
@@ -251,7 +277,7 @@ export const RegisterScreen: React.FC = (props) => {
               </SectionContainer>
               <SectionContainer>
                 <CheckboxContainer>
-                  <Content>회원 정보 입력{isActiveInfo ? ' 🧸' : null}</Content>
+                  <Content>회원 정보 입력{isActiveInfo ? " 🧸" : null}</Content>
                 </CheckboxContainer>
                 <FormContainer>
                   <FormDescription>닉네임</FormDescription>
@@ -282,9 +308,14 @@ export const RegisterScreen: React.FC = (props) => {
                   <FormInput
                     ref={InputRefList[2]}
                     value={password}
-                    onChangeText={(t) =>
-                      checkIsActiveInfo(setPassword(t), t, "password")
-                    }
+                    onChangeText={(t) => {
+                      if (isCorrectCharacter(t))
+                        checkIsActiveInfo(setPassword(t), t, "password");
+                      else
+                        Alert.alert(
+                          "비밀번호는 영어와 숫자, 특수문자 !@#$%^&*만 가능합니다."
+                        );
+                    }}
                     autoCapitalize="none"
                     textContentType="password"
                     returnKeyType={"next"}
@@ -296,9 +327,18 @@ export const RegisterScreen: React.FC = (props) => {
                   <FormInput
                     ref={InputRefList[3]}
                     value={passwordCheck}
-                    onChangeText={(t) =>
-                      checkIsActiveInfo(setPasswordCheck(t), t, "passwordCheck")
-                    }
+                    onChangeText={(t) => {
+                      if (isCorrectCharacter(t))
+                        checkIsActiveInfo(
+                          setPasswordCheck(t),
+                          t,
+                          "passwordCheck"
+                        );
+                      else
+                        Alert.alert(
+                          "비밀번호는 영어와 숫자, 특수문자 !@#$%^&*만 가능합니다."
+                        );
+                    }}
                     autoCapitalize="none"
                     textContentType="newPassword"
                     returnKeyType={"next"}
@@ -315,7 +355,9 @@ export const RegisterScreen: React.FC = (props) => {
                         setFocusInput(5);
                       }}
                     >
-                      <WhiteText>{gender === 1 ? '🎉 남자 🕺' : '남자'}</WhiteText>
+                      <WhiteText>
+                        {gender === 1 ? "🎉 남자 🕺" : "남자"}
+                      </WhiteText>
                     </SelectItem>
                     <SelectItem
                       active={gender === 2}
@@ -324,7 +366,9 @@ export const RegisterScreen: React.FC = (props) => {
                         setFocusInput(5);
                       }}
                     >
-                      <WhiteText>{gender === 2 ? '💃 여자 🎊' : '여자'}</WhiteText>
+                      <WhiteText>
+                        {gender === 2 ? "💃 여자 🎊" : "여자"}
+                      </WhiteText>
                     </SelectItem>
                   </FormSelect>
                 </FormContainer>

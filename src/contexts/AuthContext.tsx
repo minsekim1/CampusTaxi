@@ -1,4 +1,4 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-community/async-storage';
 import axios from "axios";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { API_URL, MYfirebase, socketURL } from "../constant";

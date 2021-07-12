@@ -1,10 +1,26 @@
 import styled from "@emotion/native";
-import React from "react";
-import { Text } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
+import React, { useEffect } from "react";
+import { BackHandler, Text } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import VersionCheck from "react-native-version-check";
 import { useAuthContext } from "../../../contexts/AuthContext";
 export const AppInfo: React.FC = () => {
+  const { token, resetToken, refresh, socket, setNavName } = useAuthContext();
+  //#region 뒤로 가기 제어
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused) {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
+      BackHandler.addEventListener("hardwareBackPress", handleBackButton);
+    }
+  }, [isFocused]);
+
+  const handleBackButton = () => {
+    setNavName({ istab: "Tab", tab: "SettingTabScreen" });
+    return true;
+  };
+  //#endregion 뒤로 가기 제어
   return (
     <Container>
       <Center>
@@ -26,7 +42,6 @@ export const AppInfo: React.FC = () => {
   );
 };
 //https://github.com/oblador/react-native-vector-icons
-
 
 const Center = styled.View`
   align-items: center;

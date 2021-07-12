@@ -3,7 +3,7 @@ import axios, { AxiosResponse } from "axios";
 import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Alert, TextInput } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
-import { API_URL } from "../../constant";
+import { API_URL, isDev } from "../../constant";
 import { SimpleButton } from "../button/SimpleButton";
 import { CustomAlert } from "../chat-room/CustomAlert";
 
@@ -20,7 +20,7 @@ export const PhoneVerification: React.FC<Props> = ({
   setPhoneCountryG,
 }) => {
   const [sent, setSent] = useState(false);
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState(""); //TEST CDOE ""
   const [phoneCountry, setPhoneCountry] = useState("+82");
   const [code, setCode] = useState("");
   const [isCodeInput, setCodeInput] = useState(false);
@@ -34,7 +34,6 @@ export const PhoneVerification: React.FC<Props> = ({
         .post(
           `${API_URL}/v1/auth/verify/`,
           {
-            //TEST CODE 이종률로 고정임 현재 번호, 바꿔야함.
             receiver: phone,
             channel: "phone",
             code: t,
@@ -85,13 +84,13 @@ export const PhoneVerification: React.FC<Props> = ({
           placeholder={{ label: "+82(대한민국)", value: "82" }}
         />
         <PhoneNumber
-          editable={!isActive}
+          editable={isDev ? false : !isActive} // TEST CODE
           value={phone}
           onChangeText={(t:any) => {
             setPhone(t);
             setPhoneG(t);
           }}
-          placeholder="휴대폰 번호 예)01012341234"
+          placeholder={isDev ? "테스트용 버전이라 아무것도 입력하지 않아도됌!" : "휴대폰 번호 예)01012341234"}
           placeholderTextColor="#b0b0b2"
           keyboardType="decimal-pad"
         />

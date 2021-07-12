@@ -1,5 +1,10 @@
 import styled from "@emotion/native";
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import {
+  RouteProp,
+  useIsFocused,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import axios from "axios";
 import { differenceInMilliseconds } from "date-fns";
@@ -15,6 +20,7 @@ import {
   AlertIOS,
   ImageBackground,
   View,
+  BackHandler,
 } from "react-native";
 import { ChatRoom } from "../../../components/chat-room/ChatRoomList";
 import { KeyBoard } from "../../../components/chat-room/unused_KeyBoard";
@@ -79,9 +85,7 @@ export const ChatRoomScreen: React.FC = () => {
   const [theme, setTheme] = useState<Theme>();
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("NORMAL");
-  const [room, setRoom] = useState<ChatRoom>(
-    useAuthContext().MoveNav.props.data
-  );
+  //useAuthContext().MoveNav.props.data
   // const route = useRoute<NavigationRoute>();
   // const [refetch, setRefetch] = useState<Date>();
   const [search, setSearch] = useState<boolean>(false);
@@ -98,9 +102,12 @@ export const ChatRoomScreen: React.FC = () => {
     token,
     resetToken,
     refresh,
+    MoveNav,
   } = useAuthContext();
   const { firebaseToken } = useAuthContext();
+  const [room, setRoom] = useState<ChatRoom>(MoveNav.props.data);
 
+  console.log("room:",room)
   //#region 웹소켓
   useEffect(() => {
     let isSubscribed = true;
@@ -129,13 +136,10 @@ export const ChatRoomScreen: React.FC = () => {
           },
         }
       )
-      .then((res) => {
-        setTheme(res.data[0]);
-        console.log("res:",res.data)
-      });
+      .then((res) => setTheme(res.data[0]));
 
     //#region 내방목록 가져오기
-    if (!!User && !!socket) {
+    if (!!User && !!socket && room.id !== undefined) {
       socket.emit("chatEnter", {
         room_id: room.id,
         nickname: User.nickname,
@@ -145,7 +149,7 @@ export const ChatRoomScreen: React.FC = () => {
       socket.on("chatEnter chat", (response) => {
         if (isSubscribed) {
           setMessages(response.data);
-          setTimeout(() => setIsFlatListLoadEnd(true),1000)
+          setTimeout(() => setIsFlatListLoadEnd(true), 1000);
         }
         //#region 채팅 받기
         socket.on("chat", (chat) => {
@@ -174,19 +178,24 @@ export const ChatRoomScreen: React.FC = () => {
     StatusBar.setBarStyle("dark-content");
     //#endregion 상태바
     //#region ChatRoom Info Reset
-    CustomAxios(
-      "GET",
-      `${API_URL}/v1/rooms/`,
-      resetToken,
-      refresh,
-      token,
-      undefined, //"User API",
-      undefined,
-      (d: any) => {
-        setRoom({ ...d.results[0], id: room.id });
-        // let data = JSON.stringify(d);
-      }
-    );
+    axios
+      .post(`${premiumURL}createRoom`, { room: room })
+      .then((d: any) => {
+      setRoom({ ...d.results[0], id: room.id });
+    })
+    // CustomAxios(
+    //   "GET",
+    //   `${API_URL}/v1/rooms/`,
+    //   resetToken,
+    //   refresh,
+    //   token,
+    //   undefined, //"User API",
+    //   undefined,
+    //   (d: any) => {
+    //     setRoom({ ...d.results[0], id: room.id });
+    //     // let data = JSON.stringify(d);
+    //   }
+    // );
     //#endregion ChatRoom Info Reset
     return () => {
       isSubscribed = false;
@@ -194,6 +203,20 @@ export const ChatRoomScreen: React.FC = () => {
   }, []);
   //#endregion 유저 데이터 요청
   //#endregion 초기 세팅
+
+  //#region 뒤로가기 버튼 제어
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused) {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
+      BackHandler.addEventListener("hardwareBackPress", handleBackButton);
+    }
+  }, [isFocused]);
+  const handleBackButton = () => {
+    LeftBtnOnPress();
+    return true;
+  };
+  //#endregion 뒤로가기 버튼 제어
 
   //#region 채팅 전송
   function notifyMessage(msg: string) {
@@ -226,34 +249,12 @@ export const ChatRoomScreen: React.FC = () => {
     setMessages(a);
     ChatScrollRef.current?.forceUpdate();
   };
-  // useEffect(() => { console.log("messages changed!",ChatScrollRef.current?.props.data)},[ChatScrollRef.current?.props.onEndReached])
   //#endregion 채팅 전송
   //#endregion 웹소켓
 
   useEffect(() => {
     if (search) searchRef.current?.focus();
   }, [search]);
-
-  useEffect(() => {
-    if (room.id == -1) console.warn("room.id 가 -1입니다.");
-    // else if (room.id) {
-    //   axios
-    //     .get<Message[]>(`${API_URL}/api/v1/chat/${room.id}`, {
-    //       headers: {
-    //         Authorization: `Token ${token}`,
-    //       },
-    //     })
-    //     .then((response) => {
-    //       console.log('chat',response)
-    //       // const data = response.data.sort((a, b) =>
-    //       //   differenceInMilliseconds(
-    //       //     new Date(a.created_at),
-    //       //     new Date(b.created_at)
-    //       //   )
-    //       // );
-    //     });
-    // }
-  }, [room.id, token]);
 
   //#region 검색
   const searchOnSubmit = async () => {
@@ -369,8 +370,8 @@ export const ChatRoomScreen: React.FC = () => {
       // 스크롤
       ChatScrollRef.current?.scrollToItem({
         animated: true,
-        item:messages[r.index],
-          // searchResult.result_message[searchResult.index_InResult + 1].index,
+        item: messages[r.index],
+        // searchResult.result_message[searchResult.index_InResult + 1].index,
         viewPosition: 0.5, //가운데로 비춤
       });
     } else if (indexInMessage != -1 && searchResult.index > -1) {
@@ -441,7 +442,7 @@ export const ChatRoomScreen: React.FC = () => {
 
   //#region FlatList state & Ref
   // 현재 보고 있는 곳이 마지막 인덱스인지 여부. 마지막일 경우 채팅 받을 때 가장 아래로 내림
-  const [isFlatListLoadEnd, setIsFlatListLoadEnd] = useState<boolean>(false)
+  const [isFlatListLoadEnd, setIsFlatListLoadEnd] = useState<boolean>(false);
   const [isEndReachedFlatList, setIsEndReachedFlatList] = useState<boolean>(
     false
   );
@@ -517,7 +518,10 @@ export const ChatRoomScreen: React.FC = () => {
               }}
               onContentSizeChange={(width: number, height: number) => {
                 // 가장 마지막 채팅 근처일 경우 아래로 채팅 스크롤함
-                if (isEndReachedFlatList === true || isFlatListLoadEnd === false)
+                if (
+                  isEndReachedFlatList === true ||
+                  isFlatListLoadEnd === false
+                )
                   ChatScrollRef.current?.scrollToEnd();
               }}
               ref={ChatScrollRef}

@@ -9,26 +9,48 @@ import { BlankButton } from "../../../components/button/BlankButton";
 import { KakaoIcon } from "../../../components/icon/KakaoIcon";
 import { BlankBackground } from "../../../components/layout/BlankBackground";
 import { Logo } from "../../../components/logo/Logo";
-import { API_URL } from "../../../constant";
+import { API_URL, isDev } from "../../../constant";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import { LoginStackParamList } from "./LoginNavigation";
+
+import AsyncStorage from "@react-native-community/async-storage";
 
 import image from "../../../../images/login/bg.png";
 import styled from "@emotion/native";
 import { GenderColor } from "../../../components/color/GenderColor";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 type LoginScreenNavigation = StackNavigationProp<
   LoginStackParamList,
   "LoginScreen"
 >;
 
+export const isCorrectCharacter = (t: string) => {
+  let char = t[t.length - 1] || "";
+  if (
+    typeof char === "number" ||
+    (char >= "a" && char <= "z") ||
+    (char >= "A" && char <= "Z") ||
+    char === "" ||
+    char === "!" ||
+    char === "@" ||
+    char === "#" ||
+    char === "$" ||
+    char === "%" ||
+    char === "^" ||
+    char === "&"
+  )
+    return true;
+  else return false;
+};
 export const LoginScreen: React.FC = ({}) => {
   const { navigate } = useNavigation<LoginScreenNavigation>();
   const [isSimpleLogin, setIsSimpleLogin] = useState(false);
-  const [id, setId] = useState("");//campustaxiadmin
-  const [password, setPassword] = useState("");//tkarnr78^@
+  const [id, setId_] = useState(isDev ? "campustaxiadmin" : ""); //TEST CODE
+  const [password, setPassword] = useState(isDev ? "tkarnr78^@" : ""); //TEST CODE
   const { setLoggedIn } = useAuthContext();
 
+  const setId = (t: string) => {
+    if (isCorrectCharacter(t)) setId_(t);
+  };
   useEffect(() => {
     if (Platform.OS === "android") {
       StatusBar.setBackgroundColor("rgba(0,0,0,0)");
@@ -94,6 +116,8 @@ export const LoginScreen: React.FC = ({}) => {
                   placeholder="아이디 입력"
                   placeholderTextColor="white"
                   autoCapitalize="none"
+                  autoFocus={true}
+                  clearButtonMode={"always"}
                 />
                 <InputBorder />
                 <LoginInput
@@ -144,7 +168,7 @@ export const LoginScreen: React.FC = ({}) => {
             <Logo />
             <LoginContentContainer>
               <ButtonContainer>
-                <BlankButton
+                {/* <BlankButton
                   borderRadius={36}
                   onPress={() => {
                     KakaoLogins.login([KAKAO_AUTH_TYPES.Talk]);
@@ -153,9 +177,9 @@ export const LoginScreen: React.FC = ({}) => {
                   icon={<KakaoIcon />}
                 >
                   카카오 로그인
-                </BlankButton>
+                </BlankButton> */}
               </ButtonContainer>
-              {Platform.OS == "ios" && (
+              {/* {Platform.OS == "ios" && (
                 <ButtonContainer>
                   <BlankButton
                     borderRadius={36}
@@ -166,7 +190,7 @@ export const LoginScreen: React.FC = ({}) => {
                     애플 로그인
                   </BlankButton>
                 </ButtonContainer>
-              )}
+              )} */}
               <ButtonContainer>
                 <BlankButton onPress={() => setIsSimpleLogin(true)}>
                   일반 로그인 및 회원가입

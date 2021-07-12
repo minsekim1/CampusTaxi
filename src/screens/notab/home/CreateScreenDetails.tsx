@@ -13,6 +13,7 @@ import {
   Modal,
   StyleSheet,
   Image,
+  BackHandler,
 } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { OptionButton } from "../../../components/button/OptionButton";
@@ -33,6 +34,7 @@ import { ETAView } from "../../../components/chat-room/ETAView";
 import {
   StackActions,
   TabActions,
+  useBackButton,
   useIsFocused,
   useNavigation,
 } from "@react-navigation/native";
@@ -53,7 +55,7 @@ type Props = {
   selectRoom: ChatRoom;
 };
 
-export const CreateScreenDetails: React.FC<Props> = (props: any) => {
+export const CreateScreenDetails: React.FC<Props> = (props: any ) => {
   //#region
   const selectRoom: ChatRoom = props.route.params;
 
@@ -81,18 +83,28 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
   const [previewList, setPreviewList] = useState<Array<any>>([]);
   const [isPremium, setIsPremium] = useState(false);
 
+  //#region 뒤로 가기 제어
   const isFocused = useIsFocused();
   useEffect(() => {
-    if (isFocused) getPremium().then((isP) => setIsPremium(isP));
+    if (isFocused) {
+      getPremium().then((isP) => setIsPremium(isP));
+      BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
+      BackHandler.addEventListener("hardwareBackPress", handleBackButton);
+    }
   }, [isFocused]);
+  const handleBackButton = () => {
+    props.navigation.goBack();
+    return true;
+  };
+  //#endregion 뒤로 가기 제어
 
   // get preview list
   useEffect(() => {
     axios
       .post(`${premiumURL}getThemePreview`)
       .then((response) => {
-        console.log("response",response.data.length,response.data.length != undefined && response.data.length != null)
-        if (response.data.length != undefined && response.data.length != null) setPreviewList(response.data);
+        if (response.data.length != undefined && response.data.length != null)
+          setPreviewList(response.data);
       })
       .catch((error) => console.log("getThemePreview Err", error));
   }, []);
@@ -201,28 +213,29 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
       gender: gender_Local,
       category: selectRoom.category,
       owner: user?.nickname,
-      theme: previewImg.split('/')[5].split('.')[0].split('bg')[1]
+      theme: previewImg.split("/")[5].split(".")[0].split("preview")[1],
     };
     axios
-      .post(`${API_URL}/v1/rooms/`, room, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          accept: "application/json",
-        },
-      })
+      .post(`${premiumURL}createRoom`, { room: room })
+      // .post(`${API_URL}/v1/rooms/`, room, {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //     accept: "application/json",
+      //   },
+      // })
       .then((r) => {
-        let room: ChatRoom = r.data;
         setNavName({
           istab: "Tab",
           tab: "MessageTabScreen",
           props: {
-            data: room,
+            data: r.data[0],
           },
         });
-        // console.log("room",room,r)
+        // console.log("room",r.data)
       })
       .catch((e) => console.log(JSON.stringify(e.response)));
   };
+
   const PreviewImgComponent = (props: {
     uri: string;
     resize?: "center" | "contain" | "cover" | "repeat";
@@ -250,6 +263,7 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
         "홈 탭 -> 프리미엄 에서 먼저 결제 후 이요해주세요."
       );
   };
+  // console.log("previewList:",previewList)
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
@@ -349,31 +363,35 @@ export const CreateScreenDetails: React.FC<Props> = (props: any) => {
                         alignItems: "center",
                       }}
                     >
-                      {previewList.map((preview: any, i: number) => {
-                        if (i % 2 == 0)
-                          return (
-                            <View style={{ flexDirection: "row" }}>
-                              <TouchableOpacity
-                                onPress={() => setPreview(preview.previewimg)}
-                              >
-                                <PreviewImgComponent
-                                  key={i}
-                                  uri={preview.previewimg}
-                                />
-                              </TouchableOpacity>
-                              <TouchableOpacity
-                                onPress={() =>
-                                  setPreview(previewList[i + 1].previewimg)
-                                }
-                              >
-                                <PreviewImgComponent
-                                  key={i + 1}
-                                  uri={previewList[i + 1].previewimg}
-                                />
-                              </TouchableOpacity>
-                            </View>
-                          );
-                      })}
+                      { console.log("previewList:",previewList)}
+                      {previewList.map != null &&
+                      previewList.map != undefined ? (
+                        previewList.map((preview: any, i: number) => {
+                          if (i % 2 == 0)
+                            return (
+                              <View style={{ flexDirection: "row" }} key={i}>
+                                <TouchableOpacity
+                                  onPress={() => setPreview(preview.previewimg)}
+                                >
+                                  <PreviewImgComponent
+                                    uri={preview.previewimg}
+                                  />
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                  onPress={() =>
+                                    setPreview(previewList[i + 1].previewimg)
+                                  }
+                                >
+                                  <PreviewImgComponent
+                                    uri={previewList[i + 1].previewimg}
+                                  />
+                                </TouchableOpacity>
+                              </View>
+                            );
+                        })
+                      ) : (
+                        <></>
+                      )}
                     </View>
                   </View>
                 </View>

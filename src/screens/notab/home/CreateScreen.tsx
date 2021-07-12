@@ -2,7 +2,7 @@ import styled from "@emotion/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Alert, Platform, StatusBar } from "react-native";
+import { Alert, BackHandler, Platform, StatusBar } from "react-native";
 import { MapController } from "../../../components/map/MapController";
 import { GuideCenterSVG } from "../../../components/map/GuideCenterSVG";
 import { MapBottomButton } from "../../../components/map/MapBottomButton";
@@ -24,7 +24,7 @@ import {
   TMAP_API,
 } from "../../../constant";
 import { useAuthContext } from "../../../contexts/AuthContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-community/async-storage';
 import { HomeNoTabNavigationParamList } from "./HomeNoTabNavigation";
 import { univInfo } from "../../../contexts/univPos";
 import { CustomAxios } from "../../../components/axios/axios";
@@ -50,8 +50,7 @@ type schoolPosProps = {
   latitude: number;
   longitude: number;
 };
-export const CreateScreen: React.FC<Props> = ({ }) => {
-  
+export const CreateScreen: React.FC<Props> = ({}) => {
   const params = useAuthContext().MoveNav.props;
   const [datas, setDatas] = React.useState<ChatRoom[]>([]);
   const schoolPos: schoolPosProps = univInfo.find(
@@ -166,25 +165,30 @@ export const CreateScreen: React.FC<Props> = ({ }) => {
   }, [selectRoom]);
   //#endregion 예상시간/예상거리 바꾸기
 
-  //#region 상태바 제어 && 위도/경도별 방 가져오기 : 출/도 하나라도 범위안에 있으면 가져옴
-  const { token, resetToken, refresh, socket } = useAuthContext();
+  //#region 상태바 제어 && 위도/경도별 방 가져오기 : 출/도 하나라도 범위안에 있으면 가져옴 && 뒤로가기
+  const { token, resetToken, refresh, socket,setNavName } = useAuthContext();
   const isFocused = useIsFocused();
   useEffect(() => {
     if (isFocused) {
       if (Platform.OS === "android") {
         StatusBar.setBackgroundColor("transparent");
       }
+      BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
+      BackHandler.addEventListener("hardwareBackPress", handleBackButton);
       StatusBar.setBarStyle("dark-content");
     }
   }, [isFocused]);
+    const handleBackButton = () => {
+    setNavName({ istab: "Tab", tab: "HomeTabScreen" });
+    return true;
+  };
   //#endregion
 
   //#region
   useEffect(() => {
     socket?.off("chatRoomsInMap");
     socket?.on("chatRoomsInMap", (d) => {
-      if(d !== [] && !!d)
-      setDatas([...d.chatRooms]);
+      if (d !== [] && !!d) setDatas([...d.chatRooms]);
     });
   }, [selectRoom]);
   useEffect(() => {
@@ -192,8 +196,7 @@ export const CreateScreen: React.FC<Props> = ({ }) => {
       if (myCoord.zoom < 18 && myCoord.zoom > 5) {
         type z = 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17;
         let roundZoom: z = Math.floor(myCoord.zoom);
-        if (myCoord.zoom === 256)
-          return;
+        if (myCoord.zoom === 256) return;
         else if (myCoord.zoom < 10)
           socket?.emit("chatRoomsInMap", {
             minLat: myCoord.latitude - naverMapZoonLv["10"].lat,
@@ -238,7 +241,6 @@ export const CreateScreen: React.FC<Props> = ({ }) => {
       myCoord.longitude < 130 &&
       myCoord.longitude > 125
     ) {
-      
       if (type == "start" || type == "end") {
         //데이터를 로컬에 저장해놓고 쓴다.(과도사용방지)
         //android / gradle.properties에 100MB로 설정해놨다.
@@ -273,7 +275,7 @@ export const CreateScreen: React.FC<Props> = ({ }) => {
         //       myCoord.longitude +
         //       `&key=${GOOGLE_MAPAPI_URL}` +
         //   `&language=ko`)
-        
+
         const addressName = !!r
           ? r.data.results[0].formatted_address
           : "(" + myCoord.latitude + "," + myCoord.longitude + ")";
@@ -383,7 +385,7 @@ export const CreateScreen: React.FC<Props> = ({ }) => {
     } else Alert.alert("잘못된 위치: 대한민국 밖의 위도 경도입니다.");
   };
   const SwipeableViewOnPress = (data: ChatRoom) => {
-    setSelectRoom({...data});
+    setSelectRoom({ ...data });
     setStart({
       latitude: data.start_lat,
       longitude: data.start_lon,

@@ -1,9 +1,11 @@
 import styled from "@emotion/native";
 import React, { useEffect, useState } from "react";
 import { useAuthContext } from "../../../contexts/AuthContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-community/async-storage';
 import { Bank } from "../../../contexts/Bank";
 import { copyToClipboard } from "../../../components/button/CopyToClipboard";
+import { useIsFocused } from "@react-navigation/native";
+import { BackHandler } from "react-native";
 type BankProps = {
   bank: string;
   num: string;
@@ -27,7 +29,21 @@ export const BankScreen: React.FC = () => {
       if (!!banks) setBankList(JSON.parse(banks));
     });
   }, []);
+  const { token, resetToken, refresh, socket, setNavName } = useAuthContext();
+  //#region 뒤로 가기 제어
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused) {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
+      BackHandler.addEventListener("hardwareBackPress", handleBackButton);
+    }
+  }, [isFocused]);
 
+  const handleBackButton = () => {
+    setNavName({ istab: "Tab", tab: "SettingTabScreen" });
+    return true;
+  };
+  //#endregion 뒤로 가기 제어
   const AddBtnOnPress = () => {
     if (!bank || !num || !host) return;
     const result = [
@@ -45,12 +61,12 @@ export const BankScreen: React.FC = () => {
     AsyncStorage.setItem("bank", JSON.stringify(result));
   };
 
-	const ListViewOnPress = (d: BankProps) => { 
-		    copyToClipboard(
+  const ListViewOnPress = (d: BankProps) => {
+    copyToClipboard(
       d.bank + d.num + " 예금주:" + d.host,
       "클립보드에 복사되었습니다."
     );
-	}
+  };
   return (
     <Container>
       <Scroll>
@@ -60,7 +76,7 @@ export const BankScreen: React.FC = () => {
         </Header>
 
         {bankList.map((d, i) => (
-					<ListView key={i} onPress={()=>ListViewOnPress(d)}>
+          <ListView key={i} onPress={() => ListViewOnPress(d)}>
             <Row>
               <BankName>은행명</BankName>
               <BankInput value={d.bank} />

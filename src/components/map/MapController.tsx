@@ -1,5 +1,6 @@
 import styled from '@emotion/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-community/async-storage';
+
 import axios from 'axios';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import { View, Text, TextInput, Alert } from 'react-native';

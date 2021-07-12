@@ -1,5 +1,5 @@
 import styled from "@emotion/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-community/async-storage';
 import { DrawerActionType } from "@react-navigation/native";
 import axios from "axios";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";

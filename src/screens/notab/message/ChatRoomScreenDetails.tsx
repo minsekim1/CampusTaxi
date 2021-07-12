@@ -47,6 +47,7 @@ export const ChatRoomScreenDetails: React.FC = () => {
         });
     });
   }, []);
+
   const onPressOk = () => {
     socket?.emit("chatExit", {
       nickname: User?.nickname,

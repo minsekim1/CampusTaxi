@@ -1,7 +1,8 @@
 import styled from "@emotion/native";
+import { useIsFocused } from "@react-navigation/native";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Text } from "react-native";
+import { BackHandler, Text } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { CustomAxios } from "../../../components/axios/axios";
 import { API_URL } from "../../../constant";
@@ -31,10 +32,10 @@ const Row = styled.View`
 const Col = styled.View`
   width: 50%;
 `;
-export const AccountScreen: React.FC = () => {
+export const AccountScreen: React.FC = (props:any) => {
   //#region 유저 데이터 요청
   // AuthContext 시용하지 않고 직접 데이터 요청함
-  const { token, resetToken, refresh } = useAuthContext();
+  const { token, resetToken, refresh,setNavName } = useAuthContext();
   const [user, setUser] = useState<User>();
   useEffect(() => {
     CustomAxios(
@@ -49,6 +50,21 @@ export const AccountScreen: React.FC = () => {
     );
   }, []);
   //#endregion 유저 데이터 요청
+    //#region 뒤로 가기 제어
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused) {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
+      BackHandler.addEventListener("hardwareBackPress", handleBackButton);
+    }
+  }, [isFocused]);
+  
+  
+  const handleBackButton = () => {
+    setNavName({ istab: "Tab", tab: "SettingTabScreen" });
+    return true;
+  };
+  //#endregion 뒤로 가기 제어
   return (
     <Container>
       <Scroll>
