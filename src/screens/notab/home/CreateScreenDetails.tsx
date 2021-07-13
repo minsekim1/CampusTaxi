@@ -233,7 +233,7 @@ export const CreateScreenDetails: React.FC<Props> = (props: any ) => {
         });
         // console.log("room",r.data)
       })
-      .catch((e) => console.log(JSON.stringify(e.response)));
+      .catch((e) => console.log(JSON.stringify(e)));
   };
 
   const PreviewImgComponent = (props: {

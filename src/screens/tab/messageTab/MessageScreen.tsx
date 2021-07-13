@@ -57,9 +57,9 @@ export const MessageScreen: React.FC = () => {
       });
     }
 
+    // BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
+    // BackHandler.addEventListener("hardwareBackPress", handleBackButton);
     navigation.addListener("focus", () => {
-      BackHandler.addEventListener("hardwareBackPress", handleBackButton);
-      //console.log("focus MainScreen");
       if (!MoveNav?.props?.data)
         CustomAxios(
           "GET",

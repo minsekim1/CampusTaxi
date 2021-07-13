@@ -24,9 +24,24 @@ type LoginScreenNavigation = StackNavigationProp<
 >;
 
 export const isCorrectCharacter = (t: string) => {
+  if (t.length > 20)
+  {
+    Alert.alert("최대 20자까지 가능합니다.")
+    return false;
+  }
   let char = t[t.length - 1] || "";
+  
   if (
-    typeof char === "number" ||
+    char === '0' ||
+    char === '1' ||
+    char === '2' ||
+    char === '3' ||
+    char === '4' ||
+    char === '5' ||
+    char === '6' ||
+    char === '7' ||
+    char === '8' ||
+    char === '9' ||
     (char >= "a" && char <= "z") ||
     (char >= "A" && char <= "Z") ||
     char === "" ||

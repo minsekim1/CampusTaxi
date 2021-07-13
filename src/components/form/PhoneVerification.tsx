@@ -29,13 +29,14 @@ export const PhoneVerification: React.FC<Props> = ({
   const checkCode = (t: string) => {
     // curl -X POST "https://api.campustaxi.net/api/v1/accounts/auth/verify/" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{  \"receiver\": \"01022039894\",  \"channel\": \"phone\",  \"code\": \"270500\"}"
     setCode(t);
+    console.log("phone:", phone, "code:", t);
     if (t.length == 6)
       axios
         .post(
           `${API_URL}/v1/auth/verify/`,
           {
             receiver: phone,
-            channel: "phone",
+            channel: "PHONE",
             code: t,
           },
           {
@@ -46,15 +47,16 @@ export const PhoneVerification: React.FC<Props> = ({
           }
         )
         .then((r) => {
-          console.log("verify : ", r)
-          // if (r.data) {
-          //   setIsActive(true);
-          //   setCodeInput(false);
-          //   setIsActivePhone(true);
-          //   {
-          //     setFocusInput ? setFocusInput(0) : null;
-          //   }
-          // } else Alert.alert("", JSON.stringify(r.data));
+          if (r.data && r.status === 200) {
+            if (r.data.phone !== "2개 이상의 회원이 사용중인 번호입니다.") {
+              setIsActive(true);
+              setCodeInput(false);
+              setIsActivePhone(true);
+              {
+                setFocusInput ? setFocusInput(0) : null;
+              }
+            }else Alert.alert("", "2개 이상의 회원이 사용중인 번호입니다.");
+          } else Alert.alert("", JSON.stringify(r.data));
         })
         .catch((e) =>
           Alert.alert(
@@ -86,11 +88,15 @@ export const PhoneVerification: React.FC<Props> = ({
         <PhoneNumber
           editable={isDev ? false : !isActive} // TEST CODE
           value={phone}
-          onChangeText={(t:any) => {
+          onChangeText={(t: any) => {
             setPhone(t);
             setPhoneG(t);
           }}
-          placeholder={isDev ? "테스트용 버전이라 아무것도 입력하지 않아도됌!" : "휴대폰 번호 예)01012341234"}
+          placeholder={
+            isDev
+              ? "테스트용 버전이라 아무것도 입력하지 않아도됌!"
+              : "휴대폰 번호 예)01012341234"
+          }
           placeholderTextColor="#b0b0b2"
           keyboardType="decimal-pad"
         />
@@ -122,11 +128,12 @@ export const PhoneVerification: React.FC<Props> = ({
             // 확인을 눌렀을경우
             // TEST CODE receiver 바꿨을 때 다시 봐야함 현재  의미가 없음
             const onPressOk = () => {
+              console.log("phone:", phone);
               axios
                 .post<{ status: string }>(
                   // https://api.campustaxi.net/api/v1/auth/send/
                   `${API_URL}/v1/auth/send/`,
-                  { receiver: phone, channel: "phone" },
+                  { receiver: phone, channel: "PHONE" },
                   {
                     headers: {
                       accept: "application/json",
@@ -135,11 +142,12 @@ export const PhoneVerification: React.FC<Props> = ({
                   }
                 )
                 .then((r) => {
-                  if (r.data.status == "생성") {
+                  if (r.data.status == "CREATED") {
                     setCodeInput(true);
                     RefTextInputCode.current?.focus();
                   } else
                     Alert.alert(
+                      "네트워크 오류",
                       "인증번호 생성에 실패하였습니다. 잠시 뒤에 다시 이용해주세요. 해당 상황이 지속적으로 반복된다면, campustaxi@naver.com로 이메일을 남겨주세요."
                     );
                 })

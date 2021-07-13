@@ -38,6 +38,7 @@ import {
   requestSubscription,
 } from "../premiumTab/RNIapFunction";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { CustomAlert } from "../../../components/chat-room/CustomAlert";
 
 type SettingScreenNavigationProp = StackNavigationProp<
   SettingStackParamList,
@@ -66,6 +67,12 @@ export const SettingScreen: React.FC<Props> = () => {
     getAvailablePurchases();
   });
   // #endgion 프리미엄인지 아닌지 페이지 바뀔 때마다 확인
+
+  //#region setLoggedOut 확인/취소 버튼
+  const checkLoggedout = () => {
+  CustomAlert("로그아웃","⚠️ 로그아웃 시 들어가있던 모든 채팅방에서 나가게 됩니다.",true,true,setLoggedOut)
+}
+  //#endregion setLoggedOut 확인/취소 버튼
 
   //프로필 화면을 위해 데이터를 요청
   const { token, resetToken, refresh } = useAuthContext();
@@ -185,11 +192,11 @@ export const SettingScreen: React.FC<Props> = () => {
   let currentCount = 0;
   React.useEffect(() => {
     navigation.addListener("focus", () => {
-      BackHandler.addEventListener("hardwareBackPress", handleBackButton);
+      // BackHandler.addEventListener("hardwareBackPress", handleBackButton);
       //console.log("focus MainScreen");
     });
     navigation.addListener("blur", () => {
-      BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
+      // BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
       //console.log("blur MainScreen");
     });
   }, []);
@@ -314,7 +321,7 @@ export const SettingScreen: React.FC<Props> = () => {
             <MenuText>내 정보</MenuText>
             <RightIcon />
           </MenuItem>
-          <MenuItem onPress={setLoggedOut}>
+          <MenuItem onPress={checkLoggedout}>
             <MenuText>로그아웃</MenuText>
             <RightIcon />
           </MenuItem>

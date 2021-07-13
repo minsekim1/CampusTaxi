@@ -209,7 +209,12 @@ export const RegisterScreen: React.FC = (props) => {
     t: string | number,
     type: "id" | "password" | "passwordCheck" | "nickname" | "gender"
   ) => {
-    setFunction;
+    if (typeof t === "string" && t.length > 20) {
+      Alert.alert("최대 20자까지 가능합니다.");
+      return;
+    }
+    else
+    setFunction(t);
     if (
       type == "id" &&
       !!t &&
@@ -285,7 +290,7 @@ export const RegisterScreen: React.FC = (props) => {
                     ref={InputRefList[0]}
                     value={nickname}
                     onChangeText={(t) =>
-                      checkIsActiveInfo(setNickname(t), t, "nickname")
+                      checkIsActiveInfo(setNickname, t, "nickname")
                     }
                     autoCapitalize="none"
                     returnKeyType={"next"}
@@ -297,7 +302,7 @@ export const RegisterScreen: React.FC = (props) => {
                   <FormInput
                     ref={InputRefList[1]}
                     value={id}
-                    onChangeText={(t) => checkIsActiveInfo(setId(t), t, "id")}
+                    onChangeText={(t) => checkIsActiveInfo(setId, t, "id")}
                     autoCapitalize="none"
                     returnKeyType={"next"}
                     onSubmitEditing={() => setFocusInput(2)}
@@ -310,7 +315,7 @@ export const RegisterScreen: React.FC = (props) => {
                     value={password}
                     onChangeText={(t) => {
                       if (isCorrectCharacter(t))
-                        checkIsActiveInfo(setPassword(t), t, "password");
+                        checkIsActiveInfo(setPassword, t, "password");
                       else
                         Alert.alert(
                           "비밀번호는 영어와 숫자, 특수문자 !@#$%^&*만 가능합니다."
@@ -330,7 +335,7 @@ export const RegisterScreen: React.FC = (props) => {
                     onChangeText={(t) => {
                       if (isCorrectCharacter(t))
                         checkIsActiveInfo(
-                          setPasswordCheck(t),
+                          setPasswordCheck,
                           t,
                           "passwordCheck"
                         );
@@ -351,7 +356,7 @@ export const RegisterScreen: React.FC = (props) => {
                     <SelectItem
                       active={gender === 1}
                       onPress={() => {
-                        checkIsActiveInfo(setGender(1), 1, "gender");
+                        checkIsActiveInfo(setGender, 1, "gender");
                         setFocusInput(5);
                       }}
                     >
@@ -362,7 +367,7 @@ export const RegisterScreen: React.FC = (props) => {
                     <SelectItem
                       active={gender === 2}
                       onPress={() => {
-                        checkIsActiveInfo(setGender(2), 2, "gender");
+                        checkIsActiveInfo(setGender, 2, "gender");
                         setFocusInput(5);
                       }}
                     >

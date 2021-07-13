@@ -74,14 +74,8 @@ export const HomeScreen: React.FC<Props> = () => {
   //#region 뒤로가기 버튼 제어 & 더블클릭시 앱 종료
   let currentCount = 0;
   React.useEffect(() => {
-    navigation.addListener("focus", () => {
-      BackHandler.addEventListener("hardwareBackPress", handleBackButton);
-      //console.log("focus MainScreen");
-    });
-    navigation.addListener("blur", () => {
-      BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
-      //console.log("blur MainScreen");
-    });
+      // BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
+      // BackHandler.addEventListener("hardwareBackPress", handleBackButton);
   }, []);
   const handleBackButton = () => {
     if (currentCount < 1) {
@@ -123,7 +117,7 @@ export const HomeScreen: React.FC<Props> = () => {
             <UserCampusInfo>{schoollocation?.name}</UserCampusInfo>
           </MyCampusInfo>
           <MiniIconContainer>
-            <MiniIconTouchable
+            {/* <MiniIconTouchable
               onPress={() => Linking.openURL("https://syu.ac.kr")}
             >
               <MiniHomeIcon />
@@ -134,7 +128,7 @@ export const HomeScreen: React.FC<Props> = () => {
             >
               <MiniEIcon />
               <MiniIconText>E-Class</MiniIconText>
-            </MiniIconTouchable>
+            </MiniIconTouchable> */}
           </MiniIconContainer>
         </LogoContainer>
         <Content>
@@ -150,7 +144,7 @@ export const HomeScreen: React.FC<Props> = () => {
               />
             </SubContainer>
             <SubContainer>
-              <SubTitleView>
+              {/* <SubTitleView>
                 <SubTitle>인원</SubTitle>
               </SubTitleView>
               <OptionButton
@@ -164,10 +158,10 @@ export const HomeScreen: React.FC<Props> = () => {
                 height={26}
                 width={40}
                 defaultIndex={3}
-              />
+              /> */}
             </SubContainer>
             <SubContainer>
-              <SubTitleView>
+              {/* <SubTitleView>
                 <SubTitle>탑승 성별</SubTitle>
               </SubTitleView>
               <OptionButton
@@ -181,7 +175,7 @@ export const HomeScreen: React.FC<Props> = () => {
                 height={28}
                 width={58}
                 defaultIndex={1}
-              />
+              /> */}
             </SubContainer>
             <SubContainer>
               <SubTitleView>
@@ -252,7 +246,7 @@ export const HomeScreen: React.FC<Props> = () => {
                   })
                 }
               >
-                <SearchRoomText>방 검색하기</SearchRoomText>
+                <SearchRoomText>방 만들기 & 방 검색하기</SearchRoomText>
               </SearchRoom>
             </SubContainer>
           </MainContainer>
@@ -361,7 +355,7 @@ const MyCampusInfo = styled.View`
 
 const SearchRoom = styled.TouchableOpacity`
   margin-top: 40px;
-  width: 144px;
+  width: 164px;
   height: 34.5px;
   background-color: #76a2eb;
   align-items: center;
