@@ -3,7 +3,7 @@
 	git clone "git주소" && npm install
 
 # 기본 실행 명령어
-	디버깅 : cd .env && shstart_debug.sh
+	디버깅 : cd .env && sh start_debug.sh
 	배포 apk 생성(반드시 app.json 와 android/app/build.gradle에서 버전(versionCode)을 +1하십시오. 현재 최신 배포 31버전)
 	: cd .env && sh createAPK_androidbuild.sh
 # .env 설명
